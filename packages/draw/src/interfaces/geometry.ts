@@ -71,7 +71,10 @@ export enum UMLSymbols {
     package = 'package',
     combinedFragment = 'combinedFragment',
     class = 'class',
-    interface = 'interface'
+    interface = 'interface',
+    object = 'object',
+    activation = 'activation',
+    deletion = 'deletion'
 }
 
 export enum MultipleTextGeometryCommonTextKeys {
@@ -102,8 +105,8 @@ export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
 }
 
 export interface PlaitGeometry extends PlaitCommonGeometry {
-    text: ParagraphElement;
-    textHeight: number;
+    text?: ParagraphElement;
+    textHeight?: number;
 }
 
 export interface PlaitRectangle extends PlaitGeometry {

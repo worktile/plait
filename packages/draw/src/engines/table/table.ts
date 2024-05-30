@@ -6,6 +6,7 @@ import { PlaitDrawShapeText } from '../../generators/text.generator';
 import { PlaitTable, PlaitTableCellWithPoints, PlaitTableDrawOptions, PlaitTableElement } from '../../interfaces/table';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
+import { getNearestPointBetweenPointAndRoundRectangle, getRoundRectangleRadius } from '../basic-shapes/round-rectangle';
 
 export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDrawShapeText> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {
@@ -34,7 +35,7 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         return RectangleClient.getCornerPoints(rectangle);
     },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
-        return [0, 0];
+        return getNearestPointBetweenPointAndRoundRectangle(point, rectangle, getRoundRectangleRadius(rectangle));
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);

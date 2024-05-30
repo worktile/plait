@@ -35,7 +35,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
             const lineAutoCompleteGenerator = ref.getGenerator<LineAutoCompleteGenerator>(LineAutoCompleteGenerator.key);
             lineAutoCompleteGenerator.recoverAutoCompleteG();
             if (hitPoint) {
-                lineAutoCompleteGenerator.removeAutoCompleteG(hitIndex);
+                lineAutoCompleteGenerator?.removeAutoCompleteG(hitIndex);
                 reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, {
                     stroke: 'none',
                     fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_HOVERED_OPACITY),
@@ -44,7 +44,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
                 PlaitBoard.getElementActiveHost(board).append(reactionG);
                 PlaitBoard.getBoardContainer(board).classList.add(CursorClass.crosshair);
                 if (hasValidAngle(targetElement)) {
-                    setAngleForG(reactionG, RectangleClient.getCenterPoint(board.getRectangle(targetElement)!), targetElement.angle);
+                    setAngleForG(reactionG, RectangleClient.getCenterPoint(board.getRectangle(targetElement)!), targetElement.angle!);
                 }
             }
         }

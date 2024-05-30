@@ -132,21 +132,19 @@ export const withDraw = (board: PlaitBoard) => {
     };
 
     return withSwimlane(
-        withTableResize(
-            withTable(
-                withDrawResize(
-                    withLineAutoCompleteReaction(
-                        withLineBoundReaction(
-                            withLineResize(
-                                withLineTextMove(
-                                    withLineText(
-                                        withGeometryResize(
-                                            withDrawRotate(
-                                                withLineCreateByDraw(
-                                                    withLineAutoComplete(
-                                                        withGeometryCreateByDrag(
-                                                            withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
-                                                        )
+        withTable(
+            withDrawResize(
+                withLineAutoCompleteReaction(
+                    withLineBoundReaction(
+                        withLineResize(
+                            withLineTextMove(
+                                withLineText(
+                                    withGeometryResize(
+                                        withDrawRotate(
+                                            withLineCreateByDraw(
+                                                withLineAutoComplete(
+                                                    withGeometryCreateByDrag(
+                                                        withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
                                                     )
                                                 )
                                             )

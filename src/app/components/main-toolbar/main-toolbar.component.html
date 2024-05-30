@@ -362,6 +362,20 @@
         >
             <ng-template [ngTemplateOutlet]="noteSquare"></ng-template>
         </a>
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(SwimlaneSymbols.swimlaneVertical) }"
+            (mousedown)="setPointer($event, SwimlaneSymbols.swimlaneVertical)"
+        >
+            <ng-template [ngTemplateOutlet]="swimlaneVertical"></ng-template>
+        </a>
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(SwimlaneSymbols.swimlaneHorizontal) }"
+            (mousedown)="setPointer($event, SwimlaneSymbols.swimlaneHorizontal)"
+        >
+            <ng-template [ngTemplateOutlet]="swimlaneHorizontal"></ng-template>
+        </a>
     </div>
 
     <div class="title">UML</div>
@@ -399,6 +413,22 @@
             (mousedown)="setPointer($event, UMLSymbols.interface)"
         >
             <ng-template [ngTemplateOutlet]="interface"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(UMLSymbols.activation) }"
+            (mousedown)="setPointer($event, UMLSymbols.activation)"
+        >
+            <ng-template [ngTemplateOutlet]="activation"></ng-template>
+        </a>
+
+        <a class="action-item" [ngClass]="{ active: isPointer(UMLSymbols.deletion) }" (mousedown)="setPointer($event, UMLSymbols.deletion)">
+            <ng-template [ngTemplateOutlet]="deletion"></ng-template>
+        </a>
+
+        <a class="action-item" [ngClass]="{ active: isPointer(UMLSymbols.object) }" (mousedown)="setPointer($event, UMLSymbols.object)">
+            <ng-template [ngTemplateOutlet]="process"></ng-template>
         </a>
     </div>
 </div>
@@ -1647,6 +1677,87 @@
                 d="M14.5,2.5 C15.3284271,2.5 16,3.17157288 16,4 L16,12 C16,12.8284271 15.3284271,13.5 14.5,13.5 L1.5,13.5 C0.671572875,13.5 0,12.8284271 0,12 L0,4 C0,3.17157288 0.671572875,2.5 1.5,2.5 L14.5,2.5 Z M14.8,6.099 L1.199,6.099 L1.2,12 C1.2,12.1656854 1.33431458,12.3 1.5,12.3 L14.5,12.3 C14.6656854,12.3 14.8,12.1656854 14.8,12 L14.8,6.099 Z M14.5,3.7 L1.5,3.7 C1.33431458,3.7 1.2,3.83431458 1.2,4 L1.199,4.899 L14.8,4.899 L14.8,4 C14.8,3.83431458 14.6656854,3.7 14.5,3.7 Z"
                 id="形状结合"
                 fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #swimlaneVertical>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>垂直泳道</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-图形/泳道垂直" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.5,2 C15.7761424,2 16,2.22385763 16,2.5 L16,13.5 C16,13.7761424 15.7761424,14 15.5,14 L0.5,14 C0.223857625,14 0,13.7761424 0,13.5 L0,2.5 C0,2.22385763 0.223857625,2 0.5,2 L15.5,2 Z M4.783,6.6 L1.199,6.6 L1.2,12.8 L4.783,12.799 L4.783,6.6 Z M10.011,6.6 L5.983,6.6 L5.983,12.799 L10.011,12.799 L10.011,6.6 Z M14.799,6.6 L11.211,6.6 L11.211,12.799 L14.8,12.8 L14.799,6.6 Z M10.011,3.199 L5.983,3.199 L5.983,5.4 L10.011,5.4 L10.011,3.199 Z M4.783,3.199 L1.2,3.2 L1.199,5.4 L4.783,5.4 L4.783,3.199 Z M14.8,3.2 L11.211,3.199 L11.211,5.4 L14.799,5.4 L14.8,3.2 Z"
+                id="形状结合"
+                fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #swimlaneHorizontal>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>水平泳道</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-图形/泳道水平" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.5,2 C15.7761424,2 16,2.22385763 16,2.5 L16,13.5 C16,13.7761424 15.7761424,14 15.5,14 L0.5,14 C0.223857625,14 0,13.7761424 0,13.5 L0,2.5 C0,2.22385763 0.223857625,2 0.5,2 L15.5,2 Z M3,10.508 L1.199,10.508 L1.2,12.8 L3,12.799 L3,10.508 Z M14.799,10.508 L4.199,10.508 L4.199,12.799 L14.8,12.8 L14.799,10.508 Z M3,6.735 L1.199,6.735 L1.199,9.308 L3,9.308 L3,6.735 Z M14.799,6.735 L4.199,6.735 L4.199,9.308 L14.799,9.308 L14.799,6.735 Z M3,3.199 L1.2,3.2 L1.199,5.535 L3,5.535 L3,3.199 Z M14.8,3.2 L4.199,3.199 L4.199,5.535 L14.799,5.535 L14.8,3.2 Z"
+                id="形状结合"
+                fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #activation>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/图形/UML/activation</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/UML/activation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M13,5.5 C13.8284271,5.5 14.5,6.17157288 14.5,7 L14.5,9 C14.5,9.82842712 13.8284271,10.5 13,10.5 L2,10.5 C1.17157288,10.5 0.5,9.82842712 0.5,9 L0.5,7 C0.5,6.17157288 1.17157288,5.5 2,5.5 L13,5.5 Z M13,6.7 L2,6.7 C1.83431458,6.7 1.7,6.83431458 1.7,7 L1.7,9 C1.7,9.16568542 1.83431458,9.3 2,9.3 L13,9.3 C13.1656854,9.3 13.3,9.16568542 13.3,9 L13.3,7 C13.3,6.83431458 13.1656854,6.7 13,6.7 Z"
+                id="路径"
+                fill="#999999"
+                transform="translate(7.500000, 8.000000) rotate(-270.000000) translate(-7.500000, -8.000000) "
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+<ng-template #deletion>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/图形/UML/deletion</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/UML/deletion" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M8,0.585786438 C8.33137085,0.585786438 8.6,0.854415588 8.6,1.18578644 L8.59978644,7.39978644 L14.8142136,7.4 C15.1455844,7.4 15.4142136,7.66862915 15.4142136,8 C15.4142136,8.33137085 15.1455844,8.6 14.8142136,8.6 L8.59978644,8.59978644 L8.6,14.8142136 C8.6,15.1455844 8.33137085,15.4142136 8,15.4142136 C7.66862915,15.4142136 7.4,15.1455844 7.4,14.8142136 L7.39978644,8.59978644 L1.18578644,8.6 C0.854415588,8.6 0.585786438,8.33137085 0.585786438,8 C0.585786438,7.66862915 0.854415588,7.4 1.18578644,7.4 L7.39978644,7.39978644 L7.4,1.18578644 C7.4,0.854415588 7.66862915,0.585786438 8,0.585786438 Z"
+                id="形状结合"
+                fill="#999999"
+                transform="translate(8.000000, 8.000000) rotate(-45.000000) translate(-8.000000, -8.000000) "
             ></path>
         </g>
     </svg>

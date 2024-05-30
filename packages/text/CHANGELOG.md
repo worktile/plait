@@ -1,5 +1,15 @@
 # text
 
+## 0.59.0
+
+### Minor Changes
+
+-   [`cfef98ffb`](https://github.com/worktile/plait/commit/cfef98ffb26b9bb124a61b91e68c483247cb8247) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into 17.2.0 remove slate-children/slate-leaves
+
+*   [`707c9c1c0`](https://github.com/worktile/plait/commit/707c9c1c00a13d8425b0c97e07670e021ffbb50e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump slate-angular into 17.1.3
+
+## 0.58.0
+
 ## 0.57.0
 
 ## 0.56.2

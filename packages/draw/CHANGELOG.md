@@ -1,5 +1,69 @@
 # @plait/draw
 
+## 0.59.0
+
+### Minor Changes
+
+-   [#891](https://github.com/worktile/plait/pull/891) [`e9a7f04c8`](https://github.com/worktile/plait/commit/e9a7f04c8538f32a70dd3743406fff1edf02b4c4) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set partial text property for multiple text nodes
+
+    support get text property from multiple text nodes
+
+## 0.58.0
+
+### Minor Changes
+
+-   [#869](https://github.com/worktile/plait/pull/869) [`9087be60`](https://github.com/worktile/plait/commit/9087be60a1c9b0533098ef937c20dc11000667b2) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add generics params to draw and getTextRectangle
+
+*   [#873](https://github.com/worktile/plait/pull/873) [`fd2c0b90`](https://github.com/worktile/plait/commit/fd2c0b906d596dc01d187e3569eb111edf3adc39) Thanks [@MissLixf](https://github.com/MissLixf)! - add UML actor 、useCase and container shape
+
+-   [#871](https://github.com/worktile/plait/pull/871) [`c45abb66`](https://github.com/worktile/plait/commit/c45abb662a8adb546f0bda549b39b66dfaa85824) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support render vertical text
+
+*   [`fd1213cd`](https://github.com/worktile/plait/commit/fd1213cd69cf8da40bacb35d41e1452fc3cd91a9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract PlaitCommonImage type which include universal properties of image element
+
+-   [#876](https://github.com/worktile/plait/pull/876) [`83d4d725`](https://github.com/worktile/plait/commit/83d4d7258a5c4058d4f3d423a39caddd2ba23f64) Thanks [@MissLixf](https://github.com/MissLixf)! - support multiple text geometry
+
+    add package and combinedFragment shape for UML
+
+*   [#870](https://github.com/worktile/plait/pull/870) [`866ca871`](https://github.com/worktile/plait/commit/866ca871b06a13e8e64bbb32aca3e2cad285cef7) Thanks [@MissLixf](https://github.com/MissLixf)! - GeometryComponent support multi text
+
+-   [#889](https://github.com/worktile/plait/pull/889) [`fff28ee2`](https://github.com/worktile/plait/commit/fff28ee23e1e3c539756a0a3d4d5467991105071) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support create default swimlane
+
+*   [#888](https://github.com/worktile/plait/pull/888) [`f6cb9b95`](https://github.com/worktile/plait/commit/f6cb9b95545d1399cd55de4fd7daed3d430b2a03) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add isDrawElementsIncludeText function
+
+    support table linking
+
+-   [#884](https://github.com/worktile/plait/pull/884) [`c91c72c5`](https://github.com/worktile/plait/commit/c91c72c55b4ded23dd4406d6129cffb59c3f984f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support table copy and paste
+
+*   [#879](https://github.com/worktile/plait/pull/879) [`d4941d04`](https://github.com/worktile/plait/commit/d4941d044b1312d0b3dfa4c7cf74d34efb6591a6) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - init swimlane
+
+    support add/remove swimlane row/column
+
+-   [#885](https://github.com/worktile/plait/pull/885) [`f0c9db08`](https://github.com/worktile/plait/commit/f0c9db08c5da256ee9dc4610c0432f23b62d7be5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add angle to PlaitElement
+
+*   [#864](https://github.com/worktile/plait/pull/864) [`ea97097b`](https://github.com/worktile/plait/commit/ea97097b2c09e3fd89753437d4c7c95702ac2c7d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add table plugin
+
+-   [#886](https://github.com/worktile/plait/pull/886) [`ce5ee718`](https://github.com/worktile/plait/commit/ce5ee7185132c4e90d237756902b88f4198eb370) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support table and cell resize
+
+### Patch Changes
+
+-   [#878](https://github.com/worktile/plait/pull/878) [`66869fa7`](https://github.com/worktile/plait/commit/66869fa79eaf9b88ed4dd334f04af87848af2467) Thanks [@MissLixf](https://github.com/MissLixf)! - reset points when entering text into element with autoSize and angle
+
+*   [#872](https://github.com/worktile/plait/pull/872) [`081171a0`](https://github.com/worktile/plait/commit/081171a0c42c528dd2c6f5fc056d003c882c1eef) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support text edit in cell
+
+    add KEY_TO_TEXT_MANAGE Map
+
+-   [#874](https://github.com/worktile/plait/pull/874) [`fb952110`](https://github.com/worktile/plait/commit/fb9521108840a533d5701ca1b46e28d62958dcf2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - clear temporaryElement in plugin withGeometryCreateByDrag
+
+*   [#890](https://github.com/worktile/plait/pull/890) [`2070382b`](https://github.com/worktile/plait/commit/2070382b979c57d368808ee4c2e8f966e7f2d784) Thanks [@cmm-va](https://github.com/cmm-va)! - add export
+
+-   [#881](https://github.com/worktile/plait/pull/881) [`90c6cf9f`](https://github.com/worktile/plait/commit/90c6cf9f495340105a1d7f213078d551da45b6ee) Thanks [@MissLixf](https://github.com/MissLixf)! - fix hit logic and memorize for multiple text geometry
+
+*   [#877](https://github.com/worktile/plait/pull/877) [`5f77bc8d`](https://github.com/worktile/plait/commit/5f77bc8de145450d00b86d963133f5ff4e217d60) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix text edit error
+
+-   [#887](https://github.com/worktile/plait/pull/887) [`4192c487`](https://github.com/worktile/plait/commit/4192c487c02bbf682b55a4f8d5434073585e2983) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add isHitElement and isHitSelectedRectangle function
+
+    fix rotate error
+
 ## 0.57.0
 
 ### Minor Changes

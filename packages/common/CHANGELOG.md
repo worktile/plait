@@ -1,5 +1,23 @@
 # @plait/common
 
+## 0.59.0
+
+### Minor Changes
+
+-   [#891](https://github.com/worktile/plait/pull/891) [`e9a7f04c8`](https://github.com/worktile/plait/commit/e9a7f04c8538f32a70dd3743406fff1edf02b4c4) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set partial text property for multiple text nodes
+
+    support get text property from multiple text nodes
+
+## 0.58.0
+
+### Minor Changes
+
+-   [#886](https://github.com/worktile/plait/pull/886) [`ce5ee718`](https://github.com/worktile/plait/commit/ce5ee7185132c4e90d237756902b88f4198eb370) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support table and cell resize
+
+### Patch Changes
+
+-   [#890](https://github.com/worktile/plait/pull/890) [`2070382b`](https://github.com/worktile/plait/commit/2070382b979c57d368808ee4c2e8f966e7f2d784) Thanks [@cmm-va](https://github.com/cmm-va)! - add export
+
 ## 0.57.0
 
 ## 0.56.2

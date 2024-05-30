@@ -7,3 +7,4 @@ export * from './style';
 export * from './hit';
 export * from './memorize';
 export * from './common';
+export * from './snap-resizing';

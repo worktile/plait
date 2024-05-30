@@ -6,3 +6,4 @@ export * from './utils';
 export * from './geometry.component';
 export * from './line.component';
 export * from './transforms';
+export * from './generators/index';

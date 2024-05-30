@@ -1,6 +1,13 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
 import { Alignment } from '@plait/text';
-import { BasicShapes, FlowchartSymbols, GeometryShapes, MultipleTextGeometryCommonTextKeys, UMLSymbols } from '../interfaces';
+import {
+    BasicShapes,
+    FlowchartSymbols,
+    GeometryShapes,
+    MultipleTextGeometryCommonTextKeys,
+    SwimlaneSymbols,
+    UMLSymbols
+} from '../interfaces';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -137,6 +144,21 @@ export const DefaultPackageProperty = {
     ]
 };
 
+export const DefaultActivationProperty = {
+    width: 18,
+    height: 80
+};
+
+export const DefaultObjectProperty = {
+    width: 120,
+    height: 60
+};
+
+export const DefaultDeletionProperty = {
+    width: 40,
+    height: 40
+};
+
 export const DefaultCombinedFragmentProperty = {
     width: 400,
     height: 280,
@@ -162,6 +184,16 @@ export const DefaultClassProperty = {
 export const DefaultInterfaceProperty = {
     width: 230,
     height: 140
+};
+
+export const DefaultSwimlaneVerticalProperty = {
+    width: 450,
+    height: 500
+};
+
+export const DefaultSwimlaneHorizontalProperty = {
+    width: 500,
+    height: 450
 };
 
 export const DefaultBasicShapePropertyMap: Record<string, { width: number; height: number }> = {
@@ -207,7 +239,10 @@ export const DefaultUMLPropertyMap = {
     [UMLSymbols.package]: DefaultPackageProperty,
     [UMLSymbols.combinedFragment]: DefaultCombinedFragmentProperty,
     [UMLSymbols.class]: DefaultClassProperty,
-    [UMLSymbols.interface]: DefaultInterfaceProperty
+    [UMLSymbols.interface]: DefaultInterfaceProperty,
+    [UMLSymbols.activation]: DefaultActivationProperty,
+    [UMLSymbols.object]: DefaultObjectProperty,
+    [UMLSymbols.deletion]: DefaultDeletionProperty
 };
 
 export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] } = {
@@ -215,8 +250,22 @@ export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] 
     [UMLSymbols.combinedFragment]: Object.keys(MultipleTextGeometryCommonTextKeys)
 };
 
+export const DefaultSwimlanePropertyMap: Record<string, { width: number; height: number }> = {
+    [SwimlaneSymbols.swimlaneHorizontal]: DefaultSwimlaneHorizontalProperty,
+    [SwimlaneSymbols.swimlaneVertical]: DefaultSwimlaneVerticalProperty
+};
+
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
 
 export const LINE_SNAPPING_BUFFER = 6;
 
 export const LINE_SNAPPING_CONNECTOR_BUFFER = 8;
+
+export const GEOMETRY_WITHOUT_TEXT = [
+    FlowchartSymbols.or,
+    FlowchartSymbols.summingJunction,
+    UMLSymbols.activation,
+    UMLSymbols.deletion
+] as GeometryShapes[];
+
+export const GEOMETRY_WITH_MULTIPLE_TEXT = [UMLSymbols.package, UMLSymbols.combinedFragment];

@@ -20,11 +20,5 @@ export const OrEngine: ShapeEngine = createEllipseEngine({
         `,
             { ...options, fillStyle: 'solid' }
         );
-    },
-    getTextRectangle(element: PlaitGeometry) {
-        const rectangle = getTextRectangle(element);
-        rectangle.width = 0;
-        rectangle.height = 0;
-        return rectangle;
     }
 });

@@ -2,8 +2,8 @@ import { Direction, PlaitBoard, PlaitElement, Point, PointOfRectangle, Vector, g
 import { Element } from 'slate';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
-import { PlaitImage } from '../interfaces/image';
 import { getConnectionPoint } from '../utils/line/line-common';
+import { PlaitShapeElement } from '.';
 
 export enum LineMarkerType {
     arrow = 'arrow',
@@ -48,7 +48,7 @@ export interface LineHandleRef {
     direction: Direction;
     point: PointOfRectangle;
     vector: Vector;
-    boundElement?: PlaitGeometry;
+    boundElement?: PlaitShapeElement;
 }
 
 export interface LineHandleRefPair {
@@ -100,16 +100,16 @@ export const PlaitLine = {
     isTargetMark(line: PlaitLine, markType: LineMarkerType) {
         return PlaitLine.isSourceMarkOrTargetMark(line, markType, LineHandleKey.target);
     },
-    isBoundElementOfSource(line: PlaitLine, element: PlaitGeometry | PlaitImage) {
+    isBoundElementOfSource(line: PlaitLine, element: PlaitShapeElement) {
         return line.source.boundId === element.id;
     },
-    isBoundElementOfTarget(line: PlaitLine, element: PlaitGeometry | PlaitImage) {
+    isBoundElementOfTarget(line: PlaitLine, element: PlaitShapeElement) {
         return line.target.boundId === element.id;
     },
     getPoints(board: PlaitBoard, line: PlaitLine) {
         let sourcePoint;
         if (line.source.boundId) {
-            const sourceElement = getElementById<PlaitGeometry>(board, line.source.boundId)!;
+            const sourceElement = getElementById<PlaitShapeElement>(board, line.source.boundId)!;
             const sourceConnectionPoint = getConnectionPoint(sourceElement, line.source.connection!);
             sourcePoint = rotatePointsByElement(sourceConnectionPoint, sourceElement) || sourceConnectionPoint;
         } else {
@@ -118,7 +118,7 @@ export const PlaitLine = {
 
         let targetPoint;
         if (line.target.boundId) {
-            const targetElement = getElementById<PlaitGeometry>(board, line.target.boundId)!;
+            const targetElement = getElementById<PlaitShapeElement>(board, line.target.boundId)!;
             const targetConnectionPoint = getConnectionPoint(targetElement, line.target.connection!);
             targetPoint = rotatePointsByElement(targetConnectionPoint, targetElement) || targetConnectionPoint;
         } else {

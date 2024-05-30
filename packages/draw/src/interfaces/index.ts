@@ -1,7 +1,7 @@
 import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry, SwimlaneSymbols, TableSymbols, UMLSymbols } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';
-import { PlaitTable } from './table';
+import { PlaitTable, PlaitTableElement } from './table';
 import { PlaitText } from './text';
 
 export * from './line';
@@ -12,7 +12,7 @@ export * from './engine';
 
 export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage | PlaitTable;
 
-export type PlaitShapeElement = PlaitGeometry | PlaitImage;
+export type PlaitShapeElement = PlaitGeometry | PlaitImage | PlaitTable;
 
 export type DrawShapes = GeometryShapes | TableSymbols;
 
@@ -29,15 +29,23 @@ export const PlaitDrawElement = {
     isImage: (value: any): value is PlaitImage => {
         return value.type === 'image';
     },
+    isTable: (value: any): value is PlaitTable => {
+        return PlaitTableElement.isTable(value);
+    },
     isDrawElement: (value: any): value is PlaitDrawElement => {
-        if (PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isLine(value) || PlaitDrawElement.isImage(value)) {
+        if (
+            PlaitDrawElement.isGeometry(value) ||
+            PlaitDrawElement.isLine(value) ||
+            PlaitDrawElement.isImage(value) ||
+            PlaitTableElement.isTable(value)
+        ) {
             return true;
         } else {
             return false;
         }
     },
     isShapeElement: (value: any): value is PlaitShapeElement => {
-        return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value);
+        return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isTable(value);
     },
     isBasicShape: (value: any) => {
         return Object.keys(BasicShapes).includes(value.shape);

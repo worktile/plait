@@ -14,14 +14,14 @@ export const getFirstTextManage = (element: PlaitElement) => {
     return textManage;
 };
 
-export const getTextEditors = (element: PlaitElement) => {
+export const getTextEditorsByElement = (element: PlaitElement) => {
     return getTextManages(element).map(manage => {
         return manage.componentRef.instance.editor;
     });
 };
 
 export const getFirstTextEditor = (element: PlaitElement) => {
-    const textEditor = getTextEditors(element)[0];
+    const textEditor = getTextEditorsByElement(element)[0];
     if (!textEditor) {
         console.warn('can not find textManage');
     }
@@ -32,7 +32,7 @@ export const findFirstTextEditor = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board);
     let firstEditor: Editor | null = null;
     selectedElements.forEach(element => {
-        const editors = getTextEditors(element);
+        const editors = getTextEditorsByElement(element);
         if (!firstEditor && editors && editors.length > 0) {
             firstEditor = editors[0];
         }
@@ -41,7 +41,7 @@ export const findFirstTextEditor = (board: PlaitBoard) => {
 };
 
 export const getTextMarksByElement = (element: PlaitElement) => {
-    const editors = getTextEditors(element);
+    const editors = getTextEditorsByElement(element);
     const editor = editors[0];
     if (!editor) {
         return {};
@@ -59,7 +59,7 @@ export const getElementsText = (elements: PlaitElement[]) => {
     return elements
         .map(item => {
             try {
-                const editors = getTextEditors(item);
+                const editors = getTextEditorsByElement(item);
                 if (editors.length) {
                     return editors
                         .map(editor => {
@@ -75,6 +75,37 @@ export const getElementsText = (elements: PlaitElement[]) => {
         })
         .filter(item => item)
         .join(' ');
+};
+
+export const getTextEditors = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const selectedElements = elements || getSelectedElements(board);
+    if (selectedElements.length) {
+        const textManages: TextManage[] = [];
+        selectedElements.forEach(item => {
+            textManages.push(...getTextManages(item));
+        });
+        const editingTextManage = textManages.find(textManage => textManage.isEditing);
+        if (editingTextManage) {
+            return [editingTextManage.componentRef.instance.editor];
+        }
+        return textManages.map(item => {
+            return item.componentRef.instance.editor;
+        });
+    }
+    return undefined;
+};
+
+export const getEditingTextEditor = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const selectedElements = elements || getSelectedElements(board);
+    const textManages: TextManage[] = [];
+    selectedElements.forEach(item => {
+        textManages.push(...getTextManages(item));
+    });
+    const editingTextManage = textManages.find(textManage => textManage.isEditing);
+    if (editingTextManage) {
+        return editingTextManage.componentRef.instance.editor;
+    }
+    return undefined;
 };
 
 export const ELEMENT_TO_TEXT_MANAGES: WeakMap<PlaitElement, TextManage[]> = new WeakMap();

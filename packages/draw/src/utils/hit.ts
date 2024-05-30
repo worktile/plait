@@ -25,7 +25,7 @@ import { isMultipleTextGeometry } from './multi-text-geometry';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
-    if (geometry.textHeight > client.height) {
+    if (geometry.textHeight && geometry.textHeight > client.height) {
         return true;
     }
     return false;

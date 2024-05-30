@@ -6,6 +6,10 @@ export const getGeometryPointers = () => {
     return [...Object.keys(BasicShapes), ...Object.keys(FlowchartSymbols), ...Object.keys(UMLSymbols)];
 };
 
+export const getSwimlanePointers = () => {
+    return Object.keys(SwimlaneSymbols);
+};
+
 export const getBasicPointers = () => {
     return Object.keys(BasicShapes);
 };

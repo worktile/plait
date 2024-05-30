@@ -1,24 +1,5 @@
-import {
-    ACTIVE_STROKE_WIDTH,
-    BoardTransforms,
-    PlaitBoard,
-    PlaitElement,
-    PlaitPointerType,
-    Point,
-    RectangleClient,
-    SELECTION_BORDER_COLOR,
-    SELECTION_FILL_COLOR,
-    SNAPPING_STROKE_WIDTH,
-    ThemeColorMode,
-    Transforms,
-    addSelectedElement,
-    clearSelectedElement,
-    createG,
-    drawCircle,
-    getSelectedElements,
-    idCreator
-} from '@plait/core';
-import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols, PlaitCommonGeometry } from '../interfaces/geometry';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, ThemeColorMode, getSelectedElements, idCreator } from '@plait/core';
+import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols } from '../interfaces/geometry';
 import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
@@ -29,6 +10,7 @@ import {
     DefaultUMLPropertyMap,
     DrawPointerType,
     DrawThemeColors,
+    GEOMETRY_WITHOUT_TEXT,
     ShapeDefaultSpace,
     getFlowchartPointers,
     getUMLPointers
@@ -40,16 +22,30 @@ import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
 import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
-import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
+import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
-import { createMultipleTextGeometryElement, isMultipleTextShape } from './multi-text-geometry';
 import { createUMLClassOrInterfaceGeometryElement } from './uml';
+import { createMultipleTextGeometryElement, isMultipleTextGeometry, isMultipleTextShape } from './multi-text-geometry';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
 export type TextProperties = Partial<CustomText> & { align?: Alignment; textHeight?: number };
 
 export const createGeometryElement = (
+    shape: GeometryShapes,
+    points: [Point, Point],
+    text: string | Element,
+    options: GeometryStyleOptions = {},
+    textProperties: TextProperties = {}
+): PlaitGeometry => {
+    if (GEOMETRY_WITHOUT_TEXT.includes(shape)) {
+        return createGeometryElementWithoutText(shape, points, options);
+    } else {
+        return createGeometryElementWithText(shape, points, text, options, textProperties);
+    }
+};
+
+export const createGeometryElementWithText = (
     shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
@@ -68,6 +64,7 @@ export const createGeometryElement = (
     textProperties?.textHeight && (textHeight = textProperties?.textHeight);
     delete textProperties?.align;
     delete textProperties?.textHeight;
+
     return {
         id: idCreator(),
         type: 'geometry',
@@ -82,42 +79,20 @@ export const createGeometryElement = (
     };
 };
 
-export const drawBoundReaction = (
-    board: PlaitBoard,
-    element: PlaitGeometry,
-    options: { hasMask: boolean; hasConnector: boolean } = { hasMask: true, hasConnector: true }
-) => {
-    const g = createG();
-    const rectangle = RectangleClient.getRectangleByPoints(element.points);
-    const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
-    const shape = getElementShape(element);
-    const strokeG = drawGeometry(board, activeRectangle, shape, {
-        stroke: SELECTION_BORDER_COLOR,
-        strokeWidth: SNAPPING_STROKE_WIDTH
-    });
-    g.appendChild(strokeG);
-    if (options.hasMask) {
-        const maskG = drawGeometry(board, activeRectangle, shape, {
-            stroke: SELECTION_BORDER_COLOR,
-            strokeWidth: 0,
-            fill: SELECTION_FILL_COLOR,
-            fillStyle: 'solid'
-        });
-        g.appendChild(maskG);
-    }
-    if (options.hasConnector) {
-        const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
-        connectorPoints.forEach(point => {
-            const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 8, {
-                stroke: SELECTION_BORDER_COLOR,
-                strokeWidth: ACTIVE_STROKE_WIDTH,
-                fill: '#FFF',
-                fillStyle: 'solid'
-            });
-            g.appendChild(circleG);
-        });
-    }
-    return g;
+export const createGeometryElementWithoutText = (
+    shape: GeometryShapes,
+    points: [Point, Point],
+    options: GeometryStyleOptions = {}
+): PlaitGeometry => {
+    return {
+        id: idCreator(),
+        type: 'geometry',
+        shape,
+        angle: 0,
+        opacity: 1,
+        points,
+        ...options
+    };
 };
 
 export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, roughOptions: Options) => {
@@ -334,14 +309,6 @@ export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, font
     return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
 };
 
-export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry) => {
-    memorizeLatestShape(board, element.shape);
-    Transforms.insertNode(board, element, [board.children.length]);
-    clearSelectedElement(board);
-    addSelectedElement(board, element);
-    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
-};
-
 export const createTextElement = (
     board: PlaitBoard,
     points: [Point, Point],
@@ -383,12 +350,15 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
 
 export const editText = (board: PlaitBoard, element: PlaitGeometry, text?: PlaitDrawShapeText) => {
     const textManage = text ? getTextManage(`${element.id}-${text.key}`)! : getFirstTextManage(element);
-    textManage.edit(() => {
-        // delay to avoid blinking
-        setTimeout(() => {
-            rerenderGeometryActive(board, element);
-        }, 200);
-    });
+    if (textManage) {
+        textManage.edit(() => {
+            // delay to avoid blinking
+            setTimeout(() => {
+                rerenderGeometryActive(board, element);
+            }, 200);
+        });
+    }
+
     rerenderGeometryActive(board, element);
 };
 
@@ -397,4 +367,16 @@ export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry
     const activeGenerator = elementRef.getGenerator(ActiveGenerator.key);
     const selected = getSelectedElements(board).includes(element);
     activeGenerator.processDrawing(element, PlaitBoard.getElementActiveHost(board), { selected });
+};
+
+export const isGeometryIncludeText = (element: PlaitGeometry) => {
+    return isSingleTextGeometry(element) || isMultipleTextGeometry(element);
+};
+
+export const isSingleTextShape = (shape: GeometryShapes) => {
+    return !GEOMETRY_WITHOUT_TEXT.includes(shape) && !isMultipleTextShape(shape);
+};
+
+export const isSingleTextGeometry = (element: PlaitGeometry) => {
+    return PlaitDrawElement.isGeometry(element) && isSingleTextShape(element.shape);
 };
