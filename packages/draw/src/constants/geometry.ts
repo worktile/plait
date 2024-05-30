@@ -154,6 +154,16 @@ export const DefaultCombinedFragmentProperty = {
     ]
 };
 
+export const DefaultClassProperty = {
+    width: 230,
+    height: 180
+};
+
+export const DefaultInterfaceProperty = {
+    width: 230,
+    height: 140
+};
+
 export const DefaultBasicShapePropertyMap: Record<string, { width: number; height: number }> = {
     [BasicShapes.pentagonArrow]: DefaultPentagonArrowProperty,
     [BasicShapes.processArrow]: DefaultPentagonArrowProperty,
@@ -195,7 +205,9 @@ export const DefaultUMLPropertyMap = {
     [UMLSymbols.useCase]: DefaultDocumentProperty,
     [UMLSymbols.container]: DefaultContainerProperty,
     [UMLSymbols.package]: DefaultPackageProperty,
-    [UMLSymbols.combinedFragment]: DefaultCombinedFragmentProperty
+    [UMLSymbols.combinedFragment]: DefaultCombinedFragmentProperty,
+    [UMLSymbols.class]: DefaultClassProperty,
+    [UMLSymbols.interface]: DefaultInterfaceProperty
 };
 
 export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] } = {

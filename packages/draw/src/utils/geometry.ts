@@ -38,11 +38,12 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitShapeElement } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
 import { createMultipleTextGeometryElement, isMultipleTextShape } from './multi-text-geometry';
+import { createUMLClassOrInterfaceGeometryElement } from './uml';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
@@ -358,6 +359,9 @@ export const createTextElement = (
 export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const textHeight = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']).height;
+    if (PlaitDrawElement.isUMLClassOrInterface({ shape })) {
+        return createUMLClassOrInterfaceGeometryElement(board, shape, points);
+    }
     if (isMultipleTextShape(shape)) {
         return createMultipleTextGeometryElement(shape, points, {
             strokeWidth: DefaultBasicShapeProperty.strokeWidth,

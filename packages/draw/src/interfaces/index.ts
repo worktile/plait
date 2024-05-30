@@ -58,6 +58,6 @@ export const PlaitDrawElement = {
         return Object.keys(SwimlaneSymbols).includes(value.shape) && value.shape === SwimlaneSymbols.swimlaneHorizontal;
     },
     isUMLClassOrInterface: (value: any) => {
-        return false;
+        return Object.keys(UMLSymbols).includes(value.shape) && [UMLSymbols.class, UMLSymbols.interface].includes(value.shape);
     }
 };

@@ -69,7 +69,9 @@ export enum UMLSymbols {
     useCase = 'useCase',
     container = 'container',
     package = 'package',
-    combinedFragment = 'combinedFragment'
+    combinedFragment = 'combinedFragment',
+    class = 'class',
+    interface = 'interface'
 }
 
 export enum MultipleTextGeometryCommonTextKeys {
@@ -91,7 +93,6 @@ export interface PlaitCommonGeometry extends PlaitElement {
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-    
     angle: number;
     opacity: number;
 }

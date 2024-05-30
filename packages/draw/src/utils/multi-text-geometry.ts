@@ -31,7 +31,7 @@ export const createMultipleTextGeometryElement = (
     options: GeometryStyleOptions = {}
 ): PlaitMultipleTextGeometry => {
     const id = idCreator();
-    const drawShapeTexts: PlaitDrawShapeText[] = buildDefaultTextsByShape(shape, id);
+    const drawShapeTexts: PlaitDrawShapeText[] = buildDefaultTextsByShape(shape);
     return {
         id,
         type: 'geometry',
@@ -44,7 +44,7 @@ export const createMultipleTextGeometryElement = (
     };
 };
 
-export const buildDefaultTextsByShape = (shape: GeometryShapes, elementId: string) => {
+export const buildDefaultTextsByShape = (shape: GeometryShapes) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const textProperties = { ...memorizedLatest.textProperties };
     const alignment = textProperties?.align;

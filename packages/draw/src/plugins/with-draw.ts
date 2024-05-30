@@ -21,12 +21,16 @@ import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
 import { withTableResize } from './with-table-resize';
+import { TableComponent } from '../table.component';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
+            if (PlaitDrawElement.isUMLClassOrInterface(context.element)) {
+                return TableComponent;
+            }
             if (PlaitDrawElement.isUML(context.element)) {
                 return GeometryComponent;
             }

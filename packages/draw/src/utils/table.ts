@@ -2,6 +2,61 @@ import { idCreator, PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
 import { PlaitTableBoard } from '../plugins/with-table';
+import { GeometryStyleOptions, TextProperties } from './geometry';
+import { Alignment, buildText } from '@plait/text';
+import { DefaultTextProperty } from '../constants';
+
+export function createTableElement(
+    points: [Point, Point],
+    options: GeometryStyleOptions = {},
+    textProperties: TextProperties = {}
+): PlaitTable {
+    let alignment: undefined | Alignment = Alignment.center;
+    let textHeight = DefaultTextProperty.height;
+    textProperties = { ...textProperties };
+    textProperties?.align && (alignment = textProperties?.align);
+    textProperties?.textHeight && (textHeight = textProperties?.textHeight);
+    delete textProperties?.align;
+    delete textProperties?.textHeight;
+    return {
+        id: idCreator(),
+        type: 'table',
+        angle: 0,
+        opacity: 1,
+        points,
+        rows: [
+            {
+                id: 'row-1',
+                height: 30
+            },
+            {
+                id: 'row-2'
+            }
+        ],
+        columns: [
+            {
+                id: 'column-1'
+            }
+        ],
+        cells: [
+            {
+                id: 'v-cell-1-1',
+                rowId: 'row-1',
+                columnId: 'column-1',
+                textHeight: 20,
+                text: buildText('', alignment, textProperties)
+            },
+            {
+                id: 'v-cell-2-1',
+                rowId: 'row-2',
+                textHeight: 20,
+                columnId: 'column-1',
+                text: buildText('', alignment, textProperties)
+            }
+        ],
+        ...options
+    };
+}
 
 export function getCellsWithPoints(board: PlaitBoard, element: PlaitTable): PlaitTableCellWithPoints[] {
     const table = (board as PlaitTableBoard).buildTable(element);
@@ -10,7 +65,6 @@ export function getCellsWithPoints(board: PlaitBoard, element: PlaitTable): Plai
     const rowsCount = table.rows.length;
     const cellWidths = calculateCellsSize(table.columns, rectangle.width, columnsCount, true);
     const cellHeights = calculateCellsSize(table.rows, rectangle.height, rowsCount, false);
-
     const cells: PlaitTableCellWithPoints[] = table.cells.map(cell => {
         const rowIdx = table.rows.findIndex(row => row.id === cell.rowId);
         const columnIdx = table.columns.findIndex(column => column.id === cell.columnId);

@@ -109,7 +109,9 @@ const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [UMLSymbols.useCase]: EllipseEngine,
     [UMLSymbols.container]: ContainerEngine,
     [UMLSymbols.package]: PackageEngine,
-    [UMLSymbols.combinedFragment]: CombinedFragmentEngine
+    [UMLSymbols.combinedFragment]: CombinedFragmentEngine,
+    [UMLSymbols.class]: TableEngine,
+    [UMLSymbols.interface]: TableEngine
 };
 
 export const getEngine = <
