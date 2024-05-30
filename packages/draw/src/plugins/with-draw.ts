@@ -28,10 +28,10 @@ export const withDraw = (board: PlaitBoard) => {
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
-            if (PlaitDrawElement.isUMLClassOrInterface(context.element)) {
-                return TableComponent;
-            }
             if (PlaitDrawElement.isUML(context.element)) {
+                if (PlaitDrawElement.isUMLClassOrInterface(context.element)) {
+                    return TableComponent;
+                }
                 return GeometryComponent;
             }
             return GeometryComponent;
