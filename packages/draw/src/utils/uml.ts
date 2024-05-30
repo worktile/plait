@@ -3,20 +3,20 @@ import { Alignment } from '@plait/text';
 import { DefaultTextProperty, DefaultBasicShapeProperty } from '../constants';
 import { GeometryShapes, UMLSymbols, PlaitCommonGeometry } from '../interfaces';
 import { getMemorizedLatestByPointer } from './memorize';
-import { createTableElement } from './table';
 import { GeometryStyleOptions, getTextShapeProperty } from './geometry';
 
 export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shape: GeometryShapes, points: [Point, Point]) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const textHeight = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']).height;
-    let element = createTableElement(
+    const element = {
+        id: idCreator(),
+        type: 'table',
+        angle: 0,
+        opacity: 1,
         points,
-        {
-            strokeWidth: DefaultBasicShapeProperty.strokeWidth,
-            ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
-        },
-        { ...memorizedLatest.textProperties, textHeight }
-    );
+        strokeWidth: DefaultBasicShapeProperty.strokeWidth,
+        ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
+    };
 
     if (shape === UMLSymbols.class) {
         const rowIds = [idCreator(), idCreator(), idCreator()];
