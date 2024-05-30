@@ -144,6 +144,21 @@ export const DefaultPackageProperty = {
     ]
 };
 
+export const DefaultActivationProperty = {
+    width: 18,
+    height: 80
+};
+
+export const DefaultObjectProperty = {
+    width: 120,
+    height: 60
+};
+
+export const DefaultDeletionProperty = {
+    width: 40,
+    height: 40
+};
+
 export const DefaultCombinedFragmentProperty = {
     width: 400,
     height: 280,
@@ -212,7 +227,10 @@ export const DefaultUMLPropertyMap = {
     [UMLSymbols.useCase]: DefaultDocumentProperty,
     [UMLSymbols.container]: DefaultContainerProperty,
     [UMLSymbols.package]: DefaultPackageProperty,
-    [UMLSymbols.combinedFragment]: DefaultCombinedFragmentProperty
+    [UMLSymbols.combinedFragment]: DefaultCombinedFragmentProperty,
+    [UMLSymbols.activation]: DefaultActivationProperty,
+    [UMLSymbols.object]: DefaultObjectProperty,
+    [UMLSymbols.deletion]: DefaultDeletionProperty
 };
 
 export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] } = {
@@ -231,6 +249,11 @@ export const LINE_SNAPPING_BUFFER = 6;
 
 export const LINE_SNAPPING_CONNECTOR_BUFFER = 8;
 
-export const GEOMETRY_WITHOUT_TEXT = [FlowchartSymbols.or, FlowchartSymbols.summingJunction] as GeometryShapes[];
+export const GEOMETRY_WITHOUT_TEXT = [
+    FlowchartSymbols.or,
+    FlowchartSymbols.summingJunction,
+    UMLSymbols.activation,
+    UMLSymbols.deletion
+] as GeometryShapes[];
 
 export const GEOMETRY_WITH_MULTIPLE_TEXT = [UMLSymbols.package, UMLSymbols.combinedFragment];

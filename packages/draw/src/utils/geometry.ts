@@ -20,20 +20,11 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import {
-    LineMarkerType,
-    LineShape,
-    PlaitDrawElement,
-    PlaitShapeElement
-} from '../interfaces';
+import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
-import {
-    createMultipleTextGeometryElement,
-    isMultipleTextGeometry,
-    isMultipleTextShape
-} from './multi-text-geometry';
+import { createMultipleTextGeometryElement, isMultipleTextGeometry, isMultipleTextShape } from './multi-text-geometry';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
@@ -355,12 +346,15 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
 
 export const editText = (board: PlaitBoard, element: PlaitGeometry, text?: PlaitDrawShapeText) => {
     const textManage = text ? getTextManage(`${element.id}-${text.key}`)! : getFirstTextManage(element);
-    textManage.edit(() => {
-        // delay to avoid blinking
-        setTimeout(() => {
-            rerenderGeometryActive(board, element);
-        }, 200);
-    });
+    if (textManage) {
+        textManage.edit(() => {
+            // delay to avoid blinking
+            setTimeout(() => {
+                rerenderGeometryActive(board, element);
+            }, 200);
+        });
+    }
+
     rerenderGeometryActive(board, element);
 };
 
