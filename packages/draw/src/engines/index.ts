@@ -55,6 +55,8 @@ import { ActorEngine } from './uml/actor';
 import { ContainerEngine } from './uml/container';
 import { PackageEngine } from './uml/package';
 import { CombinedFragmentEngine } from './uml/combined-fragment';
+import { ActiveClassEngine } from './uml/activity-class';
+import { NoteEngine } from './uml/note';
 
 const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -108,7 +110,12 @@ const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [UMLSymbols.actor]: ActorEngine,
     [UMLSymbols.useCase]: EllipseEngine,
     [UMLSymbols.container]: ContainerEngine,
+    [UMLSymbols.note]: NoteEngine,
     [UMLSymbols.package]: PackageEngine,
+    [UMLSymbols.activityClass]: ActiveClassEngine,
+    [UMLSymbols.simpleClass]: RectangleEngine,
+    [UMLSymbols.port]: RectangleEngine,
+    [UMLSymbols.branchMerge]: DiamondEngine,
     [UMLSymbols.combinedFragment]: CombinedFragmentEngine
 };
 
