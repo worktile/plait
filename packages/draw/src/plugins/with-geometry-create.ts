@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, RectangleClient, createG, preventTouchMove, toHostPoint, toViewBoxPoint } from '@plait/core';
-import { BasicShapes, GeometryShapes, PlaitCommonGeometry, PlaitGeometry } from '../interfaces';
+import { BasicShapes, GeometryShapes, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import {
     createDefaultGeometry,
@@ -22,6 +22,7 @@ import { TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
 import { NgZone } from '@angular/core';
 import { getSnapResizingRef } from '../utils/snap-resizing';
+import { TableGenerator } from '../generators/table.generator';
 
 export interface FakeCreateTextRef {
     g: SVGGElement;
@@ -42,6 +43,14 @@ const isGeometryDrawingMode = (board: PlaitBoard) => {
     return drawingMode;
 };
 
+const getGeometryGeneratorByShape = (board: PlaitBoard, shape: DrawPointerType) => {
+    if (PlaitDrawElement.isUMLClassOrInterface({ shape: shape })) {
+        return new TableGenerator<PlaitGeometry>(board);
+    } else {
+        return new GeometryShapeGenerator(board);
+    }
+};
+
 export const withGeometryCreateByDrag = (board: PlaitBoard) => {
     const { pointerMove, globalPointerUp, pointerUp } = board;
 
@@ -55,13 +64,12 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         geometryShapeG?.remove();
         geometryShapeG = createG();
 
-        const geometryGenerator = new GeometryShapeGenerator(board);
         const geometryPointers = getGeometryPointers();
         const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
         const dragMode = isGeometryPointer && isDndMode(board);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-
+        const geometryGenerator = getGeometryGeneratorByShape(board, pointer);
         if (dragMode) {
             const memorizedLatest = getMemorizedLatestByPointer(pointer);
             if (pointer === BasicShapes.text) {
@@ -170,9 +178,10 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         geometryShapeG?.remove();
         geometryShapeG = createG();
-        const geometryGenerator = new GeometryShapeGenerator(board);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
+        const geometryGenerator = getGeometryGeneratorByShape(board, pointer);
+
         snapG?.remove();
         if (start && isGeometryDrawingMode(board)) {
             let points: [Point, Point] = normalizeShapePoints([start, movingPoint], isShift);

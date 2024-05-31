@@ -180,6 +180,34 @@ export const DefaultCombinedFragmentProperty = {
     ]
 };
 
+export const DefaultClassProperty = {
+    width: 230,
+    height: 180,
+    texts: [
+        { text: 'Class', align: Alignment.center },
+        {
+            text: '+ attribute1:type  defaultValue\n+ attribute2:type\n- attribute3:type',
+            align: Alignment.left
+        },
+        {
+            text: '+ operation1(params):returnType\n- operation2(params)\n- operation3()',
+            align: Alignment.left
+        }
+    ]
+};
+
+export const DefaultInterfaceProperty = {
+    width: 230,
+    height: 140,
+    texts: [
+        { text: '<<interface>>\nInterface', align: Alignment.center },
+        {
+            text: '+ operation1(params):returnType\n- operation2(params)\n- operation3()',
+            align: Alignment.left
+        }
+    ]
+};
+
 export const DefaultSwimlaneVerticalProperty = {
     width: 450,
     height: 500
@@ -233,6 +261,8 @@ export const DefaultUMLPropertyMap = {
     [UMLSymbols.note]: DefaultObjectProperty,
     [UMLSymbols.package]: DefaultPackageProperty,
     [UMLSymbols.combinedFragment]: DefaultCombinedFragmentProperty,
+    [UMLSymbols.class]: DefaultClassProperty,
+    [UMLSymbols.interface]: DefaultInterfaceProperty,
     [UMLSymbols.activation]: DefaultActivationProperty,
     [UMLSymbols.object]: DefaultObjectProperty,
     [UMLSymbols.deletion]: DefaultDeletionProperty,

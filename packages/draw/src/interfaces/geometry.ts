@@ -75,6 +75,8 @@ export enum UMLSymbols {
     port = 'port',
     package = 'package',
     combinedFragment = 'combinedFragment',
+    class = 'class',
+    interface = 'interface',
     object = 'object',
     activation = 'activation',
     deletion = 'deletion'
@@ -99,7 +101,6 @@ export interface PlaitCommonGeometry extends PlaitElement {
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-
     angle: number;
     opacity: number;
 }

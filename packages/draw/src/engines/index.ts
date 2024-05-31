@@ -114,6 +114,8 @@ const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [UMLSymbols.note]: NoteEngine,
     [UMLSymbols.package]: PackageEngine,
     [UMLSymbols.combinedFragment]: CombinedFragmentEngine,
+    [UMLSymbols.class]: TableEngine,
+    [UMLSymbols.interface]: TableEngine,
     [UMLSymbols.activation]: RectangleEngine,
     [UMLSymbols.object]: RectangleEngine,
     [UMLSymbols.deletion]: DeletionEngine,

@@ -1,4 +1,4 @@
-import { PlaitBoard, RectangleClient, Point, createG, drawLine } from '@plait/core';
+import { PlaitBoard, RectangleClient, Point, createG, drawLine, setStrokeLinecap } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
 import { getCellsWithPoints, getCellWithPoints } from '../../utils/table';
 import { ShapeEngine } from '../../interfaces';
@@ -24,6 +24,7 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
             const cellBottomBorder = drawLine(rs, [x, y + height], [x + width, y + height], roughOptions);
             g.append(cellRightBorder, cellBottomBorder);
         });
+        setStrokeLinecap(g, 'round');
         return g;
     },
     isInsidePoint(rectangle: RectangleClient, point: Point) {
