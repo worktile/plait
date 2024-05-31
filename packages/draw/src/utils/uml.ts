@@ -1,13 +1,12 @@
 import { PlaitBoard, Point, idCreator } from '@plait/core';
-import { Alignment } from '@plait/text';
 import { DefaultTextProperty, DefaultBasicShapeProperty } from '../constants';
 import { GeometryShapes, UMLSymbols, PlaitCommonGeometry } from '../interfaces';
 import { getMemorizedLatestByPointer } from './memorize';
-import { GeometryStyleOptions, getTextShapeProperty } from './geometry';
+import { GeometryStyleOptions, getDefaultGeometryProperty, getTextShapeProperty } from './geometry';
 
 export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shape: GeometryShapes, points: [Point, Point]) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
-    const textHeight = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']).height;
+    const defaultTexts = (getDefaultGeometryProperty(shape) as any)?.texts || [];
     const element = {
         id: idCreator(),
         type: 'table',
@@ -22,6 +21,11 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
         const rowIds = [idCreator(), idCreator(), idCreator()];
         const columnIds = [idCreator()];
         const cellIds = [idCreator(), idCreator(), idCreator()];
+        const testHeights = defaultTexts.map((textItem: { text: string }) => {
+            return getTextShapeProperty(board, textItem.text || DefaultTextProperty.text, memorizedLatest.textProperties['font-size'])
+                .height;
+        });
+
         return ({
             ...element,
             shape: UMLSymbols.class,
@@ -47,42 +51,42 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
                     id: cellIds[0],
                     rowId: rowIds[0],
                     columnId: columnIds[0],
-                    textHeight: textHeight,
+                    textHeight: testHeights[0],
                     text: {
                         children: [
                             {
-                                text: `Class`
+                                text: defaultTexts[0].text
                             }
                         ],
-                        align: Alignment.center
+                        align: defaultTexts[0].align
                     }
                 },
                 {
                     id: cellIds[1],
                     rowId: rowIds[1],
-                    textHeight: textHeight,
+                    textHeight: testHeights[1],
                     columnId: columnIds[0],
                     text: {
                         children: [
                             {
-                                text: '+ attribute1:type  defaultValue\n+ attribute2:type\n- attribute3:type'
+                                text: defaultTexts[1].text
                             }
                         ],
-                        align: Alignment.left
+                        align: defaultTexts[1].align
                     }
                 },
                 {
                     id: cellIds[2],
                     rowId: rowIds[2],
-                    textHeight: textHeight,
+                    textHeight: testHeights[2],
                     columnId: columnIds[0],
                     text: {
                         children: [
                             {
-                                text: `+ operation1(params):returnType\n- operation2(params)\n- operation3()`
+                                text: defaultTexts[2].text
                             }
                         ],
-                        align: Alignment.left
+                        align: defaultTexts[2].align
                     }
                 }
             ]
@@ -91,6 +95,10 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
         const rowIds = [idCreator(), idCreator()];
         const columnIds = [idCreator()];
         const cellIds = [idCreator(), idCreator()];
+        const testHeights = defaultTexts.map((textItem: { text: string }) => {
+            return getTextShapeProperty(board, textItem.text || DefaultTextProperty.text, memorizedLatest.textProperties['font-size'])
+                .height;
+        });
         return ({
             ...element,
             shape: UMLSymbols.interface,
@@ -113,28 +121,28 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
                     id: cellIds[0],
                     rowId: rowIds[0],
                     columnId: columnIds[0],
-                    textHeight: textHeight,
+                    textHeight: testHeights[0],
                     text: {
                         children: [
                             {
-                                text: `<<interface>>\nInterface`
+                                text: defaultTexts[0].text
                             }
                         ],
-                        align: Alignment.center
+                        align: defaultTexts[0].align
                     }
                 },
                 {
                     id: cellIds[1],
                     rowId: rowIds[1],
-                    textHeight: textHeight,
+                    textHeight: testHeights[1],
                     columnId: columnIds[0],
                     text: {
                         children: [
                             {
-                                text: `+ operation1(params):returnType\n- operation2(params)\n- operation3()`
+                                text: defaultTexts[1].text
                             }
                         ],
-                        align: Alignment.left
+                        align: defaultTexts[1].align
                     }
                 }
             ]
