@@ -16,9 +16,10 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
         strokeWidth: DefaultBasicShapeProperty.strokeWidth,
         ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
     };
-
+    let rows: { id: string; height?: number }[];
+    let columns: { id: string; height?: number }[];
     if (shape === UMLSymbols.class) {
-        const rows = [
+        rows = [
             {
                 id: idCreator(),
                 height: 30
@@ -30,20 +31,13 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
                 id: idCreator()
             }
         ];
-        const columns = [
+        columns = [
             {
                 id: idCreator()
             }
         ];
-        return ({
-            ...element,
-            shape: UMLSymbols.class,
-            rows,
-            columns,
-            cells: buildTableCellsForGeometry(board, rows, columns, shape)
-        } as unknown) as PlaitCommonGeometry;
     } else {
-        const rows = [
+        rows = [
             {
                 id: idCreator(),
                 height: 50
@@ -52,19 +46,19 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
                 id: idCreator()
             }
         ];
-        const columns = [
+        columns = [
             {
                 id: idCreator()
             }
         ];
-        return ({
-            ...element,
-            shape: UMLSymbols.interface,
-            rows,
-            columns,
-            cells: buildTableCellsForGeometry(board, rows, columns, shape)
-        } as unknown) as PlaitCommonGeometry;
     }
+    return ({
+        ...element,
+        shape,
+        rows,
+        columns,
+        cells: buildTableCellsForGeometry(board, rows, columns, shape)
+    } as unknown) as PlaitCommonGeometry;
 };
 
 const buildTableCellsForGeometry = (
