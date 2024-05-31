@@ -13,7 +13,13 @@ export function buildSwimlaneTable(element: PlaitSwimlane) {
                 };
             }
             if (item.text && item.textHeight && !item.text.direction) {
-                item.text.direction = 'vertical';
+                item = {
+                    ...item,
+                    text: {
+                        ...item.text,
+                        direction: 'vertical'
+                    }
+                };
             }
             return item;
         });

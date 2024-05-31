@@ -35,7 +35,8 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
 
             const boundLineElements = [
                 ...getBoundedLineElements(board, geometryElements),
-                ...getBoundedLineElements(board, imageElements)
+                ...getBoundedLineElements(board, imageElements),
+                ...getBoundedLineElements(board, tableElements)
             ].filter(line => !lineElements.includes(line));
             data.push(
                 ...[
