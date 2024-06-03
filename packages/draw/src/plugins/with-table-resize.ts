@@ -11,11 +11,12 @@ import {
     WithResizeOptions,
     normalizeShapePoints
 } from '@plait/common';
-import { getCellsWithPoints, isDrawElementByTable, updateColumns, updateRows } from '../utils/table';
+import { getCellsWithPoints, updateColumns, updateRows } from '../utils/table';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
 import { isSingleSelectElementByTable } from '../utils';
 import { getSnapResizingRef, getSnapResizingRefOptions } from '../utils/snap-resizing';
+import { PlaitDrawElement } from '../interfaces';
 
 interface TableResizeOptions extends ResizeOptions {
     cell: PlaitTableCellWithPoints;
@@ -33,7 +34,7 @@ export function withTableResize(board: PlaitTableBoard) {
         },
         hitTest: (point: Point) => {
             const hitElement = getHitElementByPoint(board, point);
-            if (hitElement && isDrawElementByTable(board, hitElement)) {
+            if (hitElement && PlaitDrawElement.isElementByTable(hitElement)) {
                 let rectangle = board.getRectangle(hitElement) as RectangleClient;
                 let handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, hitElement.angle);
                 if (handleRef) {

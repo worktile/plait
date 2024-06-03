@@ -1,4 +1,4 @@
-import { idCreator, PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
+import { idCreator, PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitBaseTable, PlaitTable, PlaitTableBoard, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
 
@@ -143,9 +143,4 @@ export function updateCellIds(cells: PlaitTableCell[]) {
 
 export function isCellIncludeText(cell: PlaitTableCell) {
     return cell.text && cell.textHeight;
-}
-
-export function isDrawElementByTable(board: PlaitTableBoard, element: PlaitElement): element is PlaitBaseTable {
-    const tableElements = board.getElementsByTable([]);
-    return tableElements.some(item => item.id === element.id);
 }

@@ -143,7 +143,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedTableElements = getSelectedTableElements(this.board);
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
-            const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(this.board, item));
+            const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
             if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
                 this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry));
                 this.align = getGeometryAlign(this.board, firstGeometry);
@@ -170,7 +170,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.lineTargetMarker = firstLine.target.marker;
             this.lineSourceMarker = firstLine.source.marker;
             this.strokeWidth = firstLine.strokeWidth || 3;
-            if (isDrawElementIncludeText(this.board, firstLine)) {
+            if (isDrawElementIncludeText(firstLine)) {
                 this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstLine)) || {};
             }
             setTimeout(() => {
@@ -180,7 +180,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             });
         }
         const selectedDrawElements = getSelectedDrawElements(this.board);
-        this.isIncludeText = selectedMindElements.length ? true : isDrawElementsIncludeText(this.board, selectedDrawElements);
+        this.isIncludeText = selectedMindElements.length ? true : isDrawElementsIncludeText(selectedDrawElements);
     }
 
     layoutChange(event: Event) {

@@ -29,16 +29,14 @@ import {
     PlaitDrawElement,
     PlaitGeometry,
     PlaitMultipleTextGeometry,
-    PlaitShapeElement,
-    SwimlaneSymbols,
-    UMLSymbols
+    PlaitShapeElement
 } from '../interfaces';
 import { getTextEditorsByElement } from '@plait/common';
-import { isCellIncludeText, isDrawElementByTable } from './table';
+import { isCellIncludeText } from './table';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { Options } from 'roughjs/bin/core';
-import { PlaitBaseTable, PlaitTable, PlaitTableBoard } from '../interfaces/table';
+import { PlaitBaseTable } from '../interfaces/table';
 import { memorizeLatestShape } from './memorize';
 import { isHitEdgeOfShape, isInsideOfShape } from './hit';
 import { getHitConnectorPoint } from './line';
@@ -76,7 +74,7 @@ export const insertElement = (board: PlaitBoard, element: PlaitBaseGeometry | Pl
     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
-export const isDrawElementIncludeText = (board:PlaitBoard, element: PlaitDrawElement) => {
+export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
     if (PlaitDrawElement.isText(element)) {
         return true;
     }
@@ -90,15 +88,15 @@ export const isDrawElementIncludeText = (board:PlaitBoard, element: PlaitDrawEle
         const editors = getTextEditorsByElement(element);
         return editors.length > 0;
     }
-    if (isDrawElementByTable(board as PlaitTableBoard, element)) {
+    if (PlaitDrawElement.isElementByTable(element)) {
         return element.cells.some(cell => isCellIncludeText(cell));
     }
     return true;
 };
 
-export const isDrawElementsIncludeText = (board:PlaitBoard, elements: PlaitDrawElement[]) => {
+export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
     return elements.some(item => {
-        return isDrawElementIncludeText(board, item);
+        return isDrawElementIncludeText(item);
     });
 };
 
@@ -164,7 +162,7 @@ export const drawBoundReaction = (
     const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
     const shape = getElementShape(element);
     let drawOptions: EngineExtraData = {};
-    if (isDrawElementByTable(board as PlaitTableBoard, element)) {
+    if (PlaitDrawElement.isElementByTable(element)) {
         drawOptions = { element };
     }
     const strokeG = drawShape(
@@ -228,7 +226,7 @@ export const getGeometryAlign = (board: PlaitBoard, element: PlaitCommonGeometry
         return (element as PlaitGeometry).text?.align || Alignment.center;
     }
 
-    if (isDrawElementByTable(board as PlaitTableBoard, element)) {
+    if (PlaitDrawElement.isElementByTable(element)) {
         const firstTextCell = element.cells.find(item => item.text);
         return firstTextCell?.text?.align || Alignment.center;
     }

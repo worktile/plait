@@ -73,6 +73,9 @@ export const PlaitDrawElement = {
         return Object.keys(UMLSymbols).includes(value.shape) && [UMLSymbols.class, UMLSymbols.interface].includes(value.shape);
     },
     isGeometryByTable: (value: any): value is PlaitBaseTable => {
-        return [UMLSymbols.interface, UMLSymbols.class].includes(value.shape as UMLSymbols);
+        return PlaitDrawElement.isUMLClassOrInterface(value);
+    },
+    isElementByTable: (value: any): value is PlaitBaseTable => {
+        return PlaitDrawElement.isTable(value) || PlaitDrawElement.isSwimlane(value) || PlaitDrawElement.isGeometryByTable(value);
     },
 };

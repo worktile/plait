@@ -8,7 +8,6 @@ export enum TableSymbols {
 
 export interface PlaitTableBoard extends PlaitBoard {
     buildTable: (element: PlaitBaseTable) => PlaitBaseTable;
-    getElementsByTable: (elements: PlaitBaseTable[]) => PlaitBaseTable[];
 }
 
 export interface PlaitBaseTable extends PlaitElement {
