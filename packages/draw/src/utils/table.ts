@@ -1,9 +1,8 @@
-import { idCreator, PlaitBoard, Point, RectangleClient } from '@plait/core';
-import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
+import { idCreator, PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
+import { PlaitBaseTable, PlaitTable, PlaitTableBoard, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
-import { PlaitTableBoard } from '../plugins/with-table';
 
-export function getCellsWithPoints(board: PlaitBoard, element: PlaitTable): PlaitTableCellWithPoints[] {
+export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): PlaitTableCellWithPoints[] {
     const table = (board as PlaitTableBoard).buildTable(element);
     const rectangle = RectangleClient.getRectangleByPoints(table.points);
     const columnsCount = table.columns.length;
@@ -42,7 +41,7 @@ export function getCellsWithPoints(board: PlaitBoard, element: PlaitTable): Plai
     return cells;
 }
 
-export function getCellWithPoints(board: PlaitBoard, table: PlaitTable, cellId: string) {
+export function getCellWithPoints(board: PlaitBoard, table: PlaitBaseTable, cellId: string) {
     const cells = getCellsWithPoints(board as PlaitTableBoard, table);
     const cellIndex = table.cells.findIndex(item => item.id === cellId);
     return cells[cellIndex];
@@ -83,7 +82,7 @@ function calculateCellSize(cell: PlaitTableCell, sizes: number[], index: number,
     return size;
 }
 
-export function getHitCell(board: PlaitTableBoard, element: PlaitTable, point: Point) {
+export function getHitCell(board: PlaitTableBoard, element: PlaitBaseTable, point: Point) {
     const table = board.buildTable(element);
     const cells = getCellsWithPoints(board, table);
     const rectangle = RectangleClient.getRectangleByPoints([point, point]);
@@ -106,13 +105,13 @@ export function getTextManageByCell(cell: PlaitTableCell) {
     return getTextManage(cell.id);
 }
 
-export const updateColumns = (table: PlaitTable, columnId: string, width: number, offset: number) => {
+export const updateColumns = (table: PlaitBaseTable, columnId: string, width: number, offset: number) => {
     const columns = table.columns.map(item => (item.id === columnId ? { ...item, width } : item));
     const points = [table.points[0], [table.points[1][0] + offset, table.points[1][1]]] as Point[];
     return { columns, points };
 };
 
-export const updateRows = (table: PlaitTable, rowId: string, height: number, offset: number) => {
+export const updateRows = (table: PlaitBaseTable, rowId: string, height: number, offset: number) => {
     const rows = table.rows.map(item => (item.id === rowId ? { ...item, height } : item));
     const points = [table.points[0], [table.points[1][0], table.points[1][1] + offset]] as Point[];
     return { rows, points };
@@ -144,4 +143,9 @@ export function updateCellIds(cells: PlaitTableCell[]) {
 
 export function isCellIncludeText(cell: PlaitTableCell) {
     return cell.text && cell.textHeight;
+}
+
+export function isDrawElementByTable(board: PlaitTableBoard, element: PlaitElement): element is PlaitBaseTable {
+    const tableElements = board.getElementsByTable([]);
+    return tableElements.some(item => item.id === element.id);
 }

@@ -8,7 +8,6 @@ import {
     depthFirstRecursion,
     drawCircle,
     getIsRecursionFunc,
-    isSetSelectionOperation,
     PlaitBoard,
     PlaitElement,
     PlaitPointerType,
@@ -17,7 +16,6 @@ import {
     rotateAntiPointsByElement,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
-    SetSelectionOperation,
     SNAPPING_STROKE_WIDTH,
     Transforms
 } from '@plait/core';
@@ -26,18 +24,21 @@ import {
     DrawShapes,
     EngineExtraData,
     MultipleTextGeometryCommonTextKeys,
+    PlaitBaseGeometry,
     PlaitCommonGeometry,
     PlaitDrawElement,
     PlaitGeometry,
     PlaitMultipleTextGeometry,
-    PlaitShapeElement
+    PlaitShapeElement,
+    SwimlaneSymbols,
+    UMLSymbols
 } from '../interfaces';
 import { getTextEditorsByElement } from '@plait/common';
-import { isCellIncludeText } from './table';
+import { isCellIncludeText, isDrawElementByTable } from './table';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { Options } from 'roughjs/bin/core';
-import { PlaitTable } from '../interfaces/table';
+import { PlaitBaseTable, PlaitTable, PlaitTableBoard } from '../interfaces/table';
 import { memorizeLatestShape } from './memorize';
 import { isHitEdgeOfShape, isInsideOfShape } from './hit';
 import { getHitConnectorPoint } from './line';
@@ -67,7 +68,7 @@ export const getStrokeWidthByElement = (element: PlaitElement) => {
     return strokeWidth;
 };
 
-export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry | PlaitTable) => {
+export const insertElement = (board: PlaitBoard, element: PlaitBaseGeometry | PlaitBaseTable) => {
     memorizeLatestShape(board, element.shape);
     Transforms.insertNode(board, element, [board.children.length]);
     clearSelectedElement(board);
@@ -75,7 +76,7 @@ export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry | 
     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
-export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
+export const isDrawElementIncludeText = (board:PlaitBoard, element: PlaitDrawElement) => {
     if (PlaitDrawElement.isText(element)) {
         return true;
     }
@@ -89,15 +90,15 @@ export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
         const editors = getTextEditorsByElement(element);
         return editors.length > 0;
     }
-    if (PlaitDrawElement.isTable(element)) {
+    if (isDrawElementByTable(board as PlaitTableBoard, element)) {
         return element.cells.some(cell => isCellIncludeText(cell));
     }
     return true;
 };
 
-export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
+export const isDrawElementsIncludeText = (board:PlaitBoard, elements: PlaitDrawElement[]) => {
     return elements.some(item => {
-        return isDrawElementIncludeText(item);
+        return isDrawElementIncludeText(board, item);
     });
 };
 
@@ -163,7 +164,7 @@ export const drawBoundReaction = (
     const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
     const shape = getElementShape(element);
     let drawOptions: EngineExtraData = {};
-    if (PlaitDrawElement.isTable(element)) {
+    if (isDrawElementByTable(board as PlaitTableBoard, element)) {
         drawOptions = { element };
     }
     const strokeG = drawShape(
@@ -216,7 +217,7 @@ export const getTextKey = <T extends PlaitElement = PlaitGeometry>(element: T, t
     }
 };
 
-export const getGeometryAlign = (element: PlaitCommonGeometry | PlaitTable) => {
+export const getGeometryAlign = (board: PlaitBoard, element: PlaitCommonGeometry | PlaitBaseTable) => {
     if (isMultipleTextGeometry(element as PlaitCommonGeometry)) {
         const drawShapeText = (element as PlaitMultipleTextGeometry).texts.find(item =>
             item.key.includes(MultipleTextGeometryCommonTextKeys.content)
@@ -227,7 +228,7 @@ export const getGeometryAlign = (element: PlaitCommonGeometry | PlaitTable) => {
         return (element as PlaitGeometry).text?.align || Alignment.center;
     }
 
-    if (PlaitDrawElement.isTable(element)) {
+    if (isDrawElementByTable(board as PlaitTableBoard, element)) {
         const firstTextCell = element.cells.find(item => item.text);
         return firstTextCell?.text?.align || Alignment.center;
     }

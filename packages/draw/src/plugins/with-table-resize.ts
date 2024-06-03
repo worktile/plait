@@ -1,5 +1,5 @@
 import { getHitElementByPoint, PlaitBoard, Point, RectangleClient, Transforms, isSelectedElement } from '@plait/core';
-import { PlaitTable, PlaitTableCellWithPoints, PlaitTableElement } from '../interfaces/table';
+import { PlaitBaseTable, PlaitTableBoard, PlaitTableCellWithPoints } from '../interfaces/table';
 import {
     getIndexByResizeHandle,
     isCornerHandle,
@@ -11,11 +11,10 @@ import {
     WithResizeOptions,
     normalizeShapePoints
 } from '@plait/common';
-import { getCellsWithPoints, updateColumns, updateRows } from '../utils/table';
+import { getCellsWithPoints, isDrawElementByTable, updateColumns, updateRows } from '../utils/table';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { PlaitTableBoard } from './with-table';
 import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
-import { isSingleSelectTable } from '../utils';
+import { isSingleSelectElementByTable } from '../utils';
 import { getSnapResizingRef, getSnapResizingRefOptions } from '../utils/snap-resizing';
 
 interface TableResizeOptions extends ResizeOptions {
@@ -27,19 +26,19 @@ const MIN_CELL_SIZE = 20;
 export function withTableResize(board: PlaitTableBoard) {
     let snapG: SVGGElement | null;
 
-    const options: WithResizeOptions<PlaitTable, ResizeHandle, TableResizeOptions> = {
+    const options: WithResizeOptions<PlaitBaseTable, ResizeHandle, TableResizeOptions> = {
         key: 'draw-table',
         canResize: () => {
             return true;
         },
         hitTest: (point: Point) => {
             const hitElement = getHitElementByPoint(board, point);
-            if (hitElement && PlaitTableElement.isTable(hitElement)) {
+            if (hitElement && isDrawElementByTable(board, hitElement)) {
                 let rectangle = board.getRectangle(hitElement) as RectangleClient;
                 let handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, hitElement.angle);
                 if (handleRef) {
                     const selectElement = isSelectedElement(board, hitElement);
-                    if ((selectElement && isSingleSelectTable(board)) || (!selectElement && !isCornerHandle(board, handleRef.handle))) {
+                    if ((selectElement && isSingleSelectElementByTable(board)) || (!selectElement && !isCornerHandle(board, handleRef.handle))) {
                         return {
                             element: hitElement,
                             handle: handleRef.handle,
@@ -67,7 +66,7 @@ export function withTableResize(board: PlaitTableBoard) {
             }
             return null;
         },
-        onResize: (resizeRef: ResizeRef<PlaitTable, ResizeHandle, TableResizeOptions>, resizeState: ResizeState) => {
+        onResize: (resizeRef: ResizeRef<PlaitBaseTable, ResizeHandle, TableResizeOptions>, resizeState: ResizeState) => {
             snapG?.remove();
             const path = PlaitBoard.findPath(board, resizeRef.element);
             if (resizeRef.options?.cell && resizeRef.rectangle) {
@@ -142,13 +141,13 @@ export function withTableResize(board: PlaitTableBoard) {
                 Transforms.setNode(board, { points: normalizeShapePoints(points), columns, rows }, path);
             }
         },
-        afterResize: (resizeRef: ResizeRef<PlaitTable, ResizeHandle, TableResizeOptions>) => {
+        afterResize: (resizeRef: ResizeRef<PlaitBaseTable, ResizeHandle, TableResizeOptions>) => {
             snapG?.remove();
             snapG = null;
         }
     };
 
-    withResize<PlaitTable, ResizeHandle, TableResizeOptions>(board, options);
+    withResize<PlaitBaseTable, ResizeHandle, TableResizeOptions>(board, options);
 
     return board;
 }

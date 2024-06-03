@@ -45,7 +45,7 @@ export const createDefaultSwimlane = (shape: SwimlaneSymbols, points: [Point, Po
     const columns = createDefaultRowsOrColumns(shape, 'column');
     const swimlane = {
         id: idCreator(),
-        type: 'table',
+        type: 'swimlane',
         shape,
         points,
         rows,

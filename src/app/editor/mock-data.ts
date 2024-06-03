@@ -713,7 +713,7 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
             [-100, -100],
             [200, 400]
         ],
-        type: 'table',
+        type: 'swimlane',
         shape: 'swimlaneVertical',
         rows: [
             {
@@ -797,7 +797,7 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
             [300, 0],
             [900, 300]
         ],
-        type: 'table',
+        type: 'swimlane',
         shape: 'swimlaneHorizontal',
         rows: [
             {

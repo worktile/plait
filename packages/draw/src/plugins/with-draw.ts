@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
-import { PlaitDrawElement } from '../interfaces';
+import { PlaitBaseTable, PlaitDrawElement, PlaitTableBoard } from '../interfaces';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
@@ -20,15 +20,28 @@ import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
-import { withTableResize } from './with-table-resize';
 import { TableComponent } from '../table.component';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
+    const PlaitTableBoard = board as PlaitTableBoard;
+    const {
+        drawElement,
+        getRectangle,
+        isRectangleHit,
+        isHit,
+        isInsidePoint,
+        isMovable,
+        isAlign,
+        getRelatedFragment,
+        getElementsByTable
+    } = PlaitTableBoard;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
             if (PlaitDrawElement.isUML(context.element)) {
+                if (PlaitDrawElement.isGeometryByTable(context.element)) {
+                    return TableComponent;
+                }
                 return GeometryComponent;
             }
             return GeometryComponent;
@@ -126,6 +139,13 @@ export const withDraw = (board: PlaitBoard) => {
             return source && target && !isSelected;
         });
         return getRelatedFragment([...elements, ...activeLines], originData);
+    };
+
+    PlaitTableBoard.getElementsByTable = (elements: PlaitBaseTable[] = []) => {
+        const geometryElements = board.children.filter(item => PlaitDrawElement.isGeometryByTable(item));
+        return getElementsByTable
+            ? getElementsByTable([...elements, ...geometryElements] as PlaitBaseTable[])
+            : ([...elements, ...geometryElements] as PlaitBaseTable[]);
     };
 
     return withSwimlane(
