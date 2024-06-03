@@ -75,7 +75,6 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
     }
 
     draw(elementG: SVGElement) {
-        console.log(this.board.getRectangle(this.element));
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
         this.texts.forEach(drawShapeText => {
             const textManage = getTextManage(getTextKey(this.element, drawShapeText));
