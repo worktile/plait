@@ -1,5 +1,15 @@
 # plait
 
+## 0.60.0
+
+### Patch Changes
+
+-   [#893](https://github.com/worktile/plait/pull/893) [`97b3c3eae`](https://github.com/worktile/plait/commit/97b3c3eae5352eae66a5b1f4ef3f0365a11678be) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix get gap snap line error
+
+*   [#894](https://github.com/worktile/plait/pull/894) [`ac1861f77`](https://github.com/worktile/plait/commit/ac1861f77b132d909b30c38dea6fd1dcf0c17519) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - restore before judge
+
+-   [#902](https://github.com/worktile/plait/pull/902) [`22d2431ff`](https://github.com/worktile/plait/commit/22d2431fff54a84177c815c61c8bbe5bb28ae123) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set user-select to text paragraph instead of event.preventDefault
+
 ## 0.59.0
 
 ## 0.58.0
