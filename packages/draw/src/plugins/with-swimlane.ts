@@ -43,7 +43,7 @@ export const withSwimlane = (board: PlaitTableBoard) => {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const element = getSelectedSwimlane(board);
             const hitCell = getHitCell(board, element, point);
-            if (hitCell && hitCell.text) {
+            if (hitCell && hitCell.text && hitCell.textHeight) {
                 setSelectedCells(element, [hitCell]);
             }
         }

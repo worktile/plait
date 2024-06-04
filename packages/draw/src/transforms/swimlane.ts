@@ -190,8 +190,8 @@ export const setSwimlaneFill = (board: PlaitBoard, element: PlaitBaseTable, fill
             return cell;
         });
     } else {
-        newCells = element.cells.map((cell, index) => {
-            if (index === 0) {
+        newCells = element.cells.map(cell => {
+            if (cell.text && cell.textHeight) {
                 return {
                     ...cell,
                     fill
