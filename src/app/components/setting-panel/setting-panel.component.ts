@@ -11,7 +11,8 @@ import {
     degreesToRadians,
     radiansToDegrees,
     rotateElements,
-    canSetZIndex
+    canSetZIndex,
+    Path
 } from '@plait/core';
 
 import {
@@ -45,6 +46,7 @@ import {
     getSelectedDrawElements,
     getSelectedTableElements,
     getGeometryAlign,
+    PlaitDrawElement,
     getSwimlaneCount
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
@@ -222,7 +224,17 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     changeFill(property: string) {
-        PropertyTransforms.setFillColor(this.board, property, { getMemorizeKey });
+        PropertyTransforms.setFillColor(this.board, property, {
+            getMemorizeKey,
+            callback: (element: PlaitElement, path: Path) => {
+                const isSwimlane = PlaitDrawElement.isSwimlane(element);
+                if (isSwimlane) {
+                    DrawTransforms.setSwimlaneFill(this.board, element as PlaitSwimlane, property, path);
+                } else {
+                    Transforms.setNode(this.board, { fill: property }, path);
+                }
+            }
+        });
     }
 
     changeStroke(property: string) {

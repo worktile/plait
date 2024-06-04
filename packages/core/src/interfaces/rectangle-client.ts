@@ -55,13 +55,23 @@ export const RectangleClient = {
             height
         };
     },
-    getRectangleByPoints(points: Point[]): RectangleClient {
-        const xArray = points.map(ele => ele[0]);
-        const yArray = points.map(ele => ele[1]);
-        const xMin = Math.min(...xArray);
-        const xMax = Math.max(...xArray);
-        const yMin = Math.min(...yArray);
-        const yMax = Math.max(...yArray);
+    getRectangleByPoints(points: Point[] | Point[][]): RectangleClient {
+        if (isPointArray(points)) {
+            points = [points];
+        }
+        let xMin = Infinity;
+        let yMin = Infinity;
+        let xMax = -Infinity;
+        let yMax = -Infinity;
+        for (const point of points) {
+            const xArray = point.map(ele => ele[0]);
+            const yArray = point.map(ele => ele[1]);
+            xMin = Math.min(xMin, ...xArray);
+            yMin = Math.min(yMin, ...yArray);
+            xMax = Math.max(xMax, ...xArray);
+            yMin = Math.min(yMin, ...yArray);
+            yMax = Math.max(yMax, ...yArray);
+        }
         const rect = { x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin };
         return rect;
     },
@@ -171,3 +181,10 @@ export const RectangleClient = {
         };
     }
 };
+
+function isPointArray(data: Point[] | Point[][]): data is Point[] {
+    return (
+        Array.isArray(data) &&
+        data.every(item => Array.isArray(item) && item.length === 2 && typeof item[0] === 'number' && typeof item[1] === 'number')
+    );
+}

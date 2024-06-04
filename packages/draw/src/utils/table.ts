@@ -144,3 +144,12 @@ export function updateCellIds(cells: PlaitTableCell[]) {
 export function isCellIncludeText(cell: PlaitTableCell) {
     return cell.text && cell.textHeight;
 }
+
+export function getCellsRectangle(board: PlaitTableBoard, element: PlaitTable, cells: PlaitTableCell[]) {
+    const points = cells.map(cell => {
+        const cellWithPoints = getCellWithPoints(board, element, cell.id);
+        return cellWithPoints.points;
+    });
+
+    return RectangleClient.getRectangleByPoints(points);
+}

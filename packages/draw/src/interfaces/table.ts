@@ -37,6 +37,7 @@ export interface PlaitTableCell {
     rowspan?: number;
     text?: PlaitTableCellParagraph;
     textHeight?: number;
+    fill?: string;
 }
 
 export interface PlaitTableDrawOptions extends EngineExtraData {

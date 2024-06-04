@@ -14,9 +14,9 @@ import {
 import { getCellsWithPoints, updateColumns, updateRows } from '../utils/table';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
-import { isSingleSelectElementByTable } from '../utils';
 import { getSnapResizingRef, getSnapResizingRefOptions } from '../utils/snap-resizing';
 import { PlaitDrawElement } from '../interfaces';
+import { isSingleSelectElementByTable } from '../utils';
 
 interface TableResizeOptions extends ResizeOptions {
     cell: PlaitTableCellWithPoints;
@@ -39,7 +39,10 @@ export function withTableResize(board: PlaitTableBoard) {
                 let handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, hitElement.angle);
                 if (handleRef) {
                     const selectElement = isSelectedElement(board, hitElement);
-                    if ((selectElement && isSingleSelectElementByTable(board)) || (!selectElement && !isCornerHandle(board, handleRef.handle))) {
+                    if (
+                        (selectElement && isSingleSelectElementByTable(board)) ||
+                        (!selectElement && !isCornerHandle(board, handleRef.handle))
+                    ) {
                         return {
                             element: hitElement,
                             handle: handleRef.handle,

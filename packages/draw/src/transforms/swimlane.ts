@@ -1,9 +1,10 @@
-import { idCreator, PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
+import { idCreator, Path, PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
 import { PlaitDrawElement, PlaitSwimlane } from '../interfaces';
-import { PlaitTableCell } from '../interfaces/table';
+import { PlaitBaseTable, PlaitTableCell } from '../interfaces/table';
 import { getCellWithPoints } from '../utils/table';
 import { Alignment } from '@plait/text';
 import { getSwimlaneCount } from '../utils/swimlane';
+import { getSelectedCells } from '../utils';
 
 export const updateSwimlaneCount = (board: PlaitBoard, swimlane: PlaitSwimlane, count: number) => {
     if (count > 0 && PlaitDrawElement.isSwimlane(swimlane)) {
@@ -173,4 +174,31 @@ const updateSwimlane = (
         },
         path
     );
+};
+
+export const setSwimlaneFill = (board: PlaitBoard, element: PlaitBaseTable, fill: string, path: Path) => {
+    const selectedCells = getSelectedCells(element);
+    let newCells = element.cells;
+    if (selectedCells?.length) {
+        newCells = element.cells.map(cell => {
+            if (selectedCells.map(item => item.id).includes(cell.id)) {
+                return {
+                    ...cell,
+                    fill
+                };
+            }
+            return cell;
+        });
+    } else {
+        newCells = element.cells.map(cell => {
+            if (cell.text && cell.textHeight) {
+                return {
+                    ...cell,
+                    fill
+                };
+            }
+            return cell;
+        });
+    }
+    Transforms.setNode(board, { cells: newCells }, path);
 };
