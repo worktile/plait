@@ -62,8 +62,6 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         touchedAbstract = handleTouchedAbstract(board, touchedAbstract, endPoint);
 
         if (abstractHandlePosition && activeAbstractElement) {
-            // prevent text from being selected
-            event.preventDefault();
             const nodeLayout = MindQueries.getCorrectLayoutByElement(board, activeAbstractElement as MindElement) as MindLayoutType;
             const isHorizontal = isHorizontalLayout(nodeLayout);
             const parentElement = MindElement.getParent(activeAbstractElement);

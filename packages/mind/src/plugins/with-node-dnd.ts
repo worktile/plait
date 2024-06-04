@@ -87,10 +87,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
     };
 
     board.pointerMove = (event: PointerEvent) => {
-        // const xx = activeElements.
         if (!board.options.readonly && activeElements.length && startPoint) {
-            // prevent text from being selected
-            event.preventDefault();
             const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance < DRAG_MOVE_BUFFER) {
