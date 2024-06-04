@@ -28,9 +28,9 @@ export const isSingleSelectSwimlane = (board: PlaitBoard) => {
     return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isSwimlane(selectedElements[0]);
 };
 
-export const isSingleSelectTable = (board: PlaitBoard) => {
+export const isSingleSelectElementByTable = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board);
-    return selectedElements && selectedElements.length === 1 && PlaitTableElement.isTable(selectedElements[0]);
+    return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isElementByTable(selectedElements[0]);
 };
 
 export const getSelectedTableElements = (board: PlaitBoard, elements?: PlaitElement[]) => {

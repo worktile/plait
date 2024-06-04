@@ -7,7 +7,7 @@ import { updateCellIds, updateRowOrColumnIds } from './table';
 
 export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
     return elements.map(element => {
-        if (PlaitDrawElement.isGeometry(element) || PlaitDrawElement.isImage(element) || PlaitDrawElement.isTable(element)) {
+        if (PlaitDrawElement.isShapeElement(element)) {
             const points = element.points.map(point => [point[0] - startPoint[0], point[1] - startPoint[1]]);
             return { ...element, points } as PlaitGeometry;
         }
@@ -41,11 +41,10 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
     const lines = elements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
-    const geometries = elements.filter(value => PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isImage(value)) as (
-        | PlaitImage
-        | PlaitGeometry
-    )[];
-    const tables = elements.filter(value => PlaitDrawElement.isTable(value)) as PlaitTable[];
+    const geometries = elements.filter(
+        value => (PlaitDrawElement.isGeometry(value) && !PlaitDrawElement.isGeometryByTable(value)) || PlaitDrawElement.isImage(value)
+    ) as (PlaitImage | PlaitGeometry)[];
+    const tables = elements.filter(value => PlaitDrawElement.isElementByTable(value)) as PlaitTable[];
 
     geometries.forEach(element => {
         const sourceLines: PlaitLine[] = [];

@@ -152,7 +152,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
             if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
                 this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry));
-                this.align = getGeometryAlign(firstGeometry);
+                this.align = getGeometryAlign(this.board, firstGeometry);
             }
             setTimeout(() => {
                 const editor = firstGeometry && getEditingTextEditor(this.board, [firstGeometry]);
