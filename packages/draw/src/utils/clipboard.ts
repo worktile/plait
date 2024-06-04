@@ -44,9 +44,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
     const geometries = elements.filter(
         value => (PlaitDrawElement.isGeometry(value) && !PlaitDrawElement.isGeometryByTable(value)) || PlaitDrawElement.isImage(value)
     ) as (PlaitImage | PlaitGeometry)[];
-    const tables = elements.filter(
-        value => PlaitDrawElement.isTable(value) || PlaitDrawElement.isSwimlane(value) || PlaitDrawElement.isGeometryByTable(value)
-    ) as PlaitTable[];
+    const tables = elements.filter(value => PlaitDrawElement.isElementByTable(value)) as PlaitTable[];
 
     geometries.forEach(element => {
         const sourceLines: PlaitLine[] = [];
