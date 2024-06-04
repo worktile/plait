@@ -1,9 +1,8 @@
-import { idCreator, PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
+import { idCreator, Path, PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
 import { PlaitDrawElement, PlaitSwimlane, SwimlaneSymbols } from '../interfaces';
 import { PlaitTableCell } from '../interfaces/table';
 import { getCellWithPoints } from '../utils/table';
 import { Alignment } from '@plait/text';
-import { memorizeLatest, SetOptions } from '@plait/common';
 import { PlaitTable } from '../interfaces/table';
 import { getSelectedCells } from '../utils';
 
@@ -121,7 +120,7 @@ const updateSwimlane = (
     );
 };
 
-export const setSwimlaneFill = (board: PlaitBoard, element: PlaitTable, fill: string, options?: SetOptions) => {
+export const setSwimlaneFill = (board: PlaitBoard, element: PlaitTable, fill: string, path: Path) => {
     const selectedCells = getSelectedCells(element);
     let newCells = element.cells;
     if (selectedCells?.length) {
@@ -145,9 +144,5 @@ export const setSwimlaneFill = (board: PlaitBoard, element: PlaitTable, fill: st
             return cell;
         });
     }
-    const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, { cells: newCells }, path);
-
-    const memorizeKey = options?.getMemorizeKey ? options?.getMemorizeKey(element) : '';
-    memorizeKey && memorizeLatest(memorizeKey, 'fill', fill);
 };
