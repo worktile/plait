@@ -132,3 +132,13 @@ export const createDefaultCells = (
         return item;
     });
 };
+
+export const getSwimlaneCount = (swimlane: PlaitSwimlane) => {
+    if (PlaitDrawElement.isHorizontalSwimlane(swimlane)) {
+        return swimlane.rows.length;
+    }
+    if (PlaitDrawElement.isVerticalSwimlane(swimlane)) {
+        return swimlane.columns.length;
+    }
+    return 0;
+};
