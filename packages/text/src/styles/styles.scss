@@ -13,8 +13,14 @@
         outline: none;
         padding: 0;
         cursor: default;
+        .plait-text-paragraph {
+            user-select: none;
+        }
         &.editing {
             cursor: text;
+            .plait-text-paragraph {
+                user-select: text;
+            }
         }
     }
 
