@@ -149,6 +149,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         if (value.element !== previous.element) {
             const previousSelectedCells = getSelectedCells(previous.element);
             if (previousSelectedCells?.length) {
+                clearSelectedCells(previous.element);
                 setSelectedCells(value.element, previousSelectedCells);
             }
             this.tableGenerator.processDrawing(value.element, this.getElementG());

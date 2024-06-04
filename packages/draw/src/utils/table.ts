@@ -146,10 +146,10 @@ export function isCellIncludeText(cell: PlaitTableCell) {
 }
 
 export function getCellsRectangle(board: PlaitTableBoard, element: PlaitTable, cells: PlaitTableCell[]) {
+    const cellsWithPoints = getCellsWithPoints(board as PlaitTableBoard, element);
     const points = cells.map(cell => {
-        const cellWithPoints = getCellWithPoints(board, element, cell.id);
-        return cellWithPoints.points;
+        const cellWithPoints = cellsWithPoints.find(item => item.id === cell.id);
+        return cellWithPoints!.points;
     });
-
     return RectangleClient.getRectangleByPoints(points);
 }
