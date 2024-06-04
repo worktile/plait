@@ -14,12 +14,20 @@ import { TableGenerator } from './generators/table.generator';
 import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getCellWithPoints, isCellIncludeText } from './utils/table';
-import { getStrokeWidthByElement, memorizeLatestText } from './utils';
+import {
+    clearSelectedCells,
+    getCellsRectangle,
+    getSelectedCells,
+    getStrokeWidthByElement,
+    memorizeLatestText,
+    setSelectedCells
+} from './utils';
 import { getEngine } from './engines';
 import { TableSymbols } from './interfaces';
 import { getHorizontalTextRectangle } from './engines/table/table';
 import { ShapeDefaultSpace } from './constants';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
+import { PlaitTableBoard } from './plugins/with-table';
 
 export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T, PlaitBoard> implements OnContextChanged<T, PlaitBoard> {
     activeGenerator!: ActiveGenerator<T>;
@@ -43,9 +51,17 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
                 return 1;
             },
             getRectangle: (value: T) => {
+                const cells = getSelectedCells(value);
+                if (cells?.length) {
+                    return getCellsRectangle(this.board as PlaitTableBoard, this.element, cells);
+                }
                 return RectangleClient.getRectangleByPoints(value.points!);
             },
             hasResizeHandle: () => {
+                const cells = getSelectedCells(this.element);
+                if (cells?.length) {
+                    return false;
+                }
                 return canResize(this.board, this.element);
             }
         });
@@ -131,6 +147,10 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
 
     onContextChanged(value: PlaitPluginElementContext<T, PlaitBoard>, previous: PlaitPluginElementContext<T, PlaitBoard>) {
         if (value.element !== previous.element) {
+            const previousSelectedCells = getSelectedCells(previous.element);
+            if (previousSelectedCells?.length) {
+                setSelectedCells(value.element, previousSelectedCells);
+            }
             this.tableGenerator.processDrawing(value.element, this.getElementG());
             this.activeGenerator.processDrawing(value.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             const previousTexts = this.getDrawShapeTexts(previous.element.cells);
@@ -140,10 +160,14 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
-            if (!hasSameSelected || !hasSameHandleState) {
+            const currentSelectedCells = getSelectedCells(value.element);
+            if (!hasSameSelected || !hasSameHandleState || currentSelectedCells?.length) {
                 this.activeGenerator.processDrawing(value.element, PlaitBoard.getElementActiveHost(this.board), {
                     selected: this.selected
                 });
+            }
+            if (!this.selected) {
+                clearSelectedCells(value.element);
             }
         }
         this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {

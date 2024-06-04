@@ -44,7 +44,8 @@ import {
     isDrawElementIncludeText,
     getSelectedDrawElements,
     getSelectedTableElements,
-    getGeometryAlign
+    getGeometryAlign,
+    getSelectedSwimlane
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -216,7 +217,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     changeFill(property: string) {
-        PropertyTransforms.setFillColor(this.board, property, { getMemorizeKey });
+        let match = undefined;
+        if (isSingleSelectSwimlane(this.board)) {
+            match = () => {
+                const swimlane = getSelectedSwimlane(this.board);
+                DrawTransforms.setSwimlaneFill(this.board, swimlane, property);
+                return true;
+            };
+        }
+        PropertyTransforms.setFillColor(this.board, property, { getMemorizeKey, match });
     }
 
     changeStroke(property: string) {

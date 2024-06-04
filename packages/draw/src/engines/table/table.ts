@@ -1,4 +1,4 @@
-import { PlaitBoard, RectangleClient, Point, createG, drawLine, setStrokeLinecap } from '@plait/core';
+import { PlaitBoard, RectangleClient, Point, createG, drawLine, setStrokeLinecap, drawRectangle } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
 import { getCellsWithPoints, getCellWithPoints } from '../../utils/table';
 import { ShapeEngine } from '../../interfaces';
@@ -20,9 +20,10 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         pointCells.forEach(cell => {
             const rectangle = RectangleClient.getRectangleByPoints(cell.points!);
             const { x, y, width, height } = rectangle;
+            const cellRectangle = drawRectangle(board, rectangle, { fill: cell.fill, fillStyle: 'solid' });
             const cellRightBorder = drawLine(rs, [x + width, y], [x + width, y + height], roughOptions);
             const cellBottomBorder = drawLine(rs, [x, y + height], [x + width, y + height], roughOptions);
-            g.append(cellRightBorder, cellBottomBorder);
+            g.append(cellRectangle, cellRightBorder, cellBottomBorder);
         });
         setStrokeLinecap(g, 'round');
         return g;

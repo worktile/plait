@@ -8,3 +8,5 @@ export * from './hit';
 export * from './memorize';
 export * from './common';
 export * from './snap-resizing';
+export * from './table';
+export * from './table-selected';

@@ -3,6 +3,9 @@ import { PlaitDrawElement, PlaitSwimlane, SwimlaneSymbols } from '../interfaces'
 import { PlaitTableCell } from '../interfaces/table';
 import { getCellWithPoints } from '../utils/table';
 import { Alignment } from '@plait/text';
+import { memorizeLatest, SetOptions } from '@plait/common';
+import { PlaitTable } from '../interfaces/table';
+import { getSelectedCells } from '../utils';
 
 export const addSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, index: number) => {
     if (PlaitDrawElement.isSwimlane(swimlane) && swimlane.shape === SwimlaneSymbols.swimlaneHorizontal) {
@@ -116,4 +119,35 @@ const updateSwimlane = (
         },
         path
     );
+};
+
+export const setSwimlaneFill = (board: PlaitBoard, element: PlaitTable, fill: string, options?: SetOptions) => {
+    const selectedCells = getSelectedCells(element);
+    let newCells = element.cells;
+    if (selectedCells?.length) {
+        newCells = element.cells.map(cell => {
+            if (selectedCells.map(item => item.id).includes(cell.id)) {
+                return {
+                    ...cell,
+                    fill
+                };
+            }
+            return cell;
+        });
+    } else {
+        newCells = element.cells.map((cell, index) => {
+            if (index === 0) {
+                return {
+                    ...cell,
+                    fill
+                };
+            }
+            return cell;
+        });
+    }
+    const path = PlaitBoard.findPath(board, element);
+    Transforms.setNode(board, { cells: newCells }, path);
+
+    const memorizeKey = options?.getMemorizeKey ? options?.getMemorizeKey(element) : '';
+    memorizeKey && memorizeLatest(memorizeKey, 'fill', fill);
 };
