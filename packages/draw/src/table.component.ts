@@ -86,7 +86,8 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
     }
 
     rotateVerticalText() {
-        this.element.cells.forEach(item => {
+        const table = (this.board as PlaitTableBoard).buildTable(this.element);
+        table.cells.forEach(item => {
             if (PlaitTableElement.isVerticalText(item)) {
                 const textManage = getTextManage(item.id);
                 if (textManage) {

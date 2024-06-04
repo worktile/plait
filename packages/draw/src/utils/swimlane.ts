@@ -52,7 +52,7 @@ export const createDefaultSwimlane = (shape: SwimlaneSymbols, points: [Point, Po
         columns,
         cells: createDefaultCells(shape, rows, columns)
     } as PlaitSwimlane;
-    return buildSwimlaneTable(swimlane);
+    return swimlane;
 };
 
 export const createDefaultRowsOrColumns = (shape: SwimlaneSymbols, type: 'row' | 'column') => {
