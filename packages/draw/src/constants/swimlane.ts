@@ -1,4 +1,6 @@
-import { SwimlaneDrawSymbols, SwimlaneSymbols } from '../interfaces/swimlane';
+import { SwimlaneDrawSymbols } from '../interfaces/swimlane';
+
+export const SWIMLANE_HEADER_SIZE = 42;
 
 export const DefaultSwimlaneVerticalWithHeaderProperty = {
     width: 580,

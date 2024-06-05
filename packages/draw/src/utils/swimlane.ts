@@ -1,7 +1,8 @@
 import { idCreator, Point, RectangleClient } from '@plait/core';
-import { DEFAULT_TEXT_HEIGHT, DefaultSwimlanePropertyMap } from '../constants';
+import { DEFAULT_TEXT_HEIGHT, DefaultSwimlanePropertyMap, SWIMLANE_HEADER_SIZE } from '../constants';
 import { PlaitDrawElement, PlaitSwimlane, PlaitTableCell, SwimlaneDrawSymbols, SwimlaneSymbols } from '../interfaces';
 import { Alignment } from '@plait/text';
+import { createCell } from './table';
 
 export function buildSwimlaneTable(element: PlaitSwimlane) {
     const swimlaneElement = { ...element };
@@ -75,7 +76,7 @@ export const createDefaultRowsOrColumns = (shape: SwimlaneSymbols, type: 'row' |
             if (index === 0 || (index === 1 && header)) {
                 return {
                     ...item,
-                    [dimension]: 42
+                    [dimension]: SWIMLANE_HEADER_SIZE
                 };
             }
             return item;
@@ -91,51 +92,23 @@ export const createDefaultCells = (
     columns: { id: string; width?: number }[],
     header: boolean
 ) => {
-    const createCell = (rowId: string, columnId: string, text: string | null = null) => {
-        const cell: PlaitTableCell = {
-            id: idCreator(),
-            rowId,
-            columnId
-        };
-        if (text !== null) {
-            cell['textHeight'] = DEFAULT_TEXT_HEIGHT;
-            cell['text'] = {
-                children: [{ text }],
-                align: Alignment.center
-            };
+    let headerCell: PlaitTableCell[] = [];
+    let startIndex = 0;
+    if (header) {
+        headerCell = [createCell(rows[0].id, columns[0].id, 'New Swimlane')];
+        startIndex = 1;
+    }
+    const cells = new Array(6).fill('').map((_, index) => {
+        if (index < 3) {
+            const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[startIndex].id : rows[index].id;
+            const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index].id : columns[startIndex].id;
+            return createCell(rowId, columnId, 'Lane');
         }
-        return cell;
-    };
-    const numCells = header ? 7 : 6;
-    return new Array(numCells).fill('').map((_, index) => {
-        if (header) {
-            if (index === 0) {
-                return createCell(rows[0].id, columns[0].id, 'New Swimlane');
-            }
-            if ([1, 2, 3].includes(index)) {
-                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[1].id : rows[index - 1].id;
-                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 1].id : columns[1].id;
-                return createCell(rowId, columnId, 'Lane');
-            }
-            if ([4, 5, 6].includes(index)) {
-                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[2].id : rows[index - 4].id;
-                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 4].id : columns[2].id;
-                return createCell(rowId, columnId);
-            }
-        } else {
-            if ([0, 1, 2].includes(index)) {
-                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[0].id : rows[index].id;
-                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index].id : columns[0].id;
-                return createCell(rowId, columnId, 'New Swimlane');
-            }
-            if ([3, 4, 5].includes(index)) {
-                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[1].id : rows[index - 3].id;
-                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 3].id : columns[1].id;
-                return createCell(rowId, columnId);
-            }
-        }
-        return '';
+        const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[startIndex + 1].id : rows[index - 3].id;
+        const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 3].id : columns[startIndex + 1].id;
+        return createCell(rowId, columnId);
     });
+    return [...headerCell, ...cells];
 };
 
 export const getSwimlaneCount = (swimlane: PlaitSwimlane) => {
