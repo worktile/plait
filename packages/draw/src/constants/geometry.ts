@@ -164,7 +164,7 @@ export const DefaultPortProperty = {
     height: 20
 };
 
-export const DefaultProvidedInterfaceProperty = {
+export const DefaultRequiredInterfaceProperty = {
     width: 70,
     height: 56
 };
@@ -174,7 +174,7 @@ export const DefaultAssemblyProperty = {
     height: 56
 };
 
-export const DefaultProvidedInterface = {
+export const DefaultProvidedInterfaceProperty = {
     width: 70,
     height: 34
 };
@@ -287,8 +287,8 @@ export const DefaultUMLPropertyMap = {
     [UMLSymbols.port]: DefaultPortProperty,
     [UMLSymbols.branchMerge]: DefaultDeletionProperty,
     [UMLSymbols.assembly]: DefaultAssemblyProperty,
-    [UMLSymbols.providedInterface]: DefaultProvidedInterface,
-    [UMLSymbols.requiredInterface]: DefaultProvidedInterfaceProperty
+    [UMLSymbols.providedInterface]: DefaultProvidedInterfaceProperty,
+    [UMLSymbols.requiredInterface]: DefaultRequiredInterfaceProperty
 };
 
 export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] } = {
