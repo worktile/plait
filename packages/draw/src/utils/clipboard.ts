@@ -47,7 +47,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
     const tables = elements.filter(value => PlaitDrawElement.isElementByTable(value)) as PlaitTable[];
     geometries.forEach(element => {
         const newId = idCreator();
-        updateBindLinesId(element, lines, newId);
+        updateBoundLinesId(element, lines, newId);
         element.id = newId;
         element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
         Transforms.insertNode(board, element, [board.children.length]);
@@ -64,7 +64,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
 export const insertClipboardTableData = (board: PlaitBoard, elements: PlaitTable[], startPoint: Point, lines: PlaitLine[]) => {
     elements.forEach(element => {
         const newId = idCreator();
-        updateBindLinesId(element, lines, newId);
+        updateBoundLinesId(element, lines, newId);
         element.id = newId;
         updateRowOrColumnIds(element, 'row');
         updateRowOrColumnIds(element, 'column');
