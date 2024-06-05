@@ -163,6 +163,22 @@ export const DefaultPortProperty = {
     width: 20,
     height: 20
 };
+
+export const DefaultProvidedInterfaceProperty = {
+    width: 70,
+    height: 56
+};
+
+export const DefaultAssemblyProperty = {
+    width: 120,
+    height: 56
+};
+
+export const DefaultProvidedInterface = {
+    width: 70,
+    height: 34
+};
+
 export const DefaultCombinedFragmentProperty = {
     width: 400,
     height: 280,
@@ -269,7 +285,10 @@ export const DefaultUMLPropertyMap = {
     [UMLSymbols.activityClass]: DefaultObjectProperty,
     [UMLSymbols.simpleClass]: DefaultObjectProperty,
     [UMLSymbols.port]: DefaultPortProperty,
-    [UMLSymbols.branchMerge]: DefaultDeletionProperty
+    [UMLSymbols.branchMerge]: DefaultDeletionProperty,
+    [UMLSymbols.assembly]: DefaultAssemblyProperty,
+    [UMLSymbols.providedInterface]: DefaultProvidedInterface,
+    [UMLSymbols.requiredInterface]: DefaultProvidedInterfaceProperty
 };
 
 export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] } = {
@@ -294,7 +313,10 @@ export const GEOMETRY_WITHOUT_TEXT = [
     UMLSymbols.activation,
     UMLSymbols.deletion,
     UMLSymbols.port,
-    UMLSymbols.branchMerge
+    UMLSymbols.branchMerge,
+    UMLSymbols.assembly,
+    UMLSymbols.providedInterface,
+    UMLSymbols.requiredInterface
 ] as GeometryShapes[];
 
 export const GEOMETRY_WITH_MULTIPLE_TEXT = [UMLSymbols.package, UMLSymbols.combinedFragment];
