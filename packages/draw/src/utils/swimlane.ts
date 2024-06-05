@@ -1,12 +1,13 @@
 import { idCreator, Point, RectangleClient } from '@plait/core';
-import { DEFAULT_TEXT_HEIGHT, DrawPointerType, DefaultSwimlanePropertyMap } from '../constants';
-import { PlaitDrawElement, PlaitSwimlane, SwimlaneSymbols } from '../interfaces';
+import { DEFAULT_TEXT_HEIGHT, DefaultSwimlanePropertyMap } from '../constants';
+import { PlaitDrawElement, PlaitSwimlane, PlaitTableCell, SwimlaneDrawSymbols, SwimlaneSymbols } from '../interfaces';
+import { Alignment } from '@plait/text';
 
 export function buildSwimlaneTable(element: PlaitSwimlane) {
     const swimlaneElement = { ...element };
     if (PlaitDrawElement.isHorizontalSwimlane(element)) {
         swimlaneElement.cells = element.cells.map((item, index) => {
-            if (index === 0) {
+            if (index === 0 && element.header) {
                 item = {
                     ...element.cells[0],
                     rowspan: element.rows.length
@@ -23,113 +24,117 @@ export function buildSwimlaneTable(element: PlaitSwimlane) {
             }
             return item;
         });
+
         return swimlaneElement;
     }
-    swimlaneElement.cells = [
-        {
-            ...element.cells[0],
-            colspan: element.columns.length
-        },
-        ...element.cells.slice(1, element.cells.length)
-    ];
+    if (element.header) {
+        swimlaneElement.cells = [
+            {
+                ...element.cells[0],
+                colspan: element.columns.length
+            },
+            ...element.cells.slice(1, element.cells.length)
+        ];
+    }
     return swimlaneElement;
 }
 
-export const getDefaultSWimlanePoints = (pointer: DrawPointerType, centerPoint: Point) => {
+export const getDefaultSwimlanePoints = (pointer: SwimlaneDrawSymbols, centerPoint: Point) => {
     const property = DefaultSwimlanePropertyMap[pointer];
     return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
 };
 
-export const createDefaultSwimlane = (shape: SwimlaneSymbols, points: [Point, Point]) => {
-    const rows = createDefaultRowsOrColumns(shape, 'row');
-    const columns = createDefaultRowsOrColumns(shape, 'column');
+export const createDefaultSwimlane = (shape: SwimlaneDrawSymbols, points: [Point, Point]) => {
+    const header = isSwimlaneWithHeader(shape);
+    const dataShape = adjustSwimlaneShape(shape);
+    const rows = createDefaultRowsOrColumns(dataShape, 'row', header);
+    const columns = createDefaultRowsOrColumns(dataShape, 'column', header);
     const swimlane = {
         id: idCreator(),
         type: 'swimlane',
-        shape,
+        shape: dataShape,
         points,
         rows,
         columns,
-        cells: createDefaultCells(shape, rows, columns)
+        header,
+        cells: createDefaultCells(dataShape, rows, columns, header)
     } as PlaitSwimlane;
     return swimlane;
 };
 
-export const createDefaultRowsOrColumns = (shape: SwimlaneSymbols, type: 'row' | 'column') => {
-    let data = new Array(3).fill('').map(item => {
-        return { id: idCreator() };
-    });
-    if (type === 'row' && shape === SwimlaneSymbols.swimlaneVertical) {
+export const createDefaultRowsOrColumns = (shape: SwimlaneSymbols, type: 'row' | 'column', header: boolean) => {
+    const createItems = (count: number) => new Array(count).fill('').map(() => ({ id: idCreator() }));
+    let data = createItems(3);
+    if (
+        (type === 'row' && shape === SwimlaneSymbols.swimlaneVertical) ||
+        (type === 'column' && shape === SwimlaneSymbols.swimlaneHorizontal)
+    ) {
+        data = header ? data : createItems(2);
+        const dimension = type === 'row' ? 'height' : 'width';
         data = data.map((item, index) => {
-            if (index === 0 || index === 1) {
+            if (index === 0 || (index === 1 && header)) {
                 return {
                     ...item,
-                    height: 30
+                    [dimension]: 42
                 };
             }
             return item;
         });
     }
-    if (type === 'column' && shape === SwimlaneSymbols.swimlaneHorizontal) {
-        data = data.map((item, index) => {
-            if (index === 0 || index === 1) {
-                return {
-                    ...item,
-                    width: 30
-                };
-            }
-            return item;
-        });
-    }
+
     return data;
 };
 
 export const createDefaultCells = (
     shape: SwimlaneSymbols,
     rows: { id: string; height?: number }[],
-    columns: { id: string; width?: number }[]
+    columns: { id: string; width?: number }[],
+    header: boolean
 ) => {
-    return new Array(7).fill('').map((item, index) => {
-        if (index === 0) {
-            item = {
-                id: idCreator(),
-                rowId: rows[0].id,
-                columnId: columns[0].id,
-                textHeight: DEFAULT_TEXT_HEIGHT,
-                text: {
-                    children: [
-                        {
-                            text: 'New Swimlane'
-                        }
-                    ],
-                    align: 'center'
-                }
+    const createCell = (rowId: string, columnId: string, text: string | null = null) => {
+        const cell: PlaitTableCell = {
+            id: idCreator(),
+            rowId,
+            columnId
+        };
+        if (text !== null) {
+            cell['textHeight'] = DEFAULT_TEXT_HEIGHT;
+            cell['text'] = {
+                children: [{ text }],
+                align: Alignment.center
             };
         }
-        if ([1, 2, 3].includes(index)) {
-            item = {
-                id: idCreator(),
-                rowId: shape === SwimlaneSymbols.swimlaneVertical ? rows[1].id : rows[index - 1].id,
-                columnId: shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 1].id : columns[1].id,
-                textHeight: DEFAULT_TEXT_HEIGHT,
-                text: {
-                    children: [
-                        {
-                            text: 'Lane'
-                        }
-                    ],
-                    align: 'center'
-                }
-            };
+        return cell;
+    };
+    const numCells = header ? 7 : 6;
+    return new Array(numCells).fill('').map((_, index) => {
+        if (header) {
+            if (index === 0) {
+                return createCell(rows[0].id, columns[0].id, 'New Swimlane');
+            }
+            if ([1, 2, 3].includes(index)) {
+                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[1].id : rows[index - 1].id;
+                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 1].id : columns[1].id;
+                return createCell(rowId, columnId, 'Lane');
+            }
+            if ([4, 5, 6].includes(index)) {
+                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[2].id : rows[index - 4].id;
+                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 4].id : columns[2].id;
+                return createCell(rowId, columnId);
+            }
+        } else {
+            if ([0, 1, 2].includes(index)) {
+                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[0].id : rows[index].id;
+                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index].id : columns[0].id;
+                return createCell(rowId, columnId, 'New Swimlane');
+            }
+            if ([3, 4, 5].includes(index)) {
+                const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[1].id : rows[index - 3].id;
+                const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 3].id : columns[1].id;
+                return createCell(rowId, columnId);
+            }
         }
-        if ([4, 5, 6].includes(index)) {
-            item = {
-                id: idCreator(),
-                rowId: shape === SwimlaneSymbols.swimlaneVertical ? rows[2].id : rows[index - 4].id,
-                columnId: shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 4].id : columns[2].id
-            };
-        }
-        return item;
+        return '';
     });
 };
 
@@ -141,4 +146,14 @@ export const getSwimlaneCount = (swimlane: PlaitSwimlane) => {
         return swimlane.columns.length;
     }
     return 0;
+};
+
+export const isSwimlaneWithHeader = (shape: SwimlaneDrawSymbols) => {
+    return [SwimlaneDrawSymbols.swimlaneHorizontalWithHeader, SwimlaneDrawSymbols.swimlaneVerticalWithHeader].includes(shape);
+};
+
+export const adjustSwimlaneShape = (shape: SwimlaneDrawSymbols): SwimlaneSymbols => {
+    return [SwimlaneDrawSymbols.swimlaneHorizontalWithHeader, SwimlaneDrawSymbols.swimlaneHorizontal].includes(shape)
+        ? SwimlaneSymbols.swimlaneHorizontal
+        : SwimlaneSymbols.swimlaneVertical;
 };

@@ -142,11 +142,13 @@ const createNewSwimlaneCells = (swimlane: PlaitSwimlane, newId: string, type: 'r
         rowId: type === 'row' ? item.id : newId,
         columnId: type === 'row' ? newId : item.id
     }));
-    cells.shift();
+    if (swimlane.header) {
+        cells.shift();
+    }
     cells[0] = {
         ...cells[0],
         text: {
-            children: [{ text: 'Lane' }],
+            children: [{ text: swimlane.header ? 'Lane' : 'New Swimlane' }],
             align: Alignment.center,
             direction: type === 'row' ? undefined : 'vertical'
         },

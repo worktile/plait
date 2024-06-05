@@ -5,9 +5,17 @@ export enum SwimlaneSymbols {
     swimlaneHorizontal = 'swimlaneHorizontal'
 }
 
+export enum SwimlaneDrawSymbols {
+    swimlaneVertical = 'swimlaneVertical',
+    swimlaneHorizontal = 'swimlaneHorizontal',
+    swimlaneVerticalWithHeader = 'swimlaneVerticalWithHeader',
+    swimlaneHorizontalWithHeader = 'swimlaneHorizontalWithHeader'
+}
+
 export interface PlaitSwimlane extends PlaitBaseTable {
     type: 'swimlane';
     shape: SwimlaneSymbols;
+    header?: boolean;
 }
 
 export interface PlaitSwimlaneVertical extends PlaitSwimlane {

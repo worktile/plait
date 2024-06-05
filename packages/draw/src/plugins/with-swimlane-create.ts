@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, RectangleClient, createG, preventTouchMove, toHostPoint, toViewBoxPoint } from '@plait/core';
-import { PlaitSwimlane, SwimlaneSymbols } from '../interfaces';
+import { PlaitSwimlane, SwimlaneDrawSymbols } from '../interfaces';
 import { insertElement } from '../utils';
 import { getSwimlanePointers } from '../constants';
 import {
@@ -13,7 +13,7 @@ import { TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
 import { getSnapResizingRef } from '../utils/snap-resizing';
 import { TableGenerator } from '../generators/table.generator';
-import { createDefaultSwimlane, getDefaultSWimlanePoints } from '../utils/swimlane';
+import { createDefaultSwimlane, getDefaultSwimlanePoints } from '../utils/swimlane';
 
 export interface FakeCreateTextRef {
     g: SVGGElement;
@@ -48,10 +48,10 @@ export const withSwimlaneCreateByDrag = (board: PlaitBoard) => {
         const tableGenerator = new TableGenerator(board);
         const dragMode = isSwimlaneDndMode(board);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const pointer = PlaitBoard.getPointer(board) as SwimlaneSymbols;
+        const pointer = PlaitBoard.getPointer(board) as SwimlaneDrawSymbols;
 
         if (dragMode) {
-            const points = getDefaultSWimlanePoints(pointer, movingPoint);
+            const points = getDefaultSwimlanePoints(pointer, movingPoint);
             temporaryElement = createDefaultSwimlane(pointer, points);
             tableGenerator.processDrawing(temporaryElement, swimlaneG);
             PlaitBoard.getElementActiveHost(board).append(swimlaneG);
@@ -116,7 +116,7 @@ export const withSwimlaneCreateByDrawing = (board: PlaitBoard) => {
         swimlaneG = createG();
         const tableGenerator = new TableGenerator(board);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const pointer = PlaitBoard.getPointer(board) as SwimlaneSymbols;
+        const pointer = PlaitBoard.getPointer(board) as SwimlaneDrawSymbols;
         snapG?.remove();
         if (start && isSwimlaneDrawingMode(board)) {
             let points: [Point, Point] = normalizeShapePoints([start, movingPoint], isShift);
@@ -145,8 +145,8 @@ export const withSwimlaneCreateByDrawing = (board: PlaitBoard) => {
             const targetPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const { width, height } = RectangleClient.getRectangleByPoints([start!, targetPoint]);
             if (Math.hypot(width, height) < 8) {
-                const pointer = PlaitBoard.getPointer(board) as SwimlaneSymbols;
-                const points = getDefaultSWimlanePoints(pointer, targetPoint);
+                const pointer = PlaitBoard.getPointer(board) as SwimlaneDrawSymbols;
+                const points = getDefaultSwimlanePoints(pointer, targetPoint);
                 temporaryElement = createDefaultSwimlane(pointer, points);
             }
             if (temporaryElement) {
