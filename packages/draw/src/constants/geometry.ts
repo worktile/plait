@@ -1,12 +1,6 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
 import { Alignment } from '@plait/text';
-import {
-    BasicShapes,
-    FlowchartSymbols,
-    GeometryShapes,
-    MultipleTextGeometryCommonTextKeys,
-    UMLSymbols
-} from '../interfaces';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, MultipleTextGeometryCommonTextKeys, UMLSymbols } from '../interfaces';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -153,6 +147,11 @@ export const DefaultObjectProperty = {
     height: 60
 };
 
+export const DefaultComponentBoxProperty = {
+    width: 200,
+    height: 150
+};
+
 export const DefaultDeletionProperty = {
     width: 40,
     height: 40
@@ -257,6 +256,9 @@ export const DefaultUMLPropertyMap = {
     [UMLSymbols.deletion]: DefaultDeletionProperty,
     [UMLSymbols.activityClass]: DefaultObjectProperty,
     [UMLSymbols.simpleClass]: DefaultObjectProperty,
+    [UMLSymbols.component]: DefaultMultiDocumentProperty,
+    [UMLSymbols.template]: DefaultMultiDocumentProperty,
+    [UMLSymbols.componentBox]: DefaultComponentBoxProperty,
     [UMLSymbols.port]: DefaultPortProperty,
     [UMLSymbols.branchMerge]: DefaultDeletionProperty
 };
@@ -265,7 +267,6 @@ export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] 
     [UMLSymbols.package]: Object.keys(MultipleTextGeometryCommonTextKeys),
     [UMLSymbols.combinedFragment]: Object.keys(MultipleTextGeometryCommonTextKeys)
 };
-
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
 

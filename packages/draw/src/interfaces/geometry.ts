@@ -54,7 +54,6 @@ export enum FlowchartSymbols {
     display = 'display'
 }
 
-
 export enum UMLSymbols {
     actor = 'actor',
     useCase = 'useCase',
@@ -69,6 +68,9 @@ export enum UMLSymbols {
     class = 'class',
     interface = 'interface',
     object = 'object',
+    component = 'component',
+    componentBox = 'componentBox',
+    template = 'template',
     activation = 'activation',
     deletion = 'deletion'
 }
