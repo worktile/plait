@@ -36,8 +36,6 @@ export class TextManage {
 
     textComponentRef!: TextComponentRef;
 
-    exitCallback?: (() => void) | null;
-
     constructor(
         private board: PlaitBoard,
         private options: {
@@ -80,9 +78,6 @@ export class TextManage {
                     this.options.onChange && this.options.onChange(sizeData);
                     MERGING.set(this.board, true);
                 }
-            },
-            onExitEdit: () => {
-                this.exitCallback && this.exitCallback();
             }
         };
         this.textComponentRef = ((this.board as unknown) as PlaitTextBoard).renderText(this.foreignObject, props);
@@ -150,10 +145,8 @@ export class TextManage {
                 readonly: true
             };
             this.textComponentRef.update(props);
-            this.exitCallback = null;
             this.isEditing = false;
         };
-        this.exitCallback = exitCallback;
         return exitCallback;
     }
 

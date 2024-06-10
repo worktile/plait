@@ -25,7 +25,6 @@ export interface TextProps {
     onChange?: (data: TextChangeData) => void;
     afterInit?: (data: Editor) => void;
     onComposition?: (data: CompositionEvent) => void;
-    onExitEdit?: () => void;
 }
 
 export type TextChangeData = { newText: SlateElement; operations: Operation[] };
