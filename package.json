@@ -6,14 +6,16 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "build": "npm run build:core && npm run build:text && npm run build:common && ng build layouts && npm run build:mind && npm run build:flow && npm run build:draw",
+        "build": "npm run build:core && npm run build:common && npm run build:text-plugins && ng build layouts && npm run build:mind && npm run build:flow && npm run build:draw && npm run build:angular-text && npm run build:angular-board",
         "build:docs": "docgeni build",
         "build:core": "ng build core && cpx \"./packages/core/src/**/*.scss\" ./dist/core/",
+        "build:angular-board": "ng build angular-board && cpx \"./packages/angular-board/src/**/*.scss\" ./dist/angular-board/",
         "build:mind": " ng build mind && cpx \"./packages/mind/src/**/*.scss\" ./dist/mind/",
-        "build:text": "ng build text && cpx \"./packages/text/src/**/*.scss\" ./dist/text/",
+        "build:angular-text": "ng build angular-text && cpx \"./packages/angular-text/src/**/*.scss\" ./dist/angular-text/",
         "build:flow": "ng build flow && cpx \"./packages/flow/src/**/*.scss\" ./dist/flow/",
         "build:draw": "ng build draw && cpx \"./packages/draw/src/**/*.scss\" ./dist/draw/",
         "build:common": "ng build common",
+        "build:text-plugins": "ng build text-plugins",
         "build:demo": "ng build demo --configuration production",
         "pub:core": "cd dist/core && npm publish --access public",
         "pub:text": "cd dist/text && npm publish --access public",
@@ -32,7 +34,8 @@
         "start:docs": "docgeni serve --port 4600",
         "ci:test": "ng test --watch=false --progress=false --browsers=ChromeHeadlessCI",
         "lint": "ng lint --fix",
-        "pretty": "pretty-quick --staged"
+        "pretty": "pretty-quick --staged",
+        "copy-files": "cp -r dist/* ../plait-board-template/node_modules/@plait"
     },
     "private": true,
     "repository": {

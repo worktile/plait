@@ -1,6 +1,7 @@
 import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
-import { CustomText, PlaitMarkEditor, TextManage } from '@plait/text';
-import { Editor, Node } from 'slate';
+import { Editor, Node, Element } from 'slate';
+import { TextManage } from '../text/text-manage';
+import { Alignment, CustomText, ParagraphElement } from '../text/types';
 
 export const getTextManages = (element: PlaitElement) => {
     return ELEMENT_TO_TEXT_MANAGES.get(element) || [];
@@ -16,7 +17,7 @@ export const getFirstTextManage = (element: PlaitElement) => {
 
 export const getTextEditorsByElement = (element: PlaitElement) => {
     return getTextManages(element).map(manage => {
-        return manage.componentRef.instance.editor;
+        return manage.editor;
     });
 };
 
@@ -38,21 +39,6 @@ export const findFirstTextEditor = (board: PlaitBoard) => {
         }
     });
     return firstEditor;
-};
-
-export const getTextMarksByElement = (element: PlaitElement) => {
-    const editors = getTextEditorsByElement(element);
-    const editor = editors[0];
-    if (!editor) {
-        return {};
-    }
-    if (editor.children.length === 0) {
-        const textManage = getTextManages(element)[0];
-        const currentMarks: Omit<CustomText, 'text'> = PlaitMarkEditor.getMarksByElement(textManage.componentRef.instance.children[0]);
-        return currentMarks;
-    }
-    const currentMarks: Omit<CustomText, 'text'> = PlaitMarkEditor.getMarks(editor);
-    return currentMarks;
 };
 
 export const getElementsText = (elements: PlaitElement[]) => {
@@ -86,10 +72,10 @@ export const getTextEditors = (board: PlaitBoard, elements?: PlaitElement[]) => 
         });
         const editingTextManage = textManages.find(textManage => textManage.isEditing);
         if (editingTextManage) {
-            return [editingTextManage.componentRef.instance.editor];
+            return [editingTextManage.editor];
         }
         return textManages.map(item => {
-            return item.componentRef.instance.editor;
+            return item.editor;
         });
     }
     return undefined;
@@ -103,9 +89,28 @@ export const getEditingTextEditor = (board: PlaitBoard, elements?: PlaitElement[
     });
     const editingTextManage = textManages.find(textManage => textManage.isEditing);
     if (editingTextManage) {
-        return editingTextManage.componentRef.instance.editor;
+        return editingTextManage.editor;
     }
     return undefined;
+};
+
+export const buildText = (text: string | Element, align?: Alignment, properties?: Partial<CustomText>) => {
+    properties = properties || {};
+    const plaitText = typeof text === 'string' ? { children: [{ text, ...properties }] } : text;
+    if (align) {
+        (plaitText as ParagraphElement).align = align;
+    }
+    return plaitText;
+};
+
+export const getLineHeightByFontSize = (fontSize: number) => {
+    if (fontSize === 14) {
+        return 20;
+    }
+    if (fontSize === 18) {
+        return 25;
+    }
+    return fontSize * 1.5;
 };
 
 export const ELEMENT_TO_TEXT_MANAGES: WeakMap<PlaitElement, TextManage[]> = new WeakMap();

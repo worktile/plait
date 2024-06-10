@@ -1,5 +1,5 @@
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" [plaitTheme]="theme"
-    [plaitOptions]="options" (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
+    [plaitOptions]="options" (plaitBoardInitialized)="plaitBoardInitialized($event)" (onChange)="change($event)">
     <div class="plait-toolbar island plait-board-attached theme-setting-toolbar">
         <select (change)="themeChange($event)">
             <option value="default">默认</option>

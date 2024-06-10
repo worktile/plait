@@ -31,7 +31,7 @@ import {
     PlaitMultipleTextGeometry,
     PlaitShapeElement
 } from '../interfaces';
-import { getTextEditorsByElement } from '@plait/common';
+import { Alignment, getTextEditorsByElement } from '@plait/common';
 import { isCellIncludeText } from './table';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
@@ -43,7 +43,6 @@ import { getHitConnectorPoint } from './line';
 import { getNearestPoint, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { PlaitDrawShapeText } from '../generators/text.generator';
-import { Alignment } from '@plait/text';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);

@@ -1,11 +1,11 @@
 import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces/element';
-import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { editTopic } from './node/common';
 import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './node/create-node';
 import { MindNode } from '../interfaces/node';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants/node-topic-style';
+import { TEXT_DEFAULT_HEIGHT } from '@plait/text-plugins';
 
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {

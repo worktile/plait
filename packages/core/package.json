@@ -2,19 +2,14 @@
     "name": "@plait/core",
     "version": "0.61.0",
     "peerDependencies": {
-        "@angular/common": "^17.2.4",
-        "@angular/core": "^17.2.4",
-        "is-hotkey": "^0.2.0"
+        "immer": "^10.0.3",
+        "is-hotkey": "^0.2.0",
+        "rxjs": "~7.8.0",
+        "roughjs": "^4.5.2",
+        "slate": "^0.101.5"
     },
     "dependencies": {
         "tslib": "^2.3.0"
     },
-    "exports": {
-        "./styles/styles": {
-            "sass": "./styles/styles.scss"
-        },
-        "./styles/*": {
-            "sass": "./styles/*"
-        }
-    }
+    "exports": {}
 }

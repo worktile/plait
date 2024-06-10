@@ -16,14 +16,20 @@
       "@plait/core": [
         "dist/core"
       ],
-      "@plait/text": [
-        "dist/text"
+      "@plait/angular-board": [
+        "dist/angular-board"
+      ],
+      "@plait/angular-text": [
+        "dist/angular-text"
       ],
       "@plait/draw": [
         "dist/draw"
       ],
       "@plait/common": [
         "dist/common"
+      ],
+      "@plait/text-plugins": [
+        "dist/text-plugins"
       ]
     },
     "outDir": "./dist/out-tsc",

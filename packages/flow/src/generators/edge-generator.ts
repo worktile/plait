@@ -1,19 +1,17 @@
-import { createG } from '@plait/core';
+import { PlaitBoard, createG } from '@plait/core';
 import { Generator, GeneratorOptions } from '@plait/common';
 import { EdgeStableState, EdgeState, FlowEdge } from '../interfaces/edge';
 import { drawEdgeMarkers, drawEdgeRoute } from '../draw/edge';
-import { PlaitFlowBoard } from '../interfaces';
-import { ViewContainerRef } from '@angular/core';
 import { drawEdgeHandles } from '../draw/handle';
 
 export interface EdgeData {
     state: EdgeState;
 }
 
-export class EdgeGenerator extends Generator<FlowEdge, EdgeData, GeneratorOptions, PlaitFlowBoard> {
+export class EdgeGenerator extends Generator<FlowEdge, EdgeData, GeneratorOptions, PlaitBoard> {
     static key = 'edge-generator';
 
-    constructor(board: PlaitFlowBoard, public viewContainerRef: ViewContainerRef) {
+    constructor(board: PlaitBoard) {
         super(board, { prepend: true });
     }
 

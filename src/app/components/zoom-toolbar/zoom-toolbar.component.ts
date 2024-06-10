@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
-import { BoardTransforms, OnBoardChange, PlaitIslandBaseComponent } from '@plait/core';
+import { BoardTransforms } from '@plait/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { OnBoardChange, PlaitIslandBaseComponent } from '@plait/angular-board';
 
 @Component({
     selector: 'app-zoom-toolbar',

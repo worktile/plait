@@ -1,11 +1,12 @@
 import { PlaitBoard, PlaitOptionsBoard, PlaitPlugin, PlaitPluginElementContext } from '@plait/core';
-import { FlowElement, FlowNode, PlaitFlowBoard, FlowPluginOptions, FlowPluginKey } from '@plait/flow';
+import { FlowElement, FlowNode, FlowPluginOptions, FlowPluginKey, PlaitFlowLabelIconBoard, LabelIconProps } from '@plait/flow';
 import { CustomFlowNodeComponent } from '../custom-node.component';
 import { IconComponent } from '../icon.component';
 import { WorkflowType } from '../flow-data';
+import { AngularBoard } from '@plait/angular-board';
 
 export const withDraw: PlaitPlugin = (board: PlaitBoard) => {
-    const newBoard = board as PlaitBoard & PlaitFlowBoard;
+    const newBoard = board as PlaitBoard & PlaitFlowLabelIconBoard & AngularBoard;
 
     const { drawElement } = board;
 
@@ -18,8 +19,9 @@ export const withDraw: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    newBoard.drawLabelIcon = () => {
-        return IconComponent;
+    newBoard.renderLabelIcon = (container: Element | DocumentFragment, props: LabelIconProps) => {
+        const { ref } = newBoard.renderComponent(IconComponent, container, props);
+        return ref;
     };
 
     (board as PlaitOptionsBoard).setPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions, {

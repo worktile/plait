@@ -1,8 +1,8 @@
 import { idCreator, PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitBaseTable, PlaitTable, PlaitTableBoard, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
-import { DEFAULT_TEXT_HEIGHT } from '../constants';
-import { Alignment } from '@plait/text';
+import { Alignment } from '@plait/common';
+import { TEXT_DEFAULT_HEIGHT } from '@plait/text-plugins';
 
 export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): PlaitTableCellWithPoints[] {
     const table = (board as PlaitTableBoard).buildTable(element);
@@ -163,7 +163,7 @@ export const createCell = (rowId: string, columnId: string, text: string | null 
         columnId
     };
     if (text !== null) {
-        cell['textHeight'] = DEFAULT_TEXT_HEIGHT;
+        cell['textHeight'] = TEXT_DEFAULT_HEIGHT;
         cell['text'] = {
             children: [{ text }],
             align: Alignment.center

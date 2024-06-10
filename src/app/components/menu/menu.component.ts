@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef } from '@angular/core';
-import { PlaitBoard, PlaitIslandBaseComponent, ToImageOptions, getSelectedElements, toImage } from '@plait/core';
+import { PlaitBoard, ToImageOptions, getSelectedElements, toImage } from '@plait/core';
 import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
 import { closeAction } from '../../utils/popover';
+import { PlaitIslandBaseComponent } from '@plait/angular-board';
 
 @Component({
     selector: 'app-menu',

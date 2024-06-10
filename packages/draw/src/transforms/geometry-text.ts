@@ -2,8 +2,9 @@ import { PlaitBoard, Point, Transforms, hasValidAngle, RectangleClient } from '@
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
 import { ShapeDefaultSpace } from '../constants';
-import { AlignEditor, Alignment } from '@plait/text';
-import { getFirstTextEditor, resetPointsAfterResize } from '@plait/common';
+import { Alignment, getFirstTextEditor, resetPointsAfterResize } from '@plait/common';
+import { AlignEditor } from '@plait/text-plugins';
+import { MIN_TEXT_WIDTH } from '../constants/text';
 
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
     let points = element.points;
@@ -11,21 +12,22 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: numbe
     const defaultSpace = ShapeDefaultSpace.rectangleAndText;
 
     if (autoSize) {
+        const newWidth = width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : width;
         const editor = getFirstTextEditor(element);
         if (AlignEditor.isActive(editor, Alignment.right)) {
             points = [
-                [points[1][0] - (width + defaultSpace * 2), points[0][1]],
+                [points[1][0] - (newWidth + defaultSpace * 2), points[0][1]],
                 [points[1][0], points[0][1] + textHeight]
             ];
         } else if (AlignEditor.isActive(editor, Alignment.center)) {
             const oldWidth = Math.abs(points[0][0] - points[1][0]);
-            const offset = (width - oldWidth) / 2;
+            const offset = (newWidth - oldWidth) / 2;
             points = [
                 [points[0][0] - offset - defaultSpace, points[0][1]],
                 [points[1][0] + offset + defaultSpace, points[0][1] + textHeight]
             ];
         } else {
-            points = [points[0], [points[0][0] + width + defaultSpace * 2, points[0][1] + textHeight]];
+            points = [points[0], [points[0][0] + newWidth + defaultSpace * 2, points[0][1] + textHeight]];
         }
         if (hasValidAngle(element)) {
             points = resetPointsAfterResize(

@@ -1,14 +1,10 @@
-import { ComponentType, PlaitBoard, PlaitContextService, PlaitElement } from '@plait/core';
-import { ImageBaseComponent } from '../core/image-base.component';
+import { ComponentType, PlaitBoard, PlaitElement } from '@plait/core';
+import { ImageBaseComponent } from '../image/image-base.component';
 
 export interface CommonImageItem {
     url: string;
     width: number;
     height: number;
-}
-
-export interface WithCommonPluginOptions {
-    imageComponentType?: ComponentType<ImageBaseComponent>;
 }
 
 export const selectImage = (
@@ -42,7 +38,7 @@ export const buildImage = async (
 
     let imageItem = null;
     const url = URL.createObjectURL(imageFile);
-    const context = PlaitBoard.getComponent(board).viewContainerRef.injector.get(PlaitContextService);
+    const context = PlaitBoard.getBoardContext(board);
     context.setUploadingFile({ url, file: imageFile });
 
     imageItem = {

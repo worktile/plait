@@ -3,7 +3,6 @@ import { getEdgesByNodeId } from './get-edges-by-node';
 import { EdgeGenerator } from '../../generators/edge-generator';
 import { EdgeStableState, EdgeState, FlowEdge } from '../../interfaces/edge';
 import { EdgeElementRef } from '../../core/edge-ref';
-import { PlaitFlowBoard } from '../../interfaces';
 import { EdgeLabelGenerator } from '../../generators/edge-label-generator';
 
 export const updateRelatedEdgeHighlight = (board: PlaitBoard, nodeId: string, highlight: boolean) => {
@@ -52,7 +51,7 @@ export const renderRelatedEdges = (board: PlaitBoard, nodeId: string, state?: Ed
 
 export const renderEdgeOnDragging = (board: PlaitBoard, edge: FlowEdge) => {
     const edgeRef = PlaitElement.getElementRef<EdgeElementRef>(edge);
-    edgeRef.buildPathPoints(board as PlaitFlowBoard, edge);
+    edgeRef.buildPathPoints(board, edge);
     const edgeGenerator = edgeRef.getGenerator<EdgeGenerator>(EdgeGenerator.key);
     const edgeLabelGenerator = edgeRef.getGenerator<EdgeLabelGenerator>(EdgeLabelGenerator.key);
     const state = edgeRef.getState();

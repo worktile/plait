@@ -7,9 +7,9 @@ import {
     isDndMode,
     isDrawingMode,
     getDirectionFactorByDirectionComponent,
-    getUnitVectorByPointAndPoint
+    getUnitVectorByPointAndPoint,
+    TextManage
 } from '@plait/common';
-import { TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
 import { getSnapResizingRef } from '../utils/snap-resizing';
 import { TableGenerator } from '../generators/table.generator';

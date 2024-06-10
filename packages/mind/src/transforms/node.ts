@@ -11,9 +11,8 @@ import { AbstractNode } from '@plait/layouts';
 
 const normalizeWidthAndHeight = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
     const minWidth = NodeSpace.getNodeTopicMinWidth(board, element);
-    const newWidth = width < minWidth * board.viewport.zoom ? minWidth : width / board.viewport.zoom;
-    const newHeight = height / board.viewport.zoom;
-    return { width: Math.ceil(newWidth), height: newHeight };
+    const newWidth = width < minWidth ? minWidth : width;
+    return { width: Math.ceil(newWidth), height };
 };
 
 export const setTopic = (board: PlaitMindBoard, element: MindElement, topic: Element, width: number, height: number) => {

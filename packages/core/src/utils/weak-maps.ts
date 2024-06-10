@@ -1,11 +1,11 @@
 import { RoughSVG } from 'roughjs/bin/svg';
-import { BoardComponentInterface } from '../board/board.component.interface';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Ancestor, PlaitNode } from '../interfaces/node';
 import { PathRef } from '../interfaces/path-ref';
 import { PlaitElementRef } from '../core/element/element-ref';
+import { PlaitBoardContext } from '../context';
 
 // record richtext type status
 export const IS_BOARD_CACHE = new WeakMap<Object, boolean>();
@@ -26,11 +26,11 @@ export const BOARD_TO_ON_CHANGE = new WeakMap<PlaitBoard, () => void>();
 
 export const BOARD_TO_AFTER_CHANGE = new WeakMap<PlaitBoard, () => void>();
 
-export const BOARD_TO_COMPONENT = new WeakMap<PlaitBoard, BoardComponentInterface>();
-
 export const BOARD_TO_ROUGH_SVG = new WeakMap<PlaitBoard, RoughSVG>();
 
 export const BOARD_TO_HOST = new WeakMap<PlaitBoard, SVGSVGElement>();
+
+export const BOARD_TO_CONTEXT = new WeakMap<PlaitBoard, PlaitBoardContext>();
 
 export const IS_BOARD_ALIVE = new WeakMap<PlaitBoard, boolean>();
 

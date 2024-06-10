@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef } from '@angular/core';
 import { BoardCreationMode, CommonImageItem, getElementOfFocusedImage, selectImage, setCreationMode } from '@plait/common';
-import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, getSelectedElements } from '@plait/core';
+import { BoardTransforms, PlaitBoard, PlaitPointerType, getSelectedElements } from '@plait/core';
 import {
     DrawPointerType,
     DrawTransforms,
@@ -15,6 +15,7 @@ import { MindElement, MindPointerType, MindTransforms } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
 import { closeAction } from '../../utils/popover';
+import { PlaitIslandBaseComponent } from '@plait/angular-board';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | LineShape;
 

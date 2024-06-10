@@ -1,17 +1,18 @@
 import { FlowEdge } from '../../interfaces/edge';
 import { PlaitBoard, PlaitOptionsBoard, RectangleClient } from '@plait/core';
 import { EDGE_LABEL_FONTSIZE, EDGE_LABEL_ICON_PADDING, EDGE_LABEL_PADDING } from '../../constants/edge';
-import { BaseText, Element } from 'slate';
-import { TEXT_DEFAULT_HEIGHT, getTextSize } from '@plait/text';
 import { getEdgeTextXYPosition } from './text';
 import { FlowPluginOptions, FlowPluginKey } from '../../interfaces/flow';
+import { DEFAULT_FONT_FAMILY, measureElement } from '@plait/common';
+import { TEXT_DEFAULT_HEIGHT } from '@plait/text-plugins';
 
-// 使用 getSizeByText，渲染 dom 获取文本宽度，频繁调用会有性能问题
 function getLabelTextRectangle(board: PlaitBoard, edge: FlowEdge): RectangleClient {
-    const text = ((edge.data?.text as Element).children[0] as BaseText).text;
-    const labelTextWidth = getTextSize(board, text, undefined, { fontSize: EDGE_LABEL_FONTSIZE })?.width;
-    const { edgeLabelOptions } = (board as PlaitOptionsBoard).getPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions);
+    const { width: labelTextWidth } = measureElement(edge.data!.text!, {
+        fontSize: EDGE_LABEL_FONTSIZE,
+        fontFamily: DEFAULT_FONT_FAMILY
+    });
 
+    const { edgeLabelOptions } = (board as PlaitOptionsBoard).getPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions);
     const width = edgeLabelOptions.maxWidth
         ? labelTextWidth > edgeLabelOptions.maxWidth
             ? edgeLabelOptions.maxWidth

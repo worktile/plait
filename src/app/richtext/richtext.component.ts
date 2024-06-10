@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { Editor } from 'slate';
-import { PlaitRichtextComponent } from '../../../packages/text/src/richtext/richtext.component';
+import { PlaitTextComponent } from '../../../packages/angular-text/src/text/text.component';
+import { TextChangeData } from '@plait/common';
 
 @Component({
     selector: 'app-basic-richtext',
     templateUrl: './richtext.component.html',
     standalone: true,
-    imports: [PlaitRichtextComponent]
+    imports: [PlaitTextComponent]
 })
 export class BasicRichtextComponent {
     value = {
         children: [{ text: '富文本' }]
     };
-    onChange(event: Editor) {
-        console.log(event);
-    }
+
+    onChangeHandle = (data: TextChangeData) => {
+        console.log(data);
+    };
 }

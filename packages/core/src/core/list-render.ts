@@ -1,4 +1,3 @@
-import { IterableChangeRecord, IterableDiffer, IterableDiffers } from '@angular/core';
 import {
     Ancestor,
     ComponentType,
@@ -11,12 +10,14 @@ import {
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps';
 import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../utils/selected-element';
 import { ElementFlavour } from './element/element-flavour';
+import { DefaultIterableDiffer } from '../differs/default_iterable_differ';
+import { IterableChangeRecord, IterableDiffer } from '../differs/iterable_differs';
 
 export class ListRender {
     private children: PlaitElement[] = [];
     private instances: ElementFlavour[] = [];
     private contexts: PlaitPluginElementContext[] = [];
-    private differ: IterableDiffer<any> | null = null;
+    private differ: IterableDiffer<PlaitElement> | null = null;
     public initialized = false;
 
     constructor(private board: PlaitBoard) {}
@@ -29,12 +30,11 @@ export class ListRender {
             NODE_TO_PARENT.set(descendant, childrenContext.parent);
             const context = getContext(this.board, descendant, index, childrenContext.parent);
             const componentType = getComponentType(this.board, context);
-            const instance = createPluginComponent(this.board, componentType, context,  childrenContext);
+            const instance = createPluginComponent(this.board, componentType, context, childrenContext);
             this.instances.push(instance);
             this.contexts.push(context);
         });
-        const newDiffers = PlaitBoard.getViewContainerRef(this.board).injector.get(IterableDiffers);
-        this.differ = newDiffers.find(children).create(trackBy);
+        this.differ = new DefaultIterableDiffer<PlaitElement>(trackBy);
         this.differ.diff(children);
     }
 
@@ -126,8 +126,6 @@ const createPluginComponent = (
     context: PlaitPluginElementContext,
     childrenContext: PlaitChildrenContext
 ) => {
-    // const componentRef = PlaitBoard.getViewContainerRef(board).createComponent(componentType, { injector: PlaitBoard.getViewContainerRef(board).injector });
-    // const instance = componentRef.instance;
     const instance = new componentType();
     instance.context = context;
     instance.initialize();

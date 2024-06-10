@@ -1,7 +1,6 @@
 import { ThemeColorMode } from '../interfaces/theme';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
-import { PlaitPointerType } from '../interfaces/pointer';
 import { getRectangleByElements } from '../utils/element';
 import { distanceBetweenPointAndRectangle } from '../utils/math';
 import {
@@ -11,12 +10,12 @@ import {
     getViewportOrigination,
     initializeViewportContainer
 } from '../utils/viewport';
-import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { setViewport } from './viewport';
 import { depthFirstRecursion, getRealScrollBarWidth } from '../utils';
 import { PlaitElement } from '../interfaces/element';
 import { setTheme } from './theme';
 import { FitViewportOptions } from '../interfaces/viewport';
+import { PlaitPointerType } from '../interfaces/pointer';
 
 function updateViewport(board: PlaitBoard, origination: Point, zoom?: number) {
     zoom = zoom ?? board.viewport.zoom;
@@ -27,13 +26,6 @@ function updateViewport(board: PlaitBoard, origination: Point, zoom?: number) {
     });
     clearViewportOrigination(board);
 }
-
-const updatePointerType = <T extends string = PlaitPointerType>(board: PlaitBoard, pointer: T) => {
-    if (board.pointer === pointer) return;
-    board.pointer = pointer;
-    const boardComponent = BOARD_TO_COMPONENT.get(board);
-    boardComponent?.markForCheck();
-};
 
 function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
     newZoom = clampZoomLevel(newZoom);
@@ -133,6 +125,15 @@ function updateThemeColor(board: PlaitBoard, mode: ThemeColorMode) {
         board.applyTheme(element);
     });
 }
+
+const updatePointerType = <T extends string = PlaitPointerType>(board: PlaitBoard, pointer: T) => {
+    if (board.pointer === pointer) return;
+    const previousPointer = board.pointer;
+    board.pointer = pointer;
+    const boardContainer = PlaitBoard.getBoardContainer(board);
+    boardContainer.classList.remove(`pointer-${previousPointer}`);
+    boardContainer.classList.add(`pointer-${pointer}`);
+};
 
 export const BoardTransforms = {
     updatePointerType,

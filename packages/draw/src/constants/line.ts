@@ -14,3 +14,5 @@ export const LINE_AUTO_COMPLETE_HOVERED_OPACITY = 0.8;
 export const LINE_AUTO_COMPLETE_HOVERED_DIAMETER = 10;
 
 export const LINE_ALIGN_TOLERANCE = 3;
+
+export const LINE_TEXT = '文本';

@@ -1,0 +1,14 @@
+<slate-editable
+    #slateEditable
+    [editor]="editor"
+    [readonly]="readonly"
+    [(ngModel)]="children"
+    (ngModelChange)="valueChange()"
+    [keydown]="onKeydown"
+    [renderElement]="renderElement"
+    [compositionStart]="compositionStart"
+    [compositionUpdate]="compositionUpdate"
+    [compositionEnd]="compositionEnd"
+    [renderText]="renderText"
+    [ngClass]="{'editing': !readonly}"
+></slate-editable>
