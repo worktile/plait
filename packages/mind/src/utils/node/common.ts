@@ -4,7 +4,7 @@ import { getFirstTextManage } from '@plait/common';
 
 export function editTopic(element: MindElement) {
     const textManage = getFirstTextManage(element);
-    textManage.edit(() => {});
+    textManage?.edit(() => {});
 }
 
 export const getSelectedMindElements = (board: PlaitBoard, elements?: PlaitElement[]) => {

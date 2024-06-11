@@ -1,4 +1,4 @@
-import { CustomText, CustomElement } from './src/custom-types';
+import { CustomElement, CustomText } from "@plait/common";
 
 declare module 'slate' {
     interface CustomTypes {
