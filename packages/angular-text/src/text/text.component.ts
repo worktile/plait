@@ -73,7 +73,6 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log(changes);
     }
 
     ngOnInit(): void {
