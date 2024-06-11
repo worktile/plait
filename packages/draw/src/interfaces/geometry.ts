@@ -1,7 +1,6 @@
 import { PlaitElement, Point } from '@plait/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
-import { PlaitTable } from './table';
 import { PlaitDrawShapeText } from '../generators/text.generator';
 
 export enum BasicShapes {
@@ -55,15 +54,6 @@ export enum FlowchartSymbols {
     display = 'display'
 }
 
-export enum TableSymbols {
-    table = 'table'
-}
-
-export enum SwimlaneSymbols {
-    swimlaneVertical = 'swimlaneVertical',
-    swimlaneHorizontal = 'swimlaneHorizontal'
-}
-
 export enum UMLSymbols {
     actor = 'actor',
     useCase = 'useCase',
@@ -78,6 +68,9 @@ export enum UMLSymbols {
     class = 'class',
     interface = 'interface',
     object = 'object',
+    component = 'component',
+    componentBox = 'componentBox',
+    template = 'template',
     activation = 'activation',
     deletion = 'deletion',
     assembly = 'assembly',
@@ -90,22 +83,25 @@ export enum MultipleTextGeometryCommonTextKeys {
     content = 'content'
 }
 
-export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | UMLSymbols;
+export type GeometryShapes = BasicShapes | FlowchartSymbols | UMLSymbols;
 
 export type SwimlaneDirection = 'horizontal' | 'vertical';
 
-export interface PlaitCommonGeometry extends PlaitElement {
-    points: [Point, Point];
+export interface PlaitBaseGeometry extends PlaitElement {
     type: 'geometry';
+    points: [Point, Point];
     shape: GeometryShapes;
+}
 
+export interface PlaitCommonGeometry extends PlaitBaseGeometry {
     // node style attributes
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-    angle: number;
-    opacity: number;
+
+    angle?: number;
+    opacity?: number;
 }
 
 export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
@@ -127,18 +123,6 @@ export interface PlaitEllipse extends PlaitGeometry {
 
 export interface PlaitDiamond extends PlaitGeometry {
     shape: BasicShapes.diamond;
-}
-
-export interface PlaitSwimlane extends PlaitTable {
-    shape: SwimlaneSymbols;
-}
-
-export interface PlaitSwimlaneVertical extends PlaitSwimlane {
-    shape: SwimlaneSymbols.swimlaneVertical;
-}
-
-export interface PlaitSwimlaneHorizontal extends PlaitSwimlane {
-    shape: SwimlaneSymbols.swimlaneHorizontal;
 }
 
 export const PlaitGeometry = {};

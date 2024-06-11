@@ -1,13 +1,13 @@
-import { BasicShapes, FlowchartSymbols, LineShape, SwimlaneSymbols, TableSymbols, UMLSymbols } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, LineShape, SwimlaneDrawSymbols, TableSymbols, UMLSymbols } from '../interfaces';
 
-export type DrawPointerType = BasicShapes | LineShape | FlowchartSymbols | SwimlaneSymbols | TableSymbols | UMLSymbols;
+export type DrawPointerType = BasicShapes | LineShape | FlowchartSymbols | SwimlaneDrawSymbols | TableSymbols | UMLSymbols;
 
 export const getGeometryPointers = () => {
     return [...Object.keys(BasicShapes), ...Object.keys(FlowchartSymbols), ...Object.keys(UMLSymbols)];
 };
 
 export const getSwimlanePointers = () => {
-    return Object.keys(SwimlaneSymbols);
+    return Object.keys(SwimlaneDrawSymbols);
 };
 
 export const getBasicPointers = () => {

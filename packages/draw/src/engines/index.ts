@@ -58,9 +58,12 @@ import { CombinedFragmentEngine } from './uml/combined-fragment';
 import { DeletionEngine } from './uml/deletion';
 import { ActiveClassEngine } from './uml/activity-class';
 import { NoteEngine } from './uml/note';
-import { AssemblyEngine } from './uml/assembly-engine';
+import { AssemblyEngine } from './uml/assembly';
 import { RequiredInterfaceEngine } from './uml/required-interface';
 import { ProvidedInterfaceEngine } from './uml/provided-interface';
+import { ComponentEngine } from './uml/component';
+import { ComponentBoxEngine } from './uml/component-box';
+import { TemplateEngine } from './uml/template';
 
 const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -124,6 +127,9 @@ const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [UMLSymbols.deletion]: DeletionEngine,
     [UMLSymbols.activityClass]: ActiveClassEngine,
     [UMLSymbols.simpleClass]: RectangleEngine,
+    [UMLSymbols.component]: ComponentEngine,
+    [UMLSymbols.componentBox]: ComponentBoxEngine,
+    [UMLSymbols.template]: TemplateEngine,
     [UMLSymbols.port]: RectangleEngine,
     [UMLSymbols.branchMerge]: DiamondEngine,
     [UMLSymbols.assembly]: AssemblyEngine,

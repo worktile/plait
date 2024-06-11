@@ -9,7 +9,7 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const element = {
         id: idCreator(),
-        type: 'table',
+        type: 'geometry',
         angle: 0,
         opacity: 1,
         points,

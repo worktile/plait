@@ -1,11 +1,18 @@
-import { PlaitElement, Point } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point } from '@plait/core';
 import { EngineExtraData } from './engine';
 import { ParagraphElement } from '@plait/text';
 
-export interface PlaitTable extends PlaitElement {
+export enum TableSymbols {
+    table = 'table'
+}
+
+export interface PlaitTableBoard extends PlaitBoard {
+    buildTable: (element: PlaitBaseTable) => PlaitBaseTable;
+}
+
+export interface PlaitBaseTable extends PlaitElement {
     id: string;
     points: Point[];
-    type: 'table';
     rows: {
         id: string;
         height?: number;
@@ -18,6 +25,10 @@ export interface PlaitTable extends PlaitElement {
     groupId?: string;
 }
 
+export interface PlaitTable extends PlaitBaseTable {
+    type: 'table';
+}
+
 export interface PlaitTableCell {
     id: string;
     rowId: string;
@@ -26,6 +37,7 @@ export interface PlaitTableCell {
     rowspan?: number;
     text?: PlaitTableCellParagraph;
     textHeight?: number;
+    fill?: string;
 }
 
 export interface PlaitTableDrawOptions extends EngineExtraData {

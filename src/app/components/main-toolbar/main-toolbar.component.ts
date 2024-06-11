@@ -9,7 +9,7 @@ import {
     BasicShapes,
     FlowchartSymbols,
     UMLSymbols,
-    SwimlaneSymbols
+    SwimlaneDrawSymbols
 } from '@plait/draw';
 import { MindElement, MindPointerType, MindTransforms } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
@@ -38,7 +38,7 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     FlowchartSymbols = FlowchartSymbols;
 
-    SwimlaneSymbols = SwimlaneSymbols;
+    SwimlaneSymbols = SwimlaneDrawSymbols;
 
     UMLSymbols = UMLSymbols;
 
