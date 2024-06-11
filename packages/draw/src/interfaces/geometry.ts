@@ -72,7 +72,10 @@ export enum UMLSymbols {
     componentBox = 'componentBox',
     template = 'template',
     activation = 'activation',
-    deletion = 'deletion'
+    deletion = 'deletion',
+    assembly = 'assembly',
+    providedInterface = 'providedInterface',
+    requiredInterface = 'requiredInterface'
 }
 
 export enum MultipleTextGeometryCommonTextKeys {

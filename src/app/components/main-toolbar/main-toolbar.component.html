@@ -460,6 +460,26 @@
             <ng-template [ngTemplateOutlet]="activation"></ng-template>
         </a>
 
+        <a class="action-item" [ngClass]="{ active: isPointer(UMLSymbols.assembly) }" (mousedown)="setPointer($event, UMLSymbols.assembly)">
+            <ng-template [ngTemplateOutlet]="assembly"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(UMLSymbols.requiredInterface) }"
+            (mousedown)="setPointer($event, UMLSymbols.requiredInterface)"
+        >
+            <ng-template [ngTemplateOutlet]="requiredInterface"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(UMLSymbols.providedInterface) }"
+            (mousedown)="setPointer($event, UMLSymbols.providedInterface)"
+        >
+            <ng-template [ngTemplateOutlet]="providedInterface"></ng-template>
+        </a>
+
         <a class="action-item" [ngClass]="{ active: isPointer(UMLSymbols.deletion) }" (mousedown)="setPointer($event, UMLSymbols.deletion)">
             <ng-template [ngTemplateOutlet]="deletion"></ng-template>
         </a>
@@ -2020,6 +2040,65 @@
                 id="形状结合"
                 fill="#999999"
                 transform="translate(8.000000, 8.000000) rotate(-45.000000) translate(-8.000000, -8.000000) "
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #assembly>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/图形/UML/assembly</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/UML/assembly" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M7,1.4 C10.4766452,1.4 13.3254406,4.08814437 13.5812951,7.49934192 L15.5,7.5 C15.7761424,7.5 16,7.72385763 16,8 L16,8.2 C16,8.47614237 15.7761424,8.7 15.5,8.7 L13.5633195,8.69998864 C13.2137521,12.0159905 10.4086399,14.6 7,14.6 L7,13.4 C9.98233765,13.4 12.4,10.9823376 12.4,8 C12.4,5.01766235 9.98233765,2.6 7,2.6 L7,1.4 Z M7,3.9 C9.26436747,3.9 11.1,5.73563253 11.1,8 C11.1,10.2643675 9.26436747,12.1 7,12.1 C4.97422531,12.1 3.29159537,10.6308227 2.95949447,8.69985241 L0.5,8.7 C0.223857625,8.7 3.38176876e-17,8.47614237 0,8.2 L0,8 C-3.38176876e-17,7.72385763 0.223857625,7.5 0.5,7.5 L2.93031866,7.49887152 C3.17745787,5.47088458 4.90527906,3.9 7,3.9 Z M7,5.1 C5.39837423,5.1 4.1,6.39837423 4.1,8 C4.1,9.60162577 5.39837423,10.9 7,10.9 C8.60162577,10.9 9.9,9.60162577 9.9,8 C9.9,6.39837423 8.60162577,5.1 7,5.1 Z"
+                id="形状结合"
+                fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+<ng-template #requiredInterface>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/图形/UML/required interface</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/UML/required-interface" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M4,1.4 C7.47664518,1.4 10.3254406,4.08814437 10.5812951,7.49934192 L12.5,7.5 C12.7761424,7.5 13,7.72385763 13,8 L13,8.2 C13,8.47614237 12.7761424,8.7 12.5,8.7 L10.5633195,8.69998864 C10.2137521,12.0159905 7.40863991,14.6 4,14.6 L4,13.4 C6.98233765,13.4 9.4,10.9823376 9.4,8 C9.4,5.01766235 6.98233765,2.6 4,2.6 L4,1.4 Z"
+                id="形状结合"
+                fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #providedInterface>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/图形/UML/provided interface</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/UML/provided-interface" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M11,3.9 C13.2643675,3.9 15.1,5.73563253 15.1,8 C15.1,10.2643675 13.2643675,12.1 11,12.1 C8.97422531,12.1 7.29159537,10.6308227 6.95949447,8.69985241 L1.5,8.7 C1.22385763,8.7 1,8.47614237 1,8.2 L1,8 C1,7.72385763 1.22385763,7.5 1.5,7.5 L6.93031866,7.49887152 C7.17745787,5.47088458 8.90527906,3.9 11,3.9 Z M11,5.1 C9.39837423,5.1 8.1,6.39837423 8.1,8 C8.1,9.60162577 9.39837423,10.9 11,10.9 C12.6016258,10.9 13.9,9.60162577 13.9,8 C13.9,6.39837423 12.6016258,5.1 11,5.1 Z"
+                id="形状结合"
+                fill="#999999"
             ></path>
         </g>
     </svg>
