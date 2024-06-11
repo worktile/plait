@@ -12,5 +12,11 @@
     "@plait/mind": "0.61.0",
     "@plait/text-plugins": "0.61.0"
   },
-  "changesets": []
+  "changesets": [
+    "chilly-moose-dance",
+    "hip-ducks-do",
+    "moody-hounds-sleep",
+    "twelve-pillows-scream",
+    "witty-oranges-fail"
+  ]
 }
