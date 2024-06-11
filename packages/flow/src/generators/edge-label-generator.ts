@@ -1,29 +1,23 @@
-import { createForeignObject, createG, updateForeignObject } from '@plait/core';
-import { Generator, GeneratorOptions } from '@plait/common';
+import { PlaitBoard, createForeignObject, createG, updateForeignObject } from '@plait/core';
+import { Generator, GeneratorOptions, RenderComponentRef, TextManage } from '@plait/common';
 import { EdgeState, FlowEdge } from '../interfaces/edge';
 import { drawEdgeLabelShape } from '../draw/edge';
 import { EdgeLabelSpace } from '../utils/edge/label-space';
-import { PlaitFlowBoard } from '../interfaces';
-import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { FlowEdgeLabelIconBaseComponent } from '../core/edge-label-icon-base.component';
 import { LabelIconItem } from '../interfaces/icon';
-import { TextManage } from '@plait/text';
+import { LabelIconProps, PlaitFlowLabelIconBoard } from '../plugins/with-label-icon';
 
 export interface EdgeData {
     state: EdgeState;
 }
 
-export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorOptions, PlaitFlowBoard> {
+export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorOptions, PlaitBoard> {
     static key = 'edge-label-generator';
 
-    labelIconRef: {
-        labelIconG: SVGGElement;
-        labelIconComponentRef: ComponentRef<FlowEdgeLabelIconBaseComponent>;
-    } | null = null;
+    labelIconRef: { ref: RenderComponentRef<LabelIconProps>; labelIconG: SVGGElement } | null = null;
 
     labelTextG: SVGGElement | null = null;
 
-    constructor(board: PlaitFlowBoard, public viewContainerRef: ViewContainerRef, public textManage: TextManage) {
+    constructor(board: PlaitBoard, public textManage: TextManage) {
         super(board);
     }
 
@@ -80,18 +74,14 @@ export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorO
             container.classList.add('flow-edge-label-icon');
             foreignObject.append(container);
             const labelIconItem: LabelIconItem = { name: element.data!.icon! };
-            const componentType = this.board.drawLabelIcon(labelIconItem, element);
-            const labelIconComponentRef = this.viewContainerRef.createComponent(componentType);
-            labelIconComponentRef.instance.iconItem = labelIconItem;
-            labelIconComponentRef.instance.board = this.board;
-            labelIconComponentRef.instance.element = element;
-            labelIconComponentRef.instance.fontSize = EdgeLabelSpace.getLabelIconFontSize();
-            labelIconComponentRef.changeDetectorRef.detectChanges();
-            container.append(labelIconComponentRef.instance.nativeElement);
-            return {
-                labelIconG,
-                labelIconComponentRef
+            const props: LabelIconProps = {
+                iconItem: labelIconItem,
+                board: this.board,
+                element: element,
+                fontSize: EdgeLabelSpace.getLabelIconFontSize()
             };
+            const ref = ((this.board as unknown) as PlaitFlowLabelIconBoard).renderLabelIcon(container, props);
+            return { ref, labelIconG };
         }
         return null;
     }
@@ -132,6 +122,6 @@ export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorO
     destroy(): void {
         super.destroy();
         this.textManage.destroy();
-        this.labelIconRef && this.labelIconRef.labelIconComponentRef.destroy();
+        this.labelIconRef && this.labelIconRef.ref.destroy();
     }
 }

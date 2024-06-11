@@ -134,14 +134,14 @@ $primary: #4e8afa;
             opacity: 0.6;
             // Compact: Safari
             // Opacity property will cause text position warning
-            // .plait-richtext-container {
+            // .plait-text-container {
             //     opacity: 0.6;
             // }
         }
     }
 
     .root {
-        .plait-richtext-container {
+        .plait-text-container {
             font-size: 18px;
             min-height: 25px;
             line-height: 25px;

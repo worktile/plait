@@ -1,12 +1,12 @@
+import { TextManage } from '@plait/common';
 import { PlaitBoard, Point, drawCircle, normalizePoint } from '@plait/core';
 import { FlowNode, FlowNodeComponent, NodeActiveGenerator, NodeGenerator } from '@plait/flow';
-import { TextManage } from '@plait/text';
 
 export class CustomFlowNodeComponent extends FlowNodeComponent {
     initializeGenerator() {
         this.nodeGenerator = new CustomNodeGenerator(this.board);
         this.nodeActiveGenerator = new CustomNodeActiveGenerator(this.board);
-        this.textManage = new TextManage(this.board, PlaitBoard.getViewContainerRef(this.board), {
+        this.textManage = new TextManage(this.board, {
             getRectangle: () => {
                 const { x, y } = normalizePoint(this.element.points![0]);
                 const width = this.element.width;

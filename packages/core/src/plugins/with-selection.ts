@@ -55,7 +55,7 @@ export function withSelection(board: PlaitBoard) {
         if (isShift && !event.shiftKey) {
             isShift = false;
         }
-        const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-richtext-container'));
+        const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-text-container'));
 
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const isHitTarget = isHitElement(board, point);

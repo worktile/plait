@@ -2,9 +2,6 @@ import {
     BoardTransforms,
     PlaitBoard,
     PlaitPointerType,
-    Transforms,
-    addSelectedElement,
-    clearSelectedElement,
     createG,
     getSelectedElements,
     throttleRAF,
@@ -15,11 +12,9 @@ import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
 import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../utils/draw/node-shape';
-import { NgZone } from '@angular/core';
-import { TextManage } from '@plait/text';
 import { createEmptyMind } from '../utils/node/create-node';
 import { MindElement } from '../interfaces';
-import { BoardCreationMode, isDndMode, isDrawingMode, setCreationMode } from '@plait/common';
+import { BoardCreationMode, TextManage, isDndMode, isDrawingMode, setCreationMode } from '@plait/common';
 import { MindTransforms } from '../transforms';
 
 const DefaultHotkey = 'm';
@@ -66,16 +61,12 @@ export const withCreateMind = (board: PlaitBoard) => {
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
-                        const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, {
+                        const textManage = new TextManage(board, {
                             getRectangle: () => {
                                 return topicRectangle;
                             }
                         });
-                        PlaitBoard.getComponent(board)
-                            .viewContainerRef.injector.get(NgZone)
-                            .run(() => {
-                                textManage.draw(emptyMind!.data.topic);
-                            });
+                        textManage.draw(emptyMind!.data.topic);
                         fakeCreateNodeRef = {
                             g: createG(),
                             nodeG,

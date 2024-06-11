@@ -1,7 +1,6 @@
 import { idCreator, Point, RectangleClient } from '@plait/core';
-import { DEFAULT_TEXT_HEIGHT, DefaultSwimlanePropertyMap, SWIMLANE_HEADER_SIZE } from '../constants';
+import { DefaultSwimlanePropertyMap, SWIMLANE_HEADER_SIZE } from '../constants';
 import { PlaitDrawElement, PlaitSwimlane, PlaitTableCell, SwimlaneDrawSymbols, SwimlaneSymbols } from '../interfaces';
-import { Alignment } from '@plait/text';
 import { createCell } from './table';
 
 export function buildSwimlaneTable(element: PlaitSwimlane) {

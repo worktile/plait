@@ -7,14 +7,12 @@ export const addImageFocus = (board: PlaitBoard, element: MindElement<ImageData>
     addElementOfFocusedImage(board, element);
     const commonElementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
     const imageGenerator = commonElementRef.getGenerator<ImageGenerator>(ImageGenerator.key);
-    imageGenerator.componentRef!.instance.isFocus = true;
-    imageGenerator.componentRef!.instance.cdr.markForCheck();
+    imageGenerator.setFocus(element, true);
 };
 
 export const removeImageFocus = (board: PlaitBoard, element: MindElement<ImageData>) => {
     removeElementOfFocusedImage(board);
     const commonElementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
     const imageGenerator = commonElementRef.getGenerator<ImageGenerator>(ImageGenerator.key);
-    imageGenerator.componentRef!.instance.isFocus = false;
-    imageGenerator.componentRef!.instance.cdr.markForCheck();
+    imageGenerator.setFocus(element, false);
 };

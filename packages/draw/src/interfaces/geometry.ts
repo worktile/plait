@@ -1,7 +1,7 @@
 import { PlaitElement, Point } from '@plait/core';
-import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
 import { PlaitDrawShapeText } from '../generators/text.generator';
+import { ParagraphElement } from '@plait/common';
 
 export enum BasicShapes {
     rectangle = 'rectangle',

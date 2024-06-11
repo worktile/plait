@@ -1,13 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, createDebugGenerator } from '@plait/core';
-import { Subject } from 'rxjs';
 import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
-import { TextManage, TextManageRef } from '@plait/text';
 import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
 import { DrawTransforms } from './transforms';
-import { GeometryThreshold } from './constants';
-import { CommonElementFlavour } from '@plait/common';
+import { GeometryThreshold, MIN_TEXT_WIDTH } from './constants';
+import { CommonElementFlavour, TextManage, TextManageChangeData } from '@plait/common';
 import { getLinePoints, getLineTextRectangle } from './utils/line/line-basic';
 import { memorizeLatestText } from './utils/memorize';
 
@@ -125,24 +122,24 @@ export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> i
     }
 
     createTextManage(text: LineText, index: number) {
-        return new TextManage(this.board, PlaitBoard.getViewContainerRef(this.board), {
+        return new TextManage(this.board, {
             getRectangle: () => {
                 return getLineTextRectangle(this.board, this.element, index);
             },
-            onValueChangeHandle: (textManageRef: TextManageRef) => {
-                const height = textManageRef.height / this.board.viewport.zoom;
-                const width = textManageRef.width / this.board.viewport.zoom;
+            onChange: (textManageChangeData: TextManageChangeData) => {
                 const texts = [...this.element.texts];
+                const newWidth = textManageChangeData.width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : textManageChangeData.width;
                 texts.splice(index, 1, {
-                    text: textManageRef.newValue ? textManageRef.newValue : this.element.texts[index].text,
+                    text: textManageChangeData.newText ? textManageChangeData.newText : this.element.texts[index].text,
                     position: this.element.texts[index].position,
-                    width,
-                    height
+                    width: newWidth,
+                    height: textManageChangeData.height
                 });
                 DrawTransforms.setLineTexts(this.board, this.element, texts);
-                textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+                textManageChangeData.operations && memorizeLatestText(this.element, textManageChangeData.operations);
             },
-            getMaxWidth: () => GeometryThreshold.defaultTextMaxWidth
+            getMaxWidth: () => GeometryThreshold.defaultTextMaxWidth,
+            textPlugins: []
         });
     }
 

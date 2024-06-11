@@ -1,7 +1,7 @@
 @mixin node-color {
     &.theme-default,
     &.theme-soft {
-        .plait-richtext-container {
+        .plait-text-container {
             color: #333333;
         }
     }
@@ -9,7 +9,7 @@
     &.theme-colorful,
     &.theme-retro {
         .root {
-            .plait-richtext-container {
+            .plait-text-container {
                 color: #ffffff;
             }
         }
@@ -17,11 +17,11 @@
 
     &.theme-dark,
     &.theme-starry {
-        .plait-richtext-container {
+        .plait-text-container {
             color: #ffffff;
         }
         .root {
-            .plait-richtext-container {
+            .plait-text-container {
                 color: #333333;
             }
         }

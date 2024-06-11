@@ -1,7 +1,7 @@
 import { ElementFlavour, PlaitBoard, PlaitElement } from '@plait/core';
-import { TextManage } from '@plait/text';
 import { ELEMENT_TO_TEXT_MANAGES } from '../utils/text';
 import { PlaitCommonElementRef } from './element-ref';
+import { TextManage } from '../text/text-manage';
 
 export class CommonElementFlavour<
     T extends PlaitElement = PlaitElement,

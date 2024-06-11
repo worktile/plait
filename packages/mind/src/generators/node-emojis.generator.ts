@@ -1,42 +1,30 @@
-import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { EmojiData, EmojiItem, MindElement, WithMindOptions } from '../interfaces';
-import { MindEmojiBaseComponent } from '../base/emoji-base.component';
-import { PlaitOptionsBoard, createForeignObject, createG } from '@plait/core';
+import { EmojiData, EmojiItem, MindElement } from '../interfaces';
+import { PlaitBoard, createForeignObject, createG } from '@plait/core';
 import { getEmojiFontSize } from '../utils/space/emoji';
 import { getEmojiForeignRectangle } from '../utils/position/emoji';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
-import { WithMindPluginKey } from '../constants/default';
+import { EmojiComponentRef, EmojiProps, PlaitMindEmojiBoard } from '../emoji/with-emoji';
 
 class EmojiGenerator {
-    componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;
+    emojiComponentRef: EmojiComponentRef | null = null;
 
-    constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
+    constructor(private board: PlaitMindEmojiBoard & PlaitBoard) {}
 
-    draw(emoji: EmojiItem, element: MindElement<EmojiData>) {
+    draw(container: Element | DocumentFragment, emoji: EmojiItem, element: MindElement<EmojiData>) {
         this.destroy();
-        const componentType = (this.board as PlaitOptionsBoard).getPluginOptions<WithMindOptions>(WithMindPluginKey).emojiComponentType;
-        if (!componentType) {
-            throw new Error('can not find emoji component');
-        }
-        this.componentRef = this.viewContainerRef.createComponent(componentType);
-        this.componentRef.instance.emojiItem = emoji;
-        this.componentRef.instance.board = this.board;
-        this.componentRef.instance.element = element;
-        this.componentRef.instance.fontSize = getEmojiFontSize(element);
-    }
-
-    get nativeElement() {
-        if (this.componentRef) {
-            return this.componentRef.instance.nativeElement;
-        } else {
-            return null;
-        }
+        const props: EmojiProps = {
+            board: this.board,
+            emojiItem: emoji,
+            element,
+            fontSize: getEmojiFontSize(element)
+        };
+        this.emojiComponentRef = this.board.renderEmoji(container, props);
     }
 
     destroy() {
-        if (this.componentRef) {
-            this.componentRef.destroy();
-            this.componentRef = null;
+        if (this.emojiComponentRef) {
+            this.emojiComponentRef.destroy();
+            this.emojiComponentRef = null;
         }
     }
 }
@@ -48,7 +36,7 @@ export class NodeEmojisGenerator {
 
     g?: SVGGElement;
 
-    constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
+    constructor(private board: PlaitMindBoard) {}
 
     drawEmojis(element: MindElement) {
         this.destroy();
@@ -67,12 +55,9 @@ export class NodeEmojisGenerator {
             container.classList.add('node-emojis-container');
             foreignObject.append(container);
             this.emojiGenerators = element.data.emojis.map(emojiItem => {
-                const drawer = new EmojiGenerator(this.board, this.viewContainerRef);
-                drawer.draw(emojiItem, element);
+                const drawer = new EmojiGenerator((this.board as unknown) as PlaitBoard & PlaitMindEmojiBoard);
+                drawer.draw(container, emojiItem, element);
                 return drawer;
-            });
-            this.emojiGenerators.forEach(drawer => {
-                container.append(drawer.nativeElement!);
             });
             return this.g;
         }

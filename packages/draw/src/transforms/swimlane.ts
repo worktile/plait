@@ -2,9 +2,9 @@ import { idCreator, Path, PlaitBoard, Point, RectangleClient, Transforms } from 
 import { PlaitDrawElement, PlaitSwimlane } from '../interfaces';
 import { PlaitBaseTable, PlaitTableCell } from '../interfaces/table';
 import { getCellWithPoints } from '../utils/table';
-import { Alignment } from '@plait/text';
 import { getSwimlaneCount } from '../utils/swimlane';
 import { getSelectedCells } from '../utils';
+import { Alignment } from '@plait/common';
 
 export const updateSwimlaneCount = (board: PlaitBoard, swimlane: PlaitSwimlane, count: number) => {
     if (count > 0 && PlaitDrawElement.isSwimlane(swimlane)) {

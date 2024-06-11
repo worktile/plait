@@ -17,8 +17,14 @@
       "@plait/core": [
         "packages/core/src/public-api",
       ],
-      "@plait/text": [
-        "packages/text/src/public-api",
+      "@plait/angular-board": [
+        "packages/angular-board/src/public-api",
+      ],
+      "@plait/angular-text": [
+        "packages/angular-text/src/public-api",
+      ],
+      "@plait/text-plugins": [
+        "packages/text-plugins/src/public-api",
       ],
       "@plait/draw": [
         "packages/draw/src/public-api",

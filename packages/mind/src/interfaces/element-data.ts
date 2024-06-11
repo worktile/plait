@@ -1,5 +1,4 @@
-import { CommonImageItem } from '@plait/common';
-import { ParagraphElement } from '@plait/text';
+import { CommonImageItem, ParagraphElement } from '@plait/common';
 
 export interface EmojiItem {
     name: string;

@@ -1,6 +1,5 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, ThemeColorMode, getSelectedElements, idCreator } from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols } from '../interfaces/geometry';
-import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
     DefaultBasicShapeProperty,
@@ -15,7 +14,17 @@ import {
     getFlowchartPointers,
     getUMLPointers
 } from '../constants';
-import { ActiveGenerator, PlaitCommonElementRef, RESIZE_HANDLE_DIAMETER, getFirstTextManage } from '@plait/common';
+import {
+    ActiveGenerator,
+    Alignment,
+    CustomText,
+    DEFAULT_FONT_FAMILY,
+    PlaitCommonElementRef,
+    RESIZE_HANDLE_DIAMETER,
+    buildText,
+    getFirstTextManage,
+    measureElement
+} from '@plait/common';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
@@ -26,6 +35,7 @@ import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
 import { createUMLClassOrInterfaceGeometryElement } from './uml';
 import { createMultipleTextGeometryElement, isMultipleTextGeometry, isMultipleTextShape } from './multi-text-geometry';
+import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
@@ -280,7 +290,7 @@ export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
 
 export const getTextShapeProperty = (board: PlaitBoard, text: string | Element = DefaultTextProperty.text, fontSize?: number | string) => {
     fontSize = fontSize ? Number(fontSize) : DEFAULT_FONT_SIZE;
-    const textSize = getTextSize(board, text, Infinity, { fontSize });
+    const textSize = measureElement(buildText(text), { fontSize, fontFamily: DEFAULT_FONT_FAMILY });
     return {
         width: textSize.width + ShapeDefaultSpace.rectangleAndText * 2,
         height: textSize.height

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, inject } from '@angular/core';
 import { FlowEdgeLabelIconBaseComponent } from '@plait/flow';
 
 @Component({
@@ -10,11 +10,13 @@ import { FlowEdgeLabelIconBaseComponent } from '@plait/flow';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconComponent extends FlowEdgeLabelIconBaseComponent implements OnInit {
-    constructor(protected elementRef: ElementRef<HTMLElement>) {
-        super(elementRef);
+    elementRef = inject(ElementRef<HTMLElement>);
+
+    nativeElement(): HTMLElement {
+        return this.elementRef.nativeElement;
     }
 
     ngOnInit(): void {
-        super.ngOnInit();
+        super.initialize();
     }
 }

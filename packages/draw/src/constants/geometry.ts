@@ -1,6 +1,6 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
-import { Alignment } from '@plait/text';
 import { BasicShapes, FlowchartSymbols, GeometryShapes, MultipleTextGeometryCommonTextKeys, UMLSymbols } from '../interfaces';
+import { Alignment } from '@plait/common';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4

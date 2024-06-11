@@ -1,7 +1,6 @@
 import {
     OnContextChanged,
     PlaitBoard,
-    PlaitContextService,
     PlaitGroup,
     PlaitPluginElementContext,
     getElementsInGroup,
@@ -42,7 +41,7 @@ export class GroupComponent extends CommonElementFlavour<PlaitGroup, PlaitBoard>
     initialize(): void {
         super.initialize();
         this.initializeGenerator();
-        const contextService = PlaitBoard.getViewContainerRef(this.board).injector.get(PlaitContextService);
+        const contextService = PlaitBoard.getBoardContext(this.board);
         this.onStableSubscription = contextService.onStable().subscribe(() => {
             const elementsInGroup = getElementsInGroup(this.board, this.element, false, true);
             const isPartialSelectGroup =

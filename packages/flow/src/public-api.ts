@@ -6,6 +6,7 @@ export * from './node.component';
 export * from './edge.component';
 export * from './plugins/with-flow';
 export * from './plugins/with-edge-dnd';
+export * from './plugins/with-label-icon';
 export * from './interfaces/element';
 export * from './interfaces/edge';
 export * from './interfaces/node';

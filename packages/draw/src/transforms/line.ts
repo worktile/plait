@@ -3,7 +3,6 @@ import {
     LineHandle,
     LineHandleKey,
     LineMarkerType,
-    LineShape,
     LineText,
     MemorizeKey,
     PlaitDrawElement,

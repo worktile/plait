@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, Transforms } from '@plait/core';
+import { PlaitBoard, Transforms } from '@plait/core';
 import { PlaitMultipleTextGeometry } from '../interfaces';
 import { PlaitDrawShapeText } from '../generators/text.generator';
 

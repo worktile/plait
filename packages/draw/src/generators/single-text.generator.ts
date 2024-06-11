@@ -1,9 +1,8 @@
 import { PlaitBoard, PlaitElement } from '@plait/core';
-import { ParagraphElement } from '@plait/text';
 import { PlaitCommonGeometry, PlaitGeometry } from '../interfaces';
-import { ViewContainerRef } from '@angular/core';
 import { PlaitDrawShapeText, TextGenerator, TextGeneratorOptions } from './text.generator';
 import { isMultipleTextGeometry } from '../utils';
+import { ParagraphElement } from '@plait/common';
 
 export class SingleTextGenerator<T extends PlaitElement = PlaitGeometry> extends TextGenerator<T> {
     get textManage() {
@@ -14,10 +13,9 @@ export class SingleTextGenerator<T extends PlaitElement = PlaitGeometry> extends
         board: PlaitBoard,
         element: T,
         text: ParagraphElement,
-        viewContainerRef: ViewContainerRef,
         options: TextGeneratorOptions<T>
     ) {
-        super(board, element, [{ key: element.id, text: text, textHeight: element.textHeight }], viewContainerRef, options);
+        super(board, element, [{ key: element.id, text: text, textHeight: element.textHeight }], options);
     }
 
     update(

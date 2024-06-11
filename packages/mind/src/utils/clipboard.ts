@@ -7,11 +7,17 @@ import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstract
 import { createMindElement } from './node/create-node';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
 import { Element } from 'slate';
-import { getTextSize } from '@plait/text';
-import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
+import {
+    BRANCH_FONT_FAMILY,
+    DEFAULT_FONT_FAMILY,
+    ROOT_TOPIC_FONT_SIZE,
+    TOPIC_DEFAULT_MAX_WORD_COUNT,
+    TOPIC_FONT_SIZE
+} from '../constants/node-topic-style';
 import { findNewChildNodePath } from './path';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { getFontSizeBySlateElement } from './space/node-space';
+import { buildText, measureElement, ParagraphElement } from '@plait/common';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
     let result: MindElement[] = [];
@@ -78,12 +84,8 @@ export const insertClipboardData = (
         if (hasTargetParent && operationType !== WritableClipboardOperationType.duplicate) {
             if (item.isRoot) {
                 newElement = adjustRootToNode(board, newElement);
-                const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
-                const { width, height } = getTextSize(board, newElement.data.topic, TOPIC_DEFAULT_MAX_WORD_COUNT, {
-                    ...styles,
-                    width: newElement.manualWidth ? newElement.manualWidth : undefined
-                });
-                newElement.width = Math.max(width, ROOT_TOPIC_FONT_SIZE);
+                const { width, height } = getTopicSizeByElement(newElement, targetParent as MindElement);
+                newElement.width = width;
                 newElement.height = height;
             }
             // handle abstract start and end
@@ -95,15 +97,15 @@ export const insertClipboardData = (
         } else {
             const point: Point = [targetPoint[0] + item.points![0][0], targetPoint[1] + item.points![0][1]];
             newElement.points = [point];
-
             if (AbstractNode.isAbstract(item)) {
                 newElement = adjustAbstractToNode(newElement);
             }
-
             if (!item.isRoot) {
                 newElement = adjustNodeToRoot(board, newElement);
+                const { width, height } = getTopicSizeByElement(newElement);
+                newElement.width = width;
+                newElement.height = height;
             }
-
             path = [board.children.length];
         }
         newELements.push(newElement);
@@ -114,9 +116,34 @@ export const insertClipboardData = (
 };
 
 export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitElement, text: string | Element) => {
-    const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
-    const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, styles);
+    const { width, height } = getTopicSize(false, PlaitMind.isMind(targetParent), buildText(text));
     const newElement = createMindElement(text, Math.max(width, getFontSizeBySlateElement(text)), height, {});
     Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
     Transforms.addSelectionWithTemporaryElements(board, [newElement]);
+};
+
+export const getTopicSizeByElement = (element: MindElement, parentElement?: MindElement) => {
+    return getTopicSize(
+        PlaitMind.isMind(element),
+        (parentElement && PlaitMind.isMind(parentElement)) || false,
+        element.data.topic,
+        element.manualWidth
+    );
+};
+
+export const getTopicSize = (isRoot: boolean, isBranch: boolean, topic: ParagraphElement, manualWidth?: number) => {
+    let fontFamily = DEFAULT_FONT_FAMILY;
+    let fontSize = TOPIC_FONT_SIZE;
+    if (isRoot) {
+        fontFamily = BRANCH_FONT_FAMILY;
+        fontSize = ROOT_TOPIC_FONT_SIZE;
+    } else if (isBranch) {
+        fontFamily = BRANCH_FONT_FAMILY;
+    }
+    const maxWidth = fontSize * TOPIC_DEFAULT_MAX_WORD_COUNT;
+    return measureElement(
+        topic,
+        { fontSize, fontFamily },
+        manualWidth ? manualWidth : maxWidth
+    );
 };

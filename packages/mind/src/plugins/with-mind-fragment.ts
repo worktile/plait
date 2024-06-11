@@ -22,8 +22,7 @@ import { deleteElementHandleAbstract } from '../utils/abstract/common';
 import { getSelectedMindElements } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
 import { buildClipboardData, insertClipboardData, insertClipboardText } from '../utils/clipboard';
-import { buildText } from '@plait/text';
-import { getElementsText } from '@plait/common';
+import { buildText, getElementsText } from '@plait/common';
 
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;

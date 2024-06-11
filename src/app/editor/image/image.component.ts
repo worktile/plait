@@ -9,10 +9,22 @@ import { ImageBaseComponent } from '@plait/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })
-export class PlaitImageComponent extends ImageBaseComponent {
-    constructor(protected elementRef: ElementRef<HTMLElement>, cdr: ChangeDetectorRef) {
-        super(elementRef, cdr);
+export class PlaitImageComponent extends ImageBaseComponent implements OnInit {
+    constructor(protected elementRef: ElementRef<HTMLElement>, public cdr: ChangeDetectorRef) {
+        super();
     }
 
-    afterImageItemChange() {}
+    nativeElement() {
+        return this.elementRef.nativeElement;
+    }
+
+    ngOnInit(): void {
+        super.initialize();
+    }
+
+    afterImageItemChange() {
+        if (this.initialized) {
+            this.cdr.detectChanges();
+        }
+    }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, inject } from '@angular/core';
 import { MindEmojiBaseComponent } from '@plait/mind';
 
 @Component({
@@ -8,12 +8,14 @@ import { MindEmojiBaseComponent } from '@plait/mind';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MindEmojiComponent extends MindEmojiBaseComponent implements OnInit {
-    constructor(protected elementRef: ElementRef<HTMLElement>) {
-        super(elementRef);
+    elementRef = inject(ElementRef<HTMLElement>)
+
+    nativeElement() {
+        return this.elementRef.nativeElement;
     }
 
     ngOnInit(): void {
-        super.ngOnInit();
-        this.nativeElement.innerHTML = this.emojiItem.name;
+        super.initialize();
+        this.nativeElement().innerHTML = this.emojiItem.name;
     }
 }

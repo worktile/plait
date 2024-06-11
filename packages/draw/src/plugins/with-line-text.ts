@@ -9,12 +9,12 @@ import {
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
 import { Node } from 'slate';
-import { getRatioByPoint, getTextManages } from '@plait/common';
-import { buildText } from '@plait/text';
+import { buildText, getRatioByPoint, getTextManages } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { getLinePoints } from '../utils/line/line-basic';
 import { getHitLineTextIndex } from '../utils/position/line';
 import { isHitLineText } from '../utils/hit';
+import { LINE_TEXT } from '../constants/line';
 
 export const withLineText = (board: PlaitBoard) => {
     const { dblClick } = board;
@@ -37,7 +37,7 @@ export const withLineText = (board: PlaitBoard) => {
                 } else {
                     const ratio = getRatioByPoint(points, point);
                     texts.push({
-                        text: buildText('文本'),
+                        text: buildText(LINE_TEXT),
                         position: ratio,
                         width: 28,
                         height: 20
@@ -62,10 +62,9 @@ export const withLineText = (board: PlaitBoard) => {
 function editHandle(board: PlaitBoard, element: PlaitLine, manageIndex: number, isFirstEdit: boolean = false) {
     const textManages = getTextManages(element);
     const textManage = textManages[manageIndex];
-    const originText = textManage.componentRef.instance.children;
-    textManage.edit((origin, descendant) => {
-        const text = Node.string(descendant[0]);
-        const shouldRemove = (isFirstEdit && originText === descendant) || !text;
+    textManage.edit(() => {
+        const text = Node.string(textManage.getText());
+        const shouldRemove = !text || (isFirstEdit && text === LINE_TEXT);
         if (shouldRemove) {
             DrawTransforms.removeLineText(board, element, manageIndex);
         }

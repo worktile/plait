@@ -1,12 +1,12 @@
 import { Point, RectangleClient, idCreator } from '@plait/core';
 import { GeometryShapes, UMLSymbols, PlaitMultipleTextGeometry, PlaitCommonGeometry } from '../interfaces/geometry';
-import { Alignment, buildText } from '@plait/text';
 import { DefaultTextProperty, GEOMETRY_WITH_MULTIPLE_TEXT, MultipleTextGeometryTextKeys } from '../constants';
 import { getEngine } from '../engines';
 import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText } from '../generators/text.generator';
 import { GeometryStyleOptions, getDefaultGeometryProperty } from './geometry';
 import { PlaitDrawElement } from '../interfaces';
+import { Alignment, buildText } from '@plait/common';
 
 export const isMultipleTextShape = (shape: GeometryShapes) => {
     return GEOMETRY_WITH_MULTIPLE_TEXT.includes(shape as UMLSymbols);

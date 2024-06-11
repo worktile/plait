@@ -1,8 +1,6 @@
-import { ComponentType, WithPluginOptions } from '@plait/core';
-import { MindEmojiBaseComponent } from '../base/emoji-base.component';
+import { WithPluginOptions } from '@plait/core';
 
 export interface WithMindOptions extends WithPluginOptions {
     emojiPadding: number;
     spaceBetweenEmojis: number;
-    emojiComponentType?: ComponentType<MindEmojiBaseComponent>;
 }
