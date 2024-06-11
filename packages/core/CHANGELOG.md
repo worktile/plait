@@ -1,5 +1,13 @@
 # plait
 
+## 0.61.0
+
+### Minor Changes
+
+-   [#903](https://github.com/worktile/plait/pull/903) [`f569d88bd`](https://github.com/worktile/plait/commit/f569d88bd48580aec9b250cfd5c5d8941ae2bebf) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set cell fill
+
+    extend getRectangleByPoints to support multi-points
+
 ## 0.60.0
 
 ### Patch Changes

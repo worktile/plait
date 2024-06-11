@@ -1,5 +1,33 @@
 # @plait/draw
 
+## 0.61.0
+
+### Minor Changes
+
+-   [#903](https://github.com/worktile/plait/pull/903) [`f569d88bd`](https://github.com/worktile/plait/commit/f569d88bd48580aec9b250cfd5c5d8941ae2bebf) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set cell fill
+
+    extend getRectangleByPoints to support multi-points
+
+*   [#900](https://github.com/worktile/plait/pull/900) [`fa637e94f`](https://github.com/worktile/plait/commit/fa637e94f1d350a603189ab5f37f87a69a075562) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - adjust swimlane and uml interface、class type
+
+-   [#908](https://github.com/worktile/plait/pull/908) [`1ee86dc75`](https://github.com/worktile/plait/commit/1ee86dc75597b44025ab38b529d9b9b2331f557a) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support swimlane without header
+
+*   [#910](https://github.com/worktile/plait/pull/910) [`be8a3d28c`](https://github.com/worktile/plait/commit/be8a3d28cef186151cc7630f15ff10d102922f18) Thanks [@MissLixf](https://github.com/MissLixf)! - add component componentBox and template shape for uml
+
+-   [#906](https://github.com/worktile/plait/pull/906) [`70b15547c`](https://github.com/worktile/plait/commit/70b15547c9abd0905329142666ebd81e25a4cf35) Thanks [@MissLixf](https://github.com/MissLixf)! - add assembly requiredInterface and providedInterface shape for uml
+
+### Patch Changes
+
+-   [#911](https://github.com/worktile/plait/pull/911) [`88ed28e9b`](https://github.com/worktile/plait/commit/88ed28e9bfff6884a44ce31dc931891b53b3cc5f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix get options undefined error
+
+*   [#904](https://github.com/worktile/plait/pull/904) [`ed5fac97d`](https://github.com/worktile/plait/commit/ed5fac97d048d2e4d0e09fc761d8ab9ed42f0765) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - clear previous selected cells
+
+-   [#901](https://github.com/worktile/plait/pull/901) [`c5f5cc6ca`](https://github.com/worktile/plait/commit/c5f5cc6ca7742cb03e04afc9699f04b12599ed9a) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add updateSwimlaneCount function
+
+*   [#907](https://github.com/worktile/plait/pull/907) [`bc57da65b`](https://github.com/worktile/plait/commit/bc57da65beff31c3d145c572d0dc0802f508e3a7) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support table theme
+
+-   [#909](https://github.com/worktile/plait/pull/909) [`ba2c21b83`](https://github.com/worktile/plait/commit/ba2c21b837c13a5c5ed9e541cf9f9c535faf0ea4) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fixed the problem of table-bound lines paste failure
+
 ## 0.60.0
 
 ### Minor Changes
