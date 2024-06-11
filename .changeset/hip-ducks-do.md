@@ -3,6 +3,18 @@
 '@plait/core': minor
 ---
 
+Framework agnostic refactoring:
+
+1. Reimplement text-manage in `@plait/common`, and remove the dependency on front-end frameworks such as Angular/React by providing an overridable method renderText
+
+2. Provide an overridable method renderImage in `@plait/common`
+
+3. Implement the `measureElement` method based on `canvas`, calculate the width and height of the text in Plait through the `measureText` API of `canvas`, and change all places that originally called `getTextSize` or `measureDivSize` to call `measureElement`
+
+4. Move the part of `@plait/core` that depends on Angular to `@plait/angular-board`
+
+---
+
 Framework agnostic 改造:
 
 1. 在 `@plait/common` 中重新实现 text-manage，通过提供可重写方法 renderText 解除和 Angular/React 等前端框架的强依赖
