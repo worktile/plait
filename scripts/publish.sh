@@ -10,7 +10,9 @@ packages=(
   "flow"
   "layouts"
   "mind"
-  "text"
+  "text-plugins"
+  "angular-text"
+  "angular-board"
 )
 
 npm run build
