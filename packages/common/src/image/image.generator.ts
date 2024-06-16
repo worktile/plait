@@ -15,6 +15,9 @@ import { CommonImageItem, canResize, getElementOfFocusedImage } from '../utils';
 import { ActiveGenerator } from '../generators/active.generator';
 import { PlaitImageBoard, ImageComponentRef, ImageProps } from './with-image';
 
+export const FOREIGN_OBJECT_IMAGE_CLASS_NAME = 'foreign-object-image';
+export const IMAGE_CONTAINER_CLASS_NAME = 'plait-image-container';
+
 export interface ImageGeneratorOptions<T> {
     getRectangle: (element: T) => RectangleClient;
     getImageItem: (element: T) => CommonImageItem;
@@ -50,6 +53,7 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
         const g = createG();
         const foreignRectangle = this.options.getRectangle(element);
         this.foreignObject = createForeignObject(foreignRectangle.x, foreignRectangle.y, foreignRectangle.width, foreignRectangle.height);
+        this.foreignObject.classList.add(FOREIGN_OBJECT_IMAGE_CLASS_NAME);
         g.append(this.foreignObject);
         const props: ImageProps = {
             board: this.board,

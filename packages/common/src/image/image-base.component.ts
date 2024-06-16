@@ -1,5 +1,6 @@
 import { PlaitBoard, PlaitElement } from '@plait/core';
 import { CommonImageItem } from '../utils';
+import { IMAGE_CONTAINER_CLASS_NAME } from './image.generator';
 
 export abstract class ImageBaseComponent {
     _imageItem!: CommonImageItem;
@@ -37,6 +38,7 @@ export abstract class ImageBaseComponent {
 
     initialize(): void {
         this.initialized = true;
+        this.nativeElement().classList.add(IMAGE_CONTAINER_CLASS_NAME);
     }
 
     destroy(): void {

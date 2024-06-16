@@ -5,6 +5,8 @@ import { getEmojiForeignRectangle } from '../utils/position/emoji';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { EmojiComponentRef, EmojiProps, PlaitMindEmojiBoard } from '../emoji/with-emoji';
 
+export const FOREIGN_OBJECT_EMOJI_CLASS_NAME = 'foreign-object-emoji';
+
 class EmojiGenerator {
     emojiComponentRef: EmojiComponentRef | null = null;
 
@@ -50,6 +52,7 @@ export class NodeEmojisGenerator {
                 foreignRectangle.width,
                 foreignRectangle.height
             );
+            foreignObject.classList.add(FOREIGN_OBJECT_EMOJI_CLASS_NAME);
             this.g.append(foreignObject);
             const container = document.createElement('div');
             container.classList.add('node-emojis-container');

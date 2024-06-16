@@ -80,5 +80,9 @@
         cursor: crosshair;
     }
 
+    foreignObject[class^='foreign-object-'] {
+        user-select: none;
+    }
+
     @include mixins.board-background-color();
 }
