@@ -1,5 +1,5 @@
 import { TextManage } from '@plait/text';
-import { PlaitPluginElementContext, PlaitBoard, normalizePoint, OnContextChanged } from '@plait/core';
+import { PlaitPluginElementContext, PlaitBoard, normalizePoint, OnContextChanged, ACTIVE_MOVING_CLASS_NAME } from '@plait/core';
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
 import { updateRelatedEdgeHighlight } from './utils/edge/edge-render';
@@ -42,13 +42,20 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
 
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
+            if (value.selected) {
+                this.nodeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board));
+                this.nodeGenerator.g!.classList.add(ACTIVE_MOVING_CLASS_NAME);
+            } else {
+                this.nodeGenerator.processDrawing(this.element, this.getElementG());
+            }
+            this.updateText();
+            this.nodeActiveGenerator.destroy();
             this.nodeActiveGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: value.selected,
                 hovered: false
             });
-            this.nodeGenerator.processDrawing(this.element, this.getElementG());
-            this.updateText();
         }
+        // update related edge
         if (previous.selected !== value.selected) {
             if (value.selected) {
                 // setTimeout 解决当多个节点关联 edge 有交集时，先执行清空在执行选中操作
@@ -76,6 +83,13 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
         if (text) {
             this.textManage.updateText(text);
             this.textManage.updateRectangle();
+            if (this.selected) {
+                this.textManage.g.classList.add(ACTIVE_MOVING_CLASS_NAME);
+                PlaitBoard.getElementActiveHost(this.board).append(this.textManage.g);
+            } else {
+                this.textManage.g.classList.remove(ACTIVE_MOVING_CLASS_NAME);
+                this.getElementG().append(this.textManage.g);
+            }
         }
     }
 

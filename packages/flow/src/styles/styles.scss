@@ -10,6 +10,11 @@
             width: 100%;
         }
     }
+    &.element-moving {
+        .plait-edge-label {
+            display: none;
+        }
+    }
     .flow-handle {
         cursor: crosshair;
     }
