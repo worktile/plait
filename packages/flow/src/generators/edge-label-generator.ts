@@ -36,6 +36,7 @@ export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorO
 
     draw(element: FlowEdge, data: EdgeData) {
         const edgeLabelG = createG();
+        edgeLabelG.classList.add('plait-edge-label');
         if (FlowEdge.hasLabel(element)) {
             const textRectangle = EdgeLabelSpace.getLabelTextRectangle(this.board, element);
             const labelRectangle = EdgeLabelSpace.getLabelRect(textRectangle, element);
