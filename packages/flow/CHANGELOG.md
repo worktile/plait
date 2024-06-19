@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.60.1
+
+### Patch Changes
+
+-   [`4d1298c25`](https://github.com/worktile/plait/commit/4d1298c251be8f1fccd98a2245abaf5ba16920cb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - 1. hide edge label when moving node element
+
+    2. move node element level to the most front when selected node element
+
 ## 0.60.0
 
 ## 0.59.0

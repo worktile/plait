@@ -1,5 +1,7 @@
 # mind
 
+## 0.60.1
+
 ## 0.60.0
 
 ### Patch Changes
