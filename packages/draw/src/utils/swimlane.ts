@@ -101,7 +101,7 @@ export const createDefaultCells = (
         if (index < 3) {
             const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[startIndex].id : rows[index].id;
             const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index].id : columns[startIndex].id;
-            return createCell(rowId, columnId, 'Lane');
+            return createCell(rowId, columnId, header? 'Lane': 'New Swimlane');
         }
         const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[startIndex + 1].id : rows[index - 3].id;
         const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 3].id : columns[startIndex + 1].id;
