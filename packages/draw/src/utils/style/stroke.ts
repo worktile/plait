@@ -1,24 +1,22 @@
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, StrokeStyle } from '../../interfaces';
+import { PlaitBaseTable, PlaitDrawElement, StrokeStyle } from '../../interfaces';
 import { DefaultDrawStyle } from '../../constants';
 import { PlaitBoard, PlaitElement } from '@plait/core';
 import { getDrawDefaultStrokeColor, getFlowchartDefaultFill } from '../geometry';
 import { getStrokeWidthByElement } from '../common';
 
-export const getStrokeColorByElement = (board: PlaitBoard, element: PlaitGeometry | PlaitLine) => {
+export const getStrokeColorByElement = (board: PlaitBoard, element: PlaitElement) => {
     const defaultColor = getDrawDefaultStrokeColor(board.theme.themeColorMode);
     const strokeColor = element.strokeColor || defaultColor;
     return strokeColor;
 };
 
-export const getFillByElement = (board: PlaitBoard, element: PlaitGeometry | PlaitLine) => {
-    const defaultFill = PlaitDrawElement.isFlowchart(element)
-        ? getFlowchartDefaultFill(board.theme.themeColorMode)
-        : DefaultDrawStyle.fill;
+export const getFillByElement = (board: PlaitBoard, element: PlaitElement) => {
+    const defaultFill = PlaitDrawElement.isFlowchart(element) ? getFlowchartDefaultFill(board.theme.themeColorMode) : DefaultDrawStyle.fill;
     const fill = element.fill || defaultFill;
     return fill;
 };
 
-export const getLineDashByElement = (element: PlaitGeometry | PlaitLine) => {
+export const getLineDashByElement = (element: PlaitElement) => {
     switch (element.strokeStyle) {
         case StrokeStyle.dashed:
             return [8, 8 + getStrokeWidthByElement(element)];

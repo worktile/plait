@@ -52,8 +52,8 @@
         "points-on-curve": "^1.0.0",
         "roughjs": "^4.5.2",
         "rxjs": "~7.8.0",
-        "slate": "^0.101.5",
-        "slate-angular": "^17.2.2",
+        "slate": "^0.103.0",
+        "slate-angular": "^17.3.0",
         "slate-history": "^0.100.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.14.4"
