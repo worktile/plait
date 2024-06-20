@@ -101,5 +101,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
         super.destroy();
         this.destroyText();
         this.nodeActiveGenerator.destroy();
+        this.nodeGenerator.destroy();
     }
 }
