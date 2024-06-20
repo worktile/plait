@@ -1,5 +1,13 @@
 # @plait/text-plugins
 
+## 0.62.0-next.1
+
+### Patch Changes
+
+-   [`d61621fef`](https://github.com/worktile/plait/commit/d61621fefdc3fd7fd8561dc28e22691c94488482) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `user-select: none;` for foreignObject element to disabled use-select
+
+    add class mark for image
+
 ## 0.62.0-next.0
 
 ### Minor Changes

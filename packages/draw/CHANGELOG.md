@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.62.0-next.1
+
+### Minor Changes
+
+-   [#918](https://github.com/worktile/plait/pull/918) [`6fff37862`](https://github.com/worktile/plait/commit/6fff37862833aa0ee43adec1c3b266ea9fb2d602) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set border style for table border
+
 ## 0.62.0-next.0
 
 ### Minor Changes
