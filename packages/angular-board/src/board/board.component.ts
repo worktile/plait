@@ -8,6 +8,7 @@ import {
     ElementRef,
     EventEmitter,
     HostBinding,
+    Injector,
     Input,
     NgZone,
     OnChanges,
@@ -180,6 +181,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     constructor(
         public cdr: ChangeDetectorRef,
+        public injector: Injector,
         public viewContainerRef: ViewContainerRef,
         private elementRef: ElementRef<HTMLElement>,
         private ngZone: NgZone

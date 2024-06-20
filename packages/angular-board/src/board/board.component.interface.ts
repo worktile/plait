@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, EventEmitter, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, EventEmitter, Injector, ViewContainerRef } from '@angular/core';
 import { OnChangeData } from '../plugins/angular-board';
 
 export interface BoardComponentInterface {
@@ -6,5 +6,6 @@ export interface BoardComponentInterface {
     cdr: ChangeDetectorRef;
     nativeElement: HTMLElement;
     viewContainerRef: ViewContainerRef;
+    injector: Injector;
     onChange: EventEmitter<OnChangeData>;
 }

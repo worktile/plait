@@ -3,6 +3,14 @@ import { Editor, Node, Element } from 'slate';
 import { TextManage } from '../text/text-manage';
 import { Alignment, CustomText, ParagraphElement } from '../text/types';
 
+export interface TextInterface {
+    getTextEditors: (board: PlaitBoard, elements?: PlaitElement[]) => Editor[] | undefined;
+    findFirstTextEditor: (board: PlaitBoard) => null;
+    getFirstTextEditor: (element: PlaitElement) => Editor;
+    getTextEditorsByElement: (element: PlaitElement) => Editor[];
+    getEditingTextEditor: (board: PlaitBoard, elements?: PlaitElement[]) => Editor | undefined
+}
+
 export const getTextManages = (element: PlaitElement) => {
     return ELEMENT_TO_TEXT_MANAGES.get(element) || [];
 };
@@ -15,13 +23,13 @@ export const getFirstTextManage = (element: PlaitElement) => {
     return textManage;
 };
 
-export const getTextEditorsByElement = (element: PlaitElement) => {
+export const getTextEditorsByElement: TextInterface['getTextEditorsByElement'] = (element: PlaitElement) => {
     return getTextManages(element).map(manage => {
         return manage.editor;
     });
 };
 
-export const getFirstTextEditor = (element: PlaitElement) => {
+export const getFirstTextEditor: TextInterface['getFirstTextEditor'] = (element: PlaitElement) => {
     const textEditor = getTextEditorsByElement(element)[0];
     if (!textEditor) {
         console.warn('can not find textManage');
@@ -29,7 +37,7 @@ export const getFirstTextEditor = (element: PlaitElement) => {
     return textEditor;
 };
 
-export const findFirstTextEditor = (board: PlaitBoard) => {
+export const findFirstTextEditor: TextInterface['findFirstTextEditor'] = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board);
     let firstEditor: Editor | null = null;
     selectedElements.forEach(element => {
@@ -63,7 +71,7 @@ export const getElementsText = (elements: PlaitElement[]) => {
         .join(' ');
 };
 
-export const getTextEditors = (board: PlaitBoard, elements?: PlaitElement[]) => {
+export const getTextEditors: TextInterface['getTextEditors'] = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedElements = elements || getSelectedElements(board);
     if (selectedElements.length) {
         const textManages: TextManage[] = [];
@@ -81,7 +89,7 @@ export const getTextEditors = (board: PlaitBoard, elements?: PlaitElement[]) => 
     return undefined;
 };
 
-export const getEditingTextEditor = (board: PlaitBoard, elements?: PlaitElement[]) => {
+export const getEditingTextEditor: TextInterface['getEditingTextEditor'] = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedElements = elements || getSelectedElements(board);
     const textManages: TextManage[] = [];
     selectedElements.forEach(item => {
