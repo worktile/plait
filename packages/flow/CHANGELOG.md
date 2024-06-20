@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.61.2
+
+### Patch Changes
+
+-   [`3b5d472bd`](https://github.com/worktile/plait/commit/3b5d472bdf4e9d1ae0d4fda3c9a9332b289ef2cf) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - destroy node g when node is deleted
+
 ## 0.61.1
 
 ## 0.61.0
