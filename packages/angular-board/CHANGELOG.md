@@ -1,4 +1,14 @@
-# @plait/text-plugins
+# @plait/angular-board
+
+## 0.62.0-next.2
+
+### Patch Changes
+
+-   [`be5c38689`](https://github.com/worktile/plait/commit/be5c3868965a05015bd1d4ae3326682f4b1851ad) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle apply error
+
+    add getBoardComponentInjector to export injector
+
+    resolve type error for common/utils/text.ts
 
 ## 0.62.0-next.1
 

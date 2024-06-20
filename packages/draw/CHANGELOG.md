@@ -1,5 +1,7 @@
 # @plait/draw
 
+## 0.62.0-next.2
+
 ## 0.62.0-next.1
 
 ### Minor Changes
