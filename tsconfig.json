@@ -30,6 +30,9 @@
       ],
       "@plait/text-plugins": [
         "dist/text-plugins"
+      ],
+      "@plait/graph-viz": [
+        "dist/graph-viz"
       ]
     },
     "outDir": "./dist/out-tsc",
