@@ -31,6 +31,9 @@
       ],
       "@plait/common": [
         "packages/common/src/public-api",
+      ],
+      "@plait/graph-viz": [
+        "packages/graph-viz/src/public-api",
       ]
     },
     "forceConsistentCasingInFileNames": true,
