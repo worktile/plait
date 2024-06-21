@@ -1,6 +1,6 @@
 {
     "name": "@plait/draw",
-    "version": "0.62.0-next.2",
+    "version": "0.62.0-next.3",
     "peerDependencies": {
         "is-hotkey": "^0.2.0"
     },

@@ -1,5 +1,7 @@
 # angular-text
 
+## 0.62.0-next.3
+
 ## 0.62.0-next.2
 
 ## 0.62.0-next.1

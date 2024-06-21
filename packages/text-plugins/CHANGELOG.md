@@ -1,5 +1,11 @@
 # @plait/text-plugins
 
+## 0.62.0-next.3
+
+### Patch Changes
+
+-   [`fcd0af85c`](https://github.com/worktile/plait/commit/fcd0af85c695b8ac52cd49388b663a15ce2f8cbf) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent getMarks when editor children is empty
+
 ## 0.62.0-next.2
 
 ## 0.62.0-next.1
