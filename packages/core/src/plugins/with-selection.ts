@@ -11,7 +11,7 @@ import {
     isHitElement,
     removeSelectedElement
 } from '../utils/selected-element';
-import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR, isSetSelectionOperation } from '../interfaces';
+import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 import {
     clearSelectionMoving,
@@ -26,7 +26,8 @@ import {
     throttleRAF,
     toHostPoint,
     toViewBoxPoint,
-    setSelectedElementsWithGroup
+    setSelectedElementsWithGroup,
+    hasSetSelectionOperation
 } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
@@ -141,7 +142,7 @@ export function withSelection(board: PlaitBoard) {
                 removeSelectedElement(board, op.node, true);
             }
         });
-        if (isHandleSelection(board) && isSetSelectionOperation(board)) {
+        if (isHandleSelection(board) && hasSetSelectionOperation(board)) {
             try {
                 if (!isShift) {
                     selectionRectangleG?.remove();
@@ -201,7 +202,7 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.afterChange = () => {
-        if (isHandleSelection(board) && !isSetSelectionOperation(board)) {
+        if (isHandleSelection(board) && !hasSetSelectionOperation(board)) {
             try {
                 const currentSelectedElements = getSelectedElements(board);
                 if (currentSelectedElements.length && currentSelectedElements.length > 1) {

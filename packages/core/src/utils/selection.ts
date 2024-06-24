@@ -1,5 +1,14 @@
 import { ACTIVE_STROKE_WIDTH, SELECTION_RECTANGLE_CLASS_NAME } from '../constants';
-import { PlaitBoard, PlaitElement, PlaitGroup, PlaitPluginKey, PlaitPointerType, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
+import {
+    PlaitBoard,
+    PlaitElement,
+    PlaitGroup,
+    PlaitOperation,
+    PlaitPluginKey,
+    PlaitPointerType,
+    RectangleClient,
+    SELECTION_BORDER_COLOR
+} from '../interfaces';
 import { setDragging } from './dnd';
 import { getRectangleByElements } from './element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from './weak-maps';
@@ -31,6 +40,10 @@ export function clearSelectionMoving(board: PlaitBoard) {
 export function isHandleSelection(board: PlaitBoard) {
     const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
     return board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect && !PlaitBoard.isReadonly(board);
+}
+
+export function hasSetSelectionOperation(board: PlaitBoard) {
+    return !!board.operations.find(op => PlaitOperation.isSetSelectionOperation(op));
 }
 
 export function getTemporaryElements(board: PlaitBoard) {

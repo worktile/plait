@@ -58,9 +58,9 @@ export type PlaitOperation =
 
 export interface PlaitOperationInterface {
     inverse: (op: PlaitOperation) => PlaitOperation;
-    isSetViewportOperation: (value: any) => boolean;
-    isSetSelectionOperation: (value: any) => boolean;
-    isSetThemeOperation: (value: any) => boolean;
+    isSetViewportOperation: (value: PlaitOperation) => boolean;
+    isSetSelectionOperation: (value: PlaitOperation) => boolean;
+    isSetThemeOperation: (value: PlaitOperation) => boolean;
 }
 
 export const isSetViewportOperation = (value: any): value is SetViewportOperation => {
