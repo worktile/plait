@@ -1,5 +1,13 @@
 # @plait/angular-board
 
+## 0.62.0-next.4
+
+### Patch Changes
+
+-   [`38ad91d93`](https://github.com/worktile/plait/commit/38ad91d9346f6ef39eddb264ddaa293bf219f93f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add isSetSelectionOperation and isSetThemeOperation in operation interface
+
+    remove add/remove className in updatePointerType and add className in angular-board component
+
 ## 0.62.0-next.3
 
 ## 0.62.0-next.2

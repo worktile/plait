@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.62.0-next.4
+
+### Patch Changes
+
+-   [`aa8ce9692`](https://github.com/worktile/plait/commit/aa8ce9692508bcf34d9d233f83086af5a8088006) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove 'plait-image-container' from image-base.component
+
+    remove the dependency of className('plait-image-container') from @plait/core
+
 ## 0.62.0-next.3
 
 ## 0.62.0-next.2
