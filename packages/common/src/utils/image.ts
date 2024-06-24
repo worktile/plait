@@ -1,5 +1,4 @@
-import { ComponentType, PlaitBoard, PlaitElement } from '@plait/core';
-import { ImageBaseComponent } from '../image/image-base.component';
+import { PlaitBoard, PlaitElement } from '@plait/core';
 
 export interface CommonImageItem {
     url: string;

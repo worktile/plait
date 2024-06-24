@@ -16,7 +16,6 @@ import { ActiveGenerator } from '../generators/active.generator';
 import { PlaitImageBoard, ImageComponentRef, ImageProps } from './with-image';
 
 export const FOREIGN_OBJECT_IMAGE_CLASS_NAME = 'foreign-object-image';
-export const IMAGE_CONTAINER_CLASS_NAME = 'plait-image-container';
 
 export interface ImageGeneratorOptions<T> {
     getRectangle: (element: T) => RectangleClient;

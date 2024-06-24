@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
 import { findElements, getRectangleByElements } from './element';
 
-const IMAGE_CONTAINER = 'plait-image-container';
+const FOREIGN_OBJECT_EXPRESSION = `foreignObject[class^='foreign-object']`;
 
 export interface ToImageOptions {
     elements?: PlaitElement[];
@@ -106,7 +106,7 @@ function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
  */
 function batchCloneCSSStyle(sourceNode: SVGGElement, cloneNode: SVGGElement, inlineStyleClassNames: string) {
     if (inlineStyleClassNames) {
-        const classNames = inlineStyleClassNames + `,.${IMAGE_CONTAINER}`;
+        const classNames = inlineStyleClassNames + `, ${FOREIGN_OBJECT_EXPRESSION}`;
         const sourceNodes = Array.from(sourceNode.querySelectorAll(classNames));
         const cloneNodes = Array.from(cloneNode.querySelectorAll(classNames));
 
@@ -130,8 +130,8 @@ function batchCloneCSSStyle(sourceNode: SVGGElement, cloneNode: SVGGElement, inl
  * @param cloneNode
  */
 async function batchConvertImage(sourceNode: SVGGElement, cloneNode: SVGGElement) {
-    const sourceImageNodes = Array.from(sourceNode.querySelectorAll(`.${IMAGE_CONTAINER}`));
-    const cloneImageNodes = Array.from(cloneNode.querySelectorAll(`.${IMAGE_CONTAINER}`));
+    const sourceImageNodes = Array.from(sourceNode.querySelectorAll(`${FOREIGN_OBJECT_EXPRESSION}`));
+    const cloneImageNodes = Array.from(cloneNode.querySelectorAll(`${FOREIGN_OBJECT_EXPRESSION}`));
     await Promise.all(
         sourceImageNodes.map((_, index) => {
             return new Promise(resolve => {
