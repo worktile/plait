@@ -59,10 +59,20 @@ export type PlaitOperation =
 export interface PlaitOperationInterface {
     inverse: (op: PlaitOperation) => PlaitOperation;
     isSetViewportOperation: (value: any) => boolean;
+    isSetSelectionOperation: (value: any) => boolean;
+    isSetThemeOperation: (value: any) => boolean;
 }
 
 export const isSetViewportOperation = (value: any): value is SetViewportOperation => {
     return value.type === 'set_viewport';
+};
+
+export const isSetSelectionOperation = (value: any): value is SetSelectionOperation => {
+    return value.type === 'set_selection';
+};
+
+export const isSetThemeOperation = (value: any): value is SetThemeOperation => {
+    return value.type === 'set_theme';
 };
 
 export const inverse = (op: PlaitOperation): PlaitOperation => {
@@ -153,5 +163,7 @@ export const inverse = (op: PlaitOperation): PlaitOperation => {
 
 export const PlaitOperation: PlaitOperationInterface = {
     isSetViewportOperation,
+    isSetSelectionOperation,
+    isSetThemeOperation,
     inverse
 };

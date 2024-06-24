@@ -33,10 +33,6 @@ export function isHandleSelection(board: PlaitBoard) {
     return board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect && !PlaitBoard.isReadonly(board);
 }
 
-export function isSetSelectionOperation(board: PlaitBoard) {
-    return !!board.operations.find(value => value.type === 'set_selection');
-}
-
 export function getTemporaryElements(board: PlaitBoard) {
     const ref = BOARD_TO_TEMPORARY_ELEMENTS.get(board);
     if (ref) {

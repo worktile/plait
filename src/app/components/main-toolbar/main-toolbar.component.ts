@@ -64,8 +64,8 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     setPointer(event: Event, pointer: PointerType) {
         event.preventDefault();
         const isLinePointer = getLinePointers().includes(pointer);
+        BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
         if (!isLinePointer) {
-            BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
             setCreationMode(this.board, BoardCreationMode.dnd);
         }
         fromEvent(event.target as HTMLElement, 'mouseup')

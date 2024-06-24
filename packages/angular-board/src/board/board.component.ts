@@ -134,7 +134,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @HostBinding('class')
     get hostClass() {
-        return `${HOST_CLASS_NAME} theme-${this.board.theme.themeColorMode} ${this.getBrowserClassName()}`;
+        return `${HOST_CLASS_NAME} theme-${this.board.theme.themeColorMode} ${this.getBrowserClassName()} pointer-${this.board.pointer}`;
     }
 
     getBrowserClassName() {
@@ -241,7 +241,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         const context = new PlaitBoardContext();
         BOARD_TO_CONTEXT.set(this.board, context);
         this.initializeListRender();
-        this.elementRef.nativeElement.classList.add(`pointer-${this.board.pointer}`);
         this.hasInitialized = true;
     }
 

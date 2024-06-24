@@ -11,7 +11,7 @@ import {
     isHitElement,
     removeSelectedElement
 } from '../utils/selected-element';
-import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR, isSetSelectionOperation } from '../interfaces';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 import {
     clearSelectionMoving,
@@ -21,7 +21,6 @@ import {
     isDragging,
     isHandleSelection,
     isSelectionMoving,
-    isSetSelectionOperation,
     preventTouchMove,
     setSelectionMoving,
     throttleRAF,
