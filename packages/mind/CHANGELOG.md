@@ -1,5 +1,11 @@
 # mind
 
+## 0.62.0-next.5
+
+### Minor Changes
+
+-   [`bdfbe315a`](https://github.com/worktile/plait/commit/bdfbe315a48f1b41655f1da89e887dfae2595148) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove the some logic in ImageBaseComponent and MindEmojiBaseComponent to try remove base class
+
 ## 0.62.0-next.4
 
 ## 0.62.0-next.3
