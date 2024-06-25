@@ -1,5 +1,11 @@
 # mind
 
+## 0.62.0-next.6
+
+### Minor Changes
+
+-   [`3f54f62e6`](https://github.com/worktile/plait/commit/3f54f62e61fa5182e2cf178011b495fa27bda398) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove angular/core and angular/common from peerDependencies of package.json
+
 ## 0.62.0-next.5
 
 ### Minor Changes

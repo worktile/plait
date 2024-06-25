@@ -1,5 +1,7 @@
 # @plait/common
 
+## 0.62.0-next.6
+
 ## 0.62.0-next.5
 
 ### Minor Changes
