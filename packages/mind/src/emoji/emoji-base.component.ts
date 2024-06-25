@@ -12,9 +12,4 @@ export abstract class MindEmojiBaseComponent {
     element!: MindElement<EmojiData>;
 
     abstract nativeElement(): HTMLElement;
-
-    initialize(): void {
-        this.nativeElement().style.fontSize = `${this.fontSize}px`;
-        this.nativeElement().classList.add('mind-node-emoji');
-    }
 }
