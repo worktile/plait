@@ -9,7 +9,7 @@ export const mockKnowledgeGraphData: KnowledgeGraphElement[] = [
                 id: '1',
                 label: '页面A',
                 icon: '',
-                isMain: true
+                isActive: true
             },
             {
                 id: '2',

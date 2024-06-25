@@ -2,7 +2,7 @@ import { PlaitBoard, createG, createPath, drawCircle } from '@plait/core';
 import { KnowledgeGraphEdgeDirection, KnowledgeGraphNode, KnowledgeGraphPositions } from '../../interfaces';
 import Graph from 'graphology';
 import { DEFAULT_KNOWLEDGE_GRAPH_LINE_STYLES } from '../../constants/edge';
-import getArrow from '../../utils/line/getArrow';
+import getArrow from '../../utils/line/arrow';
 import { getEdgeDirection, getEdgeInfo } from '../../utils/knowledge-graph/edge';
 import { DEFAULT_STYLES } from '../../constants/default';
 import { edgePointAnimate } from './animate';
@@ -16,7 +16,7 @@ export function drawEdge(board: PlaitBoard, graph: Graph<KnowledgeGraphNode>, ed
     const end = { x: endPos[0], y: endPos[1] };
     const edgeInfo = getEdgeInfo(graph, edge);
     const direction = getEdgeDirection(edgeInfo);
-    const isMutual = edgeInfo.isSourceMain && edgeInfo.isTargetMain;
+    const isMutual = edgeInfo.isSourceActive && edgeInfo.isTargetActive;
     const arrow = getArrow(start.x, start.y, end.x, end.y, {
         stretch: 0.4,
         flip: direction === KnowledgeGraphEdgeDirection.NONE ? false : isMutual

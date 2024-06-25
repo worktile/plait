@@ -5,17 +5,17 @@ export function getEdgeInfo(graph: Graph<KnowledgeGraphNode>, edge: string) {
     const source = graph.source(edge);
     const target = graph.target(edge);
     const outEdges = graph.outEdges(target);
-    const isMain = graph.getNodeAttribute(source, 'isMain');
+    const isActive = graph.getNodeAttribute(source, 'isActive');
     return {
-        isSourceMain: !!isMain,
-        isTargetMain: !!graph.getNodeAttribute(graph.source(outEdges[0]), 'isMain')
+        isSourceActive: !!isActive,
+        isTargetActive: !!graph.getNodeAttribute(graph.source(outEdges[0]), 'isActive')
     };
 }
 
-export function getEdgeDirection(info: { isSourceMain: boolean; isTargetMain: boolean }) {
-    if (info.isSourceMain) {
+export function getEdgeDirection(info: { isSourceActive: boolean; isTargetActive: boolean }) {
+    if (info.isSourceActive) {
         return KnowledgeGraphEdgeDirection.OUT;
-    } else if (info.isTargetMain) {
+    } else if (info.isTargetActive) {
         return KnowledgeGraphEdgeDirection.IN;
     }
     return KnowledgeGraphEdgeDirection.NONE;

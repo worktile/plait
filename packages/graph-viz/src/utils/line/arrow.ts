@@ -1,118 +1,127 @@
-const PI = Math.PI;
+import { getAngle, getDistance, getAngliness, projectPoint, getPointBetween, getSector, rotatePoint, modulate } from './arrow-utils';
+
+export type ArrowOptions = {
+    bow?: number;
+    stretchMin?: number;
+    stretchMax?: number;
+    stretch?: number;
+    padStart?: number;
+    padEnd?: number;
+    flip?: boolean;
+    straights?: boolean;
+};
 
 /**
- * Modulate a value between two ranges.
- * @param value
- * @param rangeA from [low, high]
- * @param rangeB to [low, high]
- * @param clamp
- */
-export function modulate(value: number, rangeA: number[], rangeB: number[], clamp = false) {
-    const [fromLow, fromHigh] = rangeA;
-    const [toLow, toHigh] = rangeB;
-    const result = toLow + ((value - fromLow) / (fromHigh - fromLow)) * (toHigh - toLow);
-    if (clamp === true) {
-        if (toLow < toHigh) {
-            if (result < toLow) {
-                return toLow;
-            }
-            if (result > toHigh) {
-                return toHigh;
-            }
-        } else {
-            if (result > toLow) {
-                return toLow;
-            }
-            if (result < toHigh) {
-                return toHigh;
-            }
-        }
+   * getArrow
+   * Get the points for a linking line between two points.
+   * @description Draw an arrow between two points.
+   * @param x0 The x position of the "from" point.
+   * @param y0 The y position of the "from" point.
+   * @param x1 The x position of the "to" point.
+   * @param y1 The y position of the "to" point.
+   * @param options Additional options for computing the line.
+   * @returns [sx, sy, cx, cy, e1, e2, ae, as, ac]
+   * @example
+   * const arrow = getArrow(0, 0, 100, 200, {
+      bow: 0
+      stretch: .5
+      stretchMin: 0
+      stretchMax: 420
+      padStart: 0
+      padEnd: 0
+      flip: false
+      straights: true
+   * })
+   * 
+   * const [
+   *  startX, startY, 
+   *  controlX, controlY, 
+   *  endX, endY, 
+   *  endAngle, 
+   *  startAngle,
+   *  controlAngle
+   *  ] = arrow
+   */
+export default function getArrow(x0: number, y0: number, x1: number, y1: number, options: ArrowOptions = {} as ArrowOptions): number[] {
+    const { bow = 0, stretch = 0.5, stretchMin = 0, stretchMax = 420, padStart = 0, padEnd = 0, flip = false, straights = true } = options;
+
+    const angle = getAngle(x0, y0, x1, y1);
+    const dist = getDistance(x0, y0, x1, y1);
+    const angliness = getAngliness(x0, y0, x1, y1);
+
+    // Step 0 ⤜⤏ Should the arrow be straight?
+
+    if (
+        dist < (padStart + padEnd) * 2 || // Too short
+        (bow === 0 && stretch === 0) || // No bow, no stretch
+        (straights && [0, 1, Infinity].includes(angliness)) // 45 degree angle
+    ) {
+        // ⤜⤏ Arrow is straight! Just pad start and end points.
+
+        // Padding distances
+        const ps = Math.max(0, Math.min(dist - padStart, padStart));
+        const pe = Math.max(0, Math.min(dist - ps, padEnd));
+
+        // Move start point toward end point
+        let [px0, py0] = projectPoint(x0, y0, angle, ps);
+
+        // Move end point toward start point
+        let [px1, py1] = projectPoint(x1, y1, angle + Math.PI, pe);
+
+        // Get midpoint between new points
+        const [mx, my] = getPointBetween(px0, py0, px1, py1, 0.5);
+
+        return [px0, py0, mx, my, px1, py1, angle, angle, angle];
     }
-    return result;
-}
 
-/**
- * Rotate a point around a center.
- * @param x The x-axis coordinate of the point.
- * @param y The y-axis coordinate of the point.
- * @param cx The x-axis coordinate of the point to rotate round.
- * @param cy The y-axis coordinate of the point to rotate round.
- * @param angle The distance (in radians) to rotate.
- */
-export function rotatePoint(x: number, y: number, cx: number, cy: number, angle: number) {
-    const s = Math.sin(angle);
-    const c = Math.cos(angle);
+    // ⤜⤏ Arrow is an arc!
 
-    const px = x - cx;
-    const py = y - cy;
+    // Is the arc clockwise or counterclockwise?
+    let rot = (getSector(angle) % 2 === 0 ? 1 : -1) * (flip ? -1 : 1);
 
-    const nx = px * c - py * s;
-    const ny = px * s + py * c;
+    // Calculate how much the line should "bow" away from center
+    const arc = bow + modulate(dist, [stretchMin, stretchMax], [1, 0], true) * stretch;
 
-    return [nx + cx, ny + cy];
-}
+    // Step 1 ⤜⤏ Find padded points.
 
-/**
- * Get the distance between two points.
- * @param x0 The x-axis coordinate of the first point.
- * @param y0 The y-axis coordinate of the first point.
- * @param x1 The x-axis coordinate of the second point.
- * @param y1 The y-axis coordinate of the second point.
- */
-export function getDistance(x0: number, y0: number, x1: number, y1: number) {
-    return Math.hypot(y1 - y0, x1 - x0);
-}
+    // Get midpoint.
+    const [mx, my] = getPointBetween(x0, y0, x1, y1, 0.5);
 
-/**
- * Get an angle (radians) between two points.
- * @param x0 The x-axis coordinate of the first point.
- * @param y0 The y-axis coordinate of the first point.
- * @param x1 The x-axis coordinate of the second point.
- * @param y1 The y-axis coordinate of the second point.
- */
-export function getAngle(x0: number, y0: number, x1: number, y1: number) {
-    return Math.atan2(y1 - y0, x1 - x0);
-}
+    // Get control point.
+    let [cx, cy] = getPointBetween(x0, y0, x1, y1, 0.5 - arc);
 
-/**
- * Move a point in an angle by a distance.
- * @param x0
- * @param y0
- * @param a angle (radians)
- * @param d distance
- */
-export function projectPoint(x0: number, y0: number, a: number, d: number) {
-    return [Math.cos(a) * d + x0, Math.sin(a) * d + y0];
-}
+    // Rotate control point (clockwise or counterclockwise).
+    [cx, cy] = rotatePoint(cx, cy, mx, my, (Math.PI / 2) * rot);
 
-/**
- * Get a point between two points.
- * @param x0 The x-axis coordinate of the first point.
- * @param y0 The y-axis coordinate of the first point.
- * @param x1 The x-axis coordinate of the second point.
- * @param y1 The y-axis coordinate of the second point.
- * @param d Normalized
- */
-export function getPointBetween(x0: number, y0: number, x1: number, y1: number, d = 0.5) {
-    return [x0 + (x1 - x0) * d, y0 + (y1 - y0) * d];
-}
+    // Get padded start point.
+    const a0 = getAngle(x0, y0, cx, cy);
+    const [px0, py0] = projectPoint(x0, y0, a0, padStart);
 
-/**
- * Get the sector of an angle (e.g. quadrant, octant)
- * @param a The angle to check.
- * @param s The number of sectors to check.
- */
-export function getSector(a: number, s = 8) {
-    return Math.floor(s * (0.5 + ((a / (PI * 2)) % s)));
-}
+    // Get padded end point.
+    const a1 = getAngle(x1, y1, cx, cy);
+    const [px1, py1] = projectPoint(x1, y1, a1, padEnd);
 
-/**
- * Get a normal value representing how close two points are from being at a 45 degree angle.
- * @param x0 The x-axis coordinate of the first point.
- * @param y0 The y-axis coordinate of the first point.
- * @param x1 The x-axis coordinate of the second point.
- * @param y1 The y-axis coordinate of the second point.
- */
-export function getAngliness(x0: number, y0: number, x1: number, y1: number) {
-    return Math.abs((x1 - x0) / 2 / ((y1 - y0) / 2));
+    // Step 2  ⤜⤏ Find start and end angles.
+
+    // Start angle
+    const as = getAngle(cx, cy, x0, y0);
+
+    // End angle
+    const ae = getAngle(cx, cy, x1, y1);
+
+    // Step 3 ⤜⤏ Find control point for padded points.
+
+    // Get midpoint between padded start / end points.
+    const [mx1, my1] = getPointBetween(px0, py0, px1, py1, 0.5);
+
+    // Get control point for padded start / end points.
+    let [cx1, cy1] = getPointBetween(px0, py0, px1, py1, 0.5 - arc);
+
+    // Rotate control point (clockwise or counterclockwise).
+    [cx1, cy1] = rotatePoint(cx1, cy1, mx1, my1, (Math.PI / 2) * rot);
+
+    // Finally, average the two control points.
+    let [cx2, cy2] = getPointBetween(cx, cy, cx1, cy1, 0.5);
+
+    return [px0, py0, cx2, cy2, px1, py1, ae, as, angle];
 }

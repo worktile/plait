@@ -15,7 +15,7 @@ export interface KnowledgeGraphNode {
     id: string;
     label?: string;
     icon?: string;
-    isMain?: boolean;
+    isActive?: boolean;
     width?: number;
     height?: number;
     size?: number;
