@@ -1,11 +1,11 @@
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, Selection } from '@plait/core';
-import { KnowledgeGraphFlavour } from '../knowledge-graph.flavour';
+import { ForceAtlasFlavour } from '../force-atlas.flavour';
 
-export const withKnowledgeGraph = (board: PlaitBoard) => {
+export const withForceAtlas = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
-        return KnowledgeGraphFlavour;
+        return ForceAtlasFlavour;
     };
 
     board.getRectangle = (element: PlaitElement) => {

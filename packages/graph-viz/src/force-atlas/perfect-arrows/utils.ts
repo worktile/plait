@@ -1,3 +1,6 @@
+// Credits to perfect-arrows
+// https://github.com/steveruizok/perfect-arrows/blob/master/src/lib/utils.ts
+
 const PI = Math.PI;
 
 /**

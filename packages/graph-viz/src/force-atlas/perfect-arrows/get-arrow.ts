@@ -1,4 +1,7 @@
-import { getAngle, getDistance, getAngliness, projectPoint, getPointBetween, getSector, rotatePoint, modulate } from './arrow-utils';
+// Credits to perfect-arrows
+// https://github.com/steveruizok/perfect-arrows/blob/master/src/lib/getArrow.ts
+
+import { getAngle, getDistance, getAngliness, projectPoint, getPointBetween, getSector, rotatePoint, modulate } from './utils';
 
 export type ArrowOptions = {
     bow?: number;

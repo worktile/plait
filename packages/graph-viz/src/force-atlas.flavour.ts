@@ -3,31 +3,34 @@ import { OnContextChanged, PlaitBoard, PlaitPluginElementContext } from '@plait/
 import Graph from 'graphology';
 import circular from 'graphology-layout/circular';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import { NodeKnowledgeGraphGenerator } from './generators/knowledge-graph/node.generator';
-import { KnowledgeGraphElement, KnowledgeGraphNode, KnowledgeGraphPositions } from './interfaces';
-import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_KNOWLEDGE_GRAPH_NODE_SIZE } from './constants/node';
-import { EdgeKnowledgeGraphGenerator } from './generators/knowledge-graph/edge.generator';
+import { NodeForceAtlasGenerator } from './force-atlas/generators/node.generator';
+import { ForceAtlasElement } from './interfaces';
+import { Node, Positions } from './force-atlas/types';
+import { EdgeForceAtlasGenerator } from './force-atlas/generators/edge.generator';
+import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './force-atlas/constants';
 
-export class KnowledgeGraphFlavour extends CommonElementFlavour<KnowledgeGraphElement, PlaitBoard>
-    implements OnContextChanged<KnowledgeGraphElement, PlaitBoard> {
-    graph!: Graph<KnowledgeGraphNode>;
-    graphPositions: KnowledgeGraphPositions = {};
-    nodeGenerator!: NodeKnowledgeGraphGenerator;
-    edgeGenerator!: EdgeKnowledgeGraphGenerator;
+export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
+    implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
+    graph!: Graph<Node>;
+    graphPositions: Positions = {};
+    nodeGenerator!: NodeForceAtlasGenerator;
+    edgeGenerator!: EdgeForceAtlasGenerator;
 
     constructor() {
         super();
     }
 
     initializeGraph() {
-        this.graph = new Graph<KnowledgeGraphNode>();
+        this.graph = new Graph<Node>();
         this.element.nodes.forEach(node => {
             if (typeof node.size === 'undefined') {
-                node.size = DEFAULT_KNOWLEDGE_GRAPH_NODE_SIZE * 2;
+                node.size = DEFAULT_NODE_SIZE * 2;
             }
+            // 添加节点信息
             this.graph.addNode(node.id, node);
         });
         this.element.edges.forEach(edge => {
+            // 添加节点关联关系
             this.graph.addEdge(edge.source, edge.target);
         });
         circular.assign(this.graph);
@@ -43,8 +46,8 @@ export class KnowledgeGraphFlavour extends CommonElementFlavour<KnowledgeGraphEl
     }
 
     initializeGenerator() {
-        this.nodeGenerator = new NodeKnowledgeGraphGenerator(this.board, this.graph, this.graphPositions);
-        this.edgeGenerator = new EdgeKnowledgeGraphGenerator(this.board, this.graph, this.graphPositions);
+        this.nodeGenerator = new NodeForceAtlasGenerator(this.board, this.graph, this.graphPositions);
+        this.edgeGenerator = new EdgeForceAtlasGenerator(this.board, this.graph, this.graphPositions);
     }
 
     initialize(): void {
@@ -57,11 +60,11 @@ export class KnowledgeGraphFlavour extends CommonElementFlavour<KnowledgeGraphEl
     }
 
     onContextChanged(
-        value: PlaitPluginElementContext<KnowledgeGraphElement, PlaitBoard>,
-        previous: PlaitPluginElementContext<KnowledgeGraphElement, PlaitBoard>
+        value: PlaitPluginElementContext<ForceAtlasElement, PlaitBoard>,
+        previous: PlaitPluginElementContext<ForceAtlasElement, PlaitBoard>
     ) {}
 
-    updateText(previousElement: KnowledgeGraphElement, currentElement: KnowledgeGraphElement) {}
+    updateText(previousElement: ForceAtlasElement, currentElement: ForceAtlasElement) {}
 
     destroy(): void {
         super.destroy();

@@ -1,7 +1,6 @@
-import { PlaitMind } from '@plait/mind';
-import { KnowledgeGraphElement } from '@plait/graph-viz';
+import { ForceAtlasElement } from '@plait/graph-viz';
 
-export const mockKnowledgeGraphData: KnowledgeGraphElement[] = [
+export const mockForceAtlasData: ForceAtlasElement[] = [
     {
         id: '1',
         nodes: [

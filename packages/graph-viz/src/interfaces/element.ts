@@ -1,16 +1,8 @@
-import { KnowledgeGraphNode } from './node';
-import { KnowledgeGraphEdge } from './edge';
 import { PlaitElement, Point } from '@plait/core';
+import { Node, Edge } from '../force-atlas/types';
 
-export interface KnowledgeGraphBaseData {
-    text?: Element;
-    icon?: string;
-}
-
-export interface KnowledgeGraphElement extends PlaitElement {
+export interface ForceAtlasElement extends PlaitElement {
     id: string;
-    nodes: KnowledgeGraphNode[];
-    edges: KnowledgeGraphEdge[];
+    nodes: Node[];
+    edges: Edge[];
 }
-
-export type KnowledgeGraphPositions = { [id: string]: Point };
