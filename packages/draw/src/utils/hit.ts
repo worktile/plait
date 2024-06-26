@@ -12,7 +12,7 @@ import {
     rotateAntiPointsByElement
 } from '@plait/core';
 import { PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
-import { TRANSPARENT } from '@plait/common';
+import { getElementsText, TRANSPARENT } from '@plait/common';
 import { getNearestPoint } from './geometry';
 import { getLinePoints } from './line/line-basic';
 import { getFillByElement } from './style/stroke';
@@ -48,6 +48,10 @@ export const isHitLine = (board: PlaitBoard, element: PlaitLine, point: Point) =
 
 export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => {
     const engine = getEngine<PlaitCommonGeometry>(element.shape);
+    const text = getElementsText([element]);
+    if (!text) {
+        return false;
+    }
     if (isMultipleTextGeometry(element)) {
         const texts = element.texts;
         return texts.some(item => {
