@@ -2,12 +2,13 @@ import { PlaitBoard, createG } from '@plait/core';
 import { Generator } from '@plait/common';
 import { ForceAtlasElement } from '../../interfaces';
 import Graph from 'graphology';
-import { Node } from '../types';
-import { drawEdge } from '../draw';
-import { getEdgeDirection, getEdgeInfo } from '../utils';
+import { EdgeDirection, Node } from '../types';
+import { drawEdge, drawParticle } from '../draw';
+import { edgeParticleAnimate, getEdgeDirection, getEdgeInfo } from '../utils';
 
 export class EdgeForceAtlasGenerator extends Generator<ForceAtlasElement> {
     graph!: Graph<Node>;
+    particleAnimations: Array<{ stop: () => void; start: () => void }> = [];
     constructor(board: PlaitBoard, graph: Graph<Node>) {
         super(board);
         this.graph = graph;
@@ -31,8 +32,20 @@ export class EdgeForceAtlasGenerator extends Generator<ForceAtlasElement> {
             const edgeInfo = getEdgeInfo(this.graph, edge);
             const direction = getEdgeDirection(edgeInfo);
             const isMutual = edgeInfo.isSourceActive && edgeInfo.isTargetActive;
-            nodeG.append(drawEdge(this.board, [start.x, start.y], [end.x, end.y], direction, isMutual));
+            const edgeElement = drawEdge([start.x, start.y], [end.x, end.y], direction, isMutual);
+            nodeG.append(edgeElement.g);
+            if (direction !== EdgeDirection.NONE) {
+                const particle = drawParticle(this.board, [start.x, start.y], direction);
+                edgeElement.g.append(particle);
+                this.particleAnimations.push(edgeParticleAnimate(edgeElement.path, particle));
+            }
         });
         return nodeG;
+    }
+
+    destroy(): void {
+        this.particleAnimations.forEach(animation => {
+            animation.stop();
+        });
     }
 }

@@ -1,6 +1,6 @@
 import Graph from 'graphology';
 import { EdgeDirection, EdgeInfo, Node } from './types';
-import { animate, linear } from '../utils/animate';
+import { AnimateOption, animate, linear } from '../utils/animate';
 
 export function getEdgeInfo(graph: Graph<Node>, edge: string): EdgeInfo {
     const source = graph.source(edge);
@@ -22,9 +22,9 @@ export function getEdgeDirection(info: { isSourceActive: boolean; isTargetActive
     return EdgeDirection.NONE;
 }
 
-export function edgePointAnimate(path: SVGPathElement, pointG: SVGGElement) {
+export function edgeParticleAnimate(path: SVGPathElement, pointG: SVGGElement) {
     const pathLength = path.getTotalLength();
-    animate(
+    let anim = animate(
         (t: number) => {
             const point = path.getPointAtLength(t * pathLength);
             pointG.setAttribute('transform', `translate(${point.x}, ${point.y})`);
@@ -32,7 +32,15 @@ export function edgePointAnimate(path: SVGPathElement, pointG: SVGGElement) {
         1000,
         linear,
         () => {
-            edgePointAnimate(path, pointG);
+            anim = edgeParticleAnimate(path, pointG);
         }
     );
+    return {
+        stop: () => {
+            anim.stop();
+        },
+        start: () => {
+            anim.start();
+        }
+    };
 }

@@ -1,7 +1,13 @@
-export function animate(tween: (t: number) => void, duration: number, ease: Function, callback: Function) {
+export type AnimateOption = { stop: () => void; start: () => void };
+
+export function animate(tween: (t: number) => void, duration: number, ease: Function, callback: Function): AnimateOption {
     const start = getTimestamp();
+    let stopAnimation = false;
 
     function tick(now: number) {
+        if (stopAnimation) {
+            return;
+        }
         const elapsed = now - start;
         const t = Math.min(elapsed / duration, 1); // 时间转换0-1
         tween(ease(t));
@@ -11,10 +17,18 @@ export function animate(tween: (t: number) => void, duration: number, ease: Func
             callback();
         }
     }
+
     requestAnimationFrame(tick);
+    return {
+        stop: () => (stopAnimation = true),
+        start: () => {
+            stopAnimation = false;
+            requestAnimationFrame(tick);
+        }
+    };
 }
 
-function getTimestamp() {
+export function getTimestamp() {
     if (window.performance && window.performance.now) {
         return window.performance.now();
     } else {

@@ -13,7 +13,6 @@ import {
     SECOND_DEPTH_NODE_ALPHA
 } from './constants';
 import { DEFAULT_STYLES } from '../constants/default';
-import { edgePointAnimate } from './utils';
 
 export function drawNode(board: PlaitBoard, node: Node, point: Point, isFirstDepth: boolean) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
@@ -44,8 +43,7 @@ export function drawNode(board: PlaitBoard, node: Node, point: Point, isFirstDep
     return nodeG;
 }
 
-export function drawEdge(board: PlaitBoard, startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean) {
-    const roughSVG = PlaitBoard.getRoughSVG(board);
+export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean) {
     const arrow = getArrow(startPoint[0], startPoint[1], endPoint[0], endPoint[1], {
         stretch: 0.4,
         flip: direction === EdgeDirection.NONE ? false : isMutual,
@@ -59,15 +57,19 @@ export function drawEdge(board: PlaitBoard, startPoint: Point, endPoint: Point, 
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', DEFAULT_LINE_STYLES.color[direction]);
     g.append(path);
-    if (direction !== EdgeDirection.NONE) {
-        const pointG = drawCircle(roughSVG, [0, 0], 5, {
-            ...DEFAULT_STYLES,
-            strokeWidth: 0,
-            fill: DEFAULT_LINE_STYLES.color[direction]
-        });
-        pointG.setAttribute('transform', `translate(${startPoint[0]}, ${startPoint[1]})`);
-        g.append(pointG);
-        edgePointAnimate(path, pointG);
-    }
-    return g;
+    return {
+        g,
+        path
+    };
+}
+
+export function drawParticle(board: PlaitBoard, startPoint: Point, direction: EdgeDirection) {
+    const roughSVG = PlaitBoard.getRoughSVG(board);
+    const pointG = drawCircle(roughSVG, [0, 0], 5, {
+        ...DEFAULT_STYLES,
+        strokeWidth: 0,
+        fill: DEFAULT_LINE_STYLES.color[direction]
+    });
+    pointG.setAttribute('transform', `translate(${startPoint[0]}, ${startPoint[1]})`);
+    return pointG;
 }
