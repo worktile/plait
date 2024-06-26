@@ -4,6 +4,7 @@ import { ForceAtlasElement } from '../../interfaces';
 import Graph from 'graphology';
 import { Node, Positions } from '../types';
 import { drawNode } from '../draw';
+import { getEdgeDirection, getEdgeInfo } from '../utils';
 
 export class NodeForceAtlasGenerator extends Generator<ForceAtlasElement> {
     graph!: Graph<Node>;
@@ -20,8 +21,14 @@ export class NodeForceAtlasGenerator extends Generator<ForceAtlasElement> {
 
     draw(element: ForceAtlasElement) {
         const nodeG = createG();
+        const activeNodeId = element.nodes.find(f => f.isActive)?.id;
         element.nodes.forEach(node => {
-            nodeG.append(drawNode(this.board, node, this.graphPositions));
+            const isFirstDepth =
+                node.isActive ||
+                element.edges.some(
+                    s => (s.source === activeNodeId && s.target === node.id) || (s.target === activeNodeId && s.source === node.id)
+                );
+            nodeG.append(drawNode(this.board, node, this.graphPositions[node.id], isFirstDepth));
         });
         return nodeG;
     }

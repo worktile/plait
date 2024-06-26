@@ -1,15 +1,15 @@
 import Graph from 'graphology';
-import { EdgeDirection, Node } from './types';
+import { EdgeDirection, EdgeInfo, Node } from './types';
 import { animate, linear } from '../utils/animate';
 
-export function getEdgeInfo(graph: Graph<Node>, edge: string) {
+export function getEdgeInfo(graph: Graph<Node>, edge: string): EdgeInfo {
     const source = graph.source(edge);
     const target = graph.target(edge);
     const outEdges = graph.outEdges(target);
     const isActive = graph.getNodeAttribute(source, 'isActive');
     return {
         isSourceActive: !!isActive,
-        isTargetActive: !!graph.getNodeAttribute(graph.source(outEdges[0]), 'isActive')
+        isTargetActive: outEdges.length ? !!graph.getNodeAttribute(graph.source(outEdges[0]), 'isActive') : false
     };
 }
 

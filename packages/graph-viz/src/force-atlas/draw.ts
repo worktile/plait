@@ -1,43 +1,56 @@
-import Graph from 'graphology';
-import { EdgeDirection, Positions, Node, NodeStyles } from './types';
-import { NS, PlaitBoard, createG, createPath, drawCircle, normalizePoint } from '@plait/core';
+import { EdgeDirection, Node, NodeStyles } from './types';
+import { NS, PlaitBoard, Point, createG, createPath, drawCircle, normalizePoint } from '@plait/core';
 import getArrow from './perfect-arrows/get-arrow';
-import { DEFAULT_LINE_STYLES, DEFAULT_NODE_SIZE, DEFAULT_NODE_STYLES } from './constants';
+import {
+    ACTIVE_BACKGROUND_NODE_ALPHA,
+    DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE,
+    DEFAULT_ACTIVE_NODE_SIZE,
+    DEFAULT_LINE_STYLES,
+    DEFAULT_NODE_LABEL_FONT_SIZE,
+    DEFAULT_NODE_LABEL_MARGIN_TOP,
+    DEFAULT_NODE_SIZE,
+    DEFAULT_NODE_STYLES,
+    SECOND_DEPTH_NODE_ALPHA
+} from './constants';
 import { DEFAULT_STYLES } from '../constants/default';
-import { edgePointAnimate, getEdgeDirection, getEdgeInfo } from './utils';
+import { edgePointAnimate } from './utils';
 
-export function drawNode(board: PlaitBoard, node: Node, positions: Positions) {
+export function drawNode(board: PlaitBoard, node: Node, point: Point, isFirstDepth: boolean) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
     let nodeStyles: NodeStyles = {
         ...DEFAULT_NODE_STYLES,
         ...(node.styles || {})
     };
-    let { x, y } = normalizePoint(positions[node.id]);
-    const nodeG = drawCircle(roughSVG, [0, 0], DEFAULT_NODE_SIZE, nodeStyles);
+    let { x, y } = normalizePoint(point);
+    const nodeSize = node.isActive ? DEFAULT_ACTIVE_NODE_SIZE : DEFAULT_NODE_SIZE;
+    const nodeG = drawCircle(roughSVG, [0, 0], nodeSize, nodeStyles);
+    if (node.isActive) {
+        const mainCircle = drawCircle(roughSVG, [0, 0], DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE, DEFAULT_NODE_STYLES);
+        mainCircle.setAttribute('opacity', ACTIVE_BACKGROUND_NODE_ALPHA.toString());
+        nodeG.append(mainCircle);
+    }
     nodeG.setAttribute('transform', `translate(${x}, ${y})`);
+    if (!isFirstDepth) {
+        nodeG.setAttribute('opacity', SECOND_DEPTH_NODE_ALPHA.toString());
+    }
     const text = document.createElementNS(NS, 'text');
     text.textContent = node.label || '';
     text.setAttribute('text-anchor', `middle`);
-    text.setAttribute('dominant-baseline', `ideographic`);
+    text.setAttribute('dominant-baseline', `hanging`);
     text.setAttribute('x', `0`);
-    text.setAttribute('y', `${DEFAULT_NODE_SIZE}`);
+    text.setAttribute('y', `${(node.isActive ? DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE / 2 : nodeSize / 2) + DEFAULT_NODE_LABEL_MARGIN_TOP}`);
+    text.setAttribute('font-size', `${DEFAULT_NODE_LABEL_FONT_SIZE}px`);
     nodeG.append(text);
     return nodeG;
 }
 
-export function drawEdge(board: PlaitBoard, graph: Graph<Node>, edge: string, positions: Positions) {
+export function drawEdge(board: PlaitBoard, startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
-    const startPos = positions[graph.source(edge)];
-    const endPos = positions[graph.target(edge)];
-    // 起始和结束位置坐标
-    const start = { x: startPos[0], y: startPos[1] };
-    const end = { x: endPos[0], y: endPos[1] };
-    const edgeInfo = getEdgeInfo(graph, edge);
-    const direction = getEdgeDirection(edgeInfo);
-    const isMutual = edgeInfo.isSourceActive && edgeInfo.isTargetActive;
-    const arrow = getArrow(start.x, start.y, end.x, end.y, {
+    const arrow = getArrow(startPoint[0], startPoint[1], endPoint[0], endPoint[1], {
         stretch: 0.4,
-        flip: direction === EdgeDirection.NONE ? false : isMutual
+        flip: direction === EdgeDirection.NONE ? false : isMutual,
+        padEnd: DEFAULT_NODE_SIZE / 2,
+        padStart: DEFAULT_NODE_SIZE / 2
     });
     const [sx, sy, cx, cy, ex, ey, ae, as, ec] = arrow;
     const g = createG();
@@ -46,14 +59,14 @@ export function drawEdge(board: PlaitBoard, graph: Graph<Node>, edge: string, po
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', DEFAULT_LINE_STYLES.color[direction]);
     g.append(path);
-    const pointG = drawCircle(roughSVG, [0, 0], 5, {
-        ...DEFAULT_STYLES,
-        strokeWidth: 0,
-        fill: DEFAULT_LINE_STYLES.color[direction]
-    });
-    pointG.setAttribute('transform', `translate(${start.x}, ${start.y})`);
-    g.append(pointG);
     if (direction !== EdgeDirection.NONE) {
+        const pointG = drawCircle(roughSVG, [0, 0], 5, {
+            ...DEFAULT_STYLES,
+            strokeWidth: 0,
+            fill: DEFAULT_LINE_STYLES.color[direction]
+        });
+        pointG.setAttribute('transform', `translate(${startPoint[0]}, ${startPoint[1]})`);
+        g.append(pointG);
         edgePointAnimate(path, pointG);
     }
     return g;

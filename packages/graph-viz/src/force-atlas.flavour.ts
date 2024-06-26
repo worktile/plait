@@ -7,7 +7,7 @@ import { NodeForceAtlasGenerator } from './force-atlas/generators/node.generator
 import { ForceAtlasElement } from './interfaces';
 import { Node, Positions } from './force-atlas/types';
 import { EdgeForceAtlasGenerator } from './force-atlas/generators/edge.generator';
-import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './force-atlas/constants';
+import { DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE, DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './force-atlas/constants';
 
 export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
@@ -24,7 +24,7 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
         this.graph = new Graph<Node>();
         this.element.nodes.forEach(node => {
             if (typeof node.size === 'undefined') {
-                node.size = DEFAULT_NODE_SIZE * 2;
+                node.size = (node.isActive ? DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE : DEFAULT_NODE_SIZE) * 2;
             }
             // 添加节点信息
             this.graph.addNode(node.id, node);

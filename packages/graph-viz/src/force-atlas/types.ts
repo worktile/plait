@@ -34,3 +34,8 @@ export interface NodeStyles {
     borderRadius?: number;
     hoverStroke?: string;
 }
+
+export interface EdgeInfo {
+    isSourceActive: boolean;
+    isTargetActive: boolean;
+}
