@@ -9,7 +9,7 @@ import {
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
 import { Node } from 'slate';
-import { buildText, getRatioByPoint, getTextManages } from '@plait/common';
+import { buildText, getMemorizedLatest, getRatioByPoint, getTextManages } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { getLinePoints } from '../utils/line/line-basic';
 import { getHitLineTextIndex } from '../utils/position/line';
@@ -36,8 +36,9 @@ export const withLineText = (board: PlaitBoard) => {
                     editHandle(board, hitTarget, textIndex);
                 } else {
                     const ratio = getRatioByPoint(points, point);
+                    const textMemory = getMemorizedLatest('line')?.text || {};
                     texts.push({
-                        text: buildText(LINE_TEXT),
+                        text: buildText(LINE_TEXT, undefined, textMemory),
                         position: ratio,
                         width: 28,
                         height: 20
