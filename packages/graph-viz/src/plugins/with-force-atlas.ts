@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, Selection } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection } from '@plait/core';
 import { ForceAtlasFlavour } from '../force-atlas.flavour';
 
 export const withForceAtlas = (board: PlaitBoard) => {
@@ -9,7 +9,7 @@ export const withForceAtlas = (board: PlaitBoard) => {
     };
 
     board.getRectangle = (element: PlaitElement) => {
-        return getRectangle(element);
+        return RectangleClient.getRectangleByPoints(element.points || []);
     };
 
     board.isRectangleHit = (element: PlaitElement, selection: Selection) => {

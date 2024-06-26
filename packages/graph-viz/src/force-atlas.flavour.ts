@@ -1,18 +1,17 @@
 import { CommonElementFlavour } from '@plait/common';
-import { OnContextChanged, PlaitBoard, PlaitPluginElementContext } from '@plait/core';
+import { OnContextChanged, PlaitBoard, PlaitPluginElementContext, Point } from '@plait/core';
 import Graph from 'graphology';
 import circular from 'graphology-layout/circular';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import { NodeForceAtlasGenerator } from './force-atlas/generators/node.generator';
 import { ForceAtlasElement } from './interfaces';
-import { Node, Positions } from './force-atlas/types';
+import { Node } from './force-atlas/types';
 import { EdgeForceAtlasGenerator } from './force-atlas/generators/edge.generator';
 import { DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE, DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './force-atlas/constants';
 
 export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
     graph!: Graph<Node>;
-    graphPositions: Positions = {};
     nodeGenerator!: NodeForceAtlasGenerator;
     edgeGenerator!: EdgeForceAtlasGenerator;
 
@@ -39,15 +38,19 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
         settings.scalingRatio = DEFAULT_NODE_SCALING_RATIO; // 增加节点之间的距离
         settings.barnesHutOptimize = true;
         const positions = forceAtlas2(this.graph, { iterations: 500, settings });
-        Object.keys(positions).forEach(node => {
-            const pos = positions[node];
-            this.graphPositions[node] = [pos.x, pos.y];
+        const points: Point[] = [];
+        this.element.nodes.forEach(node => {
+            const pos = positions[node.id];
+            // 挂载计算后的位置
+            node.point = [pos.x, pos.y];
+            points.push([pos.x, pos.y]);
         });
+        this.element.points = points;
     }
 
     initializeGenerator() {
-        this.nodeGenerator = new NodeForceAtlasGenerator(this.board, this.graph, this.graphPositions);
-        this.edgeGenerator = new EdgeForceAtlasGenerator(this.board, this.graph, this.graphPositions);
+        this.nodeGenerator = new NodeForceAtlasGenerator(this.board, this.graph);
+        this.edgeGenerator = new EdgeForceAtlasGenerator(this.board, this.graph);
     }
 
     initialize(): void {

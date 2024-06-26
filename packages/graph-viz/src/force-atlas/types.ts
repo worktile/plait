@@ -9,14 +9,13 @@ export interface Node {
     height?: number;
     size?: number;
     styles?: NodeStyles;
+    point?: Point;
 }
 
 export interface Edge {
     source: string;
     target: string;
 }
-
-export type Positions = { [id: string]: Point };
 
 export enum EdgeDirection {
     IN,

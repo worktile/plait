@@ -2,17 +2,15 @@ import { PlaitBoard, createG } from '@plait/core';
 import { Generator } from '@plait/common';
 import { ForceAtlasElement } from '../../interfaces';
 import Graph from 'graphology';
-import { Node, Positions } from '../types';
+import { Node } from '../types';
 import { drawEdge } from '../draw';
 import { getEdgeDirection, getEdgeInfo } from '../utils';
 
 export class EdgeForceAtlasGenerator extends Generator<ForceAtlasElement> {
     graph!: Graph<Node>;
-    graphPositions!: Positions;
-    constructor(board: PlaitBoard, graph: Graph<Node>, graphPositions: Positions) {
+    constructor(board: PlaitBoard, graph: Graph<Node>) {
         super(board);
         this.graph = graph;
-        this.graphPositions = graphPositions;
     }
 
     canDraw(element: ForceAtlasElement): boolean {
@@ -25,8 +23,8 @@ export class EdgeForceAtlasGenerator extends Generator<ForceAtlasElement> {
         edges.forEach(edge => {
             const source = this.graph.source(edge);
             const target = this.graph.target(edge);
-            const startPos = this.graphPositions[source];
-            const endPos = this.graphPositions[target];
+            const startPos = this.graph.getNodeAttribute(source, 'point') || [0, 0];
+            const endPos = this.graph.getNodeAttribute(target, 'point') || [0, 0];
             // 起始和结束位置坐标
             const start = { x: startPos[0], y: startPos[1] };
             const end = { x: endPos[0], y: endPos[1] };
