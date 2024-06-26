@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, createDebugGenerator } from '@plait/core';
+import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, createDebugGenerator, PlaitNode } from '@plait/core';
 import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
 import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
@@ -127,7 +127,9 @@ export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> i
                 return getLineTextRectangle(this.board, this.element, index);
             },
             onChange: (textManageChangeData: TextManageChangeData) => {
-                const texts = [...this.element.texts];
+                const path = PlaitBoard.findPath(this.board, this.element);
+                const node = PlaitNode.get(this.board, path) as PlaitLine;
+                const texts = [...node.texts];
                 const newWidth = textManageChangeData.width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : textManageChangeData.width;
                 texts.splice(index, 1, {
                     text: textManageChangeData.newText ? textManageChangeData.newText : this.element.texts[index].text,
