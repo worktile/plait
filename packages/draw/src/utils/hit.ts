@@ -111,7 +111,7 @@ export const getDrawHitElement = (board: PlaitBoard, elements: PlaitDrawElement[
         endIndex = elements.indexOf(firstFilledElement) + 1;
     }
     const newElements = elements.slice(0, endIndex);
-    const element = getHitTextOrLineElement(newElements);
+    const element = getFirstTextOrLineElement(newElements);
     if (element) {
         return element;
     }
@@ -134,7 +134,7 @@ export const getFirstFilledDrawElement = (board: PlaitBoard, elements: PlaitDraw
     return filledElement;
 };
 
-export const getHitTextOrLineElement = (elements: PlaitDrawElement[]) => {
+export const getFirstTextOrLineElement = (elements: PlaitDrawElement[]) => {
     const texts = elements.filter(item => PlaitDrawElement.isText(item));
     if (texts.length) {
         return texts[0];

@@ -2,7 +2,7 @@ import { PlaitBoard, PlaitElement } from '@plait/core';
 import { ImageProps, isFilled, PlaitImageBoard, sortElementsByArea } from '@plait/common';
 import { AngularBoard } from '@plait/angular-board';
 import { PlaitImageComponent } from '../editor/image/image.component';
-import { getFillByElement as getDrawFillByElement, getHitTextOrLineElement, PlaitDrawElement } from '@plait/draw';
+import { getFillByElement as getDrawFillByElement, getFirstTextOrLineElement, PlaitDrawElement } from '@plait/draw';
 import { MindElement } from 'packages/mind/src/interfaces';
 import { getFillByElement as getMindFillByElement } from '@plait/mind';
 
@@ -48,7 +48,7 @@ export const getCommonHitElement = (board: PlaitBoard, elements: PlaitElement[])
     }
     const endIndex = firstFilledElement ? filledElementIndex + 1 : elements.length;
     const newElements = elements.slice(0, endIndex);
-    const element = getHitTextOrLineElement(newElements as PlaitDrawElement[]);
+    const element = getFirstTextOrLineElement(newElements as PlaitDrawElement[]);
     if (element) {
         return element;
     }

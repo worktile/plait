@@ -9,11 +9,11 @@ export const getElementArea = (board: PlaitBoard, element: PlaitElement) => {
     return 0;
 };
 
-export const sortElementsByArea = (board: PlaitBoard, elements: PlaitElement[], sortType: 'desc' | 'asc' = 'asc') => {
+export const sortElementsByArea = (board: PlaitBoard, elements: PlaitElement[], direction: 'desc' | 'asc' = 'asc') => {
     return elements.sort((a, b) => {
         const areaA = getElementArea(board, a);
         const areaB = getElementArea(board, b);
-        return sortType === 'asc' ? areaA - areaB : areaB - areaA;
+        return direction === 'asc' ? areaA - areaB : areaB - areaA;
     });
 };
 
