@@ -1,29 +1,28 @@
 import { Path, PlaitBoard, PlaitElement, PointOfRectangle, Transforms, findElements } from '@plait/core';
 import {
-    LineHandle,
-    LineHandleKey,
-    LineMarkerType,
-    LineText,
+    ArrowLineHandle,
+    ArrowLineHandleKey,
+    ArrowLineMarkerType,
+    ArrowLineText,
     MemorizeKey,
     PlaitArrowLine,
     PlaitDrawElement,
-    PlaitGeometry,
-    PlaitLine
+    PlaitGeometry
 } from '../interfaces';
 import { memorizeLatest } from '@plait/common';
-import { getSelectedLineElements } from '../utils/selected';
-import { getHitConnection, getLinePoints } from '../utils/line/line-basic';
+import { getSelectedArrowLineElements } from '../utils/selected';
+import { getHitConnection, getArrowLinePoints } from '../utils/arrow-line/arrow-line-basic';
 
-export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
+export const resizeArrowLine = (board: PlaitBoard, options: Partial<PlaitArrowLine>, path: Path) => {
     Transforms.setNode(board, options, path);
 };
 
-export const setLineTexts = (board: PlaitBoard, element: PlaitArrowLine, texts: LineText[]) => {
+export const setArrowLineTexts = (board: PlaitBoard, element: PlaitArrowLine, texts: ArrowLineText[]) => {
     const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, { texts }, path);
 };
 
-export const removeLineText = (board: PlaitBoard, element: PlaitArrowLine, index: number) => {
+export const removeArrowLineText = (board: PlaitBoard, element: PlaitArrowLine, index: number) => {
     const path = PlaitBoard.findPath(board, element);
     const texts = element.texts?.length ? [...element.texts] : [];
     const newTexts = [...texts];
@@ -31,19 +30,19 @@ export const removeLineText = (board: PlaitBoard, element: PlaitArrowLine, index
     Transforms.setNode(board, { texts: newTexts }, path);
 };
 
-export const setLineMark = (board: PlaitBoard, handleKey: LineHandleKey, marker: LineMarkerType) => {
-    memorizeLatest(MemorizeKey.line, handleKey, marker);
-    const selectedElements = getSelectedLineElements(board);
-    selectedElements.forEach((element: PlaitLine) => {
+export const setArrowLineMark = (board: PlaitBoard, handleKey: ArrowLineHandleKey, marker: ArrowLineMarkerType) => {
+    memorizeLatest(MemorizeKey.arrowLine, handleKey, marker);
+    const selectedElements = getSelectedArrowLineElements(board);
+    selectedElements.forEach((element: PlaitArrowLine) => {
         const path = PlaitBoard.findPath(board, element);
-        let handle = handleKey === LineHandleKey.source ? element.source : element.target;
+        let handle = handleKey === ArrowLineHandleKey.source ? element.source : element.target;
         handle = { ...handle, marker };
         Transforms.setNode(board, { [handleKey]: handle }, path);
     });
 };
 
-export const setLineShape = (board: PlaitBoard, newProperties: Partial<PlaitLine>) => {
-    const elements = getSelectedLineElements(board);
+export const setArrowLineShape = (board: PlaitBoard, newProperties: Partial<PlaitArrowLine>) => {
+    const elements = getSelectedArrowLineElements(board);
     elements.map(element => {
         const _properties = { ...newProperties };
         if (element.shape === newProperties.shape) {
@@ -54,14 +53,14 @@ export const setLineShape = (board: PlaitBoard, newProperties: Partial<PlaitLine
     });
 };
 
-export const collectLineUpdatedRefsByGeometry = (
+export const collectArrowLineUpdatedRefsByGeometry = (
     board: PlaitBoard,
     geometry: PlaitGeometry,
     refs: { property: Partial<PlaitArrowLine>; path: Path }[]
 ) => {
     const lines = findElements(board, {
         match: (element: PlaitElement) => {
-            if (PlaitDrawElement.isLine(element)) {
+            if (PlaitDrawElement.isArrowLine(element)) {
                 return element.source.boundId === geometry.id || element.target.boundId === geometry.id;
             }
             return false;
@@ -73,7 +72,7 @@ export const collectLineUpdatedRefsByGeometry = (
             const isSourceBound = line.source.boundId === geometry.id;
             const handle = isSourceBound ? 'source' : 'target';
             const object = { ...line[handle] };
-            const linePoints = getLinePoints(board, line);
+            const linePoints = getArrowLinePoints(board, line);
             const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
             object.connection = getHitConnection(board, point, geometry);
             const path = PlaitBoard.findPath(board, line);
@@ -92,19 +91,19 @@ export const collectLineUpdatedRefsByGeometry = (
     }
 };
 
-export const connectLineToGeometry = (
+export const connectArrowLineToGeometry = (
     board: PlaitBoard,
     lineElement: PlaitArrowLine,
-    handle: LineHandleKey,
+    handle: ArrowLineHandleKey,
     geometryElement: PlaitGeometry
 ) => {
-    const linePoints = PlaitLine.getPoints(board, lineElement);
-    const point = handle === LineHandleKey.source ? linePoints[0] : linePoints[linePoints.length - 1];
+    const linePoints = PlaitArrowLine.getPoints(board, lineElement);
+    const point = handle === ArrowLineHandleKey.source ? linePoints[0] : linePoints[linePoints.length - 1];
     const connection: PointOfRectangle = getHitConnection(board, point, geometryElement);
     if (connection) {
-        let source: LineHandle = lineElement.source;
-        let target: LineHandle = lineElement.target;
-        if (handle === LineHandleKey.source) {
+        let source: ArrowLineHandle = lineElement.source;
+        let target: ArrowLineHandle = lineElement.target;
+        if (handle === ArrowLineHandleKey.source) {
             source = {
                 ...source,
                 boundId: geometryElement.id,
@@ -118,6 +117,6 @@ export const connectLineToGeometry = (
             };
         }
         const path = PlaitBoard.findPath(board, lineElement);
-        resizeLine(board, { source, target }, path);
+        resizeArrowLine(board, { source, target }, path);
     }
 };

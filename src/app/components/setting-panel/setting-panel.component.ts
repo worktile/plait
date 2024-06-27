@@ -35,9 +35,8 @@ import {
     getFirstTextEditor
 } from '@plait/common';
 import {
-    LineShape,
-    LineMarkerType,
-    getSelectedLineElements,
+    ArrowLineShape,
+    ArrowLineMarkerType,
     getSelectedArrowLineElements,
     isSingleSelectSwimlane,
     getSelectedGeometryElements,
@@ -45,7 +44,7 @@ import {
     GeometryShapes,
     DrawTransforms,
     getMemorizeKey,
-    LineHandleKey,
+    ArrowLineHandleKey,
     PlaitSwimlane,
     isDrawElementsIncludeText,
     isDrawElementIncludeText,
@@ -105,11 +104,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     align = Alignment.center;
 
-    lineShape = LineShape.straight;
+    lineShape = ArrowLineShape.straight;
 
-    lineTargetMarker = LineMarkerType.openTriangle;
+    lineTargetMarker = ArrowLineMarkerType.openTriangle;
 
-    lineSourceMarker = LineMarkerType.openTriangle;
+    lineSourceMarker = ArrowLineMarkerType.openTriangle;
 
     swimlaneOperation = 'addRow';
 
@@ -221,9 +220,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
-    setLineShape(event: Event) {
-        let value = (event.target as HTMLSelectElement).value as LineShape;
-        DrawTransforms.setLineShape(this.board, { shape: value });
+    setArrowLineShape(event: Event) {
+        let value = (event.target as HTMLSelectElement).value as ArrowLineShape;
+        DrawTransforms.setArrowLineShape(this.board, { shape: value });
     }
 
     changeStrokeStyle(event: Event) {
@@ -265,9 +264,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
-    changeLineMarker(event: Event, key: string) {
+    changeArrowLineMarker(event: Event, key: string) {
         let value = (event.target as HTMLSelectElement).value as any;
-        DrawTransforms.setLineMark(this.board, key as LineHandleKey, value as LineMarkerType);
+        DrawTransforms.setArrowLineMark(this.board, key as ArrowLineHandleKey, value as ArrowLineMarkerType);
     }
 
     changeAngle() {

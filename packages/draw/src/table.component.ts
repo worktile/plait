@@ -25,7 +25,7 @@ import { getEngine } from './engines';
 import { TableSymbols } from './interfaces';
 import { getHorizontalTextRectangle } from './engines/table/table';
 import { ShapeDefaultSpace } from './constants';
-import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
+import { ArrowLineAutoCompleteGenerator } from './generators/arrow-line-auto-complete.generator';
 
 export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T, PlaitBoard> implements OnContextChanged<T, PlaitBoard> {
     activeGenerator!: ActiveGenerator<T>;
@@ -34,7 +34,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
 
     textGenerator!: TextGenerator<T>;
 
-    lineAutoCompleteGenerator!: LineAutoCompleteGenerator<PlaitTable>;
+    lineAutoCompleteGenerator!: ArrowLineAutoCompleteGenerator<PlaitTable>;
 
     constructor() {
         super();
@@ -65,8 +65,8 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         });
         this.tableGenerator = new TableGenerator<T>(this.board);
         this.initializeTextManage();
-        this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
-        this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
+        this.lineAutoCompleteGenerator = new ArrowLineAutoCompleteGenerator(this.board);
+        this.getRef().addGenerator(ArrowLineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
     }
 
     initialize(): void {

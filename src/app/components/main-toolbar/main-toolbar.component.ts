@@ -4,8 +4,8 @@ import { BoardTransforms, PlaitBoard, PlaitPointerType, getSelectedElements } fr
 import {
     DrawPointerType,
     DrawTransforms,
-    LineShape,
-    getLinePointers,
+    ArrowLineShape,
+    getArrowLinePointers,
     BasicShapes,
     FlowchartSymbols,
     UMLSymbols,
@@ -17,7 +17,7 @@ import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
 import { closeAction } from '../../utils/popover';
 import { PlaitIslandBaseComponent } from '@plait/angular-board';
 
-type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | LineShape;
+type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | ArrowLineShape;
 
 @Component({
     selector: 'app-main-toolbar',
@@ -43,7 +43,7 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     UMLSymbols = UMLSymbols;
 
-    LineShapeType = LineShape;
+    ArrowLineShapeType = ArrowLineShape;
 
     BoardCreationMode = BoardCreationMode;
 
@@ -63,9 +63,9 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     setPointer(event: Event, pointer: PointerType) {
         event.preventDefault();
-        const isLinePointer = getLinePointers().includes(pointer);
+        const isArrowLinePointer = getArrowLinePointers().includes(pointer);
         BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
-        if (!isLinePointer) {
+        if (!isArrowLinePointer) {
             setCreationMode(this.board, BoardCreationMode.dnd);
         }
         fromEvent(event.target as HTMLElement, 'mouseup')

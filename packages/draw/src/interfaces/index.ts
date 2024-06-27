@@ -1,12 +1,12 @@
 import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitBaseGeometry, PlaitGeometry, UMLSymbols } from './geometry';
 import { PlaitImage } from './image';
-import { PlaitArrowLine, PlaitLine } from './line';
+import { PlaitArrowLine } from './arrow-line';
 import { PlaitSwimlane, SwimlaneSymbols } from './swimlane';
 import { PlaitBaseTable, PlaitTable, PlaitTableElement, TableSymbols } from './table';
 import { PlaitText } from './text';
 import { PlaitVectorLine } from './vector-line';
 
-export * from './line';
+export * from './arrow-line';
 export * from './geometry';
 export * from './text';
 export * from './element';
@@ -25,12 +25,9 @@ export const PlaitDrawElement = {
     isGeometry: (value: any): value is PlaitGeometry => {
         return value.type === 'geometry';
     },
-    isLine: (value: any): value is PlaitLine => {
-        return value.type === 'arrow-line' || value.type === 'line' || value.type === 'vector-line';
-    },
-    isVectorLine: (value: any): value is PlaitVectorLine => {
-        return value.type === 'vector-line';
-    },
+    // isLine: (value: any): value is PlaitArrowLine => {
+    //     return value.type === 'arrow-line' || value.type === 'line' || value.type === 'vector-line';
+    // },
     isArrowLine: (value: any): value is PlaitArrowLine => {
         return value.type === 'arrow-line' || value.type === 'line';
     },
@@ -46,7 +43,7 @@ export const PlaitDrawElement = {
     isDrawElement: (value: any): value is PlaitDrawElement => {
         if (
             PlaitDrawElement.isGeometry(value) ||
-            PlaitDrawElement.isLine(value) ||
+            PlaitDrawElement.isArrowLine(value) ||
             PlaitDrawElement.isImage(value) ||
             PlaitDrawElement.isTable(value) ||
             PlaitDrawElement.isSwimlane(value)

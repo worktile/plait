@@ -9,10 +9,10 @@ import {
     DEFAULT_ROUTE_MARGIN,
     ElbowLineRouteOptions
 } from '@plait/common';
-import { BasicShapes, LineHandleRefPair, PlaitArrowLine, PlaitGeometry, PlaitLine } from '../../interfaces';
+import { BasicShapes, ArrowLineHandleRefPair, PlaitGeometry, PlaitArrowLine } from '../../interfaces';
 import { createGeometryElement } from '../geometry';
-import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
-import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './line-resize';
+import { getElbowLineRouteOptions, getArrowLineHandleRefPair } from './arrow-line-common';
+import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './arrow-line-resize';
 import { getStrokeWidthByElement } from '../common';
 
 export const isSelfLoop = (element: PlaitArrowLine) => {
@@ -24,7 +24,7 @@ export const isUseDefaultOrthogonalRoute = (element: PlaitArrowLine, options: El
 };
 
 export const getElbowPoints = (board: PlaitBoard, element: PlaitArrowLine) => {
-    const handleRefPair = getLineHandleRefPair(board, element);
+    const handleRefPair = getArrowLineHandleRefPair(board, element);
     const params = getElbowLineRouteOptions(board, element, handleRefPair);
     // console.log(params, 'params');
     if (isUseDefaultOrthogonalRoute(element, params)) {
@@ -44,7 +44,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitArrowLine) => {
         return simplifyOrthogonalPoints(keyPoints);
     } else {
         const simplifiedNextKeyPoints = simplifyOrthogonalPoints(nextKeyPoints);
-        const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
+        const dataPoints = removeDuplicatePoints(PlaitArrowLine.getPoints(board, element));
         const midDataPoints = dataPoints.slice(1, -1);
         if (hasIllegalElbowPoint(midDataPoints)) {
             return simplifyOrthogonalPoints(keyPoints);
@@ -92,7 +92,7 @@ export const getNextSourceAndTargetPoints = (board: PlaitBoard, element: PlaitAr
     return [options.nextSourcePoint, options.nextTargetPoint];
 };
 
-export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitArrowLine, handleRefPair: LineHandleRefPair) => {
+export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitArrowLine, handleRefPair: ArrowLineHandleRefPair) => {
     let sourceElement = element.source.boundId ? getElementById<PlaitGeometry>(board, element.source.boundId) : undefined;
     let targetElement = element.target.boundId ? getElementById<PlaitGeometry>(board, element.target.boundId) : undefined;
     if (!sourceElement) {

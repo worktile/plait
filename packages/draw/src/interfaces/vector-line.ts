@@ -1,10 +1,10 @@
 import { PlaitElement, Point } from '@plait/core';
 import { StrokeStyle } from './element';
-import { LineShape } from './line';
+import { ArrowLineShape } from './arrow-line';
 
 export enum VectorLineShape {
-    straight = LineShape.straight,
-    curve = LineShape.curve
+    straight = ArrowLineShape.straight,
+    curve = ArrowLineShape.curve
 }
 
 export interface PlaitVectorLine extends PlaitElement {

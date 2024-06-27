@@ -526,19 +526,27 @@
     <ng-template [ngTemplateOutlet]="text"></ng-template>
 </a>
 
-<a class="action-item" [ngClass]="{ active: isActiveItem(LineShapeType.elbow) }" (mousedown)="setPointer($event, LineShapeType.elbow)">
+<a
+    class="action-item"
+    [ngClass]="{ active: isActiveItem(ArrowLineShapeType.elbow) }"
+    (mousedown)="setPointer($event, ArrowLineShapeType.elbow)"
+>
     <ng-template [ngTemplateOutlet]="elbow"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isActiveItem(LineShapeType.straight) }"
-    (mousedown)="setPointer($event, LineShapeType.straight)"
+    [ngClass]="{ active: isActiveItem(ArrowLineShapeType.straight) }"
+    (mousedown)="setPointer($event, ArrowLineShapeType.straight)"
 >
     <ng-template [ngTemplateOutlet]="straight"></ng-template>
 </a>
 
-<a class="action-item" [ngClass]="{ active: isActiveItem(LineShapeType.curve) }" (mousedown)="setPointer($event, LineShapeType.curve)">
+<a
+    class="action-item"
+    [ngClass]="{ active: isActiveItem(ArrowLineShapeType.curve) }"
+    (mousedown)="setPointer($event, ArrowLineShapeType.curve)"
+>
     <ng-template [ngTemplateOutlet]="curve"></ng-template>
 </a>
 

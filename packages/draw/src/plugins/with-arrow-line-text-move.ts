@@ -9,10 +9,10 @@ import {
 import { PlaitArrowLine, PlaitDrawElement } from '../interfaces';
 import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, getRatioByPoint, getTextManages, withResize } from '@plait/common';
 import { DrawTransforms } from '../transforms';
-import { getLinePoints } from '../utils/line/line-basic';
-import { getHitLineTextIndex } from '../utils/position/line';
+import { getArrowLinePoints } from '../utils/arrow-line/arrow-line-basic';
+import { getHitArrowLineTextIndex } from '../utils/position/arrow-line';
 
-export const withLineTextMove = (board: PlaitBoard) => {
+export const withArrowLineTextMove = (board: PlaitBoard) => {
     let textIndex = 0;
     const movableBuffer = 100;
     const options: WithResizeOptions<PlaitArrowLine> = {
@@ -23,10 +23,10 @@ export const withLineTextMove = (board: PlaitBoard) => {
         hitTest: (point: Point) => {
             let result = null;
             const line = getHitElementByPoint(board, point, (element: PlaitElement) => {
-                return PlaitDrawElement.isLine(element);
+                return PlaitDrawElement.isArrowLine(element);
             }) as undefined | PlaitArrowLine;
             if (line) {
-                const index = getHitLineTextIndex(board, line, point);
+                const index = getHitArrowLineTextIndex(board, line, point);
                 const textManages = getTextManages(line);
                 const textManage = textManages[index];
                 if (index !== -1 && !textManage.isEditing) {
@@ -40,7 +40,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
             const element = resizeRef.element;
             if (element) {
                 const movingPoint = resizeState.endPoint;
-                const points = getLinePoints(board, element);
+                const points = getArrowLinePoints(board, element);
                 const distance = distanceBetweenPointAndSegments(points, movingPoint);
                 if (distance <= movableBuffer) {
                     const point = getNearestPointBetweenPointAndSegments(movingPoint, points, false);
@@ -50,7 +50,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
                         ...texts[textIndex],
                         position
                     };
-                    DrawTransforms.setLineTexts(board, element, texts);
+                    DrawTransforms.setArrowLineTexts(board, element, texts);
                 }
             }
         }

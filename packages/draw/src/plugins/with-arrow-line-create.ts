@@ -11,13 +11,13 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitArrowLine, PlaitShapeElement } from '../interfaces';
-import { getLinePointers } from '../constants';
+import { ArrowLineShape, PlaitArrowLine, PlaitShapeElement } from '../interfaces';
+import { getArrowLinePointers } from '../constants';
 import { isDrawingMode } from '@plait/common';
-import { handleLineCreating } from '../utils/line/line-basic';
+import { handleArrowLineCreating } from '../utils/arrow-line/arrow-line-basic';
 import { getSnappingShape } from '../utils';
 
-export const withLineCreateByDraw = (board: PlaitBoard) => {
+export const withArrowLineCreateByDraw = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
 
     let start: Point | null = null;
@@ -29,7 +29,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     let temporaryElement: PlaitArrowLine | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
-        const linePointers = getLinePointers();
+        const linePointers = getArrowLinePointers();
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         if (!PlaitBoard.isReadonly(board) && isLinePointer && isDrawingMode(board)) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -48,8 +48,8 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         lineShapeG = createG();
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (start) {
-            const lineShape = PlaitBoard.getPointer(board) as LineShape;
-            temporaryElement = handleLineCreating(board, lineShape, start, movingPoint, sourceElement, lineShapeG);
+            const lineShape = PlaitBoard.getPointer(board) as ArrowLineShape;
+            temporaryElement = handleArrowLineCreating(board, lineShape, start, movingPoint, sourceElement, lineShapeG);
         }
 
         pointerMove(event);

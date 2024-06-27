@@ -10,12 +10,12 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitDrawElement } from '../interfaces';
+import { ArrowLineShape, PlaitDrawElement } from '../interfaces';
 import { isResizingByCondition } from '@plait/common';
-import { LineResizeHandle } from '../utils/position/line';
+import { ArrowLineResizeHandle } from '../utils/position/arrow-line';
 import { drawBoundReaction, getHitShape, getSnappingRef } from '../utils';
 
-export const withLineBoundReaction = (board: PlaitBoard) => {
+export const withArrowLineBoundReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;
 
     let boundShapeG: SVGGElement | null = null;
@@ -26,13 +26,13 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             pointerMove(event);
             return;
         }
-        const linePointers = Object.keys(LineShape);
+        const linePointers = Object.keys(ArrowLineShape);
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const isLineResizing = isResizingByCondition<PlaitElement, LineResizeHandle>(board, resizeRef => {
+        const isLineResizing = isResizingByCondition<PlaitElement, ArrowLineResizeHandle>(board, resizeRef => {
             const { element, handle } = resizeRef;
-            const isSourceOrTarget = handle === LineResizeHandle.target || handle === LineResizeHandle.source;
-            return PlaitDrawElement.isLine(element) && isSourceOrTarget;
+            const isSourceOrTarget = handle === ArrowLineResizeHandle.target || handle === ArrowLineResizeHandle.source;
+            return PlaitDrawElement.isArrowLine(element) && isSourceOrTarget;
         });
         if (isLinePointer || isLineResizing) {
             const hitElement = getHitShape(board, movingPoint);

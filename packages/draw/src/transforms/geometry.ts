@@ -4,7 +4,7 @@ import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, 
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
-import { collectLineUpdatedRefsByGeometry } from './line';
+import { collectArrowLineUpdatedRefsByGeometry } from './arrow-line';
 import { DefaultBasicShapeProperty, DefaultBasicShapePropertyMap, DefaultFlowchartPropertyMap, DefaultUMLPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
@@ -62,12 +62,12 @@ export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) =>
         if (PlaitDrawElement.isGeometry(item) && !PlaitDrawElement.isText(item)) {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { shape }, path);
-            collectLineUpdatedRefsByGeometry(board, { ...item, shape }, refs);
+            collectArrowLineUpdatedRefsByGeometry(board, { ...item, shape }, refs);
         }
     });
     if (refs.length) {
         refs.forEach(ref => {
-            DrawTransforms.resizeLine(board, ref.property, ref.path);
+            DrawTransforms.resizeArrowLine(board, ref.property, ref.path);
         });
     }
 };

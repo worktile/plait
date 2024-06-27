@@ -2,4 +2,4 @@
 '@plait/draw': minor
 ---
 
-rename interface PlaitLine to PlaitArrowLine,and add PlaitVectorLine
+change PlaitLine to PlaitArrowLine; and change bound function with arrowLine

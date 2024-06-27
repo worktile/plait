@@ -245,7 +245,7 @@
 
 <div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
     <div class="setting-panel-title">线条形状：</div>
-    <select [(ngModel)]="lineShape" (change)="setLineShape($event)">
+    <select [(ngModel)]="lineShape" (change)="setArrowLineShape($event)">
         <option value="straight">直线</option>
         <option value="elbow">正交线</option>
         <option value="curve">曲线</option>
@@ -254,7 +254,7 @@
 
 <div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
     <div class="setting-panel-title">起点形状：</div>
-    <select [(ngModel)]="lineSourceMarker" (change)="changeLineMarker($event, 'source')">
+    <select [(ngModel)]="lineSourceMarker" (change)="changeArrowLineMarker($event, 'source')">
         <option value="none">none</option>
         <option value="arrow">arrow</option>
         <option value="open-triangle">open-triangle</option>
@@ -269,7 +269,7 @@
 
 <div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
     <div class="setting-panel-title">终点形状：</div>
-    <select [(ngModel)]="lineTargetMarker" (change)="changeLineMarker($event, 'target')">
+    <select [(ngModel)]="lineTargetMarker" (change)="changeArrowLineMarker($event, 'target')">
         <option value="none">none</option>
         <option value="arrow">arrow</option>
         <option value="open-triangle">open-triangle</option>
@@ -421,5 +421,5 @@
 
 <div *ngIf="isSelectSwimlane" class="property-item color-setting-toolbar">
     <div class="setting-panel-title">泳道数量：</div>
-    <input type="number" [max]="20" [min]="1"  [(ngModel)]="swimlaneCount" (change)="updateSwimlaneCount()" />
+    <input type="number" [max]="20" [min]="1" [(ngModel)]="swimlaneCount" (change)="updateSwimlaneCount()" />
 </div>

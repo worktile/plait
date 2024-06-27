@@ -1,20 +1,20 @@
 import { Point, arrowPoints, createG, createPath, distanceBetweenPointAndPoint, drawLinearPath, rotate } from '@plait/core';
-import { LineMarkerType, PlaitArrowLine, PlaitLine } from '../../interfaces';
+import { ArrowLineMarkerType, PlaitArrowLine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getExtendPoint, getUnitVectorByPointAndPoint } from '@plait/common';
 import { getStrokeWidthByElement } from '../common';
 
 interface ArrowOptions {
-    marker: LineMarkerType;
+    marker: ArrowLineMarkerType;
     source: Point;
     target: Point;
     isSource: boolean;
 }
 const ARROW_LENGTH = 20;
 
-export const drawLineArrow = (element: PlaitArrowLine, points: Point[], options: Options) => {
+export const drawArrowLineArrow = (element: PlaitArrowLine, points: Point[], options: Options) => {
     const arrowG = createG();
-    if (PlaitLine.isSourceMark(element, LineMarkerType.none) && PlaitLine.isTargetMark(element, LineMarkerType.none)) {
+    if (PlaitArrowLine.isSourceMark(element, ArrowLineMarkerType.none) && PlaitArrowLine.isTargetMark(element, ArrowLineMarkerType.none)) {
         return null;
     }
     const strokeWidth = getStrokeWidthByElement(element);
@@ -23,12 +23,12 @@ export const drawLineArrow = (element: PlaitArrowLine, points: Point[], options:
         points = [points[0], [points[0][0] + 0.1, points[0][1]]];
     }
 
-    if (!PlaitLine.isSourceMark(element, LineMarkerType.none)) {
+    if (!PlaitArrowLine.isSourceMark(element, ArrowLineMarkerType.none)) {
         const source = getExtendPoint(points[0], points[1], ARROW_LENGTH + offset);
         const sourceArrow = getArrow(element, { marker: element.source.marker, source, target: points[0], isSource: true }, options);
         sourceArrow && arrowG.appendChild(sourceArrow);
     }
-    if (!PlaitLine.isTargetMark(element, LineMarkerType.none)) {
+    if (!PlaitArrowLine.isTargetMark(element, ArrowLineMarkerType.none)) {
         const source = getExtendPoint(points[points.length - 1], points[points.length - 2], ARROW_LENGTH + offset);
         const arrow = getArrow(
             element,
@@ -45,35 +45,35 @@ const getArrow = (element: PlaitArrowLine, arrowOptions: ArrowOptions, options: 
     const { marker, target, source, isSource } = arrowOptions;
     let targetArrow;
     switch (marker) {
-        case LineMarkerType.openTriangle: {
+        case ArrowLineMarkerType.openTriangle: {
             targetArrow = drawOpenTriangle(element, source, target, options);
             break;
         }
-        case LineMarkerType.solidTriangle: {
+        case ArrowLineMarkerType.solidTriangle: {
             targetArrow = drawSolidTriangle(source, target, options);
             break;
         }
-        case LineMarkerType.arrow: {
+        case ArrowLineMarkerType.arrow: {
             targetArrow = drawArrow(element, source, target, options);
             break;
         }
-        case LineMarkerType.sharpArrow: {
+        case ArrowLineMarkerType.sharpArrow: {
             targetArrow = drawSharpArrow(source, target, options);
             break;
         }
-        case LineMarkerType.oneSideUp: {
+        case ArrowLineMarkerType.oneSideUp: {
             targetArrow = drawOneSideArrow(source, target, isSource ? 'down' : 'up', options);
             break;
         }
-        case LineMarkerType.oneSideDown: {
+        case ArrowLineMarkerType.oneSideDown: {
             targetArrow = drawOneSideArrow(source, target, isSource ? 'up' : 'down', options);
             break;
         }
-        case LineMarkerType.hollowTriangle: {
+        case ArrowLineMarkerType.hollowTriangle: {
             targetArrow = drawHollowTriangleArrow(source, target, options);
             break;
         }
-        case LineMarkerType.singleSlash: {
+        case ArrowLineMarkerType.singleSlash: {
             targetArrow = drawSingleSlash(source, target, isSource, options);
             break;
         }

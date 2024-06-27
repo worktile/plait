@@ -1,10 +1,10 @@
 import { PlaitBoard, Point, createG, drawRectangle, getSelectedElements } from '@plait/core';
-import { LineShape, PlaitLine } from '../interfaces';
+import { ArrowLineShape, PlaitArrowLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, drawFillPrimaryHandle, drawPrimaryHandle } from '@plait/common';
-import { getMiddlePoints } from '../utils/line/line-basic';
-import { getNextRenderPoints } from '../utils/line/elbow';
-import { isUpdatedHandleIndex } from '../utils/line';
-import { getHitPointIndex } from '../utils/position/line';
+import { getMiddlePoints } from '../utils/arrow-line/arrow-line-basic';
+import { getNextRenderPoints } from '../utils/arrow-line/elbow';
+import { isUpdatedHandleIndex } from '../utils/arrow-line';
+import { getHitPointIndex } from '../utils/position/arrow-line';
 import { DefaultDrawActiveStyle } from '../constants';
 
 export interface ActiveData {
@@ -12,10 +12,10 @@ export interface ActiveData {
     linePoints: Point[];
 }
 
-export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
+export class ArrowLineActiveGenerator extends Generator<PlaitArrowLine, ActiveData> {
     onlySelectedCurrentLine = false;
 
-    canDraw(element: PlaitLine, data: ActiveData): boolean {
+    canDraw(element: PlaitArrowLine, data: ActiveData): boolean {
         if (data.selected) {
             return true;
         } else {
@@ -23,17 +23,17 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         }
     }
 
-    draw(element: PlaitLine, data: ActiveData): SVGGElement {
+    draw(element: PlaitArrowLine, data: ActiveData): SVGGElement {
         const activeG = createG();
         const selectedElements = getSelectedElements(this.board);
         this.onlySelectedCurrentLine = selectedElements.length === 1;
         if (this.onlySelectedCurrentLine) {
             activeG.classList.add('active');
             activeG.classList.add('line-handle');
-            const points = PlaitLine.getPoints(this.board, element);
+            const points = PlaitArrowLine.getPoints(this.board, element);
             let updatePoints = [...points];
             let elbowNextRenderPoints: Point[] = [];
-            if (element.shape === LineShape.elbow) {
+            if (element.shape === ArrowLineShape.elbow) {
                 updatePoints = points.slice(0, 1).concat(points.slice(-1));
                 elbowNextRenderPoints = getNextRenderPoints(this.board, element, data.linePoints);
             }
@@ -45,7 +45,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             if (!PlaitBoard.hasBeenTextEditing(this.board)) {
                 for (let i = 0; i < middlePoints.length; i++) {
                     const point = middlePoints[i];
-                    if (element.shape === LineShape.elbow && elbowNextRenderPoints.length) {
+                    if (element.shape === ArrowLineShape.elbow && elbowNextRenderPoints.length) {
                         const handleIndex = getHitPointIndex(middlePoints, point);
                         const isUpdateHandleIndex = isUpdatedHandleIndex(
                             this.board,

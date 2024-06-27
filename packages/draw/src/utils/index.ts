@@ -1,4 +1,4 @@
-export * from './line/index';
+export * from './arrow-line/index';
 export * from './geometry';
 export * from './multi-text-geometry';
 export * from './uml';
