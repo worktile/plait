@@ -2,7 +2,7 @@ import { ElbowLineRouteOptions, ResizeState, generateElbowLineRoute, removeDupli
 import { PlaitBoard, Point, RectangleClient, createDebugGenerator } from '@plait/core';
 import { LINE_ALIGN_TOLERANCE } from '../../constants/line';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
-import { PlaitLine } from '../../interfaces';
+import { PlaitArrowLine, PlaitLine } from '../../interfaces';
 
 const debugKey = 'debug:plait:line-mirror';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -161,7 +161,7 @@ export function getIndexAndDeleteCountByKeyPoint(
         deleteCount = 0;
         if (midDataPoints.length > 0) {
             const handleRefPair = getLineHandleRefPair(board, element);
-            const params = getElbowLineRouteOptions(board, element, handleRefPair);
+            const params = getElbowLineRouteOptions(board, element as PlaitArrowLine, handleRefPair);
             const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params, board));
             const nextKeyPoints = simplifyOrthogonalPoints(keyPoints.slice(1, keyPoints.length - 1));
             const nextDataPoints = [nextRenderPoints[0], ...midDataPoints, nextRenderPoints[nextRenderPoints.length - 1]];
@@ -257,7 +257,7 @@ const adjustByCustomPointStartIndex = (
 
 export function isUpdatedHandleIndex(
     board: PlaitBoard,
-    element: PlaitLine,
+    element: PlaitArrowLine,
     dataPoints: Point[],
     nextRenderPoints: Point[],
     handleIndex: number

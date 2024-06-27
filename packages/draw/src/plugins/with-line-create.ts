@@ -11,7 +11,7 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { LineShape, PlaitArrowLine, PlaitShapeElement } from '../interfaces';
 import { getLinePointers } from '../constants';
 import { isDrawingMode } from '@plait/common';
 import { handleLineCreating } from '../utils/line/line-basic';
@@ -26,7 +26,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
 
     let lineShapeG: SVGGElement | null = null;
 
-    let temporaryElement: PlaitLine | null = null;
+    let temporaryElement: PlaitArrowLine | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         const linePointers = getLinePointers();

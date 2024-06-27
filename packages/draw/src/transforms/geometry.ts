@@ -1,5 +1,5 @@
 import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction, RectangleClient } from '@plait/core';
-import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols, BasicShapes, UMLSymbols } from '../interfaces';
+import { PlaitDrawElement, GeometryShapes, PlaitText, FlowchartSymbols, BasicShapes, UMLSymbols, PlaitArrowLine } from '../interfaces';
 import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
@@ -57,7 +57,7 @@ export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHe
 
 export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) => {
     const selectedElements = getSelectedElements(board);
-    const refs: { property: Partial<PlaitLine>; path: Path }[] = [];
+    const refs: { property: Partial<PlaitArrowLine>; path: Path }[] = [];
     selectedElements.forEach(item => {
         if (PlaitDrawElement.isGeometry(item) && !PlaitDrawElement.isText(item)) {
             const path = PlaitBoard.findPath(board, item);

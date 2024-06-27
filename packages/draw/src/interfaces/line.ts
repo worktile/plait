@@ -1,9 +1,11 @@
 import { Direction, PlaitBoard, PlaitElement, Point, PointOfRectangle, Vector, getElementById, rotatePointsByElement } from '@plait/core';
 import { Element } from 'slate';
-import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
 import { getConnectionPoint } from '../utils/line/line-common';
 import { PlaitShapeElement } from '.';
+import { PlaitVectorLine } from './vector-line';
+
+export type PlaitLine = PlaitArrowLine | PlaitVectorLine;
 
 export enum LineMarkerType {
     arrow = 'arrow',
@@ -56,8 +58,8 @@ export interface LineHandleRefPair {
     target: LineHandleRef;
 }
 
-export interface PlaitLine extends PlaitElement {
-    type: 'line';
+export interface PlaitArrowLine extends PlaitElement {
+    type: 'arrow-line';
     shape: LineShape;
     points: Point[];
 
@@ -74,36 +76,36 @@ export interface PlaitLine extends PlaitElement {
     opacity: number;
 }
 
-export interface PlaitStraightLine extends PlaitLine {
+export interface PlaitStraightLine extends PlaitArrowLine {
     shape: LineShape.straight;
 }
 
-export interface PlaitCurveLine extends PlaitLine {
+export interface PlaitCurveLine extends PlaitArrowLine {
     shape: LineShape.curve;
 }
 
-export interface PlaitElbowLine extends PlaitLine {
+export interface PlaitElbowLine extends PlaitArrowLine {
     shape: LineShape.elbow;
 }
 
 export const PlaitLine = {
-    isSourceMarkOrTargetMark(line: PlaitLine, markType: LineMarkerType, handleKey: LineHandleKey) {
+    isSourceMarkOrTargetMark(line: PlaitArrowLine, markType: LineMarkerType, handleKey: LineHandleKey) {
         if (handleKey === LineHandleKey.source) {
             return line.source.marker === markType;
         } else {
             return line.target.marker === markType;
         }
     },
-    isSourceMark(line: PlaitLine, markType: LineMarkerType) {
+    isSourceMark(line: PlaitArrowLine, markType: LineMarkerType) {
         return PlaitLine.isSourceMarkOrTargetMark(line, markType, LineHandleKey.source);
     },
-    isTargetMark(line: PlaitLine, markType: LineMarkerType) {
+    isTargetMark(line: PlaitArrowLine, markType: LineMarkerType) {
         return PlaitLine.isSourceMarkOrTargetMark(line, markType, LineHandleKey.target);
     },
-    isBoundElementOfSource(line: PlaitLine, element: PlaitShapeElement) {
+    isBoundElementOfSource(line: PlaitArrowLine, element: PlaitShapeElement) {
         return line.source.boundId === element.id;
     },
-    isBoundElementOfTarget(line: PlaitLine, element: PlaitShapeElement) {
+    isBoundElementOfTarget(line: PlaitArrowLine, element: PlaitShapeElement) {
         return line.target.boundId === element.id;
     },
     getPoints(board: PlaitBoard, line: PlaitLine) {

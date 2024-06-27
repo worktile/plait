@@ -19,7 +19,17 @@ import {
     getNextPoint,
     rotateVector
 } from '@plait/common';
-import { BasicShapes, LineHandleKey, LineHandleRef, LineHandleRefPair, LineMarkerType, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../../interfaces';
+import {
+    BasicShapes,
+    LineHandleKey,
+    LineHandleRef,
+    LineHandleRefPair,
+    LineMarkerType,
+    PlaitArrowLine,
+    PlaitGeometry,
+    PlaitLine,
+    PlaitShapeElement
+} from '../../interfaces';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { getSourceAndTargetRectangle } from './elbow';
@@ -50,7 +60,9 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
         vector: [targetFactor.x, targetFactor.y]
     };
     if (sourceBoundElement) {
-        const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.source) ? 0 : strokeWidth;
+        const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element as PlaitArrowLine, LineMarkerType.none, LineHandleKey.source)
+            ? 0
+            : strokeWidth;
         const sourceVector = getVectorByConnection(sourceBoundElement, element.source.connection!);
         sourceHandleRef.vector = sourceVector;
         sourceHandleRef.boundElement = sourceBoundElement;
@@ -66,7 +78,9 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
         sourceHandleRef.point = rotatePointsByElement(sourcePoint, sourceBoundElement) || sourcePoint;
     }
     if (targetBoundElement) {
-        const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.target) ? 0 : strokeWidth;
+        const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element as PlaitArrowLine, LineMarkerType.none, LineHandleKey.target)
+            ? 0
+            : strokeWidth;
         const targetVector = getVectorByConnection(targetBoundElement, element.target.connection!);
         targetHandleRef.vector = targetVector;
         targetHandleRef.boundElement = targetBoundElement;
@@ -121,7 +135,7 @@ export const getVectorByConnection = (boundElement: PlaitShapeElement, connectio
     return vector;
 };
 
-export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitLine, handleRefPair?: LineHandleRefPair) => {
+export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitArrowLine, handleRefPair?: LineHandleRefPair) => {
     handleRefPair = handleRefPair ?? getLineHandleRefPair(board, element);
     const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element, handleRefPair);
     const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);

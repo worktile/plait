@@ -43,13 +43,17 @@ export const withDraw = (board: PlaitBoard) => {
             return RectangleClient.getRectangleByPoints(element.points);
         }
         if (PlaitDrawElement.isLine(element)) {
-            const points = getLinePoints(board, element);
-            const lineTextRectangles = element.texts.map((text, index) => {
-                const rectangle = getLineTextRectangle(board, element, index);
-                return rectangle;
-            });
-            const linePointsRectangle = RectangleClient.getRectangleByPoints(points);
-            return RectangleClient.getBoundingRectangle([linePointsRectangle, ...lineTextRectangles]);
+            if (PlaitDrawElement.isArrowLine(element)) {
+                const points = getLinePoints(board, element);
+                const lineTextRectangles = element.texts.map((text, index) => {
+                    const rectangle = getLineTextRectangle(board, element, index);
+                    return rectangle;
+                });
+                const linePointsRectangle = RectangleClient.getRectangleByPoints(points);
+                return RectangleClient.getBoundingRectangle([linePointsRectangle, ...lineTextRectangles]);
+            } else {
+                return RectangleClient.getRectangleByPoints(element.points);
+            }
         }
         if (PlaitDrawElement.isImage(element)) {
             return RectangleClient.getRectangleByPoints(element.points);

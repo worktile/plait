@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, RectangleClient, distanceBetweenPointAndSegments } from '@plait/core';
-import { LineShape, PlaitLine } from '../../interfaces';
+import { LineShape, PlaitArrowLine, PlaitLine } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getPointOnPolyline } from '@plait/common';
 import { getLinePoints, getMiddlePoints } from '../line/line-basic';
 
@@ -51,7 +51,7 @@ export function getHitPointIndex(points: Point[], movingPoint: Point) {
     return rectangle ? rectangles.indexOf(rectangle) : -1;
 }
 
-export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitArrowLine, point: Point) => {
     const texts = element.texts;
     if (!texts.length) return -1;
 

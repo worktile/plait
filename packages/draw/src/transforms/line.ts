@@ -5,6 +5,7 @@ import {
     LineMarkerType,
     LineText,
     MemorizeKey,
+    PlaitArrowLine,
     PlaitDrawElement,
     PlaitGeometry,
     PlaitLine
@@ -17,12 +18,12 @@ export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path:
     Transforms.setNode(board, options, path);
 };
 
-export const setLineTexts = (board: PlaitBoard, element: PlaitLine, texts: LineText[]) => {
+export const setLineTexts = (board: PlaitBoard, element: PlaitArrowLine, texts: LineText[]) => {
     const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, { texts }, path);
 };
 
-export const removeLineText = (board: PlaitBoard, element: PlaitLine, index: number) => {
+export const removeLineText = (board: PlaitBoard, element: PlaitArrowLine, index: number) => {
     const path = PlaitBoard.findPath(board, element);
     const texts = element.texts?.length ? [...element.texts] : [];
     const newTexts = [...texts];
@@ -56,7 +57,7 @@ export const setLineShape = (board: PlaitBoard, newProperties: Partial<PlaitLine
 export const collectLineUpdatedRefsByGeometry = (
     board: PlaitBoard,
     geometry: PlaitGeometry,
-    refs: { property: Partial<PlaitLine>; path: Path }[]
+    refs: { property: Partial<PlaitArrowLine>; path: Path }[]
 ) => {
     const lines = findElements(board, {
         match: (element: PlaitElement) => {
@@ -66,7 +67,7 @@ export const collectLineUpdatedRefsByGeometry = (
             return false;
         },
         recursion: element => true
-    }) as PlaitLine[];
+    }) as PlaitArrowLine[];
     if (lines.length) {
         lines.forEach(line => {
             const isSourceBound = line.source.boundId === geometry.id;
@@ -91,7 +92,12 @@ export const collectLineUpdatedRefsByGeometry = (
     }
 };
 
-export const connectLineToGeometry = (board: PlaitBoard, lineElement: PlaitLine, handle: LineHandleKey, geometryElement: PlaitGeometry) => {
+export const connectLineToGeometry = (
+    board: PlaitBoard,
+    lineElement: PlaitArrowLine,
+    handle: LineHandleKey,
+    geometryElement: PlaitGeometry
+) => {
     const linePoints = PlaitLine.getPoints(board, lineElement);
     const point = handle === LineHandleKey.source ? linePoints[0] : linePoints[linePoints.length - 1];
     const connection: PointOfRectangle = getHitConnection(board, point, geometryElement);

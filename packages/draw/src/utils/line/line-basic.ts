@@ -20,6 +20,7 @@ import {
     LineMarkerType,
     LineShape,
     LineText,
+    PlaitArrowLine,
     PlaitDrawElement,
     PlaitLine,
     PlaitShapeElement,
@@ -44,11 +45,11 @@ export const createLineElement = (
     source: LineHandle,
     target: LineHandle,
     texts?: LineText[],
-    options?: Pick<PlaitLine, 'strokeColor' | 'strokeWidth'>
-): PlaitLine => {
+    options?: Pick<PlaitArrowLine, 'strokeColor' | 'strokeWidth'>
+): PlaitArrowLine => {
     return {
         id: idCreator(),
-        type: 'line',
+        type: 'arrow-line',
         shape,
         source,
         texts: texts ? texts : [],
@@ -185,10 +186,10 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     }
     lineG.appendChild(line);
 
-    const { mask, maskTargetFillRect } = drawMask(board, element, id);
+    const { mask, maskTargetFillRect } = drawMask(board, element as PlaitArrowLine, id);
     lineG.appendChild(mask);
     line.appendChild(maskTargetFillRect);
-    const arrow = drawLineArrow(element, points, { stroke: strokeColor, strokeWidth });
+    const arrow = drawLineArrow(element as PlaitArrowLine, points, { stroke: strokeColor, strokeWidth });
     arrow && lineG.appendChild(arrow);
     return lineG;
 };
@@ -209,7 +210,7 @@ export const getHitConnectorPoint = (point: Point, hitElement: PlaitShapeElement
     });
 };
 
-export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, index: number): RectangleClient => {
+export const getLineTextRectangle = (board: PlaitBoard, element: PlaitArrowLine, index: number): RectangleClient => {
     const text = element.texts[index];
     const elbowPoints = getLinePoints(board, element);
     const point = getPointOnPolyline(elbowPoints, text.position);
@@ -223,9 +224,9 @@ export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, inde
 
 export const getLines = (board: PlaitBoard) => {
     return findElements(board, {
-        match: (element: PlaitElement) => PlaitDrawElement.isLine(element),
+        match: (element: PlaitElement) => PlaitDrawElement.isArrowLine(element),
         recursion: (element: PlaitElement) => PlaitDrawElement.isDrawElement(element)
-    }) as PlaitLine[];
+    }) as PlaitArrowLine[];
 };
 
 // quadratic Bezier to cubic Bezier
@@ -283,7 +284,7 @@ export const handleLineCreating = (
     return temporaryLineElement;
 };
 
-function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
+function drawMask(board: PlaitBoard, element: PlaitArrowLine, id: string) {
     const mask = createMask();
     mask.setAttribute('id', id);
     const points = getLinePoints(board, element);

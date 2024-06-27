@@ -11,7 +11,7 @@ import {
     rotatePointsByElement,
     rotateAntiPointsByElement
 } from '@plait/core';
-import { PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { PlaitArrowLine, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
 import { getNearestPoint } from './geometry';
 import { getLinePoints } from './line/line-basic';
@@ -31,7 +31,7 @@ export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     return false;
 };
 
-export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+export const isHitLineText = (board: PlaitBoard, element: PlaitArrowLine, point: Point) => {
     return getHitLineTextIndex(board, element, point) !== -1;
 };
 
@@ -42,7 +42,7 @@ export const isHitPolyLine = (pathPoints: Point[], point: Point) => {
 
 export const isHitLine = (board: PlaitBoard, element: PlaitLine, point: Point) => {
     const points = getLinePoints(board, element);
-    const isHitText = isHitLineText(board, element, point);
+    const isHitText = isHitLineText(board, element as PlaitArrowLine, point);
     return isHitText || isHitPolyLine(points, point);
 };
 

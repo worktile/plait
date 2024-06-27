@@ -25,11 +25,20 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { AlignTransform, Alignment, CustomText, ParagraphElement, PropertyTransforms, getEditingTextEditor, getFirstTextEditor } from '@plait/common';
+import {
+    AlignTransform,
+    Alignment,
+    CustomText,
+    ParagraphElement,
+    PropertyTransforms,
+    getEditingTextEditor,
+    getFirstTextEditor
+} from '@plait/common';
 import {
     LineShape,
     LineMarkerType,
     getSelectedLineElements,
+    getSelectedArrowLineElements,
     isSingleSelectSwimlane,
     getSelectedGeometryElements,
     getSelectedImageElements,
@@ -126,7 +135,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     onBoardChange() {
         const selectedMindElements = getSelectedMindElements(this.board);
-        const selectedLineElements = getSelectedLineElements(this.board);
+        const selectedLineElements = getSelectedArrowLineElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);

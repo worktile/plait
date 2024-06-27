@@ -7,7 +7,7 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { PlaitDrawElement, PlaitLine } from '../interfaces';
+import { PlaitArrowLine, PlaitDrawElement } from '../interfaces';
 import { Node } from 'slate';
 import { buildText, getMemorizedLatest, getRatioByPoint, getTextManages } from '@plait/common';
 import { DrawTransforms } from '../transforms';
@@ -24,7 +24,7 @@ export const withLineText = (board: PlaitBoard) => {
             const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const hitTarget = getHitElementByPoint(board, clickPoint, (element: PlaitElement) => {
                 return PlaitDrawElement.isLine(element);
-            }) as undefined | PlaitLine;
+            }) as undefined | PlaitArrowLine;
             const hitTargetPath = hitTarget && PlaitBoard.findPath(board, hitTarget);
             if (hitTarget) {
                 const points = getLinePoints(board, hitTarget);
@@ -46,7 +46,7 @@ export const withLineText = (board: PlaitBoard) => {
                     DrawTransforms.setLineTexts(board, hitTarget, texts);
                     setTimeout(() => {
                         if (hitTargetPath) {
-                            const newHitTarget = PlaitNode.get(board, hitTargetPath) as PlaitLine;
+                            const newHitTarget = PlaitNode.get(board, hitTargetPath) as PlaitArrowLine;
                             const textManages = getTextManages(newHitTarget);
                             editHandle(board, newHitTarget, textManages.length - 1, true);
                         }
@@ -60,7 +60,7 @@ export const withLineText = (board: PlaitBoard) => {
     return board;
 };
 
-function editHandle(board: PlaitBoard, element: PlaitLine, manageIndex: number, isFirstEdit: boolean = false) {
+function editHandle(board: PlaitBoard, element: PlaitArrowLine, manageIndex: number, isFirstEdit: boolean = false) {
     const textManages = getTextManages(element);
     const textManage = textManages[manageIndex];
     textManage.edit(() => {

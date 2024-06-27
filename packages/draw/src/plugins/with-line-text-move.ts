@@ -6,7 +6,7 @@ import {
     getHitElementByPoint,
     getNearestPointBetweenPointAndSegments
 } from '@plait/core';
-import { PlaitDrawElement, PlaitLine } from '../interfaces';
+import { PlaitArrowLine, PlaitDrawElement } from '../interfaces';
 import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, getRatioByPoint, getTextManages, withResize } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { getLinePoints } from '../utils/line/line-basic';
@@ -15,7 +15,7 @@ import { getHitLineTextIndex } from '../utils/position/line';
 export const withLineTextMove = (board: PlaitBoard) => {
     let textIndex = 0;
     const movableBuffer = 100;
-    const options: WithResizeOptions<PlaitLine> = {
+    const options: WithResizeOptions<PlaitArrowLine> = {
         key: 'line-text',
         canResize: () => {
             return true;
@@ -24,7 +24,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
             let result = null;
             const line = getHitElementByPoint(board, point, (element: PlaitElement) => {
                 return PlaitDrawElement.isLine(element);
-            }) as undefined | PlaitLine;
+            }) as undefined | PlaitArrowLine;
             if (line) {
                 const index = getHitLineTextIndex(board, line, point);
                 const textManages = getTextManages(line);
@@ -36,7 +36,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
             }
             return result;
         },
-        onResize: (resizeRef: ResizeRef<PlaitLine>, resizeState: ResizeState) => {
+        onResize: (resizeRef: ResizeRef<PlaitArrowLine>, resizeState: ResizeState) => {
             const element = resizeRef.element;
             if (element) {
                 const movingPoint = resizeState.endPoint;
@@ -56,7 +56,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
         }
     };
 
-    withResize<PlaitLine>(board, options);
+    withResize<PlaitArrowLine>(board, options);
 
     return board;
 };

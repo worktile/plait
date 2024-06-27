@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, Transforms, getElementById, idCreator } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { PlaitImage } from '../interfaces/image';
 import { getConnectionPoint } from './line/line-common';
 import { PlaitTable } from '../interfaces/table';
@@ -40,7 +40,7 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
 };
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
-    const lines = elements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
+    const lines = elements.filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
     const geometries = elements.filter(
         value => (PlaitDrawElement.isGeometry(value) && !PlaitDrawElement.isGeometryByTable(value)) || PlaitDrawElement.isImage(value)
     ) as (PlaitImage | PlaitGeometry)[];
@@ -61,7 +61,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
     Transforms.addSelectionWithTemporaryElements(board, elements);
 };
 
-export const insertClipboardTableData = (board: PlaitBoard, elements: PlaitTable[], startPoint: Point, lines: PlaitLine[]) => {
+export const insertClipboardTableData = (board: PlaitBoard, elements: PlaitTable[], startPoint: Point, lines: PlaitArrowLine[]) => {
     elements.forEach(element => {
         const newId = idCreator();
         updateBoundLinesId(element, lines, newId);
@@ -74,7 +74,7 @@ export const insertClipboardTableData = (board: PlaitBoard, elements: PlaitTable
     });
 };
 
-export const updateBoundLinesId = (element: PlaitShapeElement, lines: PlaitLine[], newId: string) => {
+export const updateBoundLinesId = (element: PlaitShapeElement, lines: PlaitArrowLine[], newId: string) => {
     const sourceLines: PlaitLine[] = [];
     const targetLines: PlaitLine[] = [];
     lines.forEach(line => {

@@ -1,5 +1,5 @@
 import { Point, arrowPoints, createG, createPath, distanceBetweenPointAndPoint, drawLinearPath, rotate } from '@plait/core';
-import { LineMarkerType, PlaitLine } from '../../interfaces';
+import { LineMarkerType, PlaitArrowLine, PlaitLine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getExtendPoint, getUnitVectorByPointAndPoint } from '@plait/common';
 import { getStrokeWidthByElement } from '../common';
@@ -12,7 +12,7 @@ interface ArrowOptions {
 }
 const ARROW_LENGTH = 20;
 
-export const drawLineArrow = (element: PlaitLine, points: Point[], options: Options) => {
+export const drawLineArrow = (element: PlaitArrowLine, points: Point[], options: Options) => {
     const arrowG = createG();
     if (PlaitLine.isSourceMark(element, LineMarkerType.none) && PlaitLine.isTargetMark(element, LineMarkerType.none)) {
         return null;
@@ -41,7 +41,7 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
     return arrowG;
 };
 
-const getArrow = (element: PlaitLine, arrowOptions: ArrowOptions, options: Options) => {
+const getArrow = (element: PlaitArrowLine, arrowOptions: ArrowOptions, options: Options) => {
     const { marker, target, source, isSource } = arrowOptions;
     let targetArrow;
     switch (marker) {
@@ -95,7 +95,7 @@ const drawSharpArrow = (source: Point, target: Point, options: Options) => {
     return g;
 };
 
-const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Options) => {
+const drawArrow = (element: PlaitArrowLine, source: Point, target: Point, options: Options) => {
     const unitVector = getUnitVectorByPointAndPoint(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
     const endPoint: Point = [target[0] + (strokeWidth * unitVector[0]) / 2, target[1] + (strokeWidth * unitVector[1]) / 2];
@@ -117,7 +117,7 @@ const drawSolidTriangle = (source: Point, target: Point, options: Options) => {
     return drawLinearPath([pointLeft, endPoint, pointRight], { ...options, fill: options.stroke }, true);
 };
 
-const drawOpenTriangle = (element: PlaitLine, source: Point, target: Point, options: Options) => {
+const drawOpenTriangle = (element: PlaitArrowLine, source: Point, target: Point, options: Options) => {
     const unitVector = getUnitVectorByPointAndPoint(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
     const endPoint: Point = [target[0] + (strokeWidth * unitVector[0]) / 2, target[1] + (strokeWidth * unitVector[1]) / 2];

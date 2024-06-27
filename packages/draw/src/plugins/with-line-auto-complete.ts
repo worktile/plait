@@ -17,7 +17,7 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { LineShape, PlaitArrowLine, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { getElementShape } from '../utils/shape';
 import { getEngine } from '../engines';
 import { handleLineCreating } from '../utils/line/line-basic';
@@ -27,7 +27,7 @@ import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint } from '../utils/
 export const WithLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';
 
 export interface LineAutoCompleteOptions {
-    afterComplete: (element: PlaitLine) => {};
+    afterComplete: (element: PlaitArrowLine) => {};
 }
 
 export const withLineAutoComplete = (board: PlaitBoard) => {
@@ -36,7 +36,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
     let autoCompletePoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
     let sourceElement: PlaitShapeElement | null;
-    let temporaryElement: PlaitLine | null;
+    let temporaryElement: PlaitArrowLine | null;
 
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
