@@ -25,7 +25,15 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { AlignTransform, Alignment, CustomText, ParagraphElement, PropertyTransforms, getEditingTextEditor, getFirstTextEditor } from '@plait/common';
+import {
+    AlignTransform,
+    Alignment,
+    CustomText,
+    ParagraphElement,
+    PropertyTransforms,
+    getEditingTextEditor,
+    getFirstTextEditor
+} from '@plait/common';
 import {
     LineShape,
     LineMarkerType,
@@ -223,6 +231,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     changeFill(property: string) {
+        if (!property) {
+            property = 'transparent';
+        }
         PropertyTransforms.setFillColor(this.board, property, {
             getMemorizeKey,
             callback: (element: PlaitElement, path: Path) => {

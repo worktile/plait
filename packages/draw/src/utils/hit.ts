@@ -64,6 +64,20 @@ export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangl
     }
 };
 
+export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => {
+    const engine = getEngine<PlaitCommonGeometry>(element.shape);
+    if (isMultipleTextGeometry(element)) {
+        const texts = element.texts;
+        return texts.some(item => {
+            const textClient = engine.getTextRectangle!(element, { key: item.key });
+            return RectangleClient.isPointInRectangle(textClient, point);
+        });
+    } else {
+        const textClient = engine.getTextRectangle ? engine.getTextRectangle(element) : getTextRectangle(element);
+        return RectangleClient.isPointInRectangle(textClient, point);
+    }
+};
+
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {
     const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
     if (PlaitDrawElement.isGeometry(element)) {
@@ -140,8 +154,8 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
             const textClient = getTextRectangle(element);
             return RectangleClient.isPointInRectangle(textClient, point);
         }
-
-        return engine.isInsidePoint(rectangle!, point);
+        const isHitText = isHitElementText(element, point);
+        return isHitText || engine.isInsidePoint(rectangle!, point);
     }
     if (PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
@@ -172,6 +186,12 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
         const isHitInside = engine.isInsidePoint(rectangle!, point);
         if (isHitInside) {
             return isHitInside;
+        }
+        if (engine.getTextRectangle) {
+            const isHitText = isHitElementText(element, point);
+            if (isHitText) {
+                return isHitText;
+            }
         }
     }
     if (PlaitDrawElement.isImage(element)) {
