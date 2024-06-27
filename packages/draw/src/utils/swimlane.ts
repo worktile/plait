@@ -47,8 +47,10 @@ export const getDefaultSwimlanePoints = (pointer: SwimlaneDrawSymbols, centerPoi
 export const createDefaultSwimlane = (shape: SwimlaneDrawSymbols, points: [Point, Point]) => {
     const header = isSwimlaneWithHeader(shape);
     const dataShape = adjustSwimlaneShape(shape);
-    const rows = createDefaultRowsOrColumns(dataShape, 'row', header);
-    const columns = createDefaultRowsOrColumns(dataShape, 'column', header);
+    const width = points[1][0] - points[0][0];
+    const height = points[1][1] - points[0][1];
+    const rows = createDefaultRowsOrColumns(dataShape, 'row', header, height);
+    const columns = createDefaultRowsOrColumns(dataShape, 'column', header, width);
     const swimlane = {
         id: idCreator(),
         type: 'swimlane',
@@ -62,7 +64,7 @@ export const createDefaultSwimlane = (shape: SwimlaneDrawSymbols, points: [Point
     return swimlane;
 };
 
-export const createDefaultRowsOrColumns = (shape: SwimlaneSymbols, type: 'row' | 'column', header: boolean) => {
+export const createDefaultRowsOrColumns = (shape: SwimlaneSymbols, type: 'row' | 'column', header: boolean, size: number) => {
     const createItems = (count: number) => new Array(count).fill('').map(() => ({ id: idCreator() }));
     let data = createItems(3);
     if (
@@ -71,11 +73,15 @@ export const createDefaultRowsOrColumns = (shape: SwimlaneSymbols, type: 'row' |
     ) {
         data = header ? data : createItems(2);
         const dimension = type === 'row' ? 'height' : 'width';
+        let defaultSize = SWIMLANE_HEADER_SIZE;
+        if (size < SWIMLANE_HEADER_SIZE * data.length) {
+            defaultSize = Math.min((size / data.length / SWIMLANE_HEADER_SIZE) * SWIMLANE_HEADER_SIZE, SWIMLANE_HEADER_SIZE);
+        }
         data = data.map((item, index) => {
             if (index === 0 || (index === 1 && header)) {
                 return {
                     ...item,
-                    [dimension]: SWIMLANE_HEADER_SIZE
+                    [dimension]: defaultSize
                 };
             }
             return item;
@@ -101,7 +107,7 @@ export const createDefaultCells = (
         if (index < 3) {
             const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[startIndex].id : rows[index].id;
             const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index].id : columns[startIndex].id;
-            return createCell(rowId, columnId, header? 'Lane': 'New Swimlane');
+            return createCell(rowId, columnId, header ? 'Lane' : 'New Swimlane');
         }
         const rowId = shape === SwimlaneSymbols.swimlaneVertical ? rows[startIndex + 1].id : rows[index - 3].id;
         const columnId = shape === SwimlaneSymbols.swimlaneVertical ? columns[index - 3].id : columns[startIndex + 1].id;
