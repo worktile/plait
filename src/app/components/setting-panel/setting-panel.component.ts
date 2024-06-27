@@ -231,9 +231,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     changeFill(property: string) {
-        if (!property) {
-            property = 'transparent';
-        }
         PropertyTransforms.setFillColor(this.board, property, {
             getMemorizeKey,
             callback: (element: PlaitElement, path: Path) => {

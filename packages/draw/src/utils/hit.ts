@@ -20,8 +20,7 @@ import { getElementShape } from './shape';
 import { getHitLineTextIndex } from './position/line';
 import { getTextRectangle } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
-import { getElementArea, TRANSPARENT } from '@plait/common';
-import { DefaultDrawStyle } from '../constants';
+import { isFilled, sortElementsByArea } from '@plait/common';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -112,18 +111,11 @@ export const getDrawHitElement = (board: PlaitBoard, elements: PlaitDrawElement[
         endIndex = elements.indexOf(firstFilledElement) + 1;
     }
     const newElements = elements.slice(0, endIndex);
-    const texts = newElements.filter(item => PlaitDrawElement.isText(item));
-    if (texts.length) {
-        return texts[0];
+    const element = getHitTextOrLineElement(newElements);
+    if (element) {
+        return element;
     }
-    const lines = newElements.filter(item => PlaitDrawElement.isLine(item));
-    if (lines.length) {
-        return lines[0];
-    }
-    const shapeElements = newElements.filter(item => PlaitDrawElement.isShapeElement(item)) as PlaitShapeElement[];
-    const sortElements = shapeElements.sort((a, b) => {
-        return getElementArea(board, a) - getElementArea(board, b);
-    });
+    const sortElements = sortElementsByArea(board, newElements, 'asc');
     return sortElements[0];
 };
 
@@ -133,13 +125,25 @@ export const getFirstFilledDrawElement = (board: PlaitBoard, elements: PlaitDraw
         const element = elements[i];
         if (PlaitDrawElement.isGeometry(element) && !PlaitDrawElement.isText(element)) {
             const fill = getFillByElement(board, element);
-            if (fill && fill !== DefaultDrawStyle.fill && fill !== TRANSPARENT) {
+            if (isFilled(fill)) {
                 filledElement = element as PlaitGeometry;
                 break;
             }
         }
     }
     return filledElement;
+};
+
+export const getHitTextOrLineElement = (elements: PlaitDrawElement[]) => {
+    const texts = elements.filter(item => PlaitDrawElement.isText(item));
+    if (texts.length) {
+        return texts[0];
+    }
+    const lines = elements.filter(item => PlaitDrawElement.isLine(item));
+    if (lines.length) {
+        return lines[0];
+    }
+    return null;
 };
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {

@@ -1,14 +1,8 @@
-import { PlaitBoard, PlaitElement, RectangleClient } from '@plait/core';
-import { getElementArea, ImageProps, PlaitImageBoard, TRANSPARENT } from '@plait/common';
+import { PlaitBoard, PlaitElement } from '@plait/core';
+import { ImageProps, isFilled, PlaitImageBoard, sortElementsByArea } from '@plait/common';
 import { AngularBoard } from '@plait/angular-board';
 import { PlaitImageComponent } from '../editor/image/image.component';
-import {
-    DefaultDrawStyle,
-    getFillByElement as getDrawFillByElement,
-    PlaitDrawElement,
-    PlaitGeometry,
-    PlaitShapeElement
-} from '@plait/draw';
+import { getFillByElement as getDrawFillByElement, getHitTextOrLineElement, PlaitDrawElement } from '@plait/draw';
 import { MindElement } from 'packages/mind/src/interfaces';
 import { getFillByElement as getMindFillByElement } from '@plait/mind';
 
@@ -46,7 +40,7 @@ export const getCommonHitElement = (board: PlaitBoard, elements: PlaitElement[])
         if (MindElement.isMindElement(board, element)) {
             fill = getMindFillByElement(board, element);
         }
-        if (fill && fill !== DefaultDrawStyle.fill && fill !== TRANSPARENT) {
+        if (isFilled(fill)) {
             firstFilledElement = element;
             filledElementIndex = i;
             break;
@@ -54,17 +48,10 @@ export const getCommonHitElement = (board: PlaitBoard, elements: PlaitElement[])
     }
     const endIndex = firstFilledElement ? filledElementIndex + 1 : elements.length;
     const newElements = elements.slice(0, endIndex);
-    const texts = newElements.filter(item => PlaitDrawElement.isText(item));
-    if (texts.length) {
-        return texts[0];
+    const element = getHitTextOrLineElement(newElements as PlaitDrawElement[]);
+    if (element) {
+        return element;
     }
-    const lines = newElements.filter(item => PlaitDrawElement.isLine(item));
-    if (lines.length) {
-        return lines[0];
-    }
-    const shapeElements = newElements.filter(item => !(PlaitDrawElement.isLine(item) && PlaitDrawElement.isText(item))) as PlaitElement[];
-    const sortElements = shapeElements.sort((a, b) => {
-        return getElementArea(board, a) - getElementArea(board, b);
-    });
+    const sortElements = sortElementsByArea(board, newElements, 'asc');
     return sortElements[0];
 };
