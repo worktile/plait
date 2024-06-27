@@ -1,4 +1,4 @@
-import { Point, distanceBetweenPointAndPoint } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { getPointByVectorDirectionComponent, getUnitVectorByPointAndPoint } from './vector';
 
 export function isPointOnSegment(point: Point, startPoint: Point, endPoint: Point) {
@@ -21,4 +21,12 @@ export const getCrossingPointsBetweenPointAndSegment = (point: Point, startPoint
         result.push(crossingPoint);
     }
     return result;
+};
+
+export const getElementArea = (board: PlaitBoard, element: PlaitElement) => {
+    const rectangle = board.getRectangle(element);
+    if (rectangle) {
+        return rectangle.width * rectangle.height;
+    }
+    return 0;
 };
