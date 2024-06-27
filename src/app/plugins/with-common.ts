@@ -37,17 +37,20 @@ export const withCommonPlugin = (board: PlaitBoard) => {
 export const getCommonHitElement = (board: PlaitBoard, elements: PlaitElement[]) => {
     let firstFilledElement: PlaitElement | null = null;
     let filledElementIndex = -1;
+    console.log(elements);
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
         let fill = '';
         if (PlaitDrawElement.isGeometry(element) && !PlaitDrawElement.isText(element)) {
             fill = getDrawFillByElement(board, element);
+            console.log(1, fill);
         }
         if (MindElement.isMindElement(board, element)) {
+            console.log(2, fill);
             fill = getMindFillByElement(board, element);
         }
-        if (fill && fill !== TRANSPARENT) {
-            firstFilledElement = element as PlaitGeometry;
+        if (fill && fill !== DefaultDrawStyle.fill && fill !== TRANSPARENT) {
+            firstFilledElement = element;
             filledElementIndex = i;
             break;
         }

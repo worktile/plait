@@ -119,7 +119,7 @@ export const getFirstFilledDrawElement = (board: PlaitBoard, elements: PlaitDraw
         const element = elements[i];
         if (PlaitDrawElement.isGeometry(element) && !PlaitDrawElement.isText(element)) {
             const fill = getFillByElement(board, element);
-            if (fill && fill !== TRANSPARENT) {
+            if (fill && fill !== DefaultDrawStyle.fill && fill !== TRANSPARENT) {
                 filledElement = element as PlaitGeometry;
                 break;
             }
