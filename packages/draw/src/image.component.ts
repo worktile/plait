@@ -1,12 +1,12 @@
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
 import { CommonElementFlavour, ImageGenerator } from '@plait/common';
 import { PlaitImage } from './interfaces/image';
-import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
+import { ArrowLineAutoCompleteGenerator } from './generators/arrow-line-auto-complete.generator';
 
 export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard> implements OnContextChanged<PlaitImage, PlaitBoard> {
     imageGenerator!: ImageGenerator<PlaitImage>;
 
-    lineAutoCompleteGenerator!: LineAutoCompleteGenerator<PlaitImage>;
+    lineAutoCompleteGenerator!: ArrowLineAutoCompleteGenerator<PlaitImage>;
 
     constructor() {
         super();
@@ -30,8 +30,8 @@ export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard>
                 };
             }
         });
-        this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
-        this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
+        this.lineAutoCompleteGenerator = new ArrowLineAutoCompleteGenerator(this.board);
+        this.getRef().addGenerator(ArrowLineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
     }
 
     initialize(): void {

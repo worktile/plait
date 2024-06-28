@@ -1,6 +1,6 @@
 import { PlaitMindBoard } from '@plait/mind';
 import { PlaitBoard, Point, RectangleClient, RgbaToHEX, createG, getElementById } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, getLineHandleRefPair, getStrokeWidthByElement } from '@plait/draw';
+import { PlaitDrawElement, PlaitGeometry, getArrowLineHandleRefPair, getStrokeWidthByElement } from '@plait/draw';
 import {
     AStar,
     ElbowLineRouteOptions,
@@ -37,7 +37,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
     PlaitBoard.getElementActiveHost(board).append(g);
     const rough = PlaitBoard.getRoughSVG(board);
     const lineElement = getElementById(board, mockLineData[2].id);
-    const handleRefPair = lineElement && PlaitDrawElement.isLine(lineElement) && getLineHandleRefPair(board, lineElement);
+    const handleRefPair = lineElement && PlaitDrawElement.isArrowLine(lineElement) && getArrowLineHandleRefPair(board, lineElement);
     const sourceElement = lineElement && lineElement.source.boundId && getElementById<PlaitGeometry>(board, lineElement.source.boundId);
     const targetElement = lineElement && lineElement.target.boundId && getElementById<PlaitGeometry>(board, lineElement.target.boundId);
     if (lineElement && sourceElement && targetElement && handleRefPair) {
@@ -349,7 +349,7 @@ export const mockLineData = [
             [802.4403076171873, -183.92864990234375]
         ],
         autoSize: true
-    },
+    }
     // turning points note
     // {
     //     id: 'TmwRd',

@@ -17,26 +17,26 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { getElementShape } from '../utils/shape';
 import { getEngine } from '../engines';
-import { handleLineCreating } from '../utils/line/line-basic';
+import { handleArrowLineCreating } from '../utils/arrow-line/arrow-line-basic';
 import { getSelectedDrawElements } from '../utils/selected';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint } from '../utils/geometry';
 
-export const WithLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';
+export const WithArrowLineAutoCompletePluginKey = 'plait-arrow-line-auto-complete-plugin-key';
 
-export interface LineAutoCompleteOptions {
-    afterComplete: (element: PlaitLine) => {};
+export interface ArrowLineAutoCompleteOptions {
+    afterComplete: (element: PlaitArrowLine) => {};
 }
 
-export const withLineAutoComplete = (board: PlaitBoard) => {
+export const withArrowLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
 
     let autoCompletePoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
     let sourceElement: PlaitShapeElement | null;
-    let temporaryElement: PlaitLine | null;
+    let temporaryElement: PlaitArrowLine | null;
 
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
@@ -50,7 +50,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
                 autoCompletePoint = hitPoint;
                 sourceElement = targetElement;
-                BoardTransforms.updatePointerType(board, LineShape.elbow);
+                BoardTransforms.updatePointerType(board, ArrowLineShape.elbow);
             }
         }
         pointerDown(event);
@@ -76,7 +76,14 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                 }
                 // source point must be click point
                 const rotatedSourcePoint = rotatePointsByElement(sourcePoint, sourceElement) || sourcePoint;
-                temporaryElement = handleLineCreating(board, LineShape.elbow, rotatedSourcePoint, movingPoint, sourceElement, lineShapeG);
+                temporaryElement = handleArrowLineCreating(
+                    board,
+                    ArrowLineShape.elbow,
+                    rotatedSourcePoint,
+                    movingPoint,
+                    sourceElement,
+                    lineShapeG
+                );
             }
         }
         pointerMove(event);
@@ -87,8 +94,9 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);
-            const afterComplete = (board as PlaitOptionsBoard).getPluginOptions<LineAutoCompleteOptions>(WithLineAutoCompletePluginKey)
-                ?.afterComplete;
+            const afterComplete = (board as PlaitOptionsBoard).getPluginOptions<ArrowLineAutoCompleteOptions>(
+                WithArrowLineAutoCompletePluginKey
+            )?.afterComplete;
             afterComplete && afterComplete(temporaryElement);
         }
         if (autoCompletePoint) {

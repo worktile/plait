@@ -1,27 +1,27 @@
 import { PlaitBoard, Point, RectangleClient, distanceBetweenPointAndSegments } from '@plait/core';
-import { LineShape, PlaitLine } from '../../interfaces';
+import { ArrowLineShape, PlaitArrowLine } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getPointOnPolyline } from '@plait/common';
-import { getLinePoints, getMiddlePoints } from '../line/line-basic';
+import { getArrowLinePoints, getMiddlePoints } from '../arrow-line/arrow-line-basic';
 
-export enum LineResizeHandle {
+export enum ArrowLineResizeHandle {
     'source' = 'source',
     'target' = 'target',
     'addHandle' = 'addHandle'
 }
 
-export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    let dataPoints = PlaitLine.getPoints(board, element);
+export const getHitArrowLineResizeHandleRef = (board: PlaitBoard, element: PlaitArrowLine, point: Point) => {
+    let dataPoints = PlaitArrowLine.getPoints(board, element);
     const index = getHitPointIndex(dataPoints, point);
     if (index !== -1) {
         const handleIndex = index;
         if (index === 0) {
-            return { handle: LineResizeHandle.source, handleIndex };
+            return { handle: ArrowLineResizeHandle.source, handleIndex };
         }
         if (index === dataPoints.length - 1) {
-            return { handle: LineResizeHandle.target, handleIndex };
+            return { handle: ArrowLineResizeHandle.target, handleIndex };
         }
         // elbow line, data points only verify source connection point and target connection point
-        if (element.shape !== LineShape.elbow) {
+        if (element.shape !== ArrowLineShape.elbow) {
             return { handleIndex };
         }
     }
@@ -29,7 +29,7 @@ export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine,
     const indexOfMiddlePoints = getHitPointIndex(middlePoints, point);
     if (indexOfMiddlePoints !== -1) {
         return {
-            handle: LineResizeHandle.addHandle,
+            handle: ArrowLineResizeHandle.addHandle,
             handleIndex: indexOfMiddlePoints
         };
     }
@@ -51,11 +51,11 @@ export function getHitPointIndex(points: Point[], movingPoint: Point) {
     return rectangle ? rectangles.indexOf(rectangle) : -1;
 }
 
-export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+export const getHitArrowLineTextIndex = (board: PlaitBoard, element: PlaitArrowLine, point: Point) => {
     const texts = element.texts;
     if (!texts.length) return -1;
 
-    const points = getLinePoints(board, element);
+    const points = getArrowLinePoints(board, element);
     return texts.findIndex(text => {
         const center = getPointOnPolyline(points, text.position);
         const rectangle = {

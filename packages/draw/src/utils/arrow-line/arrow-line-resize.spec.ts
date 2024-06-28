@@ -1,12 +1,12 @@
 import { PlaitBoard, PlaitElement, Point, createTestingBoard } from '@plait/core';
-import { getIndexAndDeleteCountByKeyPoint, getMirrorDataPoints } from './line-resize';
-import { PlaitGeometry, PlaitLine } from '../../interfaces';
-import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
+import { getIndexAndDeleteCountByKeyPoint, getMirrorDataPoints } from './arrow-line-resize';
+import { PlaitGeometry, PlaitArrowLine } from '../../interfaces';
+import { getElbowLineRouteOptions, getArrowLineHandleRefPair } from './arrow-line-common';
 import { generateElbowLineRoute, removeDuplicatePoints, simplifyOrthogonalPoints } from '@plait/common';
 
 describe('getIndexAndDeleteCountByKeyPoint', () => {
     let board: PlaitBoard;
-    let resizeLine: PlaitLine;
+    let resizeLine: PlaitArrowLine;
     beforeEach(() => {
         board = createTestingBoard([], []);
     });
@@ -446,7 +446,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'fxZDF',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -468,24 +468,12 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
             const expectedMirrorDataPoints = [
-                [
-                    919.994140625,
-                    -385.13671875
-                ],
-                [
-                    1061.6392211914062,
-                    -268.562255859375
-                ],
-                [
-                    1203.2843017578125,
-                    -268.562255859375
-                ],
-                [
-                    1203.2843017578125,
-                    -326.359130859375
-                ]
+                [919.994140625, -385.13671875],
+                [1061.6392211914062, -268.562255859375],
+                [1203.2843017578125, -268.562255859375],
+                [1203.2843017578125, -326.359130859375]
             ] as Point[];
             verifyGetMirrorDataPointsMethod(data, expectedMirrorDataPoints);
         });
@@ -537,7 +525,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'iMrYD',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -559,24 +547,12 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
             const expectedMirrorDataPoints = [
-                [
-                    950.04296875,
-                    -423.04296875
-                ],
-                [
-                    996.9478149414062,
-                    -423.04296875
-                ],
-                [
-                    996.9478149414062,
-                    -303.616943359375
-                ],
-                [
-                    1184.4971923828125,
-                    -303.616943359375
-                ]
+                [950.04296875, -423.04296875],
+                [996.9478149414062, -423.04296875],
+                [996.9478149414062, -303.616943359375],
+                [1184.4971923828125, -303.616943359375]
             ] as Point[];
             verifyGetMirrorDataPointsMethod(data, expectedMirrorDataPoints);
         });
@@ -626,7 +602,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'PhJhw',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -648,7 +624,7 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
             const expectedMirrorDataPoints = [
                 [988.1049194335938, -145.438232421875],
                 [1050.6166381835938, -145.438232421875],
@@ -716,7 +692,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'PWReA',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -738,7 +714,7 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
             const correctMirrorDataPointsOfCase1 = [
                 [749.3426513671875, -251.4306640625],
                 [829.2276611328125, -251.4306640625],
@@ -792,7 +768,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'RCHsH',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -814,7 +790,7 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
             const correctMirrorDataPointsOfCase2 = [
                 [1081.57470703125, 210.6650390625],
                 [811.662353515625, 210.6650390625],
@@ -867,7 +843,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'WNkHc',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -889,7 +865,7 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
             const correctMirrorDataPointsOfCase3 = [
                 [1323.9581298828125, -246.509765625],
                 [1256.4464111328125, -246.509765625],
@@ -945,7 +921,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'kphNw',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
@@ -967,7 +943,7 @@ describe('getMirrorDataPoints', () => {
                         ],
                         strokeWidth: 2
                     }
-                ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+                ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
                 const expectedMirrorDataPoints = [
                     [831.253662109375, -264.500732421875],
                     [1603.8018798828125, -264.500732421875],
@@ -1034,7 +1010,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'SFwRY',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
@@ -1057,7 +1033,7 @@ describe('getMirrorDataPoints', () => {
                         strokeWidth: 2,
                         strokeColor: '#1e1e1e'
                     }
-                ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+                ] as [PlaitGeometry, PlaitGeometry, PlaitArrowLine];
                 const expectedMirrorDataPoints = [
                     [1005.874755859375, -157.346435546875],
                     [1005.874755859375, -69.628662109375],
@@ -1118,7 +1094,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'KBHJP',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
@@ -1191,7 +1167,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'XspQR',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
@@ -1222,14 +1198,14 @@ describe('getMirrorDataPoints', () => {
     });
 });
 
-function fakeGetMirrorDataPointsArguments(data: PlaitElement[], line: PlaitLine) {
+function fakeGetMirrorDataPointsArguments(data: PlaitElement[], line: PlaitArrowLine) {
     const board = createTestingBoard([], data);
-    const handleRefPair = getLineHandleRefPair(board, line);
+    const handleRefPair = getArrowLineHandleRefPair(board, line);
     const params = getElbowLineRouteOptions(board, line, handleRefPair);
     const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
     const nextKeyPoints = keyPoints.slice(1, keyPoints.length - 1);
     const simplifiedNextKeyPoints = simplifyOrthogonalPoints(nextKeyPoints);
-    const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, line));
+    const dataPoints = removeDuplicatePoints(PlaitArrowLine.getPoints(board, line));
     const midDataPoints = dataPoints.slice(1, -1);
     const nextDataPoints = [simplifiedNextKeyPoints[0], ...midDataPoints, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]];
     return { board, nextDataPoints, nextKeyPoints: simplifiedNextKeyPoints, params };
@@ -1241,8 +1217,8 @@ function verifyMirrorDataPoints(except: Point[], actual: Point[]) {
     });
 }
 
-function verifyGetMirrorDataPointsMethod(caseData: [PlaitGeometry, PlaitGeometry, PlaitLine], expectedMirrorDataPoints: Point[]) {
-    const argumentsOfCase = fakeGetMirrorDataPointsArguments(caseData, caseData[2] as PlaitLine);
+function verifyGetMirrorDataPointsMethod(caseData: [PlaitGeometry, PlaitGeometry, PlaitArrowLine], expectedMirrorDataPoints: Point[]) {
+    const argumentsOfCase = fakeGetMirrorDataPointsArguments(caseData, caseData[2] as PlaitArrowLine);
     const mirrorDataPointsOfCase = getMirrorDataPoints(
         argumentsOfCase.board,
         argumentsOfCase.nextDataPoints,

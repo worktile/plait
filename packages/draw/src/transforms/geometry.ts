@@ -1,10 +1,10 @@
 import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction, RectangleClient } from '@plait/core';
-import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols, BasicShapes, UMLSymbols } from '../interfaces';
+import { PlaitDrawElement, GeometryShapes, PlaitText, FlowchartSymbols, BasicShapes, UMLSymbols, PlaitArrowLine } from '../interfaces';
 import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
-import { collectLineUpdatedRefsByGeometry } from './line';
+import { collectArrowLineUpdatedRefsByGeometry } from './arrow-line';
 import { DefaultBasicShapeProperty, DefaultBasicShapePropertyMap, DefaultFlowchartPropertyMap, DefaultUMLPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
@@ -57,17 +57,17 @@ export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHe
 
 export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) => {
     const selectedElements = getSelectedElements(board);
-    const refs: { property: Partial<PlaitLine>; path: Path }[] = [];
+    const refs: { property: Partial<PlaitArrowLine>; path: Path }[] = [];
     selectedElements.forEach(item => {
         if (PlaitDrawElement.isGeometry(item) && !PlaitDrawElement.isText(item)) {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { shape }, path);
-            collectLineUpdatedRefsByGeometry(board, { ...item, shape }, refs);
+            collectArrowLineUpdatedRefsByGeometry(board, { ...item, shape }, refs);
         }
     });
     if (refs.length) {
         refs.forEach(ref => {
-            DrawTransforms.resizeLine(board, ref.property, ref.path);
+            DrawTransforms.resizeArrowLine(board, ref.property, ref.path);
         });
     }
 };

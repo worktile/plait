@@ -39,7 +39,7 @@ import { Options } from 'roughjs/bin/core';
 import { PlaitBaseTable } from '../interfaces/table';
 import { memorizeLatestShape } from './memorize';
 import { isHitEdgeOfShape, isInsideOfShape } from './hit';
-import { getHitConnectorPoint } from './line';
+import { getHitConnectorPoint } from './arrow-line';
 import { getNearestPoint, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { PlaitDrawShapeText } from '../generators/text.generator';
@@ -83,7 +83,7 @@ export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
     if (PlaitDrawElement.isGeometry(element)) {
         return isGeometryIncludeText(element);
     }
-    if (PlaitDrawElement.isLine(element)) {
+    if (PlaitDrawElement.isArrowLine(element)) {
         const editors = getTextEditorsByElement(element);
         return editors.length > 0;
     }

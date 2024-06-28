@@ -1,22 +1,22 @@
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
-import { LineComponent } from '../line.component';
+import { ArrowLineComponent } from '../arrow-line.component';
 import { PlaitDrawElement } from '../interfaces';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { withLineCreateByDraw } from './with-line-create';
+import { withArrowLineCreateByDraw } from './with-arrow-line-create';
 import { withGeometryResize } from './with-geometry-resize';
-import { withLineResize } from './with-line-resize';
-import { withLineBoundReaction } from './with-line-bound-reaction';
-import { withLineText } from './with-line-text';
+import { withArrowLineResize } from './with-arrow-line-resize';
+import { withArrowLineBoundReaction } from './with-arrow-line-bound-reaction';
+import { withArrowLineText } from './with-arrow-line-text';
 import { ImageComponent } from '../image.component';
-import { withLineAutoCompleteReaction } from './with-line-auto-complete-reaction';
-import { withLineAutoComplete } from './with-line-auto-complete';
-import { withLineTextMove } from './with-line-text-move';
+import { withArrowLineAutoCompleteReaction } from './with-arrow-line-auto-complete-reaction';
+import { withArrowLineAutoComplete } from './with-arrow-line-auto-complete';
+import { withArrowLineTextMove } from './with-arrow-line-text-move';
 import { withDrawResize } from './with-draw-resize';
 import { getDrawHitElement, isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
-import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
+import { getArrowLinePoints, getArrowLineTextRectangle } from '../utils/arrow-line/arrow-line-basic';
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
@@ -40,8 +40,8 @@ export const withDraw = (board: PlaitBoard) => {
                 return GeometryComponent;
             }
             return GeometryComponent;
-        } else if (PlaitDrawElement.isLine(context.element)) {
-            return LineComponent;
+        } else if (PlaitDrawElement.isArrowLine(context.element)) {
+            return ArrowLineComponent;
         } else if (PlaitDrawElement.isImage(context.element)) {
             return ImageComponent;
         }
@@ -52,10 +52,10 @@ export const withDraw = (board: PlaitBoard) => {
         if (PlaitDrawElement.isGeometry(element)) {
             return RectangleClient.getRectangleByPoints(element.points);
         }
-        if (PlaitDrawElement.isLine(element)) {
-            const points = getLinePoints(board, element);
+        if (PlaitDrawElement.isArrowLine(element)) {
+            const points = getArrowLinePoints(board, element);
             const lineTextRectangles = element.texts.map((text, index) => {
-                const rectangle = getLineTextRectangle(board, element, index);
+                const rectangle = getArrowLineTextRectangle(board, element, index);
                 return rectangle;
             });
             const linePointsRectangle = RectangleClient.getRectangleByPoints(points);
@@ -106,7 +106,7 @@ export const withDraw = (board: PlaitBoard) => {
         if (PlaitDrawElement.isImage(element)) {
             return true;
         }
-        if (PlaitDrawElement.isLine(element)) {
+        if (PlaitDrawElement.isArrowLine(element)) {
             const selectedElements = getSelectedElements(board);
             const isSelected = (boundId: string) => {
                 return !!selectedElements.find(value => value.id === boundId);
@@ -134,7 +134,7 @@ export const withDraw = (board: PlaitBoard) => {
 
     board.getRelatedFragment = (elements: PlaitElement[], originData?: PlaitElement[]) => {
         const selectedElements = originData?.length ? originData : getSelectedElements(board);
-        const lineElements = board.children.filter(element => PlaitDrawElement.isLine(element));
+        const lineElements = board.children.filter(element => PlaitDrawElement.isArrowLine(element));
         const activeLines = lineElements.filter(line => {
             const source = selectedElements.find(element => element.id === line.source.boundId);
             const target = selectedElements.find(element => element.id === line.target.boundId);
@@ -147,15 +147,15 @@ export const withDraw = (board: PlaitBoard) => {
     return withSwimlane(
         withTable(
             withDrawResize(
-                withLineAutoCompleteReaction(
-                    withLineBoundReaction(
-                        withLineResize(
-                            withLineTextMove(
-                                withLineText(
+                withArrowLineAutoCompleteReaction(
+                    withArrowLineBoundReaction(
+                        withArrowLineResize(
+                            withArrowLineTextMove(
+                                withArrowLineText(
                                     withGeometryResize(
                                         withDrawRotate(
-                                            withLineCreateByDraw(
-                                                withLineAutoComplete(
+                                            withArrowLineCreateByDraw(
+                                                withArrowLineAutoComplete(
                                                     withGeometryCreateByDrag(
                                                         withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
                                                     )

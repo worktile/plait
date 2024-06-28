@@ -22,8 +22,8 @@ export const getMemorizeKey = (element: PlaitElement) => {
             key = MemorizeKey.flowchart;
             break;
         }
-        case PlaitDrawElement.isLine(element): {
-            key = MemorizeKey.line;
+        case PlaitDrawElement.isArrowLine(element): {
+            key = MemorizeKey.arrowLine;
             break;
         }
         case PlaitDrawElement.isUML(element): {
@@ -34,7 +34,7 @@ export const getMemorizeKey = (element: PlaitElement) => {
 };
 
 export const getLineMemorizedLatest = () => {
-    const properties = getMemorizedLatest(MemorizeKey.line);
+    const properties = getMemorizedLatest(MemorizeKey.arrowLine);
     return { ...properties } || {};
 };
 

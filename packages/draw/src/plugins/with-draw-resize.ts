@@ -178,7 +178,7 @@ export function withDrawResize(board: PlaitBoard) {
                 if (PlaitDrawElement.isGeometry(target)) {
                     const { height: textHeight } = getFirstTextManage(target).getSize();
                     DrawTransforms.resizeGeometry(board, points as [Point, Point], textHeight, path);
-                } else if (PlaitDrawElement.isLine(target)) {
+                } else if (PlaitDrawElement.isArrowLine(target)) {
                     Transforms.setNode(board, { points }, path);
                 } else if (PlaitDrawElement.isImage(target)) {
                     if (isAspectRatio) {
