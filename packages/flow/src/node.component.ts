@@ -37,10 +37,13 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
             },
             textPlugins: []
         });
+        this.initializeTextManages([this.textManage]);
         this.getRef().addGenerator<NodeActiveGenerator>(NodeActiveGenerator.key, this.nodeActiveGenerator);
+        this.getRef().addGenerator<NodeActiveGenerator>(NodeGenerator.key, this.nodeGenerator);
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
+        this.initializeWeakMap();
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             if (value.selected) {
                 this.nodeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board));
