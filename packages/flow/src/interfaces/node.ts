@@ -15,3 +15,8 @@ export const isFlowNodeElement = <T extends FlowBaseData>(value: FlowElement): v
 export const FlowNode = {
     isFlowNodeElement
 };
+
+export enum NodeState {
+    'hovering' = 'hovering',
+    '' = ''
+}
