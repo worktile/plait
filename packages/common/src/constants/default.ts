@@ -7,3 +7,4 @@ export const TRANSPARENT = 'transparent';
 export const ROTATE_HANDLE_DISTANCE_TO_ELEMENT = 20;
 export const ROTATE_HANDLE_SIZE = 18;
 export const DEFAULT_FONT_FAMILY = 'PingFangSC-Regular, "PingFang SC"';
+export const DEFAULT_FILL = 'none';
