@@ -446,7 +446,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'fxZDF',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -525,7 +525,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'iMrYD',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -602,7 +602,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'PhJhw',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -692,7 +692,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'PWReA',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -768,7 +768,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'RCHsH',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -843,7 +843,7 @@ describe('getMirrorDataPoints', () => {
                 },
                 {
                     id: 'WNkHc',
-                    type: 'line',
+                    type: 'arrow-line',
                     shape: 'elbow',
                     source: {
                         marker: 'none',
@@ -921,7 +921,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'kphNw',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
@@ -1010,7 +1010,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'SFwRY',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
@@ -1094,7 +1094,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'KBHJP',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
@@ -1167,7 +1167,7 @@ describe('getMirrorDataPoints', () => {
                     },
                     {
                         id: 'XspQR',
-                        type: 'line',
+                        type: 'arrow-line',
                         shape: 'elbow',
                         source: {
                             marker: 'none',
