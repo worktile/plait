@@ -1,22 +1,3 @@
-import { Point } from '@plait/core';
-
-export interface Node {
-    id: string;
-    label?: string;
-    icon?: string;
-    isActive?: boolean;
-    width?: number;
-    height?: number;
-    size?: number;
-    styles?: NodeStyles;
-    point?: Point;
-}
-
-export interface Edge {
-    source: string;
-    target: string;
-}
-
 export enum EdgeDirection {
     IN,
     OUT,
