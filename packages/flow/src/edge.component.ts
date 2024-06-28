@@ -1,4 +1,4 @@
-import { PlaitPluginElementContext, getElementById } from '@plait/core';
+import { PlaitPluginElementContext, getElementById, isMovingElements } from '@plait/core';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { TextManage } from '@plait/text';
 import { EdgeStableState, FlowEdge } from './interfaces/edge';
@@ -68,7 +68,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
                     ? EdgeStableState.highlight
                     : EdgeStableState['']
             );
-            renderEdge(this.board, this.element, this.getRef().getState());
+            const isMovingEdge = isMovingElements(this.board) && isBoundedElementsChanged;
+            renderEdge(this.board, this.element, this.getRef().getState(), isMovingEdge ? 'edge-label-with-moving' : '');
         }
     }
 
