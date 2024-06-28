@@ -1,5 +1,5 @@
 import { getHitElementByPoint, PlaitBoard, Point, RectangleClient, Transforms, isSelectedElement } from '@plait/core';
-import { PlaitBaseTable, PlaitTableBoard, PlaitTableCellWithPoints } from '../interfaces/table';
+import { PlaitBaseTable, PlaitTable, PlaitTableBoard, PlaitTableCellWithPoints, PlaitTableElement } from '../interfaces/table';
 import {
     getIndexByResizeHandle,
     isCornerHandle,
@@ -22,7 +22,7 @@ interface TableResizeOptions extends ResizeOptions {
     cell: PlaitTableCellWithPoints;
 }
 
-const MIN_CELL_SIZE = 20;
+const MIN_CELL_SIZE = 32;
 
 export function withTableResize(board: PlaitTableBoard) {
     let snapG: SVGGElement | null;
@@ -95,7 +95,7 @@ export function withTableResize(board: PlaitTableBoard) {
                 }
             } else {
                 const isFromCorner = isCornerHandle(board, resizeRef.handle);
-                const isAspectRatio = resizeState.isShift;
+                const isAspectRatio = isFromCorner ? true : resizeState.isShift;
                 const handleIndex = getIndexByResizeHandle(resizeRef.handle);
                 const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
                 const resizeSnapRefOptions = getSnapResizingRefOptions(
@@ -120,29 +120,51 @@ export function withTableResize(board: PlaitTableBoard) {
                 const offsetHeight = targetRect.height - originRect.height;
                 let columns = [...resizeRef.element.columns];
                 let rows = [...resizeRef.element.rows];
-                if (offsetWidth !== 0) {
-                    columns = columns.map(item => {
-                        if (item.width) {
-                            return {
-                                ...item,
-                                width: item.width + offsetWidth * (item.width / originRect.width)
+                let update = false;
+                if (!isFromCorner) {
+                    const {
+                        columnWidth,
+                        rowHeight,
+                        columnIndex,
+                        rowIndex,
+                        minCellWidthInColumn,
+                        minCellHeightInRow
+                    } = getUpdateTableContent(board, resizeRef.element, handleIndex);
+                    if (!columnWidth || !rowHeight) {
+                        if (!columnWidth) {
+                            columns[columnIndex] = {
+                                ...columns[columnIndex],
+                                width: minCellWidthInColumn
                             };
                         }
-                        return item;
-                    });
-                }
-                if (offsetHeight !== 0) {
-                    rows = rows.map(item => {
-                        if (item.height) {
-                            return {
-                                ...item,
-                                height: item.height + offsetHeight * (item.height / originRect.height)
+                        if (!rowHeight) {
+                            rows[rowIndex] = {
+                                ...rows[rowIndex],
+                                height: minCellHeightInRow
                             };
                         }
-                        return item;
-                    });
+                    }
+                    if (offsetWidth !== 0 && offsetWidth + columns[columnIndex].width! > MIN_CELL_SIZE) {
+                        columns = calculateRowsOrColumns(columns, offsetWidth, originRect.width, false, false, columnIndex);
+                        update = true;
+                    }
+                    if (offsetHeight !== 0 && offsetHeight + rows[rowIndex].height! > MIN_CELL_SIZE) {
+                        rows = calculateRowsOrColumns(rows, offsetHeight, originRect.height, false, true, rowIndex);
+                        update = true;
+                    }
+                } else {
+                    if (offsetWidth !== 0) {
+                        columns = calculateRowsOrColumns(columns, offsetWidth, originRect.width, true, false);
+                    }
+                    if (offsetHeight !== 0) {
+                        rows = calculateRowsOrColumns(rows, offsetHeight, originRect.height, true, true);
+                    }
+                    update = true;
                 }
-                Transforms.setNode(board, { points: normalizeShapePoints(points), columns, rows }, path);
+
+                if (update) {
+                    Transforms.setNode(board, { points: normalizeShapePoints(points), rows, columns }, path);
+                }
             }
         },
         afterResize: (resizeRef: ResizeRef<PlaitBaseTable, ResizeHandle, TableResizeOptions>) => {
@@ -154,4 +176,69 @@ export function withTableResize(board: PlaitTableBoard) {
     withResize<PlaitBaseTable, ResizeHandle, TableResizeOptions>(board, options);
 
     return board;
+}
+
+function calculateRowsOrColumns(
+    data: { id: string; width?: number; height?: number }[],
+    offset: number,
+    originSize: number,
+    isFromCorner: boolean,
+    isRow: boolean,
+    updateIndex?: number
+) {
+    return data.map((item, index) => {
+        const isUpdateIndex = index === updateIndex;
+        if (isFromCorner || (isUpdateIndex && !isFromCorner)) {
+            const dimension = isRow ? 'height' : 'width';
+            if (item[dimension]) {
+                const adjustedValue = isFromCorner
+                    ? item[dimension]! + offset * (item[dimension]! / originSize)
+                    : item[dimension]! + offset;
+                return {
+                    ...item,
+                    [dimension]: adjustedValue
+                };
+            }
+        }
+        return item;
+    });
+}
+
+function getUpdateTableContent(board: PlaitBoard, element: PlaitBaseTable, handleIndex: number) {
+    let columnIndex = 0;
+    let rowIndex = 0;
+    const { columns, rows } = element;
+    const cellsWithPoints = getCellsWithPoints(board, element);
+    if ([Number(ResizeHandle.s), Number(ResizeHandle.e)].includes(handleIndex)) {
+        columnIndex = columns.length - 1;
+        rowIndex = rows.length - 1;
+    }
+    const rowId = rows[rowIndex].id;
+    const columnId = columns[columnIndex].id;
+    const { minCellWidthInColumn, minCellHeightInRow } = cellsWithPoints.reduce(
+        (acc, item) => {
+            if (item.rowId === rowId) {
+                const { height } = RectangleClient.getRectangleByPoints(item.points);
+                if (acc.minCellHeightInRow === -1 || height < acc.minCellHeightInRow) {
+                    acc.minCellHeightInRow = height;
+                }
+            }
+            if (item.columnId === columnId) {
+                const { width } = RectangleClient.getRectangleByPoints(item.points);
+                if (acc.minCellWidthInColumn === -1 || width < acc.minCellWidthInColumn) {
+                    acc.minCellWidthInColumn = width;
+                }
+            }
+            return acc;
+        },
+        { minCellWidthInColumn: -1, minCellHeightInRow: -1 }
+    );
+    return {
+        rowIndex,
+        columnIndex,
+        rowHeight: rows[rowIndex].height || 0,
+        columnWidth: columns[columnIndex].width || 0,
+        minCellWidthInColumn,
+        minCellHeightInRow
+    };
 }

@@ -49,7 +49,12 @@ export const PlaitDrawElement = {
         }
     },
     isShapeElement: (value: any): value is PlaitShapeElement => {
-        return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isTable(value) || PlaitDrawElement.isSwimlane(value);
+        return (
+            PlaitDrawElement.isImage(value) ||
+            PlaitDrawElement.isGeometry(value) ||
+            PlaitDrawElement.isTable(value) ||
+            PlaitDrawElement.isSwimlane(value)
+        );
     },
     isBasicShape: (value: any) => {
         return Object.keys(BasicShapes).includes(value.shape);
@@ -77,5 +82,5 @@ export const PlaitDrawElement = {
     },
     isElementByTable: (value: any): value is PlaitBaseTable => {
         return PlaitDrawElement.isTable(value) || PlaitDrawElement.isSwimlane(value) || PlaitDrawElement.isGeometryByTable(value);
-    },
+    }
 };
