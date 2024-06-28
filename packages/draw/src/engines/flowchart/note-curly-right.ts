@@ -17,14 +17,14 @@ export const NoteCurlyRightEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x} ${rectangle.y} 
-            C${rectangle.x + rectangle.width * 0.09} ${rectangle.y}, 
-            ${rectangle.x} ${rectangle.y + rectangle.height / 2}, 
+            `M${rectangle.x} ${rectangle.y}
+            C${rectangle.x + rectangle.width * 0.09} ${rectangle.y},
+            ${rectangle.x} ${rectangle.y + rectangle.height / 2},
             ${rectangle.x + rectangle.width * 0.09} ${rectangle.y + rectangle.height / 2}
-            C${rectangle.x} ${rectangle.y + rectangle.height / 2}, 
-            ${rectangle.x + rectangle.width * 0.09} ${rectangle.y + rectangle.height}, 
+            C${rectangle.x} ${rectangle.y + rectangle.height / 2},
+            ${rectangle.x + rectangle.width * 0.09} ${rectangle.y + rectangle.height},
             ${rectangle.x} ${rectangle.y + rectangle.height}`,
-            { ...options, fillStyle: 'solid' }
+            { ...options, fillStyle: 'solid', fill: 'transparent' }
         );
         setStrokeLinecap(shape, 'round');
         return shape;
