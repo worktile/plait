@@ -1,28 +1,38 @@
-import Graph from 'graphology';
-import { EdgeDirection, EdgeInfo, Node } from './types';
-import { AnimateOption, animate, linear } from '../utils/animate';
+import { EdgeDirection } from './types';
+import { animate, linear } from '../utils/animate';
+import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
+import { PlaitBoard, PlaitElement } from '@plait/core';
 
-export function getEdgeInfo(graph: Graph<Node>, edge: string): EdgeInfo {
-    const source = graph.source(edge);
-    const target = graph.target(edge);
-    const outEdges = graph.outEdges(target);
-    const isActive = graph.getNodeAttribute(source, 'isActive');
-    return {
-        isSourceActive: !!isActive,
-        isTargetActive: outEdges.length ? !!graph.getNodeAttribute(graph.source(outEdges[0]), 'isActive') : false
-    };
+export function getNodeById(id: string, plaitElement: PlaitElement) {
+    const node = plaitElement.children?.find(f => ForceAtlasElement.isForceAtlasNodeElement(f) && f.id === id) as ForceAtlasNodeElement;
+    if (!node) {
+        throw new Error('can not find node.');
+    }
+    return node;
 }
 
-export function getEdgeDirection(info: { isSourceActive: boolean; isTargetActive: boolean }) {
-    if (info.isSourceActive) {
+export function getEdgeById(id: string, plaitElement: PlaitElement) {
+    const edge = plaitElement.children?.find(f => ForceAtlasElement.isForceAtlasEdgeElement(f) && f.id === id) as ForceAtlasEdgeElement;
+    if (!edge) {
+        throw new Error('can not find edge.');
+    }
+    return edge;
+}
+
+export function getIsNodeActive(id: string, nodes: ForceAtlasNodeElement[]) {
+    return nodes.find(node => node.id === id)?.isActive || false;
+}
+
+export function getEdgeDirection(isSourceActive: boolean, isTargetActive: boolean) {
+    if (isSourceActive) {
         return EdgeDirection.OUT;
-    } else if (info.isTargetActive) {
+    } else if (isTargetActive) {
         return EdgeDirection.IN;
     }
     return EdgeDirection.NONE;
 }
 
-export function edgeParticleAnimate(path: SVGPathElement, pointG: SVGGElement) {
+export function playEdgeParticleAnimate(path: SVGPathElement, pointG: SVGGElement) {
     const pathLength = path.getTotalLength();
     let anim = animate(
         (t: number) => {
@@ -32,7 +42,7 @@ export function edgeParticleAnimate(path: SVGPathElement, pointG: SVGGElement) {
         1000,
         linear,
         () => {
-            anim = edgeParticleAnimate(path, pointG);
+            anim = playEdgeParticleAnimate(path, pointG);
         }
     );
     return {

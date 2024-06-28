@@ -1,33 +1,28 @@
-import { PlaitBoard, createG } from '@plait/core';
+import { PlaitBoard, PlaitNode, createG } from '@plait/core';
 import { Generator } from '@plait/common';
-import { ForceAtlasElement } from '../../interfaces';
-import Graph from 'graphology';
-import { Node } from '../types';
+import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
 import { drawNode } from '../draw';
-import { getEdgeDirection, getEdgeInfo } from '../utils';
 
-export class NodeForceAtlasGenerator extends Generator<ForceAtlasElement> {
-    graph!: Graph<Node>;
-    constructor(board: PlaitBoard, graph: Graph<Node>) {
+export class ForceNodeAtlasGenerator extends Generator<ForceAtlasNodeElement> {
+    constructor(board: PlaitBoard) {
         super(board);
-        this.graph = graph;
     }
 
-    canDraw(element: ForceAtlasElement): boolean {
+    canDraw(element: ForceAtlasNodeElement): boolean {
         return true;
     }
 
-    draw(element: ForceAtlasElement) {
+    draw(element: ForceAtlasNodeElement) {
         const nodeG = createG();
-        const activeNodeId = element.nodes.find(f => f.isActive)?.id;
-        element.nodes.forEach(node => {
-            const isFirstDepth =
-                node.isActive ||
-                element.edges.some(
-                    s => (s.source === activeNodeId && s.target === node.id) || (s.target === activeNodeId && s.source === node.id)
-                );
-            nodeG.append(drawNode(this.board, node, node.point || [0, 0], isFirstDepth));
-        });
+        const parent = PlaitNode.parent(this.board, PlaitBoard.findPath(this.board, element));
+        const activeNodeId = parent?.children?.find(f => ForceAtlasElement.isForceAtlasNodeElement(f) && f.isActive)?.id;
+        const edges = parent?.children?.filter(f => ForceAtlasElement.isForceAtlasEdgeElement(f)) as ForceAtlasEdgeElement[];
+        const isFirstDepth =
+            element?.isActive ||
+            edges.some(
+                s => (s.source === activeNodeId && s.target === element?.id) || (s.target === activeNodeId && s.source === element?.id)
+            );
+        nodeG.append(drawNode(this.board, element, element?.points?.[0] || [0, 0], isFirstDepth));
         return nodeG;
     }
 }
