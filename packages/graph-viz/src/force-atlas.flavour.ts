@@ -4,7 +4,7 @@ import Graph from 'graphology';
 import circular from 'graphology-layout/circular';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import { ForceAtlasElement, ForceAtlasNodeElement } from './interfaces';
-import { DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE, DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './force-atlas/constants';
+import { DEFAULT_ACTIVE_NODE_SIZE, DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './force-atlas/constants';
 
 export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
@@ -19,7 +19,7 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
         this.element.children?.forEach(child => {
             if (ForceAtlasElement.isForceAtlasNodeElement(child)) {
                 if (typeof child?.size === 'undefined') {
-                    child.size = (child.isActive ? DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE : DEFAULT_NODE_SIZE) * 2;
+                    child.size = child.isActive ? DEFAULT_ACTIVE_NODE_SIZE : DEFAULT_NODE_SIZE;
                 }
                 // 添加节点信息
                 this.graph.addNode(child.id, child);

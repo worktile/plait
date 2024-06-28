@@ -7,9 +7,9 @@ export const DEFAULT_EDGE_STYLES: Options = {
     stroke: '#ccc'
 };
 
-export const DEFAULT_ACTIVE_NODE_SIZE = 35;
-export const DEFAULT_NODE_SIZE = 30;
-export const DEFAULT_ACTIVE_BACKGROUND_NODE_SIZE = DEFAULT_ACTIVE_NODE_SIZE * 1.6;
+export const DEFAULT_ACTIVE_NODE_SIZE = 70;
+export const DEFAULT_NODE_SIZE = 60;
+export const DEFAULT_ACTIVE_BACKGROUND_NODE_ZOOM = 1.6;
 export const DEFAULT_NODE_LABEL_MARGIN_TOP = 4;
 export const DEFAULT_NODE_LABEL_FONT_SIZE = 12;
 

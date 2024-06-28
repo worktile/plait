@@ -2,6 +2,7 @@ import { PlaitElement } from '@plait/core';
 export interface ForceAtlasNodeElement extends PlaitElement {
     label: string;
     icon: string;
+    size?: number;
     isActive?: boolean;
 }
 
