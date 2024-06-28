@@ -73,6 +73,7 @@ export interface PlaitBoard {
     // When the element has no fill color, it is considered a hit only if it hits the border.
     isHit: (element: PlaitElement, point: Point) => boolean;
     isInsidePoint: (element: PlaitElement, point: Point) => boolean;
+    getHitElement: (hitElements: PlaitElement[]) => PlaitElement;
     isRecursion: (element: PlaitElement) => boolean;
     isMovable: (element: PlaitElement) => boolean;
     getRectangle: (element: PlaitElement) => RectangleClient | null;
