@@ -25,7 +25,15 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { AlignTransform, Alignment, CustomText, ParagraphElement, PropertyTransforms, getEditingTextEditor, getFirstTextEditor } from '@plait/common';
+import {
+    AlignTransform,
+    Alignment,
+    CustomText,
+    ParagraphElement,
+    PropertyTransforms,
+    getEditingTextEditor,
+    getFirstTextEditor
+} from '@plait/common';
 import {
     LineShape,
     LineMarkerType,
@@ -226,9 +234,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         PropertyTransforms.setFillColor(this.board, property, {
             getMemorizeKey,
             callback: (element: PlaitElement, path: Path) => {
-                const isSwimlane = PlaitDrawElement.isSwimlane(element);
-                if (isSwimlane) {
-                    DrawTransforms.setSwimlaneFill(this.board, element as PlaitSwimlane, property, path);
+                const tableElement = PlaitDrawElement.isElementByTable(element);
+                if (tableElement) {
+                    DrawTransforms.setTableFill(this.board, element, property, path);
                 } else {
                     Transforms.setNode(this.board, { fill: property }, path);
                 }
