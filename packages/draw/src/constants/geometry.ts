@@ -1,6 +1,6 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
 import { BasicShapes, FlowchartSymbols, GeometryShapes, MultipleTextGeometryCommonTextKeys, UMLSymbols } from '../interfaces';
-import { Alignment } from '@plait/common';
+import { Alignment, DEFAULT_FILL } from '@plait/common';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -10,7 +10,7 @@ export const DefaultDrawStyle = {
     strokeWidth: 2,
     defaultRadius: 4,
     strokeColor: '#000',
-    fill: 'none'
+    fill: DEFAULT_FILL
 };
 
 export const DefaultDrawActiveStyle = {
