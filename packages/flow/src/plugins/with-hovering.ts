@@ -1,9 +1,8 @@
-import { PlaitBoard, PlaitElement, PlaitPlugin, getMovingElements, isSelectedElement, toHostPoint, toViewBoxPoint } from '@plait/core';
-import { FlowNode } from '../interfaces/node';
+import { PlaitBoard, PlaitElement, PlaitPlugin, getMovingElements, toHostPoint, toViewBoxPoint } from '@plait/core';
+import { FlowNode, NodeState } from '../interfaces/node';
 import { FlowEdge } from '../interfaces/edge';
 import { getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo, renderEdge, renderRelatedEdges } from '../utils';
-import { PlaitCommonElementRef } from '@plait/common';
-import { NodeActiveGenerator } from '../generators/node-active.generator';
+import { renderNode } from '../utils/edge/node-render';
 
 export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
     const { pointerMove, pointerLeave } = board;
@@ -22,13 +21,8 @@ export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         if (hoveredElement && PlaitElement.hasMounted(hoveredElement)) {
-            const selected = isSelectedElement(board, hoveredElement);
             if (FlowNode.isFlowNodeElement(hoveredElement)) {
-                const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(hoveredElement);
-                const handleGenerator = elementRef.getGenerator<NodeActiveGenerator>(NodeActiveGenerator.key);
-                if (!selected) {
-                    handleGenerator.destroy();
-                }
+                renderNode(board, hoveredElement.id);
                 renderRelatedEdges(board, hoveredElement.id);
             } else {
                 renderEdge(board, hoveredElement);
@@ -36,13 +30,8 @@ export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
         }
         hoveredElement = newHitNode;
         if (hoveredElement) {
-            const selected = isSelectedElement(board, hoveredElement);
             if (FlowNode.isFlowNodeElement(hoveredElement)) {
-                const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(hoveredElement);
-                const handleGenerator = elementRef.getGenerator<NodeActiveGenerator>(NodeActiveGenerator.key);
-                if (!selected) {
-                    handleGenerator.processDrawing(hoveredElement, PlaitBoard.getElementActiveHost(board), { selected, hovered: true });
-                }
+                renderNode(board, hoveredElement.id, NodeState.hovering);
                 renderRelatedEdges(board, hoveredElement.id, 'hovering');
             } else {
                 renderEdge(board, hoveredElement, 'hovering');
