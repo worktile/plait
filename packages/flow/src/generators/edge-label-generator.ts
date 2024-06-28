@@ -8,6 +8,7 @@ import { LabelIconProps, PlaitFlowLabelIconBoard } from '../plugins/with-label-i
 
 export interface EdgeData {
     state: EdgeState;
+    className?: string;
 }
 
 export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorOptions, PlaitBoard> {
@@ -31,6 +32,9 @@ export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorO
     draw(element: FlowEdge, data: EdgeData) {
         const edgeLabelG = createG();
         edgeLabelG.classList.add('plait-edge-label');
+        if (data.className) {
+            edgeLabelG.classList.add(data.className);
+        }
         if (FlowEdge.hasLabel(element)) {
             const textRectangle = EdgeLabelSpace.getLabelTextRectangle(this.board, element);
             const labelRectangle = EdgeLabelSpace.getLabelRect(textRectangle, element);
