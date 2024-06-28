@@ -160,6 +160,12 @@ export function withSelection(board: PlaitBoard) {
                     if (isHitElementWithGroup) {
                         setSelectedElementsWithGroup(board, elements, isShift);
                     } else {
+                        if (board.selection && Selection.isCollapsed(board.selection)) {
+                            const element = board.getHitElement(elements);
+                            if (element) {
+                                elements = [element];
+                            }
+                        }
                         if (isShift) {
                             const newElements = [...selectedElements];
                             if (board.selection && Selection.isCollapsed(board.selection)) {

@@ -24,9 +24,9 @@ export const getHitElementsBySelection = (
     }
     const isCollapsed = Selection.isCollapsed(newSelection);
     if (isCollapsed) {
-        const hitElement = getHitElementByPoint(board, newSelection.anchor, match);
-        if (hitElement) {
-            return [hitElement];
+        const hitElements = getHitElementsByPoint(board, newSelection.anchor, match);
+        if (hitElements?.length) {
+            return hitElements;
         } else {
             return [];
         }
@@ -44,43 +44,37 @@ export const getHitElementsBySelection = (
     return rectangleHitElements;
 };
 
-export const getHitElementByPoint = (
+export const getHitElementsByPoint = (
     board: PlaitBoard,
     point: Point,
     match: (element: PlaitElement) => boolean = () => true
-): undefined | PlaitElement => {
-    let hitElement: PlaitElement | undefined = undefined;
-    let hitInsideElement: PlaitElement | undefined = undefined;
+): PlaitElement[] => {
+    let hitElements: PlaitElement[] = [];
     depthFirstRecursion<Ancestor>(
         board,
         node => {
-            if (hitElement) {
-                return;
-            }
             if (PlaitBoard.isBoard(node) || !match(node) || !PlaitElement.hasMounted(node)) {
                 return;
             }
             if (board.isHit(node, point)) {
-                hitElement = node;
+                hitElements.push(node);
                 return;
-            }
-
-            /**
-             * 需要增加场景测试
-             * hitInsideElement 存的是第一个符合 isInsidePoint 的元素
-             * 当有元素符合 isHit 时结束遍历，并返回 hitElement
-             * 当所有元素都不符合 isHit ，则返回第一个符合 isInsidePoint 的元素
-             * 这样保证最上面的元素优先被探测到；
-             */
-
-            if (!hitInsideElement && board.isInsidePoint(node, point)) {
-                hitInsideElement = node;
             }
         },
         getIsRecursionFunc(board),
         true
     );
-    return hitElement || hitInsideElement;
+    return hitElements;
+};
+
+export const getHitElementByPoint = (
+    board: PlaitBoard,
+    point: Point,
+    match: (element: PlaitElement) => boolean = () => true
+): undefined | PlaitElement => {
+    const pointHitElements = getHitElementsByPoint(board, point, match);
+    const hitElement = board.getHitElement(pointHitElements);
+    return hitElement;
 };
 
 export const getHitSelectedElements = (board: PlaitBoard, point: Point) => {

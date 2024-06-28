@@ -15,14 +15,24 @@ import { withArrowLineAutoCompleteReaction } from './with-arrow-line-auto-comple
 import { withArrowLineAutoComplete } from './with-arrow-line-auto-complete';
 import { withArrowLineTextMove } from './with-arrow-line-text-move';
 import { withDrawResize } from './with-draw-resize';
-import { isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
+import { getDrawHitElement, isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getArrowLinePoints, getArrowLineTextRectangle } from '../utils/arrow-line/arrow-line-basic';
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
+    const {
+        drawElement,
+        getRectangle,
+        isRectangleHit,
+        isHit,
+        isInsidePoint,
+        isMovable,
+        isAlign,
+        getRelatedFragment,
+        getHitElement
+    } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -71,6 +81,14 @@ export const withDraw = (board: PlaitBoard) => {
             return result;
         }
         return isHit(element, point);
+    };
+
+    board.getHitElement = elements => {
+        const isDrawElements = elements.every(item => PlaitDrawElement.isDrawElement(item));
+        if (isDrawElements) {
+            return getDrawHitElement(board, elements as PlaitDrawElement[]);
+        }
+        return getHitElement(elements);
     };
 
     board.isInsidePoint = (element: PlaitElement, point: Point) => {

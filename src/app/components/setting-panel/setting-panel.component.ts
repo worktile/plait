@@ -234,9 +234,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         PropertyTransforms.setFillColor(this.board, property, {
             getMemorizeKey,
             callback: (element: PlaitElement, path: Path) => {
-                const isSwimlane = PlaitDrawElement.isSwimlane(element);
-                if (isSwimlane) {
-                    DrawTransforms.setSwimlaneFill(this.board, element as PlaitSwimlane, property, path);
+                const tableElement = PlaitDrawElement.isElementByTable(element);
+                if (tableElement) {
+                    DrawTransforms.setTableFill(this.board, element, property, path);
                 } else {
                     Transforms.setNode(this.board, { fill: property }, path);
                 }
