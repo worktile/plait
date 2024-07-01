@@ -121,8 +121,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     swimlaneCount = 3;
 
-    selectedTableCellsEditor: BaseEditor[] | undefined = [];
-
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -161,16 +159,13 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         const selectedTableElements = getSelectedTableElements(this.board);
-        this.selectedTableCellsEditor = [];
-        if (isSingleSelectElementByTable(this.board)) {
-            this.selectedTableCellsEditor = getSelectedTableCellsEditor(selectedTableElements[0]);
-        }
+        const selectedTableCellsEditor = getSelectedTableCellsEditor(this.board);
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
             let editor: BaseEditor | undefined;
             let align: Alignment = this.align;
-            if (this.selectedTableCellsEditor?.length) {
-                editor = this.selectedTableCellsEditor[0];
+            if (selectedTableCellsEditor?.length) {
+                editor = selectedTableCellsEditor[0];
                 align = (editor.children[0] as ParagraphElement)?.align || Alignment.center;
             } else {
                 const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
@@ -287,7 +282,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     textColorChange(value: string) {
-        TextTransforms.setTextColor(this.board, value, undefined, this.selectedTableCellsEditor);
+        TextTransforms.setTextColor(this.board, value, undefined, getSelectedTableCellsEditor(this.board));
     }
 
     setAbstract(event: Event) {
@@ -305,7 +300,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     setTextMark(event: MouseEvent, attribute: string) {
         event.preventDefault();
         event.stopPropagation();
-        TextTransforms.setTextMarks(this.board, attribute as MarkTypes, this.selectedTableCellsEditor);
+        TextTransforms.setTextMarks(this.board, attribute as MarkTypes, getSelectedTableCellsEditor(this.board));
     }
 
     setLink(event: MouseEvent) {
@@ -346,12 +341,12 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             (element: PlaitElement) => {
                 return MindElement.isMindElement(this.board, element) ? getDefaultMindElementFontSize(this.board, element) : undefined;
             },
-            this.selectedTableCellsEditor
+            getSelectedTableCellsEditor(this.board)
         );
     }
 
     setTextAlign(event: Alignment) {
-        TextTransforms.setTextAlign(this.board, event, this.selectedTableCellsEditor);
+        TextTransforms.setTextAlign(this.board, event, getSelectedTableCellsEditor(this.board));
     }
 
     setAlign(event: Event) {
