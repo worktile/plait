@@ -169,19 +169,21 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (selectedTableAndGeometryElements.length) {
             let editor: BaseEditor | undefined;
             let align: Alignment = this.align;
-            const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
             if (this.selectedTableCellsEditor?.length) {
                 editor = this.selectedTableCellsEditor[0];
-                align = (editor.children[0] as ParagraphElement)?.align || this.align;
-            } else if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
-                editor = getFirstTextEditor(firstGeometry);
-                align = getGeometryAlign(this.board, firstGeometry!);
+                align = (editor.children[0] as ParagraphElement)?.align || Alignment.center;
+            } else {
+                const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
+                if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
+                    editor = getFirstTextEditor(firstGeometry);
+                    align = getGeometryAlign(this.board, firstGeometry);
+                    this.strokeWidth = firstGeometry?.strokeWidth || 3;
+                }
             }
             if (editor) {
                 this.currentMarks = PlaitMarkEditor.getMarks(editor);
                 this.align = align;
             }
-            this.strokeWidth = firstGeometry?.strokeWidth || 3;
         }
 
         const selectedImageElements = getSelectedImageElements(this.board);
