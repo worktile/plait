@@ -3,7 +3,8 @@ import { Generator } from '@plait/common';
 import { ForceAtlasEdgeElement, ForceAtlasNodeElement } from '../../interfaces';
 import { EdgeDirection } from '../types';
 import { drawEdge, drawParticle } from '../draw';
-import { getEdgeDirection, getNodeById, playEdgeParticleAnimate } from '../utils';
+import { getNodeById } from '../utils/node';
+import { getEdgeDirection, playEdgeParticleAnimate } from '../utils/edge';
 
 export class ForceEdgeAtlasGenerator extends Generator<ForceAtlasEdgeElement> {
     particleAnimation?: { stop: () => void; start: () => void };
