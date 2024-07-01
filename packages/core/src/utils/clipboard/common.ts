@@ -1,16 +1,19 @@
 import { ClipboardData, WritableClipboardContext, WritableClipboardData, WritableClipboardType } from './types';
 
 export const buildPlaitHtml = (type: WritableClipboardType, data: WritableClipboardData) => {
-    const stringifiedClipboard = JSON.stringify({
-        type,
-        data
-    });
+    const stringifiedClipboard = replaceAngleBrackets(
+        JSON.stringify({
+            type,
+            data
+        })
+    );
     return `<plait>${stringifiedClipboard}</plait>`;
 };
 
 export const getClipboardFromHtml = (html: string): ClipboardData | null => {
-    const plaitString = html?.match(/<plait[^>]*>(.*)<\/plait>/)?.[1];
+    let plaitString = html?.match(/<plait[^>]*>(.*)<\/plait>/)?.[1];
     if (plaitString) {
+        plaitString = reverseReplaceAngleBrackets(plaitString);
         try {
             const plaitJson = JSON.parse(plaitString);
             if (plaitJson) {
@@ -76,4 +79,12 @@ export const addClipboardContext = (
         };
     }
     return clipboardContext;
+};
+
+export const replaceAngleBrackets = (str: string) => {
+    return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
+
+export const reverseReplaceAngleBrackets = (str: string) => {
+    return str.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 };
