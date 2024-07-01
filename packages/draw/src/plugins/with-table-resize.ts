@@ -95,7 +95,7 @@ export function withTableResize(board: PlaitTableBoard) {
                 }
             } else {
                 const isFromCorner = isCornerHandle(board, resizeRef.handle);
-                const isAspectRatio = isFromCorner ? true : resizeState.isShift;
+                const isAspectRatio = isFromCorner ? true : false;
                 const handleIndex = getIndexByResizeHandle(resizeRef.handle);
                 const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
                 const resizeSnapRefOptions = getSnapResizingRefOptions(
