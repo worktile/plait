@@ -10,17 +10,21 @@ import {
     toViewBoxPoint,
     toHostPoint,
     getHitElementByPoint,
-    getSelectedElements
+    getSelectedElements,
+    PlaitPointerType,
+    isDragging,
+    isMainPointer
 } from '@plait/core';
 import { editCell, getHitCell } from '../utils/table';
 import { withTableResize } from './with-table-resize';
 import { isVirtualKey, isDelete, isSpaceHotkey } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
+import { getSelectedTableElements, isSingleSelectTable, setSelectedCells } from '../utils';
 
 export const withTable = (board: PlaitBoard) => {
     const tableBoard = board as PlaitTableBoard;
 
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, dblClick, keyDown } = tableBoard;
+    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, dblClick, keyDown, pointerUp } = tableBoard;
 
     tableBoard.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isElementByTable(context.element)) {
@@ -91,6 +95,25 @@ export const withTable = (board: PlaitBoard) => {
             }
         }
         dblClick(event);
+    };
+
+    tableBoard.pointerUp = (event: PointerEvent) => {
+        const isSetSelectionPointer =
+            PlaitBoard.isPointer(tableBoard, PlaitPointerType.selection) || PlaitBoard.isPointer(tableBoard, PlaitPointerType.hand);
+        const isSkip = !isMainPointer(event) || isDragging(tableBoard) || !isSetSelectionPointer;
+        if (isSkip) {
+            pointerUp(event);
+            return;
+        }
+        if (isSingleSelectTable(tableBoard)) {
+            const point = toViewBoxPoint(tableBoard, toHostPoint(tableBoard, event.x, event.y));
+            const element = getSelectedTableElements(tableBoard)[0];
+            const hitCell = getHitCell(tableBoard, element, point);
+            if (hitCell && hitCell.text && hitCell.textHeight) {
+                setSelectedCells(element, [hitCell]);
+            }
+        }
+        pointerUp(event);
     };
 
     tableBoard.buildTable = (element: PlaitBaseTable) => {

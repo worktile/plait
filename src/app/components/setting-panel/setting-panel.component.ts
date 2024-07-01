@@ -21,7 +21,7 @@ import {
     getDefaultMindElementFontSize,
     getSelectedMindElements
 } from '@plait/mind';
-import { Node, Transforms as SlateTransforms } from 'slate';
+import { BaseEditor, Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
@@ -52,7 +52,10 @@ import {
     getSelectedTableElements,
     getGeometryAlign,
     PlaitDrawElement,
-    getSwimlaneCount
+    getSwimlaneCount,
+    PlaitTableCell,
+    getSelectedTableCellsEditor,
+    isSingleSelectElementByTable
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { FontSizes, LinkEditor, MarkTypes, PlaitMarkEditor, TextTransforms } from '@plait/text-plugins';
@@ -118,6 +121,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     swimlaneCount = 3;
 
+    selectedTableCellsEditor: BaseEditor[] | undefined = [];
+
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -156,22 +161,26 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         const selectedTableElements = getSelectedTableElements(this.board);
+        this.selectedTableCellsEditor = [];
+        if (isSingleSelectElementByTable(this.board)) {
+            this.selectedTableCellsEditor = getSelectedTableCellsEditor(selectedTableElements[0]);
+        }
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
+            let editor: BaseEditor | undefined;
+            let align: Alignment = this.align;
             const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
-            if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
-                this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry));
-                this.align = getGeometryAlign(this.board, firstGeometry);
+            if (this.selectedTableCellsEditor?.length) {
+                editor = this.selectedTableCellsEditor[0];
+                align = (editor.children[0] as ParagraphElement)?.align || this.align;
+            } else if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
+                editor = getFirstTextEditor(firstGeometry);
+                align = getGeometryAlign(this.board, firstGeometry!);
             }
-            setTimeout(() => {
-                const editor = firstGeometry && getEditingTextEditor(this.board, [firstGeometry]);
-                const isEditing = !!editor;
-                if (isEditing) {
-                    this.align = (editor.children[0] as ParagraphElement)?.align || this.align;
-                    this.currentMarks = PlaitMarkEditor.getMarks(editor);
-                    this.cdr.markForCheck();
-                }
-            });
+            if (editor) {
+                this.currentMarks = PlaitMarkEditor.getMarks(editor);
+                this.align = align;
+            }
             this.strokeWidth = firstGeometry?.strokeWidth || 3;
         }
 
@@ -276,7 +285,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     textColorChange(value: string) {
-        TextTransforms.setTextColor(this.board, value);
+        TextTransforms.setTextColor(this.board, value, undefined, this.selectedTableCellsEditor);
     }
 
     setAbstract(event: Event) {
@@ -294,7 +303,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     setTextMark(event: MouseEvent, attribute: string) {
         event.preventDefault();
         event.stopPropagation();
-        TextTransforms.setTextMarks(this.board, attribute as MarkTypes);
+        TextTransforms.setTextMarks(this.board, attribute as MarkTypes, this.selectedTableCellsEditor);
     }
 
     setLink(event: MouseEvent) {
@@ -329,13 +338,18 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     setFontSize(event: Event) {
         const fontSize = (event.target as HTMLSelectElement).value as FontSizes;
-        TextTransforms.setFontSize(this.board, fontSize, (element: PlaitElement) => {
-            return MindElement.isMindElement(this.board, element) ? getDefaultMindElementFontSize(this.board, element) : undefined;
-        });
+        TextTransforms.setFontSize(
+            this.board,
+            fontSize,
+            (element: PlaitElement) => {
+                return MindElement.isMindElement(this.board, element) ? getDefaultMindElementFontSize(this.board, element) : undefined;
+            },
+            this.selectedTableCellsEditor
+        );
     }
 
     setTextAlign(event: Alignment) {
-        TextTransforms.setTextAlign(this.board, event);
+        TextTransforms.setTextAlign(this.board, event, this.selectedTableCellsEditor);
     }
 
     setAlign(event: Event) {
