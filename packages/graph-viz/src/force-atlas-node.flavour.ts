@@ -27,10 +27,7 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
     onContextChanged(
         value: PlaitPluginElementContext<ForceAtlasNodeElement, PlaitBoard>,
         previous: PlaitPluginElementContext<ForceAtlasNodeElement, PlaitBoard>
-    ) {
-        // getRelatedNode()
-        this.selected;
-    }
+    ) {}
 
     updateText(previousElement: ForceAtlasNodeElement, currentElement: ForceAtlasNodeElement) {}
 
