@@ -1,5 +1,5 @@
 import { getHitElementByPoint, PlaitBoard, Point, RectangleClient, Transforms, isSelectedElement } from '@plait/core';
-import { PlaitBaseTable, PlaitTable, PlaitTableBoard, PlaitTableCellWithPoints, PlaitTableElement } from '../interfaces/table';
+import { PlaitBaseTable, PlaitTableBoard, PlaitTableCellWithPoints } from '../interfaces/table';
 import {
     getIndexByResizeHandle,
     isCornerHandle,
@@ -122,35 +122,57 @@ export function withTableResize(board: PlaitTableBoard) {
                 let rows = [...resizeRef.element.rows];
                 let update = false;
                 if (!isFromCorner) {
-                    const {
-                        columnWidth,
-                        rowHeight,
-                        columnIndex,
-                        rowIndex,
-                        minCellWidthInColumn,
-                        minCellHeightInRow
-                    } = getUpdateTableContent(board, resizeRef.element, handleIndex);
-                    if (!columnWidth || !rowHeight) {
-                        if (!columnWidth) {
+                    const { columnIndex, rowIndex } = getResizeRowAndColumnIndex(resizeRef.element, handleIndex);
+                    if (offsetWidth !== 0) {
+                        if (!columns[columnIndex].width) {
+                            const cellsWithPoints = getCellsWithPoints(board, resizeRef.element);
+                            const { minCellWidthInColumn } = cellsWithPoints.reduce(
+                                (acc, item) => {
+                                    if (item.columnId === columns[columnIndex].id) {
+                                        const { width } = RectangleClient.getRectangleByPoints(item.points);
+                                        if (!acc.minCellWidthInColumn || width < acc.minCellWidthInColumn) {
+                                            acc.minCellWidthInColumn = width;
+                                        }
+                                    }
+                                    return acc;
+                                },
+                                { minCellWidthInColumn: 0 }
+                            );
                             columns[columnIndex] = {
                                 ...columns[columnIndex],
                                 width: minCellWidthInColumn
                             };
                         }
-                        if (!rowHeight) {
+                        if (offsetWidth + columns[columnIndex].width! > MIN_CELL_SIZE) {
+                            columns = calculateRowsOrColumns(columns, offsetWidth, originRect.width, false, false, columnIndex);
+                            update = true;
+                        }
+                    }
+
+                    if (offsetHeight !== 0) {
+                        if (!rows[rowIndex].height) {
+                            const cellsWithPoints = getCellsWithPoints(board, resizeRef.element);
+                            const { minCellHeightInRow } = cellsWithPoints.reduce(
+                                (acc, item) => {
+                                    if (item.rowId === rows[rowIndex].id) {
+                                        const { height } = RectangleClient.getRectangleByPoints(item.points);
+                                        if (!acc.minCellHeightInRow || height < acc.minCellHeightInRow) {
+                                            acc.minCellHeightInRow = height;
+                                        }
+                                    }
+                                    return acc;
+                                },
+                                { minCellHeightInRow: 0 }
+                            );
                             rows[rowIndex] = {
                                 ...rows[rowIndex],
                                 height: minCellHeightInRow
                             };
                         }
-                    }
-                    if (offsetWidth !== 0 && offsetWidth + columns[columnIndex].width! > MIN_CELL_SIZE) {
-                        columns = calculateRowsOrColumns(columns, offsetWidth, originRect.width, false, false, columnIndex);
-                        update = true;
-                    }
-                    if (offsetHeight !== 0 && offsetHeight + rows[rowIndex].height! > MIN_CELL_SIZE) {
-                        rows = calculateRowsOrColumns(rows, offsetHeight, originRect.height, false, true, rowIndex);
-                        update = true;
+                        if (offsetHeight + rows[rowIndex].height! > MIN_CELL_SIZE) {
+                            rows = calculateRowsOrColumns(rows, offsetHeight, originRect.height, false, true, rowIndex);
+                            update = true;
+                        }
                     }
                 } else {
                     if (offsetWidth !== 0) {
@@ -161,7 +183,6 @@ export function withTableResize(board: PlaitTableBoard) {
                     }
                     update = true;
                 }
-
                 if (update) {
                     Transforms.setNode(board, { points: normalizeShapePoints(points), rows, columns }, path);
                 }
@@ -204,41 +225,16 @@ function calculateRowsOrColumns(
     });
 }
 
-function getUpdateTableContent(board: PlaitBoard, element: PlaitBaseTable, handleIndex: number) {
+function getResizeRowAndColumnIndex(element: PlaitBaseTable, handleIndex: number) {
     let columnIndex = 0;
     let rowIndex = 0;
     const { columns, rows } = element;
-    const cellsWithPoints = getCellsWithPoints(board, element);
     if ([Number(ResizeHandle.s), Number(ResizeHandle.e)].includes(handleIndex)) {
         columnIndex = columns.length - 1;
         rowIndex = rows.length - 1;
     }
-    const rowId = rows[rowIndex].id;
-    const columnId = columns[columnIndex].id;
-    const { minCellWidthInColumn, minCellHeightInRow } = cellsWithPoints.reduce(
-        (acc, item) => {
-            if (item.rowId === rowId) {
-                const { height } = RectangleClient.getRectangleByPoints(item.points);
-                if (acc.minCellHeightInRow === -1 || height < acc.minCellHeightInRow) {
-                    acc.minCellHeightInRow = height;
-                }
-            }
-            if (item.columnId === columnId) {
-                const { width } = RectangleClient.getRectangleByPoints(item.points);
-                if (acc.minCellWidthInColumn === -1 || width < acc.minCellWidthInColumn) {
-                    acc.minCellWidthInColumn = width;
-                }
-            }
-            return acc;
-        },
-        { minCellWidthInColumn: -1, minCellHeightInRow: -1 }
-    );
     return {
         rowIndex,
-        columnIndex,
-        rowHeight: rows[rowIndex].height || 0,
-        columnWidth: columns[columnIndex].width || 0,
-        minCellWidthInColumn,
-        minCellHeightInRow
+        columnIndex
     };
 }
