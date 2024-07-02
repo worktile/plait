@@ -1,12 +1,4 @@
-import {
-    Path,
-    PlaitBoard,
-    Point,
-    RectangleClient,
-    Transforms,
-    getSelectedElements,
-    rotateAntiPointsByElement
-} from '@plait/core';
+import { Path, PlaitBoard, Point, RectangleClient, Transforms, getSelectedElements, rotateAntiPointsByElement } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -80,7 +72,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             PlaitBoard.getElementActiveHost(board).append(snapG);
             let points = resizeSnapRef.activePoints as [Point, Point];
             if (PlaitDrawElement.isGeometry(resizeRef.element) && isGeometryIncludeText(resizeRef.element)) {
-                const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
+                const textHeight = getFirstTextManage(resizeRef.element)?.getSize()?.height || 0;
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
             } else {
                 points = normalizeShapePoints(points);

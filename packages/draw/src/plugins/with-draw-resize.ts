@@ -176,7 +176,7 @@ export function withDrawResize(board: PlaitBoard) {
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
-                    const { height: textHeight } = getFirstTextManage(target).getSize();
+                    const textHeight = getFirstTextManage(target)?.getSize()?.height || 0;
                     DrawTransforms.resizeGeometry(board, points as [Point, Point], textHeight, path);
                 } else if (PlaitDrawElement.isArrowLine(target)) {
                     Transforms.setNode(board, { points }, path);
