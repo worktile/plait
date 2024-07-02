@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitElement, PlaitNode, getSelectedElements } from '@plait/core';
 import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
-import { EdgeDirection } from '../types';
+import { EdgeDirection, EdgeGeneratorData } from '../types';
 import { PlaitCommonElementRef, animate, linear } from '@plait/common';
 import { ForceAtlasEdgeGenerator } from '../generators/edge.generator';
 import { getIsNodeActive, getNodeById } from './node';
@@ -38,7 +38,7 @@ export function getEdgeDirection(isSourceActive: boolean, isTargetActive: boolea
     return EdgeDirection.NONE;
 }
 
-export function getEdgeInfoByEdge(edge: ForceAtlasEdgeElement, board: PlaitBoard) {
+export function getEdgeGeneratorData(edge: ForceAtlasEdgeElement, board: PlaitBoard): EdgeGeneratorData {
     const forceAtlasElement = PlaitNode.parent(board, PlaitBoard.findPath(board, edge)) as ForceAtlasElement;
     const sourceNode = getNodeById(edge.source, forceAtlasElement);
     const targetNode = getNodeById(edge.target, forceAtlasElement);

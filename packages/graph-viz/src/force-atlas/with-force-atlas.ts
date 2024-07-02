@@ -1,9 +1,9 @@
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection } from '@plait/core';
-import { ForceAtlasFlavour } from '../force-atlas.flavour';
-import { ForceAtlasNodeFlavour } from '../force-atlas-node.flavour';
-import { ForceAtlasEdgeFlavour } from '../force-atlas-edge.flavour';
-import { ForceAtlasElement } from '../../interfaces';
-import { isHitNode } from '../utils/node';
+import { ForceAtlasFlavour } from './force-atlas.flavour';
+import { ForceAtlasNodeFlavour } from './node.flavour';
+import { ForceAtlasEdgeFlavour } from './edge.flavour';
+import { ForceAtlasElement } from '../interfaces';
+import { isHitNode } from './utils/node';
 
 export const withForceAtlas = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;

@@ -1,10 +1,10 @@
-import { PlaitBoard, PlaitNode, getSelectedElements } from '@plait/core';
+import { PlaitBoard } from '@plait/core';
 import { Generator } from '@plait/common';
-import { ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
+import { ForceAtlasNodeElement } from '../../interfaces';
 import { drawNode } from '../utils/draw';
-import { isFirstDepthNode } from '../utils/node';
+import { NodeGeneratorData } from '../types';
 
-export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement> {
+export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement, NodeGeneratorData> {
     static key = 'force-atlas-node';
     constructor(board: PlaitBoard) {
         super(board);
@@ -14,15 +14,7 @@ export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement> {
         return true;
     }
 
-    draw(element: ForceAtlasNodeElement) {
-        const parent = PlaitNode.parent(this.board, PlaitBoard.findPath(this.board, element));
-        const selectElements = getSelectedElements(this.board);
-        if (selectElements.some(s => s.id === element.id)) {
-            return;
-        }
-        const activeNodeId = selectElements[0]?.id;
-        return drawNode(this.board, element, element?.points?.[0] || [0, 0], {
-            isFirstDepth: isFirstDepthNode(element.id, activeNodeId, parent as ForceAtlasElement)
-        });
+    draw(element: ForceAtlasNodeElement, data: NodeGeneratorData) {
+        return drawNode(this.board, element, element?.points?.[0] || [0, 0], data);
     }
 }

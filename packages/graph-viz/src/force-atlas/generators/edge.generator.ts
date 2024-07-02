@@ -1,11 +1,11 @@
 import { PlaitBoard, createG } from '@plait/core';
 import { Generator } from '@plait/common';
 import { ForceAtlasEdgeElement } from '../../interfaces';
-import { EdgeDirection, EdgeInfo } from '../types';
+import { EdgeDirection, EdgeGeneratorData } from '../types';
 import { drawEdge, drawParticle } from '../utils/draw';
 import { playEdgeParticleAnimate } from '../utils/edge';
 
-export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement> {
+export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement, EdgeGeneratorData> {
     static key = 'force-atlas-edge';
     particleAnimation?: { stop: () => void; start: () => void };
     constructor(board: PlaitBoard) {
@@ -16,7 +16,7 @@ export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement> {
         return true;
     }
 
-    draw(element: ForceAtlasEdgeElement, data: EdgeInfo) {
+    draw(element: ForceAtlasEdgeElement, data: EdgeGeneratorData) {
         const edgeG = createG();
         const edgeElement = drawEdge(data.startPoint, data.endPoint, data.direction, data.isSourceActive && data.isTargetActive);
         edgeG.append(edgeElement.g);

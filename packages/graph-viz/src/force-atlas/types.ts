@@ -1,3 +1,4 @@
+import { GeneratorExtraData } from '@plait/common';
 import { Point } from '@plait/core';
 
 export enum EdgeDirection {
@@ -17,10 +18,15 @@ export interface NodeStyles {
     hoverStroke?: string;
 }
 
-export interface EdgeInfo {
+export interface EdgeGeneratorData extends GeneratorExtraData {
     startPoint: Point;
     endPoint: Point;
     isSourceActive: boolean;
     isTargetActive: boolean;
     direction: EdgeDirection;
+}
+
+export interface NodeGeneratorData extends GeneratorExtraData {
+    isActive: boolean;
+    isFirstDepth: boolean;
 }

@@ -19,7 +19,7 @@ export function drawNode(
     board: PlaitBoard,
     node: ForceAtlasNodeElement,
     point: Point,
-    options: { isFirstDepth: boolean; nodeSizeMultiplier?: number; textOffsetY?: number }
+    options: { isActive: boolean; isFirstDepth: boolean }
 ) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
     let nodeStyles: NodeStyles = {
@@ -27,36 +27,31 @@ export function drawNode(
         ...(node.styles || {})
     };
     let { x, y } = normalizePoint(point);
-    const nodeRadius = ((node.size ?? DEFAULT_NODE_SIZE) * (options.nodeSizeMultiplier || 1)) / 2;
+    let nodeRadius = (node.size ?? DEFAULT_NODE_SIZE) / 2;
+    if (options.isActive) {
+        nodeRadius = nodeRadius * DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER;
+    }
     const nodeG = drawCircle(roughSVG, [0, 0], nodeRadius, nodeStyles);
     nodeG.setAttribute('transform', `translate(${x}, ${y})`);
-    if (!options.isFirstDepth) {
-        nodeG.setAttribute('opacity', SECOND_DEPTH_NODE_ALPHA.toString());
-    }
     const text = document.createElementNS(NS, 'text');
     text.textContent = node.label || '';
     text.setAttribute('text-anchor', `middle`);
     text.setAttribute('dominant-baseline', `hanging`);
     text.setAttribute('x', `0`);
-    text.setAttribute('y', `${nodeRadius / 2 + DEFAULT_NODE_LABEL_MARGIN_TOP + (options.textOffsetY || 0)}`);
     text.setAttribute('font-size', `${DEFAULT_NODE_LABEL_FONT_SIZE}px`);
+    if (options.isActive) {
+        const waveRadius = nodeRadius * DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER;
+        const waveCircle = drawCircle(roughSVG, [0, 0], waveRadius, DEFAULT_NODE_STYLES);
+        waveCircle.setAttribute('opacity', ACTIVE_BACKGROUND_NODE_ALPHA.toString());
+        nodeG.append(waveCircle);
+        text.setAttribute('y', `${waveRadius / 2 + DEFAULT_NODE_LABEL_MARGIN_TOP}`);
+    } else {
+        if (!options.isFirstDepth) {
+            nodeG.setAttribute('opacity', SECOND_DEPTH_NODE_ALPHA.toString());
+        }
+        text.setAttribute('y', `${nodeRadius / 2 + DEFAULT_NODE_LABEL_MARGIN_TOP}`);
+    }
     nodeG.append(text);
-    return nodeG;
-}
-
-export function drawActiveNode(board: PlaitBoard, node: ForceAtlasNodeElement, point: Point, isFirstDepth: boolean) {
-    const roughSVG = PlaitBoard.getRoughSVG(board);
-    const size = (node.size ?? DEFAULT_NODE_SIZE) * DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER;
-    const nodeRadius = size / 2;
-    const waveRadius = (size * DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER) / 2;
-    const nodeG = drawNode(board, node, point, {
-        isFirstDepth,
-        nodeSizeMultiplier: DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER,
-        textOffsetY: (waveRadius - nodeRadius) / 2
-    });
-    const waveCircle = drawCircle(roughSVG, [0, 0], nodeRadius * DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER, DEFAULT_NODE_STYLES);
-    waveCircle.setAttribute('opacity', ACTIVE_BACKGROUND_NODE_ALPHA.toString());
-    nodeG.append(waveCircle);
     return nodeG;
 }
 
