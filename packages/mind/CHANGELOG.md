@@ -1,5 +1,17 @@
 # mind
 
+## 0.62.0-next.7
+
+### Minor Changes
+
+-   [#922](https://github.com/worktile/plait/pull/922) [`0e1ddecc4`](https://github.com/worktile/plait/commit/0e1ddecc45b76f4093944d340bfe5670a80e2b1b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor getHitElementByPoint return value
+
+    add getHitElement to board, the hit element is determined by the plugin
+
+### Patch Changes
+
+-   [`59627b552`](https://github.com/worktile/plait/commit/59627b5526d2b710db0ce3b189f443921a165065) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prompt `mind element has not been mounted` when element is mind element
+
 ## 0.62.0-next.6
 
 ### Minor Changes

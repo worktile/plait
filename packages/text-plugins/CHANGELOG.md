@@ -1,5 +1,11 @@
 # @plait/text-plugins
 
+## 0.62.0-next.7
+
+### Patch Changes
+
+-   [#930](https://github.com/worktile/plait/pull/930) [`48a780120`](https://github.com/worktile/plait/commit/48a780120c4ed9d2106dc2e153fd30840a1953f2) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set cell text property
+
 ## 0.62.0-next.6
 
 ## 0.62.0-next.5

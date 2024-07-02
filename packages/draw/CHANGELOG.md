@@ -1,5 +1,31 @@
 # @plait/draw
 
+## 0.62.0-next.7
+
+### Minor Changes
+
+-   [#922](https://github.com/worktile/plait/pull/922) [`0e1ddecc4`](https://github.com/worktile/plait/commit/0e1ddecc45b76f4093944d340bfe5670a80e2b1b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor getHitElementByPoint return value
+
+    add getHitElement to board, the hit element is determined by the plugin
+
+*   [#923](https://github.com/worktile/plait/pull/923) [`e3247409b`](https://github.com/worktile/plait/commit/e3247409b6edd8b5001d3bfb892afe65d8e291d2) Thanks [@MissLixf](https://github.com/MissLixf)! - change PlaitLine to PlaitArrowLine; and change bound function with arrowLine
+
+### Patch Changes
+
+-   [#921](https://github.com/worktile/plait/pull/921) [`2d8b964d0`](https://github.com/worktile/plait/commit/2d8b964d06443c1643d4c26abe6a2899f4e29e7b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix set text property error when select table
+
+*   [#920](https://github.com/worktile/plait/pull/920) [`4bd014d33`](https://github.com/worktile/plait/commit/4bd014d33aa84b34d96344bbf7bda5b6c23c2011) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - memorize line text property
+
+-   [#924](https://github.com/worktile/plait/pull/924) [`9c1e653e9`](https://github.com/worktile/plait/commit/9c1e653e9767c07677af40017eaa0fa4637123c5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix create swimlane error by drawing
+
+*   [#925](https://github.com/worktile/plait/pull/925) [`9acb332fc`](https://github.com/worktile/plait/commit/9acb332fc2d9dd4f87ce226a725226769508a2af) Thanks [@MissLixf](https://github.com/MissLixf)! - set the fill property of unclosed path to be transparent
+
+-   [#930](https://github.com/worktile/plait/pull/930) [`48a780120`](https://github.com/worktile/plait/commit/48a780120c4ed9d2106dc2e153fd30840a1953f2) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set cell text property
+
+*   [#926](https://github.com/worktile/plait/pull/926) [`42b285ce7`](https://github.com/worktile/plait/commit/42b285ce718f04f4ef67b16d1be2d9a178e15dc3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set table fill
+
+-   [#934](https://github.com/worktile/plait/pull/934) [`1af156157`](https://github.com/worktile/plait/commit/1af156157cb606c043084e6fae339be5987f14d5) Thanks [@MissLixf](https://github.com/MissLixf)! - fix resize geometry without text error
+
 ## 0.62.0-next.6
 
 ## 0.62.0-next.5

@@ -1,5 +1,17 @@
 # plait
 
+## 0.62.0-next.7
+
+### Minor Changes
+
+-   [#922](https://github.com/worktile/plait/pull/922) [`0e1ddecc4`](https://github.com/worktile/plait/commit/0e1ddecc45b76f4093944d340bfe5670a80e2b1b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor getHitElementByPoint return value
+
+    add getHitElement to board, the hit element is determined by the plugin
+
+### Patch Changes
+
+-   [#928](https://github.com/worktile/plait/pull/928) [`e85f1bf5e`](https://github.com/worktile/plait/commit/e85f1bf5e3c8c54475ce29b3e15a553c2e888510) Thanks [@MissLixf](https://github.com/MissLixf)! - fix interface geometry paste error
+
 ## 0.62.0-next.6
 
 ## 0.62.0-next.5
