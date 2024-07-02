@@ -1,6 +1,6 @@
-import { PlaitBoard, PlaitNode, createG } from '@plait/core';
+import { PlaitBoard } from '@plait/core';
 import { Generator } from '@plait/common';
-import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
+import { ForceAtlasNodeElement } from '../../interfaces';
 import { drawActiveNode } from '../draw';
 
 export class ForceActiveNodeAtlasGenerator extends Generator<ForceAtlasNodeElement> {
@@ -13,7 +13,6 @@ export class ForceActiveNodeAtlasGenerator extends Generator<ForceAtlasNodeEleme
     }
 
     draw(element: ForceAtlasNodeElement) {
-        console.log('draw active node', element.label);
         return drawActiveNode(this.board, element, element?.points?.[0] || [0, 0], true);
     }
 }

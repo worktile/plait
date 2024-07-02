@@ -1,7 +1,8 @@
-import { PlaitBoard, PlaitNode, createG, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitNode, getSelectedElements } from '@plait/core';
 import { Generator } from '@plait/common';
-import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
+import { ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
 import { drawNode } from '../draw';
+import { isFirstDepthNode } from '../utils/node';
 
 export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement> {
     static key = 'force-atlas-node';
@@ -20,10 +21,8 @@ export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement> {
             return;
         }
         const activeNodeId = selectElements[0]?.id;
-        const edges = parent?.children?.filter(f => ForceAtlasElement.isForceAtlasEdgeElement(f)) as ForceAtlasEdgeElement[];
-        const isFirstDepth = edges.some(
-            s => (s.source === activeNodeId && s.target === element?.id) || (s.target === activeNodeId && s.source === element?.id)
-        );
-        return drawNode(this.board, element, element?.points?.[0] || [0, 0], { isFirstDepth });
+        return drawNode(this.board, element, element?.points?.[0] || [0, 0], {
+            isFirstDepth: isFirstDepthNode(element.id, activeNodeId, parent as ForceAtlasElement)
+        });
     }
 }

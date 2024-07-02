@@ -1,13 +1,17 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, isSelectedElement, normalizePoint } from '@plait/core';
-import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
-import { getEdgesBySourceOrTarget } from './edge';
+import { PlaitElement, Point, RectangleClient, normalizePoint } from '@plait/core';
+import { ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
+import { getEdges, getEdgesInSourceOrTarget } from './edge';
 import { PlaitCommonElementRef } from '@plait/common';
 import { ForceAtlasNodeGenerator } from '../generators/node.generator';
 
+export function getNodes(forceAtlasElement: ForceAtlasElement, andBack?: (edge: ForceAtlasNodeElement) => boolean) {
+    return forceAtlasElement.children?.filter(
+        f => ForceAtlasElement.isForceAtlasNodeElement(f) && (andBack?.(f) ?? true)
+    ) as ForceAtlasNodeElement[];
+}
+
 export function getNodeById(id: string, forceAtlasElement: ForceAtlasElement) {
-    const node = forceAtlasElement.children?.find(
-        f => ForceAtlasElement.isForceAtlasNodeElement(f) && f.id === id
-    ) as ForceAtlasNodeElement;
+    const node = getNodes(forceAtlasElement, node => node.id === id)?.[0];
     if (!node) {
         throw new Error('can not find node.');
     }
@@ -31,7 +35,7 @@ export function isHitNode(node: ForceAtlasNodeElement, point: [Point, Point]) {
 }
 
 export function getAssociatedNodesById(id: string, forceAtlasElement: ForceAtlasElement) {
-    const edges = getEdgesBySourceOrTarget(id, forceAtlasElement);
+    const edges = getEdgesInSourceOrTarget(id, forceAtlasElement);
     const nodes: ForceAtlasNodeElement[] = [];
     edges.forEach(edge => {
         nodes.push(getNodeById(edge.source, forceAtlasElement));
@@ -43,4 +47,11 @@ export function getAssociatedNodesById(id: string, forceAtlasElement: ForceAtlas
 export function getNodeGenerator(node: ForceAtlasNodeElement) {
     const edgeRef = PlaitElement.getElementRef<PlaitCommonElementRef>(node);
     return edgeRef.getGenerator<ForceAtlasNodeGenerator>(ForceAtlasNodeGenerator.key);
+}
+
+export function isFirstDepthNode(currentNodeId: string, activeNodeId: string, forceAtlasElement: ForceAtlasElement) {
+    const edges = getEdges(forceAtlasElement);
+    return edges.some(
+        s => (s.source === activeNodeId && s.target === currentNodeId) || (s.target === activeNodeId && s.source === currentNodeId)
+    );
 }

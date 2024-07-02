@@ -4,7 +4,7 @@ import Graph from 'graphology';
 import { ForceAtlasNodeElement } from './interfaces';
 import { ForceAtlasNodeGenerator } from './force-atlas/generators/node.generator';
 import { ForceActiveNodeAtlasGenerator } from './force-atlas/generators/node-active.generator';
-import { getEdgeGenerator, getEdgesByNodeId } from './force-atlas/utils/edge';
+import { getEdgeGenerator, getEdgesInSourceOrTarget } from './force-atlas/utils/edge';
 import { getAssociatedNodesById, getNodeGenerator } from './force-atlas/utils/node';
 
 export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
@@ -52,7 +52,7 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
                     nodeGenerator.processDrawing(node, this.getElementG());
                 }
             });
-            const associatedEdges = getEdgesByNodeId(value.element.id, value.parent as any);
+            const associatedEdges = getEdgesInSourceOrTarget(value.element.id, value.parent as any);
             associatedEdges.forEach(edge => {
                 const edgeGenerator = getEdgeGenerator(edge);
                 edgeGenerator.destroy();

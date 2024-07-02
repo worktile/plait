@@ -4,31 +4,23 @@ import { EdgeDirection } from '../types';
 import { PlaitCommonElementRef, animate, linear } from '@plait/common';
 import { ForceAtlasEdgeGenerator } from '../generators/edge.generator';
 
+export function getEdges(forceAtlasElement: ForceAtlasElement, andCallBack?: (edge: ForceAtlasEdgeElement) => boolean) {
+    return forceAtlasElement.children?.filter(
+        f => ForceAtlasElement.isForceAtlasEdgeElement(f) && (andCallBack?.(f) ?? true)
+    ) as ForceAtlasEdgeElement[];
+}
+
 export function getEdgeById(id: string, forceAtlasElement: ForceAtlasElement) {
-    const edge = forceAtlasElement.children?.find(
-        f => ForceAtlasElement.isForceAtlasEdgeElement(f) && f.id === id
-    ) as ForceAtlasEdgeElement;
+    const edge = getEdges(forceAtlasElement, e => e.id === id)?.[0];
     if (!edge) {
         throw new Error('can not find edge.');
     }
     return edge;
 }
 
-export function getEdgesBySourceOrTarget(id: string, forceAtlasElement: ForceAtlasElement) {
-    const edges = forceAtlasElement.children?.filter(
-        f => ForceAtlasElement.isForceAtlasEdgeElement(f) && (f.source === id || f.target === id)
-    ) as ForceAtlasEdgeElement[];
+export function getEdgesInSourceOrTarget(id: string, forceAtlasElement: ForceAtlasElement) {
+    const edges = getEdges(forceAtlasElement, edge => edge.source === id || edge.target === id);
     return edges;
-}
-
-export function getEdgesByNodeId(id: string, forceAtlasElement: ForceAtlasElement) {
-    const node = forceAtlasElement.children?.find(
-        f => ForceAtlasElement.isForceAtlasNodeElement(f) && f.id === id
-    ) as ForceAtlasNodeElement;
-    if (!node) {
-        throw new Error('can not find node.');
-    }
-    return getEdgesBySourceOrTarget(id, forceAtlasElement);
 }
 
 export function getEdgeGenerator(edge: ForceAtlasEdgeElement) {
