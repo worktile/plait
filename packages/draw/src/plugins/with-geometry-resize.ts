@@ -72,7 +72,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             PlaitBoard.getElementActiveHost(board).append(snapG);
             let points = resizeSnapRef.activePoints as [Point, Point];
             if (PlaitDrawElement.isGeometry(resizeRef.element) && isGeometryIncludeText(resizeRef.element)) {
-                const textHeight = getFirstTextManage(resizeRef.element)?.getSize()?.height || 0;
+                const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
             } else {
                 points = normalizeShapePoints(points);
