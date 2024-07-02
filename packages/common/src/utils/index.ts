@@ -13,3 +13,4 @@ export * from './math';
 export * from './drawing';
 export * from './rotate';
 export * from './elements';
+export * from './animate';

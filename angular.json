@@ -386,6 +386,46 @@
         }
       }
     },
+    "graph-viz": {
+      "projectType": "library",
+      "root": "packages/graph-viz",
+      "sourceRoot": "packages/graph-viz/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "packages/graph-viz/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "packages/graph-viz/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "packages/graph-viz/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "packages/flow/src/test.ts",
+            "tsConfig": "packages/flow/tsconfig.spec.json",
+            "karmaConfig": "packages/flow/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "packages/flow/**/*.ts",
+              "packages/flow/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "common": {
       "projectType": "library",
       "root": "packages/common",
