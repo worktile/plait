@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection } from '@plait/core';
-import { ForceAtlasFlavour } from '../../force-atlas.flavour';
-import { ForceAtlasNodeFlavour } from '../../force-atlas-node.flavour';
-import { ForceAtlasEdgeFlavour } from '../../force-atlas-edge.flavour';
+import { ForceAtlasFlavour } from '../force-atlas.flavour';
+import { ForceAtlasNodeFlavour } from '../force-atlas-node.flavour';
+import { ForceAtlasEdgeFlavour } from '../force-atlas-edge.flavour';
 import { ForceAtlasElement } from '../../interfaces';
 import { isHitNode } from '../utils/node';
 

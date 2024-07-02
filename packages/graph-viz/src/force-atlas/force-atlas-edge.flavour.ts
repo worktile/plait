@@ -1,9 +1,9 @@
 import { CommonElementFlavour } from '@plait/common';
 import { OnContextChanged, PlaitBoard, PlaitPluginElementContext } from '@plait/core';
 import Graph from 'graphology';
-import { ForceAtlasEdgeElement } from './interfaces';
-import { ForceAtlasEdgeGenerator } from './force-atlas/generators/edge.generator';
-import { getEdgeInfoByEdge } from './force-atlas/utils/edge';
+import { ForceAtlasEdgeElement } from '../interfaces';
+import { ForceAtlasEdgeGenerator } from './generators/edge.generator';
+import { getEdgeInfoByEdge } from './utils/edge';
 
 export class ForceAtlasEdgeFlavour extends CommonElementFlavour<ForceAtlasEdgeElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasEdgeElement, PlaitBoard> {

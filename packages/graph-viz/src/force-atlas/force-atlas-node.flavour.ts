@@ -1,11 +1,11 @@
 import { CommonElementFlavour } from '@plait/common';
 import { OnContextChanged, PlaitBoard, PlaitPluginElementContext, cacheSelectedElements } from '@plait/core';
 import Graph from 'graphology';
-import { ForceAtlasNodeElement } from './interfaces';
-import { ForceAtlasNodeGenerator } from './force-atlas/generators/node.generator';
-import { ForceActiveNodeAtlasGenerator } from './force-atlas/generators/node-active.generator';
-import { getEdgeGenerator, getEdgeInfoByEdge, getEdgesInSourceOrTarget } from './force-atlas/utils/edge';
-import { getAssociatedNodesById, getNodeGenerator } from './force-atlas/utils/node';
+import { ForceAtlasNodeElement } from '../interfaces';
+import { ForceAtlasNodeGenerator } from './generators/node.generator';
+import { ForceActiveNodeAtlasGenerator } from './generators/node-active.generator';
+import { getEdgeGenerator, getEdgeInfoByEdge, getEdgesInSourceOrTarget } from './utils/edge';
+import { getAssociatedNodesById, getNodeGenerator } from './utils/node';
 
 export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasNodeElement, PlaitBoard> {

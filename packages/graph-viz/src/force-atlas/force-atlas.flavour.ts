@@ -3,8 +3,8 @@ import { OnContextChanged, PlaitBoard, PlaitPluginElementContext, cacheSelectedE
 import Graph from 'graphology';
 import circular from 'graphology-layout/circular';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import { ForceAtlasElement, ForceAtlasNodeElement } from './interfaces';
-import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './force-atlas/constants';
+import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
+import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './constants';
 
 export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
