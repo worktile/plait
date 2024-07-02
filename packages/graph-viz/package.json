@@ -1,7 +1,11 @@
 {
     "name": "@plait/graph-viz",
     "version": "0.62.0-next.3",
-    "peerDependencies": {},
+    "peerDependencies": {
+        "graphology": "^0.25.4",
+        "graphology-layout": "^0.6.1",
+        "graphology-layout-forceatlas2": "^0.10.1"
+    },
     "dependencies": {
         "tslib": "^2.3.0"
     },
