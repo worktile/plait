@@ -1,12 +1,4 @@
-import {
-    Path,
-    PlaitBoard,
-    Point,
-    RectangleClient,
-    Transforms,
-    getSelectedElements,
-    rotateAntiPointsByElement
-} from '@plait/core';
+import { Path, PlaitBoard, Point, RectangleClient, Transforms, getSelectedElements, rotateAntiPointsByElement } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
