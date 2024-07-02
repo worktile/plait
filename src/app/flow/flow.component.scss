@@ -4,14 +4,13 @@
     display: flex;
     flex-direction: row;
     height: 100vh;
-    .flow-custom-node {
-        .flow-node-richtext {
-            span {
-                color: #666;
-                font-size: 10px;
-            }
+    .flow-custom-node-richtext {
+        span {
+            color: #666;
+            font-size: 10px;
         }
     }
+    
     .sidebar {
         width: 260px;
         border-right: 1px solid #eee;

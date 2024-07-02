@@ -39,7 +39,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
         });
         this.initializeTextManages([this.textManage]);
         this.getRef().addGenerator<NodeActiveGenerator>(NodeActiveGenerator.key, this.nodeActiveGenerator);
-        this.getRef().addGenerator<NodeActiveGenerator>(NodeGenerator.key, this.nodeGenerator);
+        this.getRef().addGenerator<NodeGenerator>(NodeGenerator.key, this.nodeGenerator);
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
