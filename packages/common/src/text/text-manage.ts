@@ -103,7 +103,7 @@ export class TextManage {
         this.textComponentRef.update(props);
     }
 
-    edit(callback?: () => void) {
+    edit(callback?: () => void, exitEdit?: (event: Event) => boolean) {
         this.isEditing = true;
         IS_TEXT_EDITABLE.set(this.board, true);
         const props: Partial<TextProps> = {
@@ -127,7 +127,7 @@ export class TextManage {
             if (event.isComposing) {
                 return;
             }
-            if (event.key === 'Escape' || (event.key === 'Enter' && !event.shiftKey) || event.key === 'Tab') {
+            if (event.key === 'Escape' || event.key === 'Tab' || (exitEdit ? exitEdit(event) : false)) {
                 event.preventDefault();
                 event.stopPropagation();
                 exitCallback();
