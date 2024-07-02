@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitNode, getSelectedElements } from '@plait/core';
 import { Generator } from '@plait/common';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
-import { drawNode } from '../draw';
+import { drawNode } from '../utils/draw';
 import { isFirstDepthNode } from '../utils/node';
 
 export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement> {

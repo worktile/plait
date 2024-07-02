@@ -1,6 +1,6 @@
-import { EdgeDirection, NodeStyles } from './types';
+import { EdgeDirection, NodeStyles } from '../types';
 import { NS, PlaitBoard, Point, createG, createPath, drawCircle, normalizePoint } from '@plait/core';
-import getArrow from '../perfect-arrows/get-arrow';
+import getArrow from '../../perfect-arrows/get-arrow';
 import {
     ACTIVE_BACKGROUND_NODE_ALPHA,
     DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER,
@@ -11,9 +11,9 @@ import {
     DEFAULT_NODE_SIZE,
     DEFAULT_NODE_STYLES,
     SECOND_DEPTH_NODE_ALPHA
-} from './constants';
-import { DEFAULT_STYLES } from '../constants/default';
-import { ForceAtlasNodeElement } from '../interfaces';
+} from '../constants';
+import { DEFAULT_STYLES } from '../../constants/default';
+import { ForceAtlasNodeElement } from '../../interfaces';
 
 export function drawNode(
     board: PlaitBoard,

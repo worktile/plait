@@ -2,7 +2,7 @@ import { PlaitBoard, createG } from '@plait/core';
 import { Generator } from '@plait/common';
 import { ForceAtlasEdgeElement } from '../../interfaces';
 import { EdgeDirection, EdgeInfo } from '../types';
-import { drawEdge, drawParticle } from '../draw';
+import { drawEdge, drawParticle } from '../utils/draw';
 import { playEdgeParticleAnimate } from '../utils/edge';
 
 export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement> {

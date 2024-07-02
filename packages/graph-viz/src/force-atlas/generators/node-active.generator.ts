@@ -1,7 +1,7 @@
 import { PlaitBoard } from '@plait/core';
 import { Generator } from '@plait/common';
 import { ForceAtlasNodeElement } from '../../interfaces';
-import { drawActiveNode } from '../draw';
+import { drawActiveNode } from '../utils/draw';
 
 export class ForceActiveNodeAtlasGenerator extends Generator<ForceAtlasNodeElement> {
     constructor(board: PlaitBoard) {
