@@ -9,6 +9,7 @@ import {
     DefaultUMLPropertyMap,
     DrawPointerType,
     DrawThemeColors,
+    GEOMETRY_NOT_CLOSED,
     GEOMETRY_WITHOUT_TEXT,
     ShapeDefaultSpace,
     getFlowchartPointers,
@@ -389,4 +390,8 @@ export const isSingleTextShape = (shape: GeometryShapes) => {
 
 export const isSingleTextGeometry = (element: PlaitGeometry) => {
     return PlaitDrawElement.isGeometry(element) && isSingleTextShape(element.shape);
+};
+
+export const isGeometryClosed = (element: PlaitGeometry) => {
+    return !GEOMETRY_NOT_CLOSED.includes(element.shape);
 };

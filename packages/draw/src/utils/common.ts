@@ -40,7 +40,7 @@ import { PlaitBaseTable } from '../interfaces/table';
 import { memorizeLatestShape } from './memorize';
 import { isHitEdgeOfShape, isInsideOfShape } from './hit';
 import { getHitConnectorPoint } from './arrow-line';
-import { getNearestPoint, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
+import { getNearestPoint, isGeometryClosed, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { PlaitDrawShapeText } from '../generators/text.generator';
 
@@ -97,6 +97,18 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
     return elements.some(item => {
         return isDrawElementIncludeText(item);
     });
+};
+
+export const isDrawElementClosed = (element: PlaitDrawElement) => {
+    if (PlaitDrawElement.isText(element) || PlaitDrawElement.isArrowLine(element)) {
+        return false;
+    }
+
+    if (PlaitDrawElement.isGeometry(element)) {
+        return isGeometryClosed(element);
+    }
+
+    return true;
 };
 
 export const getSnappingShape = (board: PlaitBoard, point: Point): PlaitShapeElement | null => {
@@ -184,7 +196,7 @@ export const drawBoundReaction = (
             {
                 stroke: SELECTION_BORDER_COLOR,
                 strokeWidth: 0,
-                fill: SELECTION_FILL_COLOR,
+                fill: isDrawElementClosed(element) ? SELECTION_FILL_COLOR : DefaultDrawStyle.fill,
                 fillStyle: 'solid'
             },
             drawOptions

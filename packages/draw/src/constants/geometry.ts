@@ -306,3 +306,11 @@ export const GEOMETRY_WITHOUT_TEXT = [
 ] as GeometryShapes[];
 
 export const GEOMETRY_WITH_MULTIPLE_TEXT = [UMLSymbols.package, UMLSymbols.combinedFragment];
+
+export const GEOMETRY_NOT_CLOSED = [
+    FlowchartSymbols.noteCurlyLeft,
+    FlowchartSymbols.noteCurlyRight,
+    FlowchartSymbols.noteSquare,
+    UMLSymbols.requiredInterface,
+    UMLSymbols.deletion
+] as GeometryShapes[];
