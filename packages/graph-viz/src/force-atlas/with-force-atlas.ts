@@ -1,4 +1,14 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    PlaitOptionsBoard,
+    PlaitPluginElementContext,
+    PlaitPluginKey,
+    Point,
+    RectangleClient,
+    Selection,
+    WithPluginOptions
+} from '@plait/core';
 import { ForceAtlasFlavour } from './force-atlas.flavour';
 import { ForceAtlasNodeFlavour } from './node.flavour';
 import { ForceAtlasEdgeFlavour } from './edge.flavour';
@@ -67,6 +77,8 @@ export const withForceAtlas = (board: PlaitBoard) => {
         }
         return isMovable(element);
     };
+
+    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
 
     return board;
 };
