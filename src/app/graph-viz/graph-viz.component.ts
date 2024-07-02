@@ -32,7 +32,7 @@ export class BasicGraphVizComponent implements OnInit {
     value: ForceAtlasElement[] = [];
 
     options: PlaitBoardOptions = {
-        readonly: true,
+        readonly: false,
         hideScrollbar: true,
         disabledScrollOnNonFocus: false
     };
