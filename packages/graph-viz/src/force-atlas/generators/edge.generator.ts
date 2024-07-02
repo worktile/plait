@@ -17,15 +17,15 @@ export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement> {
     }
 
     draw(element: ForceAtlasEdgeElement, data: EdgeInfo) {
-        const nodeG = createG();
+        const edgeG = createG();
         const edgeElement = drawEdge(data.startPoint, data.endPoint, data.direction, data.isSourceActive && data.isTargetActive);
-        nodeG.append(edgeElement.g);
+        edgeG.append(edgeElement.g);
         if (data.direction !== EdgeDirection.NONE) {
             const particle = drawParticle(this.board, data.startPoint, data.direction);
             edgeElement.g.append(particle);
             this.particleAnimation = playEdgeParticleAnimate(edgeElement.path, particle);
         }
-        return nodeG;
+        return edgeG;
     }
 
     destroy(): void {
