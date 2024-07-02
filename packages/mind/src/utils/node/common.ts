@@ -4,7 +4,13 @@ import { getFirstTextManage } from '@plait/common';
 
 export function editTopic(element: MindElement) {
     const textManage = getFirstTextManage(element);
-    textManage?.edit(() => {});
+    textManage?.edit(
+        () => {},
+        event => {
+            const keyboardEvent = event as KeyboardEvent;
+            return keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey;
+        }
+    );
 }
 
 export const getSelectedMindElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
