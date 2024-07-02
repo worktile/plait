@@ -2,19 +2,20 @@ import { CommonElementFlavour } from '@plait/common';
 import { OnContextChanged, PlaitBoard, PlaitPluginElementContext } from '@plait/core';
 import Graph from 'graphology';
 import { ForceAtlasEdgeElement } from './interfaces';
-import { ForceEdgeAtlasGenerator } from './force-atlas/generators/edge.generator';
+import { ForceAtlasEdgeGenerator } from './force-atlas/generators/edge.generator';
 
 export class ForceAtlasEdgeFlavour extends CommonElementFlavour<ForceAtlasEdgeElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasEdgeElement, PlaitBoard> {
     graph!: Graph<Node>;
-    edgeGenerator!: ForceEdgeAtlasGenerator;
+    edgeGenerator!: ForceAtlasEdgeGenerator;
 
     constructor() {
         super();
     }
 
     initializeGenerator() {
-        this.edgeGenerator = new ForceEdgeAtlasGenerator(this.board);
+        this.edgeGenerator = new ForceAtlasEdgeGenerator(this.board);
+        this.getRef().addGenerator(ForceAtlasEdgeGenerator.key, this.edgeGenerator);
     }
 
     initialize(): void {
@@ -27,10 +28,7 @@ export class ForceAtlasEdgeFlavour extends CommonElementFlavour<ForceAtlasEdgeEl
     onContextChanged(
         value: PlaitPluginElementContext<ForceAtlasEdgeElement, PlaitBoard>,
         previous: PlaitPluginElementContext<ForceAtlasEdgeElement, PlaitBoard>
-    ) {
-        // getRelatedNode()
-        this.selected;
-    }
+    ) {}
 
     updateText(previousElement: ForceAtlasEdgeElement, currentElement: ForceAtlasEdgeElement) {}
 

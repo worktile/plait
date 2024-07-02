@@ -1,10 +1,10 @@
 import { EdgeDirection, NodeStyles } from './types';
 import { NS, PlaitBoard, Point, createG, createPath, drawCircle, normalizePoint } from '@plait/core';
-import getArrow from './perfect-arrows/get-arrow';
+import getArrow from '../perfect-arrows/get-arrow';
 import {
     ACTIVE_BACKGROUND_NODE_ALPHA,
-    DEFAULT_ACTIVE_BACKGROUND_NODE_ZOOM,
-    DEFAULT_ACTIVE_NODE_SIZE,
+    DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER,
+    DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER,
     DEFAULT_LINE_STYLES,
     DEFAULT_NODE_LABEL_FONT_SIZE,
     DEFAULT_NODE_LABEL_MARGIN_TOP,
@@ -15,22 +15,22 @@ import {
 import { DEFAULT_STYLES } from '../constants/default';
 import { ForceAtlasNodeElement } from '../interfaces';
 
-export function drawNode(board: PlaitBoard, node: ForceAtlasNodeElement, point: Point, isFirstDepth: boolean) {
+export function drawNode(
+    board: PlaitBoard,
+    node: ForceAtlasNodeElement,
+    point: Point,
+    options: { isFirstDepth: boolean; nodeSizeMultiplier?: number; textOffsetY?: number }
+) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
     let nodeStyles: NodeStyles = {
         ...DEFAULT_NODE_STYLES,
         ...(node.styles || {})
     };
     let { x, y } = normalizePoint(point);
-    const nodeRadius = (node.size ?? (node.isActive ? DEFAULT_ACTIVE_NODE_SIZE : DEFAULT_NODE_SIZE)) / 2;
+    const nodeRadius = ((node.size ?? DEFAULT_NODE_SIZE) * (options.nodeSizeMultiplier || 1)) / 2;
     const nodeG = drawCircle(roughSVG, [0, 0], nodeRadius, nodeStyles);
-    if (node.isActive) {
-        const backgroundCircle = drawCircle(roughSVG, [0, 0], DEFAULT_ACTIVE_BACKGROUND_NODE_ZOOM * nodeRadius, DEFAULT_NODE_STYLES);
-        backgroundCircle.setAttribute('opacity', ACTIVE_BACKGROUND_NODE_ALPHA.toString());
-        nodeG.append(backgroundCircle);
-    }
     nodeG.setAttribute('transform', `translate(${x}, ${y})`);
-    if (!isFirstDepth) {
+    if (!options.isFirstDepth) {
         nodeG.setAttribute('opacity', SECOND_DEPTH_NODE_ALPHA.toString());
     }
     const text = document.createElementNS(NS, 'text');
@@ -38,12 +38,25 @@ export function drawNode(board: PlaitBoard, node: ForceAtlasNodeElement, point: 
     text.setAttribute('text-anchor', `middle`);
     text.setAttribute('dominant-baseline', `hanging`);
     text.setAttribute('x', `0`);
-    text.setAttribute(
-        'y',
-        `${(node.isActive ? (nodeRadius / 2) * DEFAULT_ACTIVE_BACKGROUND_NODE_ZOOM : nodeRadius / 2) + DEFAULT_NODE_LABEL_MARGIN_TOP}`
-    );
+    text.setAttribute('y', `${nodeRadius / 2 + DEFAULT_NODE_LABEL_MARGIN_TOP + (options.textOffsetY || 0)}`);
     text.setAttribute('font-size', `${DEFAULT_NODE_LABEL_FONT_SIZE}px`);
     nodeG.append(text);
+    return nodeG;
+}
+
+export function drawActiveNode(board: PlaitBoard, node: ForceAtlasNodeElement, point: Point, isFirstDepth: boolean) {
+    const roughSVG = PlaitBoard.getRoughSVG(board);
+    const size = (node.size ?? DEFAULT_NODE_SIZE) * DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER;
+    const nodeRadius = size / 2;
+    const waveRadius = (size * DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER) / 2;
+    const nodeG = drawNode(board, node, point, {
+        isFirstDepth,
+        nodeSizeMultiplier: DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER,
+        textOffsetY: (waveRadius - nodeRadius) / 2
+    });
+    const waveCircle = drawCircle(roughSVG, [0, 0], nodeRadius * DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER, DEFAULT_NODE_STYLES);
+    waveCircle.setAttribute('opacity', ACTIVE_BACKGROUND_NODE_ALPHA.toString());
+    nodeG.append(waveCircle);
     return nodeG;
 }
 

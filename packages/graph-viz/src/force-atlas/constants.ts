@@ -4,12 +4,12 @@ import { EdgeDirection } from './types';
 
 export const DEFAULT_EDGE_STYLES: Options = {
     ...DEFAULT_STYLES,
-    stroke: '#ccc'
+    stroke: '#ddd'
 };
 
-export const DEFAULT_ACTIVE_NODE_SIZE = 70;
 export const DEFAULT_NODE_SIZE = 60;
-export const DEFAULT_ACTIVE_BACKGROUND_NODE_ZOOM = 1.6;
+export const DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER = 1.2; // 激活的节点大小倍数
+export const DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER = 1.6; // 激活的波纹节点大小倍数
 export const DEFAULT_NODE_LABEL_MARGIN_TOP = 4;
 export const DEFAULT_NODE_LABEL_FONT_SIZE = 12;
 
@@ -27,8 +27,8 @@ export const DEFAULT_NODE_SCALING_RATIO = 600;
 
 export const DEFAULT_LINE_STYLES = {
     color: {
-        [EdgeDirection.IN]: 'green',
+        [EdgeDirection.IN]: '#73D897',
         [EdgeDirection.OUT]: '#6698FF',
-        [EdgeDirection.NONE]: `rgba(204,204,204,${SECOND_DEPTH_LINE_ALPHA})`
+        [EdgeDirection.NONE]: `#ddd`
     }
 };

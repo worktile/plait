@@ -1,12 +1,13 @@
-import { PlaitBoard, PlaitNode, createG } from '@plait/core';
+import { PlaitBoard, PlaitNode, createG, getSelectedElements } from '@plait/core';
 import { Generator } from '@plait/common';
-import { ForceAtlasEdgeElement, ForceAtlasNodeElement } from '../../interfaces';
+import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
 import { EdgeDirection } from '../types';
 import { drawEdge, drawParticle } from '../draw';
-import { getNodeById } from '../utils/node';
+import { getIsNodeActive, getNodeById } from '../utils/node';
 import { getEdgeDirection, playEdgeParticleAnimate } from '../utils/edge';
 
-export class ForceEdgeAtlasGenerator extends Generator<ForceAtlasEdgeElement> {
+export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement> {
+    static key = 'force-atlas-edge';
     particleAnimation?: { stop: () => void; start: () => void };
     constructor(board: PlaitBoard) {
         super(board);
@@ -17,16 +18,17 @@ export class ForceEdgeAtlasGenerator extends Generator<ForceAtlasEdgeElement> {
     }
 
     draw(element: ForceAtlasEdgeElement) {
-        const parent = PlaitNode.parent(this.board, PlaitBoard.findPath(this.board, element));
+        const parent = PlaitNode.parent(this.board, PlaitBoard.findPath(this.board, element)) as ForceAtlasElement;
         const sourceNode = getNodeById(element.source, parent);
         const targetNode = getNodeById(element.target, parent);
         if (!sourceNode?.points || !targetNode?.points) {
             throw new Error("Source or target node doesn't have points");
         }
+        const selectElements = getSelectedElements(this.board) as ForceAtlasNodeElement[];
         const startPoint = sourceNode.points[0];
         const endPoint = targetNode.points[0];
-        const isSourceActive = !!sourceNode.isActive;
-        const isTargetActive = !!targetNode.isActive;
+        const isSourceActive = getIsNodeActive(sourceNode.id, selectElements);
+        const isTargetActive = getIsNodeActive(targetNode.id, selectElements);
         const direction = getEdgeDirection(isSourceActive, isTargetActive);
         const nodeG = createG();
         const edgeElement = drawEdge(startPoint, endPoint, direction, isSourceActive && isTargetActive);
