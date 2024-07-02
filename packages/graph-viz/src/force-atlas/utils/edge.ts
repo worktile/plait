@@ -1,8 +1,9 @@
-import { PlaitElement } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitNode, getSelectedElements } from '@plait/core';
 import { ForceAtlasEdgeElement, ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
 import { EdgeDirection } from '../types';
 import { PlaitCommonElementRef, animate, linear } from '@plait/common';
 import { ForceAtlasEdgeGenerator } from '../generators/edge.generator';
+import { getIsNodeActive, getNodeById } from './node';
 
 export function getEdges(forceAtlasElement: ForceAtlasElement, andCallBack?: (edge: ForceAtlasEdgeElement) => boolean) {
     return forceAtlasElement.children?.filter(
@@ -35,6 +36,28 @@ export function getEdgeDirection(isSourceActive: boolean, isTargetActive: boolea
         return EdgeDirection.IN;
     }
     return EdgeDirection.NONE;
+}
+
+export function getEdgeInfoByEdge(edge: ForceAtlasEdgeElement, board: PlaitBoard) {
+    const forceAtlasElement = PlaitNode.parent(board, PlaitBoard.findPath(board, edge)) as ForceAtlasElement;
+    const sourceNode = getNodeById(edge.source, forceAtlasElement);
+    const targetNode = getNodeById(edge.target, forceAtlasElement);
+    if (!sourceNode?.points || !targetNode?.points) {
+        throw new Error("Source or target node doesn't have points");
+    }
+    const startPoint = sourceNode.points[0];
+    const endPoint = targetNode.points[0];
+    const selectElements = getSelectedElements(board) as ForceAtlasNodeElement[];
+    const isSourceActive = getIsNodeActive(sourceNode.id, selectElements);
+    const isTargetActive = getIsNodeActive(targetNode.id, selectElements);
+    const direction = getEdgeDirection(isSourceActive, isTargetActive);
+    return {
+        startPoint,
+        endPoint,
+        direction,
+        isSourceActive,
+        isTargetActive
+    };
 }
 
 export function playEdgeParticleAnimate(path: SVGPathElement, pointG: SVGGElement) {

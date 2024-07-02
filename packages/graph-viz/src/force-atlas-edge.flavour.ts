@@ -3,6 +3,7 @@ import { OnContextChanged, PlaitBoard, PlaitPluginElementContext } from '@plait/
 import Graph from 'graphology';
 import { ForceAtlasEdgeElement } from './interfaces';
 import { ForceAtlasEdgeGenerator } from './force-atlas/generators/edge.generator';
+import { getEdgeInfoByEdge } from './force-atlas/utils/edge';
 
 export class ForceAtlasEdgeFlavour extends CommonElementFlavour<ForceAtlasEdgeElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasEdgeElement, PlaitBoard> {
@@ -21,8 +22,11 @@ export class ForceAtlasEdgeFlavour extends CommonElementFlavour<ForceAtlasEdgeEl
     initialize(): void {
         super.initialize();
         this.initializeGenerator();
-        const g = this.getElementG();
-        this.edgeGenerator.processDrawing(this.element, PlaitBoard.getElementLowerHost(this.board));
+        this.edgeGenerator.processDrawing(
+            this.element,
+            PlaitBoard.getElementLowerHost(this.board),
+            getEdgeInfoByEdge(this.element, this.board)
+        );
     }
 
     onContextChanged(

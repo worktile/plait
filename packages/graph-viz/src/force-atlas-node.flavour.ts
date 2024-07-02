@@ -4,7 +4,7 @@ import Graph from 'graphology';
 import { ForceAtlasNodeElement } from './interfaces';
 import { ForceAtlasNodeGenerator } from './force-atlas/generators/node.generator';
 import { ForceActiveNodeAtlasGenerator } from './force-atlas/generators/node-active.generator';
-import { getEdgeGenerator, getEdgesInSourceOrTarget } from './force-atlas/utils/edge';
+import { getEdgeGenerator, getEdgeInfoByEdge, getEdgesInSourceOrTarget } from './force-atlas/utils/edge';
 import { getAssociatedNodesById, getNodeGenerator } from './force-atlas/utils/node';
 
 export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
@@ -38,11 +38,12 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
         previous: PlaitPluginElementContext<ForceAtlasNodeElement, PlaitBoard>
     ) {
         if (value !== previous && value.selected !== previous.selected) {
+            const parent = value.parent as any;
             if (value.selected) {
                 cacheSelectedElements(this.board, [value.element]);
             }
             this.nodeActiveGenerator.destroy();
-            const associatedNodes = getAssociatedNodesById(value.element.id, value.parent as any);
+            const associatedNodes = getAssociatedNodesById(value.element.id, parent);
             associatedNodes.forEach(node => {
                 const nodeGenerator = getNodeGenerator(node);
                 nodeGenerator.destroy();
@@ -52,11 +53,12 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
                     nodeGenerator.processDrawing(node, this.getElementG());
                 }
             });
-            const associatedEdges = getEdgesInSourceOrTarget(value.element.id, value.parent as any);
+
+            const associatedEdges = getEdgesInSourceOrTarget(value.element.id, parent);
             associatedEdges.forEach(edge => {
                 const edgeGenerator = getEdgeGenerator(edge);
                 edgeGenerator.destroy();
-                edgeGenerator.processDrawing(edge, this.getElementG());
+                edgeGenerator.processDrawing(edge, this.getElementG(), getEdgeInfoByEdge(edge, this.board));
             });
         }
     }

@@ -1,3 +1,5 @@
+import { Point } from '@plait/core';
+
 export enum EdgeDirection {
     IN,
     OUT,
@@ -16,6 +18,9 @@ export interface NodeStyles {
 }
 
 export interface EdgeInfo {
+    startPoint: Point;
+    endPoint: Point;
     isSourceActive: boolean;
     isTargetActive: boolean;
+    direction: EdgeDirection;
 }
