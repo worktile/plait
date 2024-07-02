@@ -21,13 +21,13 @@ import {
     isDragging,
     isHandleSelection,
     isSelectionMoving,
-    isSetSelectionOperation,
     preventTouchMove,
     setSelectionMoving,
     throttleRAF,
     toHostPoint,
     toViewBoxPoint,
-    setSelectedElementsWithGroup
+    setSelectedElementsWithGroup,
+    hasSetSelectionOperation
 } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
@@ -142,7 +142,7 @@ export function withSelection(board: PlaitBoard) {
                 removeSelectedElement(board, op.node, true);
             }
         });
-        if (isHandleSelection(board) && isSetSelectionOperation(board)) {
+        if (isHandleSelection(board) && hasSetSelectionOperation(board)) {
             try {
                 if (!isShift) {
                     selectionRectangleG?.remove();
@@ -160,6 +160,12 @@ export function withSelection(board: PlaitBoard) {
                     if (isHitElementWithGroup) {
                         setSelectedElementsWithGroup(board, elements, isShift);
                     } else {
+                        if (board.selection && Selection.isCollapsed(board.selection)) {
+                            const element = board.getHitElement(elements);
+                            if (element) {
+                                elements = [element];
+                            }
+                        }
                         if (isShift) {
                             const newElements = [...selectedElements];
                             if (board.selection && Selection.isCollapsed(board.selection)) {
@@ -202,7 +208,7 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.afterChange = () => {
-        if (isHandleSelection(board) && !isSetSelectionOperation(board)) {
+        if (isHandleSelection(board) && !hasSetSelectionOperation(board)) {
             try {
                 const currentSelectedElements = getSelectedElements(board);
                 if (currentSelectedElements.length && currentSelectedElements.length > 1) {

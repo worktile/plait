@@ -11,7 +11,7 @@ import { PlaitCommonGeometry, PlaitGeometry, PlaitMultipleTextGeometry } from '.
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { DrawTransforms } from './transforms';
 import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, canResize } from '@plait/common';
-import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
+import { ArrowLineAutoCompleteGenerator } from './generators/arrow-line-auto-complete.generator';
 import { getTextRectangle, isGeometryIncludeText, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { SingleTextGenerator } from './generators/single-text.generator';
@@ -23,7 +23,7 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
     implements OnContextChanged<PlaitCommonGeometry, PlaitBoard> {
     activeGenerator!: ActiveGenerator<PlaitCommonGeometry>;
 
-    lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
+    lineAutoCompleteGenerator!: ArrowLineAutoCompleteGenerator;
 
     shapeGenerator!: GeometryShapeGenerator;
 
@@ -58,12 +58,12 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
                 return canResize(this.board, this.element);
             }
         });
-        this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
+        this.lineAutoCompleteGenerator = new ArrowLineAutoCompleteGenerator(this.board);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         if (isGeometryIncludeText(this.element)) {
             this.initializeTextManage();
         }
-        this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
+        this.getRef().addGenerator(ArrowLineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
         this.getRef().addGenerator(ActiveGenerator.key, this.activeGenerator);
     }
 

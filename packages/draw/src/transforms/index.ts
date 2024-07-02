@@ -1,10 +1,18 @@
 import { insertText, insertGeometry, resizeGeometry, switchGeometryShape, insertGeometryByVector } from './geometry';
 import { setText, setTextSize } from './geometry-text';
 import { insertImage } from './image';
-import { connectLineToGeometry, removeLineText, resizeLine, setLineMark, setLineShape, setLineTexts } from './line';
-import { addSwimlaneColumn, addSwimlaneRow, removeSwimlaneColumn, removeSwimlaneRow, setSwimlaneFill, updateSwimlaneCount } from './swimlane';
+import {
+    connectArrowLineToGeometry,
+    removeArrowLineText,
+    resizeArrowLine,
+    setArrowLineMark,
+    setArrowLineShape,
+    setArrowLineTexts
+} from './arrow-line';
+import { addSwimlaneColumn, addSwimlaneRow, removeSwimlaneColumn, removeSwimlaneRow, updateSwimlaneCount } from './swimlane';
 import { setDrawShapeText } from './multi-text-geometry-text';
 import { setTableText } from './table-text';
+import { setTableFill } from './table';
 
 export const DrawTransforms = {
     setText,
@@ -13,20 +21,20 @@ export const DrawTransforms = {
     resizeGeometry,
     insertText,
     setTextSize,
-    resizeLine,
-    setLineTexts,
-    removeLineText,
-    setLineMark,
-    setLineShape,
+    resizeArrowLine,
+    setArrowLineTexts,
+    removeArrowLineText,
+    setArrowLineMark,
+    setArrowLineShape,
     insertImage,
     switchGeometryShape,
-    connectLineToGeometry,
+    connectArrowLineToGeometry,
     insertGeometryByVector,
     setTableText,
     addSwimlaneRow,
     addSwimlaneColumn,
     removeSwimlaneRow,
     removeSwimlaneColumn,
-    setSwimlaneFill,
-    updateSwimlaneCount
+    updateSwimlaneCount,
+    setTableFill
 };

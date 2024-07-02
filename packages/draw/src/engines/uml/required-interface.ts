@@ -21,7 +21,8 @@ export const RequiredInterfaceEngine: ShapeEngine = {
         `,
             {
                 ...options,
-                fillStyle: 'solid'
+                fillStyle: 'solid',
+                fill: 'transparent'
             }
         );
         setStrokeLinecap(shape, 'round');

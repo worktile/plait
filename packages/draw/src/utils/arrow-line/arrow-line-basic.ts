@@ -16,12 +16,12 @@ import {
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint } from '@plait/common';
 import {
-    LineHandle,
-    LineMarkerType,
-    LineShape,
-    LineText,
+    ArrowLineHandle,
+    ArrowLineMarkerType,
+    ArrowLineShape,
+    ArrowLineText,
+    PlaitArrowLine,
     PlaitDrawElement,
-    PlaitLine,
     PlaitShapeElement,
     StrokeStyle
 } from '../../interfaces';
@@ -29,26 +29,26 @@ import { getLineDashByElement, getStrokeColorByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
-import { LineShapeGenerator } from '../../generators/line.generator';
+import { ArrowLineShapeGenerator } from '../../generators/arrow-line.generator';
 import { LINE_SNAPPING_CONNECTOR_BUFFER } from '../../constants';
 import { getLineMemorizedLatest } from '../memorize';
-import { alignPoints } from './line-resize';
-import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
+import { alignPoints } from './arrow-line-resize';
+import { getElbowLineRouteOptions, getArrowLineHandleRefPair } from './arrow-line-common';
 import { getElbowPoints, getNextSourceAndTargetPoints, isUseDefaultOrthogonalRoute } from './elbow';
-import { drawLineArrow } from './line-arrow';
+import { drawArrowLineArrow } from './arrow-line-arrow';
 import { getSnappingRef, getSnappingShape, getStrokeWidthByElement } from '../common';
 
-export const createLineElement = (
-    shape: LineShape,
+export const createArrowLineElement = (
+    shape: ArrowLineShape,
     points: [Point, Point],
-    source: LineHandle,
-    target: LineHandle,
-    texts?: LineText[],
-    options?: Pick<PlaitLine, 'strokeColor' | 'strokeWidth'>
-): PlaitLine => {
+    source: ArrowLineHandle,
+    target: ArrowLineHandle,
+    texts?: ArrowLineText[],
+    options?: Pick<PlaitArrowLine, 'strokeColor' | 'strokeWidth'>
+): PlaitArrowLine => {
     return {
         id: idCreator(),
-        type: 'line',
+        type: 'arrow-line',
         shape,
         source,
         texts: texts ? texts : [],
@@ -59,17 +59,17 @@ export const createLineElement = (
     };
 };
 
-export const getLinePoints = (board: PlaitBoard, element: PlaitLine) => {
+export const getArrowLinePoints = (board: PlaitBoard, element: PlaitArrowLine) => {
     switch (element.shape) {
-        case LineShape.elbow: {
+        case ArrowLineShape.elbow: {
             return getElbowPoints(board, element);
         }
-        case LineShape.curve: {
+        case ArrowLineShape.curve: {
             return getCurvePoints(board, element);
         }
         default: {
-            const points = PlaitLine.getPoints(board, element);
-            const handleRefPair = getLineHandleRefPair(board, element);
+            const points = PlaitArrowLine.getPoints(board, element);
+            const handleRefPair = getArrowLineHandleRefPair(board, element);
             points[0] = handleRefPair.source.point;
             points[points.length - 1] = handleRefPair.target.point;
             return points;
@@ -77,9 +77,9 @@ export const getLinePoints = (board: PlaitBoard, element: PlaitLine) => {
     }
 };
 
-export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
+export const getCurvePoints = (board: PlaitBoard, element: PlaitArrowLine) => {
     if (element.points.length === 2) {
-        const handleRefPair = getLineHandleRefPair(board, element);
+        const handleRefPair = getArrowLineHandleRefPair(board, element);
         const { source, target } = handleRefPair;
         const sourceBoundElement = handleRefPair.source.boundElement;
         const targetBoundElement = handleRefPair.target.boundElement;
@@ -105,27 +105,27 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
     } else {
-        let dataPoints = PlaitLine.getPoints(board, element);
+        let dataPoints = PlaitArrowLine.getPoints(board, element);
         dataPoints = removeDuplicatePoints(dataPoints);
         const points = catmullRomFitting(dataPoints);
         return pointsOnBezierCurves(points) as Point[];
     }
 };
 
-export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
+export function getMiddlePoints(board: PlaitBoard, element: PlaitArrowLine) {
     const result: Point[] = [];
     const shape = element.shape;
     const hideBuffer = 10;
-    if (shape === LineShape.straight) {
-        const points = PlaitLine.getPoints(board, element);
+    if (shape === ArrowLineShape.straight) {
+        const points = PlaitArrowLine.getPoints(board, element);
         for (let i = 0; i < points.length - 1; i++) {
             const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
             if (distance < hideBuffer) continue;
             result.push([(points[i][0] + points[i + 1][0]) / 2, (points[i][1] + points[i + 1][1]) / 2]);
         }
     }
-    if (shape === LineShape.curve) {
-        const points = PlaitLine.getPoints(board, element);
+    if (shape === ArrowLineShape.curve) {
+        const points = PlaitArrowLine.getPoints(board, element);
         const pointsOnBezier = getCurvePoints(board, element);
         if (points.length === 2) {
             const start = 0;
@@ -143,7 +143,7 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
             }
         }
     }
-    if (shape === LineShape.elbow) {
+    if (shape === ArrowLineShape.elbow) {
         const renderPoints = getElbowPoints(board, element);
         const options = getElbowLineRouteOptions(board, element);
         if (!isUseDefaultOrthogonalRoute(element, options)) {
@@ -165,15 +165,15 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     return result;
 }
 
-export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
+export const drawArrowLine = (board: PlaitBoard, element: PlaitArrowLine) => {
     const strokeWidth = getStrokeWidthByElement(element);
     const strokeColor = getStrokeColorByElement(board, element);
     const strokeLineDash = getLineDashByElement(element);
     const options = { stroke: strokeColor, strokeWidth, strokeLineDash };
     const lineG = createG();
-    let points = getLinePoints(board, element);
+    let points = getArrowLinePoints(board, element);
     let line;
-    if (element.shape === LineShape.curve) {
+    if (element.shape === ArrowLineShape.curve) {
         line = PlaitBoard.getRoughSVG(board).curve(points, options);
     } else {
         line = drawLinearPath(points, options);
@@ -185,10 +185,10 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     }
     lineG.appendChild(line);
 
-    const { mask, maskTargetFillRect } = drawMask(board, element, id);
+    const { mask, maskTargetFillRect } = drawArrowLineMask(board, element as PlaitArrowLine, id);
     lineG.appendChild(mask);
     line.appendChild(maskTargetFillRect);
-    const arrow = drawLineArrow(element, points, { stroke: strokeColor, strokeWidth });
+    const arrow = drawArrowLineArrow(element as PlaitArrowLine, points, { stroke: strokeColor, strokeWidth });
     arrow && lineG.appendChild(arrow);
     return lineG;
 };
@@ -209,9 +209,9 @@ export const getHitConnectorPoint = (point: Point, hitElement: PlaitShapeElement
     });
 };
 
-export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, index: number): RectangleClient => {
+export const getArrowLineTextRectangle = (board: PlaitBoard, element: PlaitArrowLine, index: number): RectangleClient => {
     const text = element.texts[index];
-    const elbowPoints = getLinePoints(board, element);
+    const elbowPoints = getArrowLinePoints(board, element);
     const point = getPointOnPolyline(elbowPoints, text.position);
     return {
         x: point[0] - text.width! / 2,
@@ -221,11 +221,11 @@ export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, inde
     };
 };
 
-export const getLines = (board: PlaitBoard) => {
+export const getArrowLines = (board: PlaitBoard) => {
     return findElements(board, {
-        match: (element: PlaitElement) => PlaitDrawElement.isLine(element),
+        match: (element: PlaitElement) => PlaitDrawElement.isArrowLine(element),
         recursion: (element: PlaitElement) => PlaitDrawElement.isDrawElement(element)
-    }) as PlaitLine[];
+    }) as PlaitArrowLine[];
 };
 
 // quadratic Bezier to cubic Bezier
@@ -245,9 +245,9 @@ export const Q2C = (points: Point[]) => {
     return result;
 };
 
-export const handleLineCreating = (
+export const handleArrowLineCreating = (
     board: PlaitBoard,
-    lineShape: LineShape,
+    lineShape: ArrowLineShape,
     sourcePoint: Point,
     movingPoint: Point,
     sourceElement: PlaitShapeElement | null,
@@ -257,25 +257,25 @@ export const handleLineCreating = (
     const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
     const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
-    const lineGenerator = new LineShapeGenerator(board);
+    const lineGenerator = new ArrowLineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
     let sourceMarker, targetMarker;
     sourceMarker = memorizedLatest.source;
     targetMarker = memorizedLatest.target;
     sourceMarker && delete memorizedLatest.source;
     targetMarker && delete memorizedLatest.target;
-    const temporaryLineElement = createLineElement(
+    const temporaryLineElement = createArrowLineElement(
         lineShape,
         [sourcePoint, movingPoint],
-        { marker: sourceMarker || LineMarkerType.none, connection: sourceConnection, boundId: sourceElement?.id },
-        { marker: targetMarker || LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
+        { marker: sourceMarker || ArrowLineMarkerType.none, connection: sourceConnection, boundId: sourceElement?.id },
+        { marker: targetMarker || ArrowLineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
         [],
         {
             strokeWidth: DefaultLineStyle.strokeWidth,
             ...memorizedLatest
         }
     );
-    const linePoints = getLinePoints(board, temporaryLineElement);
+    const linePoints = getArrowLinePoints(board, temporaryLineElement);
     const otherPoint = linePoints[0];
     temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
@@ -283,10 +283,10 @@ export const handleLineCreating = (
     return temporaryLineElement;
 };
 
-function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
+function drawArrowLineMask(board: PlaitBoard, element: PlaitArrowLine, id: string) {
     const mask = createMask();
     mask.setAttribute('id', id);
-    const points = getLinePoints(board, element);
+    const points = getArrowLinePoints(board, element);
     let rectangle = RectangleClient.getRectangleByPoints(points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -30);
     const maskFillRect = createRect(rectangle, {
@@ -296,7 +296,7 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
 
     const texts = element.texts;
     texts.forEach((text, index) => {
-        let textRectangle = getLineTextRectangle(board, element, index);
+        let textRectangle = getArrowLineTextRectangle(board, element, index);
         textRectangle = RectangleClient.inflate(textRectangle, LINE_TEXT_SPACE * 2);
         const rect = createRect(textRectangle, {
             fill: 'black'

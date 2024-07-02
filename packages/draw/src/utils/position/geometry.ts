@@ -21,7 +21,7 @@ import { PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../../interf
 import { isHitEdgeOfShape, isInsideOfShape } from '../hit';
 import { LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER } from '../../constants/geometry';
 import { getNearestPoint } from '../geometry';
-import { getHitConnectorPoint } from '../line/line-basic';
+import { getHitConnectorPoint } from '../arrow-line/arrow-line-basic';
 import { getHitShape } from '../common';
 
 export interface ResizeHandleRef {

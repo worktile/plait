@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
-import { ImageBaseComponent } from '@plait/common';
+import { CommonImageItem, ImageBaseComponent } from '@plait/common';
 
 @Component({
     selector: 'app-plait-image',
@@ -10,6 +10,17 @@ import { ImageBaseComponent } from '@plait/common';
     standalone: true
 })
 export class PlaitImageComponent extends ImageBaseComponent implements OnInit {
+    _imageItem!: CommonImageItem;
+
+    set imageItem(value: CommonImageItem) {
+        this._imageItem = value;
+        this.cdr.markForCheck();
+    }
+
+    get imageItem() {
+        return this._imageItem;
+    }
+
     constructor(protected elementRef: ElementRef<HTMLElement>, public cdr: ChangeDetectorRef) {
         super();
     }
@@ -19,12 +30,5 @@ export class PlaitImageComponent extends ImageBaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        super.initialize();
-    }
-
-    afterImageItemChange() {
-        if (this.initialized) {
-            this.cdr.detectChanges();
-        }
     }
 }

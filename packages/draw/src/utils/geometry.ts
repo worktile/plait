@@ -28,8 +28,8 @@ import {
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
-import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
+import { createArrowLineElement } from './arrow-line/arrow-line-basic';
+import { ArrowLineMarkerType, ArrowLineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
@@ -187,38 +187,38 @@ export const createDefaultFlowchart = (point: Point) => {
         options
     );
 
-    const line1 = createLineElement(
-        LineShape.elbow,
+    const line1 = createArrowLineElement(
+        ArrowLineShape.elbow,
         [
             [0, 0],
             [0, 0]
         ],
-        { marker: LineMarkerType.none, connection: [0.5, 1], boundId: startElement.id },
-        { marker: LineMarkerType.arrow, connection: [0.5, 0], boundId: processElement1.id },
+        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: startElement.id },
+        { marker: ArrowLineMarkerType.arrow, connection: [0.5, 0], boundId: processElement1.id },
         [],
         lineOptions
     );
 
-    const line2 = createLineElement(
-        LineShape.elbow,
+    const line2 = createArrowLineElement(
+        ArrowLineShape.elbow,
         [
             [0, 0],
             [0, 0]
         ],
-        { marker: LineMarkerType.none, connection: [0.5, 1], boundId: processElement1.id },
-        { marker: LineMarkerType.arrow, connection: [0.5, 0], boundId: decisionElement.id },
+        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: processElement1.id },
+        { marker: ArrowLineMarkerType.arrow, connection: [0.5, 0], boundId: decisionElement.id },
         [],
         lineOptions
     );
 
-    const line3 = createLineElement(
-        LineShape.elbow,
+    const line3 = createArrowLineElement(
+        ArrowLineShape.elbow,
         [
             [0, 0],
             [0, 0]
         ],
-        { marker: LineMarkerType.none, connection: [0.5, 1], boundId: decisionElement.id },
-        { marker: LineMarkerType.arrow, connection: [0.5, 0], boundId: endElement.id },
+        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: decisionElement.id },
+        { marker: ArrowLineMarkerType.arrow, connection: [0.5, 0], boundId: endElement.id },
         [
             {
                 text: buildText('是'),
@@ -230,14 +230,14 @@ export const createDefaultFlowchart = (point: Point) => {
         lineOptions
     );
 
-    const line4 = createLineElement(
-        LineShape.elbow,
+    const line4 = createArrowLineElement(
+        ArrowLineShape.elbow,
         [
             [0, 0],
             [0, 0]
         ],
-        { marker: LineMarkerType.none, connection: [1, 0.5], boundId: decisionElement.id },
-        { marker: LineMarkerType.arrow, connection: [0, 0.5], boundId: processElement2.id },
+        { marker: ArrowLineMarkerType.none, connection: [1, 0.5], boundId: decisionElement.id },
+        { marker: ArrowLineMarkerType.arrow, connection: [0, 0.5], boundId: processElement2.id },
         [
             {
                 text: buildText('否'),
@@ -249,14 +249,14 @@ export const createDefaultFlowchart = (point: Point) => {
         lineOptions
     );
 
-    const line5 = createLineElement(
-        LineShape.elbow,
+    const line5 = createArrowLineElement(
+        ArrowLineShape.elbow,
         [
             [0, 0],
             [0, 0]
         ],
-        { marker: LineMarkerType.none, connection: [0.5, 1], boundId: processElement2.id },
-        { marker: LineMarkerType.arrow, connection: [1, 0.5], boundId: endElement.id },
+        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: processElement2.id },
+        { marker: ArrowLineMarkerType.arrow, connection: [1, 0.5], boundId: endElement.id },
         [],
         lineOptions
     );

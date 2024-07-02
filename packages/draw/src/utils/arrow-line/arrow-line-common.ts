@@ -19,13 +19,22 @@ import {
     getNextPoint,
     rotateVector
 } from '@plait/common';
-import { BasicShapes, LineHandleKey, LineHandleRef, LineHandleRefPair, LineMarkerType, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../../interfaces';
+import {
+    BasicShapes,
+    ArrowLineHandleKey,
+    ArrowLineHandleRef,
+    ArrowLineHandleRefPair,
+    ArrowLineMarkerType,
+    PlaitArrowLine,
+    PlaitGeometry,
+    PlaitShapeElement
+} from '../../interfaces';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { getSourceAndTargetRectangle } from './elbow';
 import { getStrokeWidthByElement } from '../common';
 
-export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): LineHandleRefPair => {
+export const getArrowLineHandleRefPair = (board: PlaitBoard, element: PlaitArrowLine): ArrowLineHandleRefPair => {
     const strokeWidth = getStrokeWidthByElement(element);
     const sourceBoundElement = element.source.boundId ? getElementById<PlaitShapeElement>(board, element.source.boundId) : undefined;
     const targetBoundElement = element.target.boundId ? getElementById<PlaitShapeElement>(board, element.target.boundId) : undefined;
@@ -37,20 +46,26 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
     let targetDirection = getOppositeDirection(sourceDirection);
     const sourceFactor = getDirectionFactor(sourceDirection);
     const targetFactor = getDirectionFactor(targetDirection);
-    const sourceHandleRef: LineHandleRef = {
-        key: LineHandleKey.source,
+    const sourceHandleRef: ArrowLineHandleRef = {
+        key: ArrowLineHandleKey.source,
         point: sourcePoint,
         direction: sourceDirection,
         vector: [sourceFactor.x, sourceFactor.y]
     };
-    const targetHandleRef: LineHandleRef = {
-        key: LineHandleKey.target,
+    const targetHandleRef: ArrowLineHandleRef = {
+        key: ArrowLineHandleKey.target,
         point: targetPoint,
         direction: targetDirection,
         vector: [targetFactor.x, targetFactor.y]
     };
     if (sourceBoundElement) {
-        const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.source) ? 0 : strokeWidth;
+        const connectionOffset = PlaitArrowLine.isSourceMarkOrTargetMark(
+            element as PlaitArrowLine,
+            ArrowLineMarkerType.none,
+            ArrowLineHandleKey.source
+        )
+            ? 0
+            : strokeWidth;
         const sourceVector = getVectorByConnection(sourceBoundElement, element.source.connection!);
         sourceHandleRef.vector = sourceVector;
         sourceHandleRef.boundElement = sourceBoundElement;
@@ -66,7 +81,13 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
         sourceHandleRef.point = rotatePointsByElement(sourcePoint, sourceBoundElement) || sourcePoint;
     }
     if (targetBoundElement) {
-        const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.target) ? 0 : strokeWidth;
+        const connectionOffset = PlaitArrowLine.isSourceMarkOrTargetMark(
+            element as PlaitArrowLine,
+            ArrowLineMarkerType.none,
+            ArrowLineHandleKey.target
+        )
+            ? 0
+            : strokeWidth;
         const targetVector = getVectorByConnection(targetBoundElement, element.target.connection!);
         targetHandleRef.vector = targetVector;
         targetHandleRef.boundElement = targetBoundElement;
@@ -121,8 +142,8 @@ export const getVectorByConnection = (boundElement: PlaitShapeElement, connectio
     return vector;
 };
 
-export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitLine, handleRefPair?: LineHandleRefPair) => {
-    handleRefPair = handleRefPair ?? getLineHandleRefPair(board, element);
+export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitArrowLine, handleRefPair?: ArrowLineHandleRefPair) => {
+    handleRefPair = handleRefPair ?? getArrowLineHandleRefPair(board, element);
     const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element, handleRefPair);
     const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
     const sourcePoint = handleRefPair.source.point;

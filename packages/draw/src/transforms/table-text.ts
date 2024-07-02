@@ -1,17 +1,11 @@
-import { PlaitBoard, RectangleClient, Transforms } from '@plait/core';
+import { Path, PlaitBoard, PlaitNode, RectangleClient, Transforms } from '@plait/core';
 import { ShapeDefaultSpace } from '../constants';
 import { Element } from 'slate';
-import { PlaitTable, PlaitTableCell, PlaitTableElement } from '../interfaces/table';
+import { PlaitBaseTable, PlaitTableCell, PlaitTableElement } from '../interfaces/table';
 import { getCellWithPoints, updateColumns, updateRows } from '../utils/table';
 
-export const setTableText = (
-    board: PlaitBoard,
-    table: PlaitTable,
-    cellId: string,
-    text: Element,
-    textWidth: number,
-    textHeight: number
-) => {
+export const setTableText = (board: PlaitBoard, path: Path, cellId: string, text: Element, textHeight: number) => {
+    const table = PlaitNode.get(board, path) as PlaitBaseTable;
     const cell = getCellWithPoints(board, table, cellId);
     const cellIndex = table.cells.findIndex(item => item.id === cell.id);
     let rows = [...table.rows];
@@ -47,6 +41,5 @@ export const setTableText = (
         text
     };
 
-    const path = board.children.findIndex(child => child.id === table.id);
-    Transforms.setNode(board, { rows, columns, cells, points }, [path]);
+    Transforms.setNode(board, { rows, columns, cells, points }, path);
 };

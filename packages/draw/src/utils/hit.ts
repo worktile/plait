@@ -11,17 +11,16 @@ import {
     rotatePointsByElement,
     rotateAntiPointsByElement
 } from '@plait/core';
-import { PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
-import { TRANSPARENT } from '@plait/common';
+import { PlaitArrowLine, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
 import { getNearestPoint } from './geometry';
-import { getLinePoints } from './line/line-basic';
+import { getArrowLinePoints } from './arrow-line/arrow-line-basic';
 import { getFillByElement } from './style/stroke';
-import { DefaultDrawStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
-import { getHitLineTextIndex } from './position/line';
+import { getHitArrowLineTextIndex } from './position/arrow-line';
 import { getTextRectangle } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
+import { isFilled, sortElementsByArea } from '@plait/common';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -31,8 +30,8 @@ export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     return false;
 };
 
-export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    return getHitLineTextIndex(board, element, point) !== -1;
+export const isHitArrowLineText = (board: PlaitBoard, element: PlaitArrowLine, point: Point) => {
+    return getHitArrowLineTextIndex(board, element, point) !== -1;
 };
 
 export const isHitPolyLine = (pathPoints: Point[], point: Point) => {
@@ -40,24 +39,10 @@ export const isHitPolyLine = (pathPoints: Point[], point: Point) => {
     return distance <= HIT_DISTANCE_BUFFER;
 };
 
-export const isHitLine = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    const points = getLinePoints(board, element);
-    const isHitText = isHitLineText(board, element, point);
+export const isHitArrowLine = (board: PlaitBoard, element: PlaitArrowLine, point: Point) => {
+    const points = getArrowLinePoints(board, element);
+    const isHitText = isHitArrowLineText(board, element as PlaitArrowLine, point);
     return isHitText || isHitPolyLine(points, point);
-};
-
-export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => {
-    const engine = getEngine<PlaitCommonGeometry>(element.shape);
-    if (isMultipleTextGeometry(element)) {
-        const texts = element.texts;
-        return texts.some(item => {
-            const textClient = engine.getTextRectangle!(element, { key: item.key });
-            return RectangleClient.isPointInRectangle(textClient, point);
-        });
-    } else {
-        const textClient = engine.getTextRectangle ? engine.getTextRectangle(element) : getTextRectangle(element);
-        return RectangleClient.isPointInRectangle(textClient, point);
-    }
 };
 
 export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangle: RectangleClient) => {
@@ -75,6 +60,20 @@ export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangl
         const rotatedCornerPoints =
             rotatePointsByElement(RectangleClient.getCornerPoints(textClient), element) || RectangleClient.getCornerPoints(textClient);
         return isPolylineHitRectangle(rotatedCornerPoints, rectangle);
+    }
+};
+
+export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => {
+    const engine = getEngine<PlaitCommonGeometry>(element.shape);
+    if (isMultipleTextGeometry(element)) {
+        const texts = element.texts;
+        return texts.some(item => {
+            const textClient = engine.getTextRectangle!(element, { key: item.key });
+            return RectangleClient.isPointInRectangle(textClient, point);
+        });
+    } else {
+        const textClient = engine.getTextRectangle ? engine.getTextRectangle(element) : getTextRectangle(element);
+        return RectangleClient.isPointInRectangle(textClient, point);
     }
 };
 
@@ -98,9 +97,51 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
         return isPolylineHitRectangle(rotatedCornerPoints, rangeRectangle);
     }
 
-    if (PlaitDrawElement.isLine(element)) {
-        const points = getLinePoints(board, element);
+    if (PlaitDrawElement.isArrowLine(element)) {
+        const points = getArrowLinePoints(board, element);
         return isPolylineHitRectangle(points, rangeRectangle);
+    }
+    return null;
+};
+
+export const getDrawHitElement = (board: PlaitBoard, elements: PlaitDrawElement[]) => {
+    let firstFilledElement = getFirstFilledDrawElement(board, elements);
+    let endIndex = elements.length;
+    if (firstFilledElement) {
+        endIndex = elements.indexOf(firstFilledElement) + 1;
+    }
+    const newElements = elements.slice(0, endIndex);
+    const element = getFirstTextOrLineElement(newElements);
+    if (element) {
+        return element;
+    }
+    const sortElements = sortElementsByArea(board, newElements, 'asc');
+    return sortElements[0];
+};
+
+export const getFirstFilledDrawElement = (board: PlaitBoard, elements: PlaitDrawElement[]) => {
+    let filledElement: PlaitGeometry | null = null;
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        if (PlaitDrawElement.isGeometry(element) && !PlaitDrawElement.isText(element)) {
+            const fill = getFillByElement(board, element);
+            if (isFilled(fill)) {
+                filledElement = element as PlaitGeometry;
+                break;
+            }
+        }
+    }
+    return filledElement;
+};
+
+export const getFirstTextOrLineElement = (elements: PlaitDrawElement[]) => {
+    const texts = elements.filter(item => PlaitDrawElement.isText(item));
+    if (texts.length) {
+        return texts[0];
+    }
+    const lines = elements.filter(item => PlaitDrawElement.isArrowLine(item));
+    if (lines.length) {
+        return lines[0];
     }
     return null;
 };
@@ -109,38 +150,23 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
     const rectangle = board.getRectangle(element);
     point = rotateAntiPointsByElement(point, element) || point;
     if (PlaitDrawElement.isGeometry(element)) {
-        const fill = getFillByElement(board, element);
         if (isHitEdgeOfShape(board, element, point, HIT_DISTANCE_BUFFER)) {
             return true;
         }
         const engine = getEngine(getElementShape(element));
-        // when shape equals text, fill is not allowed
-        if (fill !== DefaultDrawStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
-            const isHitInside = engine.isInsidePoint(rectangle!, point);
-            if (isHitInside) {
-                return isHitInside;
-            }
-        } else {
-            // if shape equals text, only check text rectangle
-            if (PlaitDrawElement.isText(element)) {
-                const textClient = getTextRectangle(element);
-                let isHitText = RectangleClient.isPointInRectangle(textClient, point);
-                return isHitText;
-            }
-
-            // check textRectangle of element
-            const isHitText = isHitElementText(element, point);
-            if (isHitText) {
-                return isHitText;
-            }
+        if (PlaitDrawElement.isText(element)) {
+            const textClient = getTextRectangle(element);
+            return RectangleClient.isPointInRectangle(textClient, point);
         }
+        const isHitText = isHitElementText(element, point);
+        return isHitText || engine.isInsidePoint(rectangle!, point);
     }
     if (PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
         return RectangleClient.isPointInRectangle(client, point);
     }
-    if (PlaitDrawElement.isLine(element)) {
-        return isHitLine(board, element, point);
+    if (PlaitDrawElement.isArrowLine(element)) {
+        return isHitArrowLine(board, element, point);
     }
     return null;
 };
@@ -165,7 +191,6 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
         if (isHitInside) {
             return isHitInside;
         }
-
         if (engine.getTextRectangle) {
             const isHitText = isHitElementText(element, point);
             if (isHitText) {
@@ -178,8 +203,8 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
         return RectangleClient.isPointInRectangle(client, point);
     }
 
-    if (PlaitDrawElement.isLine(element)) {
-        return isHitLine(board, element, point);
+    if (PlaitDrawElement.isArrowLine(element)) {
+        return isHitArrowLine(board, element, point);
     }
 
     return null;

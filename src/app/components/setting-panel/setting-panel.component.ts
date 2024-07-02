@@ -21,22 +21,30 @@ import {
     getDefaultMindElementFontSize,
     getSelectedMindElements
 } from '@plait/mind';
-import { Node, Transforms as SlateTransforms } from 'slate';
+import { BaseEditor, Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { AlignTransform, Alignment, CustomText, ParagraphElement, PropertyTransforms, getEditingTextEditor, getFirstTextEditor } from '@plait/common';
 import {
-    LineShape,
-    LineMarkerType,
-    getSelectedLineElements,
+    AlignTransform,
+    Alignment,
+    CustomText,
+    ParagraphElement,
+    PropertyTransforms,
+    getEditingTextEditor,
+    getFirstTextEditor
+} from '@plait/common';
+import {
+    ArrowLineShape,
+    ArrowLineMarkerType,
+    getSelectedArrowLineElements,
     isSingleSelectSwimlane,
     getSelectedGeometryElements,
     getSelectedImageElements,
     GeometryShapes,
     DrawTransforms,
     getMemorizeKey,
-    LineHandleKey,
+    ArrowLineHandleKey,
     PlaitSwimlane,
     isDrawElementsIncludeText,
     isDrawElementIncludeText,
@@ -44,7 +52,10 @@ import {
     getSelectedTableElements,
     getGeometryAlign,
     PlaitDrawElement,
-    getSwimlaneCount
+    getSwimlaneCount,
+    PlaitTableCell,
+    getSelectedTableCellsEditor,
+    isSingleSelectElementByTable
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { FontSizes, LinkEditor, MarkTypes, PlaitMarkEditor, TextTransforms } from '@plait/text-plugins';
@@ -96,11 +107,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     align = Alignment.center;
 
-    lineShape = LineShape.straight;
+    lineShape = ArrowLineShape.straight;
 
-    lineTargetMarker = LineMarkerType.openTriangle;
+    lineTargetMarker = ArrowLineMarkerType.openTriangle;
 
-    lineSourceMarker = LineMarkerType.openTriangle;
+    lineSourceMarker = ArrowLineMarkerType.openTriangle;
 
     swimlaneOperation = 'addRow';
 
@@ -126,7 +137,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     onBoardChange() {
         const selectedMindElements = getSelectedMindElements(this.board);
-        const selectedLineElements = getSelectedLineElements(this.board);
+        const selectedLineElements = getSelectedArrowLineElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
@@ -148,23 +159,26 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         const selectedTableElements = getSelectedTableElements(this.board);
+        const selectedTableCellsEditor = getSelectedTableCellsEditor(this.board);
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
-            const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
-            if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
-                this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry));
-                this.align = getGeometryAlign(this.board, firstGeometry);
-            }
-            setTimeout(() => {
-                const editor = firstGeometry && getEditingTextEditor(this.board, [firstGeometry]);
-                const isEditing = !!editor;
-                if (isEditing) {
-                    this.align = (editor.children[0] as ParagraphElement)?.align || this.align;
-                    this.currentMarks = PlaitMarkEditor.getMarks(editor);
-                    this.cdr.markForCheck();
+            let editor: BaseEditor | undefined;
+            let align: Alignment = this.align;
+            if (selectedTableCellsEditor?.length) {
+                editor = selectedTableCellsEditor[0];
+                align = (editor.children[0] as ParagraphElement)?.align || Alignment.center;
+            } else {
+                const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
+                if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
+                    editor = getFirstTextEditor(firstGeometry);
+                    align = getGeometryAlign(this.board, firstGeometry);
+                    this.strokeWidth = firstGeometry?.strokeWidth || 3;
                 }
-            });
-            this.strokeWidth = firstGeometry?.strokeWidth || 3;
+            }
+            if (editor) {
+                this.currentMarks = PlaitMarkEditor.getMarks(editor);
+                this.align = align;
+            }
         }
 
         const selectedImageElements = getSelectedImageElements(this.board);
@@ -212,9 +226,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
-    setLineShape(event: Event) {
-        let value = (event.target as HTMLSelectElement).value as LineShape;
-        DrawTransforms.setLineShape(this.board, { shape: value });
+    setArrowLineShape(event: Event) {
+        let value = (event.target as HTMLSelectElement).value as ArrowLineShape;
+        DrawTransforms.setArrowLineShape(this.board, { shape: value });
     }
 
     changeStrokeStyle(event: Event) {
@@ -226,9 +240,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         PropertyTransforms.setFillColor(this.board, property, {
             getMemorizeKey,
             callback: (element: PlaitElement, path: Path) => {
-                const isSwimlane = PlaitDrawElement.isSwimlane(element);
-                if (isSwimlane) {
-                    DrawTransforms.setSwimlaneFill(this.board, element as PlaitSwimlane, property, path);
+                const tableElement = PlaitDrawElement.isElementByTable(element);
+                if (tableElement) {
+                    DrawTransforms.setTableFill(this.board, element, property, path);
                 } else {
                     Transforms.setNode(this.board, { fill: property }, path);
                 }
@@ -256,9 +270,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
-    changeLineMarker(event: Event, key: string) {
+    changeArrowLineMarker(event: Event, key: string) {
         let value = (event.target as HTMLSelectElement).value as any;
-        DrawTransforms.setLineMark(this.board, key as LineHandleKey, value as LineMarkerType);
+        DrawTransforms.setArrowLineMark(this.board, key as ArrowLineHandleKey, value as ArrowLineMarkerType);
     }
 
     changeAngle() {
@@ -268,7 +282,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     textColorChange(value: string) {
-        TextTransforms.setTextColor(this.board, value);
+        TextTransforms.setTextColor(this.board, value, undefined, getSelectedTableCellsEditor(this.board));
     }
 
     setAbstract(event: Event) {
@@ -286,7 +300,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     setTextMark(event: MouseEvent, attribute: string) {
         event.preventDefault();
         event.stopPropagation();
-        TextTransforms.setTextMarks(this.board, attribute as MarkTypes);
+        TextTransforms.setTextMarks(this.board, attribute as MarkTypes, getSelectedTableCellsEditor(this.board));
     }
 
     setLink(event: MouseEvent) {
@@ -321,13 +335,18 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     setFontSize(event: Event) {
         const fontSize = (event.target as HTMLSelectElement).value as FontSizes;
-        TextTransforms.setFontSize(this.board, fontSize, (element: PlaitElement) => {
-            return MindElement.isMindElement(this.board, element) ? getDefaultMindElementFontSize(this.board, element) : undefined;
-        });
+        TextTransforms.setFontSize(
+            this.board,
+            fontSize,
+            (element: PlaitElement) => {
+                return MindElement.isMindElement(this.board, element) ? getDefaultMindElementFontSize(this.board, element) : undefined;
+            },
+            getSelectedTableCellsEditor(this.board)
+        );
     }
 
     setTextAlign(event: Alignment) {
-        TextTransforms.setTextAlign(this.board, event);
+        TextTransforms.setTextAlign(this.board, event, getSelectedTableCellsEditor(this.board));
     }
 
     setAlign(event: Event) {

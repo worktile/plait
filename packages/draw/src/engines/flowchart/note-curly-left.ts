@@ -24,7 +24,7 @@ export const NoteCurlyLeftEngine: ShapeEngine = {
             C${rectangle.x + rectangle.width} ${rectangle.y + rectangle.height / 2}, 
             ${rectangle.x + rectangle.width - rectangle.width * 0.09} ${rectangle.y + rectangle.height}, 
             ${rectangle.x + rectangle.width} ${rectangle.y + rectangle.height}`,
-            { ...options, fillStyle: 'solid' }
+            { ...options, fillStyle: 'solid', fill: 'transparent' }
         );
         setStrokeLinecap(shape, 'round');
         return shape;
