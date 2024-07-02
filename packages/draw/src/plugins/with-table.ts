@@ -19,7 +19,7 @@ import { editCell, getHitCell } from '../utils/table';
 import { withTableResize } from './with-table-resize';
 import { isVirtualKey, isDelete, isSpaceHotkey } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
-import { getSelectedTableElements, isSingleSelectTable, setSelectedCells } from '../utils';
+import { getSelectedCells, getSelectedTableElements, isSingleSelectTable, setSelectedCells } from '../utils';
 
 export const withTable = (board: PlaitBoard) => {
     const tableBoard = board as PlaitTableBoard;
@@ -68,12 +68,23 @@ export const withTable = (board: PlaitBoard) => {
         const selectedElements = getSelectedElements(board);
         const isSingleSelection = selectedElements.length === 1;
         const targetElement = selectedElements[0];
-        if (!PlaitBoard.isReadonly(board) && !isVirtualKey(event) && !isDelete(event) && !isSpaceHotkey(event) && isSingleSelection) {
+        if (
+            !PlaitBoard.isReadonly(board) &&
+            !PlaitBoard.hasBeenTextEditing(tableBoard) &&
+            !isVirtualKey(event) &&
+            !isDelete(event) &&
+            !isSpaceHotkey(event) &&
+            isSingleSelection
+        ) {
             event.preventDefault();
             if (PlaitDrawElement.isElementByTable(targetElement)) {
-                const firstTextCell = targetElement.cells.find(item => item.text && item.textHeight);
-                if (firstTextCell) {
-                    editCell(firstTextCell);
+                const cells = getSelectedCells(targetElement);
+                let cell = targetElement.cells.find(item => item.text && item.textHeight);
+                if (cells?.length) {
+                    cell = cells.find(item => item.text && item.textHeight);
+                }
+                if (cell) {
+                    editCell(cell);
                     return;
                 }
             }
