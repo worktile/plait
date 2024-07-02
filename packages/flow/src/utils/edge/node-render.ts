@@ -1,5 +1,5 @@
 import { PlaitBoard, PlaitElement, isSelectedElement } from '@plait/core';
-import { FlowNode, NodeState } from '../../interfaces/node';
+import { NodeState } from '../../interfaces/node';
 import { PlaitCommonElementRef, getFirstTextManage } from '@plait/common';
 import { NodeActiveGenerator } from '../../generators/node-active.generator';
 import { NodeGenerator } from '../../generators/node.generator';
@@ -14,12 +14,12 @@ export const renderNode = (board: PlaitBoard, nodeId: string, state?: NodeState)
     const nodeGenerator = elementRef.getGenerator<NodeGenerator>(NodeGenerator.key);
     if (!selected) {
         if (state === NodeState.hovering) {
-            nodeGenerator.processDrawing(node, PlaitBoard.getElementActiveHost(board));
+            nodeGenerator && nodeGenerator.processDrawing(node, PlaitBoard.getElementActiveHost(board));
             PlaitBoard.getElementActiveHost(board).append(textManage.g);
             handleGenerator.processDrawing(node, PlaitBoard.getElementActiveHost(board), { selected, hovered: true });
         } else {
             handleGenerator.destroy();
-            nodeGenerator.processDrawing(node, PlaitElement.getElementG(node));
+            nodeGenerator && nodeGenerator.processDrawing(node, PlaitElement.getElementG(node));
             PlaitElement.getElementG(node).append(textManage.g);
         }
     }
