@@ -9,7 +9,8 @@ import {
     getSymmetricHandleIndex,
     isCornerHandle,
     withResize,
-    resetPointsAfterResize
+    resetPointsAfterResize,
+    normalizeShapePoints
 } from '@plait/common';
 import {
     PlaitBoard,
@@ -28,12 +29,14 @@ import {
     isAxisChangedByAngle,
     drawRectangle,
     ACTIVE_STROKE_WIDTH,
-    SELECTION_BORDER_COLOR
+    SELECTION_BORDER_COLOR,
+    Path
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getSnapResizingRefOptions, getSnapResizingRef } from '../utils/snap-resizing';
+import { isGeometryIncludeText } from '../utils';
 
 const debugKey = 'debug:plait:resize-for-rotation';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -176,8 +179,13 @@ export function withDrawResize(board: PlaitBoard) {
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
-                    const { height: textHeight } = getFirstTextManage(target).getSize();
-                    DrawTransforms.resizeGeometry(board, points as [Point, Point], textHeight, path);
+                    if (isGeometryIncludeText(target)) {
+                        const { height: textHeight } = getFirstTextManage(target).getSize();
+                        DrawTransforms.resizeGeometry(board, points as [Point, Point], textHeight, path);
+                    } else {
+                        points = normalizeShapePoints(points as [Point, Point]);
+                        Transforms.setNode(board, { points }, path);
+                    }
                 } else if (PlaitDrawElement.isLine(target)) {
                     Transforms.setNode(board, { points }, path);
                 } else if (PlaitDrawElement.isImage(target)) {
