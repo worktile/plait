@@ -410,17 +410,17 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "packages/flow/src/test.ts",
-            "tsConfig": "packages/flow/tsconfig.spec.json",
-            "karmaConfig": "packages/flow/karma.conf.js"
+            "main": "packages/graph-viz/src/test.ts",
+            "tsConfig": "packages/graph-viz/tsconfig.spec.json",
+            "karmaConfig": "packages/graph-viz/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "packages/flow/**/*.ts",
-              "packages/flow/**/*.html"
+              "packages/graph-viz/**/*.ts",
+              "packages/graph-viz/**/*.html"
             ]
           }
         }

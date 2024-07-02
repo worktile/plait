@@ -25,6 +25,7 @@
         "pub:flow": "cd dist/flow && npm publish --access public",
         "pub:common": "cd dist/common && npm publish --access public",
         "pub:draw": "cd dist/draw && npm publish --access public",
+        "pub:graph-viz": "cd dist/graph-viz && npm publish --access public",
         "pub": "./scripts/publish.sh",
         "watch": "ng build --watch --configuration development",
         "test:mind": "ng test mind",

@@ -4,5 +4,11 @@
   "peerDependencies": {},
   "dependencies": {
     "tslib": "^2.3.0"
-  }
+  },
+  "license": "MIT",
+  "repository": "https://github.com/worktile/plait",
+  "keywords": [
+      "mind map",
+      "layouts"
+  ]
 }

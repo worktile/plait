@@ -16,5 +16,13 @@
         "./styles/*": {
             "sass": "./styles/*"
         }
-    }
+    },
+    "license": "MIT",
+    "repository": "https://github.com/worktile/plait",
+    "keywords": [
+        "board",
+        "angular",
+        "whiteboard",
+        "plait"
+    ]
 }

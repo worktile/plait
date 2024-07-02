@@ -12,5 +12,13 @@
     "./styles/*": {
       "sass": "./styles/*"
     }
-  }
+  },
+  "license": "MIT",
+  "repository": "https://github.com/worktile/plait",
+  "keywords": [
+      "node-based",
+      "flow process",
+      "framework",
+      "open-source"
+  ]
 }
