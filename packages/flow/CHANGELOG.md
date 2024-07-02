@@ -1,5 +1,15 @@
 # @plait/flow
 
+## 0.60.4
+
+### Patch Changes
+
+-   [`4a41d8705`](https://github.com/worktile/plait/commit/4a41d8705dead4969081ff2e8cb9db54baac55b2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix node-render error when node is custom node
+
+*   [`c0a37d122`](https://github.com/worktile/plait/commit/c0a37d122a2d2b42d0d0271967646bf30d83ae5d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Only hide related edge label when node is moving
+
+-   [`5748fbf49`](https://github.com/worktile/plait/commit/5748fbf49975ebe7ce024bc2e1d995b391c89fd0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move node element to the highest layer when node is hovering
+
 ## 0.60.3
 
 ### Patch Changes
