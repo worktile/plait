@@ -100,7 +100,7 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
 };
 
 export const isDrawElementClosed = (element: PlaitDrawElement) => {
-    if (PlaitDrawElement.isText(element) || PlaitDrawElement.isArrowLine(element)) {
+    if (PlaitDrawElement.isText(element) || PlaitDrawElement.isArrowLine(element) || PlaitDrawElement.isImage(element)) {
         return false;
     }
 
