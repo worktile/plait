@@ -12,7 +12,7 @@ import {
     getSelectedElements
 } from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
-import { PlaitDrawElement, PlaitGeometry, PlaitArrowLine, PlaitShapeElement, PlaitSwimlane } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry, PlaitArrowLine, PlaitShapeElement, PlaitSwimlane, PlaitVectorLine } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
 import { getArrowLines } from '../utils/arrow-line/arrow-line-basic';
@@ -29,7 +29,8 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
         const drawElements = getSelectedDrawElements(board);
         if (drawElements.length) {
             const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
-            const lineElements = drawElements.filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
+            const arrowLineElements = drawElements.filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
+            const vectorLineElements = drawElements.filter(value => PlaitDrawElement.isVectorLine(value)) as PlaitVectorLine[];
             const imageElements = drawElements.filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
             const tableElements = drawElements.filter(value => PlaitDrawElement.isTable(value)) as PlaitTable[];
             const swimlaneElements = drawElements.filter(value => PlaitDrawElement.isSwimlane(value)) as PlaitSwimlane[];
@@ -39,15 +40,16 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 ...getBoundedArrowLineElements(board, imageElements),
                 ...getBoundedArrowLineElements(board, tableElements),
                 ...getBoundedArrowLineElements(board, swimlaneElements)
-            ].filter(line => !lineElements.includes(line));
+            ].filter(line => !arrowLineElements.includes(line));
             data.push(
                 ...[
                     ...geometryElements,
-                    ...lineElements,
+                    ...arrowLineElements,
+                    ...vectorLineElements,
                     ...imageElements,
                     ...tableElements,
                     ...swimlaneElements,
-                    ...boundLineElements.filter(line => !lineElements.includes(line))
+                    ...boundLineElements.filter(line => !arrowLineElements.includes(line))
                 ]
             );
         }

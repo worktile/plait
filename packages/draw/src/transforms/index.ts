@@ -13,6 +13,7 @@ import { addSwimlaneColumn, addSwimlaneRow, removeSwimlaneColumn, removeSwimlane
 import { setDrawShapeText } from './multi-text-geometry-text';
 import { setTableText } from './table-text';
 import { setTableFill } from './table';
+import { setVectorLineShape } from './vector-line';
 
 export const DrawTransforms = {
     setText,
@@ -26,6 +27,7 @@ export const DrawTransforms = {
     removeArrowLineText,
     setArrowLineMark,
     setArrowLineShape,
+    setVectorLineShape,
     insertImage,
     switchGeometryShape,
     connectArrowLineToGeometry,

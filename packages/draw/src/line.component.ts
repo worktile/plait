@@ -1,12 +1,14 @@
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, createDebugGenerator, PlaitNode } from '@plait/core';
 import { ArrowLineText, PlaitArrowLine, PlaitDrawElement, PlaitGeometry } from './interfaces';
-import { ArrowLineShapeGenerator } from './generators/arrow-line.generator';
-import { ArrowLineActiveGenerator } from './generators/arrow-line-active.generator';
+import { LineActiveGenerator } from './generators/line-active.generator';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold, MIN_TEXT_WIDTH } from './constants';
 import { CommonElementFlavour, TextManage, TextManageChangeData } from '@plait/common';
-import { getArrowLinePoints, getArrowLineTextRectangle } from './utils/arrow-line/arrow-line-basic';
+import { getArrowLineTextRectangle } from './utils/arrow-line/arrow-line-basic';
 import { memorizeLatestText } from './utils/memorize';
+import { LineGenerator } from './generators/line.generator';
+import { PlaitLine } from './interfaces/line';
+import { getLinePoints } from './utils';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -16,11 +18,10 @@ interface BoundedElements {
 const debugKey = 'debug:plait:line-turning';
 const debugGenerator = createDebugGenerator(debugKey);
 
-export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, PlaitBoard>
-    implements OnContextChanged<PlaitArrowLine, PlaitBoard> {
-    shapeGenerator!: ArrowLineShapeGenerator;
+export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> implements OnContextChanged<PlaitLine, PlaitBoard> {
+    shapeGenerator!: LineGenerator;
 
-    activeGenerator!: ArrowLineActiveGenerator;
+    activeGenerator!: LineActiveGenerator;
 
     boundedElements: BoundedElements = {};
 
@@ -29,23 +30,26 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
     }
 
     initializeGenerator() {
-        this.shapeGenerator = new ArrowLineShapeGenerator(this.board);
-        this.activeGenerator = new ArrowLineActiveGenerator(this.board);
-        this.initializeTextManagesByElement();
+        this.shapeGenerator = new LineGenerator(this.board);
+        this.activeGenerator = new LineActiveGenerator(this.board);
+        if (PlaitDrawElement.isArrowLine(this.element)) {
+            this.initializeTextManagesByElement();
+        }
     }
 
     initialize(): void {
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element, this.getElementG());
-        const linePoints = getArrowLinePoints(this.board, this.element);
+        const linePoints = getLinePoints(this.board, this.element)!;
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected,
             linePoints
         });
         super.initialize();
-        this.boundedElements = this.getBoundedElements();
-        this.drawText();
-
+        if (PlaitDrawElement.isArrowLine(this.element)) {
+            this.boundedElements = this.getBoundedElements();
+            this.drawText();
+        }
         debugGenerator.isDebug() && debugGenerator.drawCircles(this.board, this.element.points.slice(1, -1), 4, true);
     }
 
@@ -66,25 +70,27 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
         return boundedElements;
     }
 
-    onContextChanged(
-        value: PlaitPluginElementContext<PlaitArrowLine, PlaitBoard>,
-        previous: PlaitPluginElementContext<PlaitArrowLine, PlaitBoard>
-    ) {
+    onContextChanged(value: PlaitPluginElementContext<PlaitLine, PlaitBoard>, previous: PlaitPluginElementContext<PlaitLine, PlaitBoard>) {
         this.initializeWeakMap();
-        const boundedElements = this.getBoundedElements();
-        const isBoundedElementsChanged =
-            boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
-        this.boundedElements = boundedElements;
+        let isBoundedElementsChanged = false;
+        if (PlaitDrawElement.isArrowLine(this.element)) {
+            const boundedElements = this.getBoundedElements();
+            isBoundedElementsChanged =
+                boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
+            this.boundedElements = boundedElements;
+        }
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-        const linePoints = getArrowLinePoints(this.board, this.element);
+        const linePoints = getLinePoints(this.board, this.element)!;
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected,
                 linePoints
             });
-            this.updateText(previous.element.texts, value.element.texts);
-            this.updateTextRectangle();
+            if (PlaitDrawElement.isArrowLine(this.element)) {
+                this.updateText(previous.element.texts, value.element.texts);
+                this.updateTextRectangle();
+            }
         } else {
             const needUpdate = value.selected !== previous.selected || this.activeGenerator.needUpdate();
             if (needUpdate) {
@@ -132,7 +138,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
             },
             onChange: (textManageChangeData: TextManageChangeData) => {
                 const path = PlaitBoard.findPath(this.board, this.element);
-                const node = PlaitNode.get(this.board, path) as PlaitArrowLine;
+                const node = PlaitNode.get(this.board, path) as PlaitLine;
                 const texts = [...node.texts];
                 const newWidth = textManageChangeData.width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : textManageChangeData.width;
                 texts.splice(index, 1, {

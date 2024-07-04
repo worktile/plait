@@ -12,7 +12,7 @@ import {
 } from '@plait/core';
 import { ArrowLineShape, PlaitDrawElement } from '../interfaces';
 import { isResizingByCondition } from '@plait/common';
-import { ArrowLineResizeHandle } from '../utils/position/arrow-line';
+import { LineResizeHandle } from '../utils/position/line';
 import { drawBoundReaction, getHitShape, getSnappingRef } from '../utils';
 
 export const withArrowLineBoundReaction = (board: PlaitBoard) => {
@@ -29,9 +29,9 @@ export const withArrowLineBoundReaction = (board: PlaitBoard) => {
         const linePointers = Object.keys(ArrowLineShape);
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const isLineResizing = isResizingByCondition<PlaitElement, ArrowLineResizeHandle>(board, resizeRef => {
+        const isLineResizing = isResizingByCondition<PlaitElement, LineResizeHandle>(board, resizeRef => {
             const { element, handle } = resizeRef;
-            const isSourceOrTarget = handle === ArrowLineResizeHandle.target || handle === ArrowLineResizeHandle.source;
+            const isSourceOrTarget = handle === LineResizeHandle.target || handle === LineResizeHandle.source;
             return PlaitDrawElement.isArrowLine(element) && isSourceOrTarget;
         });
         if (isLinePointer || isLineResizing) {

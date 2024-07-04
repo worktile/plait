@@ -1,21 +1,22 @@
 import { PlaitBoard, Point, createG, drawRectangle, getSelectedElements } from '@plait/core';
 import { ArrowLineShape, PlaitArrowLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, drawFillPrimaryHandle, drawPrimaryHandle } from '@plait/common';
-import { getMiddlePoints } from '../utils/arrow-line/arrow-line-basic';
+import { getMiddlePoints } from '../utils/line';
 import { getNextRenderPoints } from '../utils/arrow-line/elbow';
 import { isUpdatedHandleIndex } from '../utils/arrow-line';
-import { getHitPointIndex } from '../utils/position/arrow-line';
+import { getHitPointIndex } from '../utils/position/line';
 import { DefaultDrawActiveStyle } from '../constants';
+import { PlaitLine } from '../interfaces/line';
 
 export interface ActiveData {
     selected: boolean;
     linePoints: Point[];
 }
 
-export class ArrowLineActiveGenerator extends Generator<PlaitArrowLine, ActiveData> {
+export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
     onlySelectedCurrentLine = false;
 
-    canDraw(element: PlaitArrowLine, data: ActiveData): boolean {
+    canDraw(element: PlaitLine, data: ActiveData): boolean {
         if (data.selected) {
             return true;
         } else {
@@ -23,7 +24,7 @@ export class ArrowLineActiveGenerator extends Generator<PlaitArrowLine, ActiveDa
         }
     }
 
-    draw(element: PlaitArrowLine, data: ActiveData): SVGGElement {
+    draw(element: PlaitLine, data: ActiveData): SVGGElement {
         const activeG = createG();
         const selectedElements = getSelectedElements(this.board);
         this.onlySelectedCurrentLine = selectedElements.length === 1;

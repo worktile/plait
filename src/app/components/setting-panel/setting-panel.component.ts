@@ -38,6 +38,7 @@ import {
     ArrowLineShape,
     ArrowLineMarkerType,
     getSelectedArrowLineElements,
+    getSelectedVectorLineElements,
     isSingleSelectSwimlane,
     getSelectedGeometryElements,
     getSelectedImageElements,
@@ -55,7 +56,8 @@ import {
     getSwimlaneCount,
     PlaitTableCell,
     getSelectedTableCellsEditor,
-    isSingleSelectElementByTable
+    isSingleSelectElementByTable,
+    VectorLineShape
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { FontSizes, LinkEditor, MarkTypes, PlaitMarkEditor, TextTransforms } from '@plait/text-plugins';
@@ -85,11 +87,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     MindPointerType = MindPointerType;
 
+    vectorLineShape = VectorLineShape;
+
     markTypes = MarkTypes;
 
     isSelectedMind = false;
 
     isSelectedLine = false;
+
+    isSelectedVectorLine = false;
 
     isSelectSwimlane = false;
 
@@ -137,9 +143,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     onBoardChange() {
         const selectedMindElements = getSelectedMindElements(this.board);
-        const selectedLineElements = getSelectedArrowLineElements(this.board);
+        const selectedArrowLineElements = getSelectedArrowLineElements(this.board);
+        const selectedVectorLineElements = getSelectedVectorLineElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
-        this.isSelectedLine = !!selectedLineElements.length;
+        this.isSelectedLine = !!selectedArrowLineElements.length || !!selectedVectorLineElements.length;
+        this.isSelectedVectorLine = !!selectedVectorLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
         if (this.isSelectSwimlane) {
             this.swimlaneCount = getSwimlaneCount(getSelectedElements(this.board)[0] as PlaitSwimlane);
@@ -185,8 +193,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = [...selectedImageElements, ...selectedGeometryElements];
         const selectionAngle = getSelectionAngle(selectedElements);
         this.angle = Math.round(radiansToDegrees(selectionAngle));
-        if (selectedLineElements.length) {
-            const firstLine = selectedLineElements[0];
+        if (selectedArrowLineElements.length) {
+            const firstLine = selectedArrowLineElements[0];
             this.lineShape = firstLine.shape;
             this.lineTargetMarker = firstLine.target.marker;
             this.lineSourceMarker = firstLine.source.marker;
@@ -381,5 +389,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     updateSwimlaneCount() {
         const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
         DrawTransforms.updateSwimlaneCount(this.board, selectedElements[0], this.swimlaneCount);
+    }
+
+    setLineShape(vectorLineShape: VectorLineShape) {
+        DrawTransforms.setVectorLineShape(this.board, { shape: vectorLineShape });
     }
 }

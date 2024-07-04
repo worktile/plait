@@ -29,7 +29,6 @@ import { getLineDashByElement, getStrokeColorByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
-import { ArrowLineShapeGenerator } from '../../generators/arrow-line.generator';
 import { LINE_SNAPPING_CONNECTOR_BUFFER } from '../../constants';
 import { getLineMemorizedLatest } from '../memorize';
 import { alignPoints } from './arrow-line-resize';
@@ -37,6 +36,7 @@ import { getElbowLineRouteOptions, getArrowLineHandleRefPair } from './arrow-lin
 import { getElbowPoints, getNextSourceAndTargetPoints, isUseDefaultOrthogonalRoute } from './elbow';
 import { drawArrowLineArrow } from './arrow-line-arrow';
 import { getSnappingRef, getSnappingShape, getStrokeWidthByElement } from '../common';
+import { LineGenerator } from '../../generators/line.generator';
 
 export const createArrowLineElement = (
     shape: ArrowLineShape,
@@ -111,59 +111,6 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitArrowLine) => {
         return pointsOnBezierCurves(points) as Point[];
     }
 };
-
-export function getMiddlePoints(board: PlaitBoard, element: PlaitArrowLine) {
-    const result: Point[] = [];
-    const shape = element.shape;
-    const hideBuffer = 10;
-    if (shape === ArrowLineShape.straight) {
-        const points = PlaitArrowLine.getPoints(board, element);
-        for (let i = 0; i < points.length - 1; i++) {
-            const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
-            if (distance < hideBuffer) continue;
-            result.push([(points[i][0] + points[i + 1][0]) / 2, (points[i][1] + points[i + 1][1]) / 2]);
-        }
-    }
-    if (shape === ArrowLineShape.curve) {
-        const points = PlaitArrowLine.getPoints(board, element);
-        const pointsOnBezier = getCurvePoints(board, element);
-        if (points.length === 2) {
-            const start = 0;
-            const endIndex = pointsOnBezier.length - 1;
-            const middleIndex = Math.round((start + endIndex) / 2);
-            result.push(pointsOnBezier[middleIndex]);
-        } else {
-            for (let i = 0; i < points.length - 1; i++) {
-                const startIndex = pointsOnBezier.findIndex(point => point[0] === points[i][0] && point[1] === points[i][1]);
-                const endIndex = pointsOnBezier.findIndex(point => point[0] === points[i + 1][0] && point[1] === points[i + 1][1]);
-                const middleIndex = Math.round((startIndex + endIndex) / 2);
-                const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
-                if (distance < hideBuffer) continue;
-                result.push(pointsOnBezier[middleIndex]);
-            }
-        }
-    }
-    if (shape === ArrowLineShape.elbow) {
-        const renderPoints = getElbowPoints(board, element);
-        const options = getElbowLineRouteOptions(board, element);
-        if (!isUseDefaultOrthogonalRoute(element, options)) {
-            const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
-            for (let i = 0; i < renderPoints.length - 1; i++) {
-                if (
-                    (i == 0 && Point.isEquals(renderPoints[i + 1], nextSourcePoint)) ||
-                    (i === renderPoints.length - 2 && Point.isEquals(renderPoints[renderPoints.length - 2], nextTargetPoint))
-                ) {
-                    continue;
-                }
-                const [currentX, currentY] = renderPoints[i];
-                const [nextX, nextY] = renderPoints[i + 1];
-                const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
-                result.push(middlePoint);
-            }
-        }
-    }
-    return result;
-}
 
 export const drawArrowLine = (board: PlaitBoard, element: PlaitArrowLine) => {
     const strokeWidth = getStrokeWidthByElement(element);
@@ -257,7 +204,7 @@ export const handleArrowLineCreating = (
     const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
     const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
-    const lineGenerator = new ArrowLineShapeGenerator(board);
+    const lineGenerator = new LineGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
     let sourceMarker, targetMarker;
     sourceMarker = memorizedLatest.source;
