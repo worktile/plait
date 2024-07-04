@@ -7,7 +7,10 @@ import {
     Direction,
     Vector,
     hasValidAngle,
-    rotatePointsByElement
+    rotatePointsByElement,
+    findElements,
+    PlaitElement,
+    Path
 } from '@plait/core';
 import {
     getDirectionFactor,
@@ -27,12 +30,14 @@ import {
     ArrowLineMarkerType,
     PlaitArrowLine,
     PlaitGeometry,
-    PlaitShapeElement
+    PlaitShapeElement,
+    PlaitDrawElement
 } from '../../interfaces';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { getSourceAndTargetRectangle } from './elbow';
 import { getStrokeWidthByElement } from '../common';
+import { getArrowLinePoints, getHitConnection } from './arrow-line-basic';
 
 export const getArrowLineHandleRefPair = (board: PlaitBoard, element: PlaitArrowLine): ArrowLineHandleRefPair => {
     const strokeWidth = getStrokeWidthByElement(element);
@@ -160,4 +165,42 @@ export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitArrowL
         targetRectangle,
         targetOuterRectangle
     };
+};
+
+export const collectArrowLineUpdatedRefsByGeometry = (
+    board: PlaitBoard,
+    element: PlaitShapeElement,
+    refs: { property: Partial<PlaitArrowLine>; path: Path }[]
+) => {
+    const lines = findElements(board, {
+        match: (element: PlaitElement) => {
+            if (PlaitDrawElement.isArrowLine(element)) {
+                return element.source.boundId === element.id || element.target.boundId === element.id;
+            }
+            return false;
+        },
+        recursion: element => true
+    }) as PlaitArrowLine[];
+    if (lines.length) {
+        lines.forEach(line => {
+            const isSourceBound = line.source.boundId === element.id;
+            const handle = isSourceBound ? 'source' : 'target';
+            const object = { ...line[handle] };
+            const linePoints = getArrowLinePoints(board, line);
+            const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
+            object.connection = getHitConnection(board, point, element);
+            const path = PlaitBoard.findPath(board, line);
+            const index = refs.findIndex(obj => Path.equals(obj.path, path));
+            if (index === -1) {
+                refs.push({
+                    property: {
+                        [handle]: object
+                    },
+                    path
+                });
+            } else {
+                refs[index].property = { ...refs[index].property, [handle]: object };
+            }
+        });
+    }
 };

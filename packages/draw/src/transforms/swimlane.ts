@@ -61,7 +61,6 @@ export const addSwimlaneColumn = (board: PlaitBoard, swimlane: PlaitSwimlane, in
         const lastCellPoints = getCellWithPoints(board, swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
         const lastColumnWidth = RectangleClient.getRectangleByPoints(lastCellPoints).width;
         const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0] + lastColumnWidth * count, swimlane.points[1][1]]];
-
         updateSwimlane(board, swimlane, newColumns, swimlane.rows, newCells, newPoints);
     }
 };
