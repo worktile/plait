@@ -24,7 +24,7 @@ export const getLineDashByElement = (element: PlaitElement) => {
         case StrokeStyle.dashed:
             return [8, 8 + getStrokeWidthByElement(element)];
         case StrokeStyle.dotted:
-            return [1, 4 + getStrokeWidthByElement(element)];
+            return [2, 4 + getStrokeWidthByElement(element)];
         default:
             return undefined;
     }
