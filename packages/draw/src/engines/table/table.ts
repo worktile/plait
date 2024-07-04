@@ -10,31 +10,37 @@ import { getNearestPointBetweenPointAndRoundRectangle, getRoundRectangleRadius }
 
 export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDrawShapeText> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {
-        const rs = PlaitBoard.getRoughSVG(board);
         const g = createG();
-        const { x, y, width, height } = rectangle;
-        const tableTopBorder = drawLine(rs, [x, y], [x + width, y], roughOptions);
-        const tableLeftBorder = drawLine(rs, [x, y], [x, y + height], roughOptions);
-        g.append(tableTopBorder, tableLeftBorder);
-        const pointCells = getCellsWithPoints(board, { ...options?.element } as PlaitTable);
-        pointCells.forEach(cell => {
-            const rectangle = RectangleClient.getRectangleByPoints(cell.points!);
-            const { x, y, width, height } = rectangle;
-            const cellRectangle = drawRectangle(
-                board,
-                {
-                    x: x + ACTIVE_STROKE_WIDTH,
-                    y: y + ACTIVE_STROKE_WIDTH,
-                    width: width - ACTIVE_STROKE_WIDTH * 2,
-                    height: height - ACTIVE_STROKE_WIDTH * 2
-                },
-                { fill: cell.fill, fillStyle: 'solid', strokeWidth: 0 }
-            );
-            const cellRightBorder = drawLine(rs, [x + width, y], [x + width, y + height], roughOptions);
-            const cellBottomBorder = drawLine(rs, [x, y + height], [x + width, y + height], roughOptions);
-            g.append(cellRectangle, cellRightBorder, cellBottomBorder);
-        });
-        setStrokeLinecap(g, 'round');
+        try {
+            const pointCells = getCellsWithPoints(board, { ...options?.element } as PlaitTable);
+            if (pointCells) {
+                const rs = PlaitBoard.getRoughSVG(board);
+                const { x, y, width, height } = rectangle;
+                const tableTopBorder = drawLine(rs, [x, y], [x + width, y], roughOptions);
+                const tableLeftBorder = drawLine(rs, [x, y], [x, y + height], roughOptions);
+                g.append(tableTopBorder, tableLeftBorder);
+                pointCells.forEach(cell => {
+                    const rectangle = RectangleClient.getRectangleByPoints(cell.points!);
+                    const { x, y, width, height } = rectangle;
+                    const cellRectangle = drawRectangle(
+                        board,
+                        {
+                            x: x + ACTIVE_STROKE_WIDTH,
+                            y: y + ACTIVE_STROKE_WIDTH,
+                            width: width - ACTIVE_STROKE_WIDTH * 2,
+                            height: height - ACTIVE_STROKE_WIDTH * 2
+                        },
+                        { fill: cell.fill, fillStyle: 'solid', strokeWidth: 0 }
+                    );
+                    const cellRightBorder = drawLine(rs, [x + width, y], [x + width, y + height], roughOptions);
+                    const cellBottomBorder = drawLine(rs, [x, y + height], [x + width, y + height], roughOptions);
+                    g.append(cellRectangle, cellRightBorder, cellBottomBorder);
+                });
+                setStrokeLinecap(g, 'round');
+            }
+        } catch (error) {
+            console.error(error);
+        }
         return g;
     },
     isInsidePoint(rectangle: RectangleClient, point: Point) {
@@ -51,12 +57,26 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle(element: PlaitTable, options?: PlaitDrawShapeText) {
-        const cell = getCellWithPoints(options?.board!, element, options!.key);
-        if (PlaitTableElement.isVerticalText(cell)) {
-            return getVerticalTextRectangle(cell);
-        } else {
-            return getHorizontalTextRectangle(cell);
+        try {
+            if (options && options.key) {
+                const cell = getCellWithPoints(options?.board!, element, options!.key);
+                if (cell) {
+                    if (PlaitTableElement.isVerticalText(cell)) {
+                        return getVerticalTextRectangle(cell);
+                    } else {
+                        return getHorizontalTextRectangle(cell);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(error);
         }
+        return {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        };
     }
 };
 
