@@ -8,7 +8,7 @@ import { BaseEditor } from 'slate';
 
 export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): PlaitTableCellWithPoints[] {
     const table = (board as PlaitTableBoard).buildTable(element);
-    const rectangle = table.points && RectangleClient.getRectangleByPoints(table.points);
+    const rectangle = RectangleClient.getRectangleByPoints(table.points);
     const columnsCount = table.columns.length;
     const rowsCount = table.rows.length;
     const cellWidths = calculateCellsSize(table.columns, rectangle.width, columnsCount, true);
