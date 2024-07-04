@@ -6,7 +6,8 @@ import {
     getEllipseTangentSlope,
     getVectorFromPointAndSlope,
     isPointInEllipse,
-    getNearestPointBetweenPointAndEllipse
+    getNearestPointBetweenPointAndEllipse,
+    setStrokeLinecap
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
@@ -22,7 +23,9 @@ export function createEllipseEngine(createOptions?: CreateEllipseOptions): Shape
         draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
             const centerPoint = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
             const rs = PlaitBoard.getRoughSVG(board);
-            return rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
+            const shape = rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
+            setStrokeLinecap(shape, 'round');
+            return shape;
         },
         isInsidePoint(rectangle: RectangleClient, point: Point) {
             const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];

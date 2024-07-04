@@ -1,4 +1,11 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, getNearestPointBetweenPointAndSegments } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    getNearestPointBetweenPointAndSegments,
+    setStrokeLinecap
+} from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
@@ -13,6 +20,7 @@ export const DeletionEngine: ShapeEngine = {
             `,
             { ...options, fillStyle: 'solid', strokeWidth: 4 }
         );
+        setStrokeLinecap(shape, 'round');
         return shape;
     },
     isInsidePoint(rectangle: RectangleClient, point: Point) {

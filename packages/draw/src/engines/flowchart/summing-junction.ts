@@ -1,7 +1,6 @@
-import { PlaitBoard, RectangleClient, getCrossingPointsBetweenEllipseAndSegment } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitBoard, RectangleClient, getCrossingPointsBetweenEllipseAndSegment, setStrokeLinecap } from '@plait/core';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getTextRectangle } from '../../utils';
 import { createEllipseEngine } from '../basic-shapes/ellipse';
 
 export const SummingJunctionEngine: ShapeEngine = createEllipseEngine({
@@ -28,7 +27,7 @@ export const SummingJunctionEngine: ShapeEngine = createEllipseEngine({
             ry
         );
 
-        return rs.path(
+        const shape = rs.path(
             `M${startPoint[0]} ${startPoint[1]}
         A${rx},${ry} 0 1,1 ${startPoint[0]} ${startPoint[1] - 0.01}
         M${line1Points[0][0]} ${line1Points[0][1]}
@@ -38,5 +37,8 @@ export const SummingJunctionEngine: ShapeEngine = createEllipseEngine({
         `,
             { ...options, fillStyle: 'solid' }
         );
+
+        setStrokeLinecap(shape, 'round');
+        return shape;
     }
 });
