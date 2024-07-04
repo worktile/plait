@@ -39,12 +39,10 @@ export const addSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, index
         addRows.forEach(item => {
             newCells.push(...createNewSwimlaneCells(swimlane, item.id, 'column'));
         });
-        const lastCell = getCellWithPoints(board, swimlane, swimlane.cells[swimlane.cells.length - 1].id);
-        if (lastCell) {
-            const lastRowHeight = RectangleClient.getRectangleByPoints(lastCell.points).height;
-            const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0], swimlane.points[1][1] + lastRowHeight * count]];
-            updateSwimlane(board, swimlane, swimlane.columns, newRows, newCells, newPoints);
-        }
+        const lastCellPoints = getCellWithPoints(board, swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
+        const lastRowHeight = RectangleClient.getRectangleByPoints(lastCellPoints).height;
+        const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0], swimlane.points[1][1] + lastRowHeight * count]];
+        updateSwimlane(board, swimlane, swimlane.columns, newRows, newCells, newPoints);
     }
 };
 
@@ -60,13 +58,10 @@ export const addSwimlaneColumn = (board: PlaitBoard, swimlane: PlaitSwimlane, in
         addColumns.forEach(item => {
             newCells.push(...createNewSwimlaneCells(swimlane, item.id, 'row'));
         });
-        const lastCell = getCellWithPoints(board, swimlane, swimlane.cells[swimlane.cells.length - 1].id);
-        if (lastCell) {
-            const lastColumnWidth = RectangleClient.getRectangleByPoints(lastCell.points).width;
-            const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0] + lastColumnWidth * count, swimlane.points[1][1]]];
-
-            updateSwimlane(board, swimlane, newColumns, swimlane.rows, newCells, newPoints);
-        }
+        const lastCellPoints = getCellWithPoints(board, swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
+        const lastColumnWidth = RectangleClient.getRectangleByPoints(lastCellPoints).width;
+        const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0] + lastColumnWidth * count, swimlane.points[1][1]]];
+        updateSwimlane(board, swimlane, newColumns, swimlane.rows, newCells, newPoints);
     }
 };
 
@@ -92,10 +87,8 @@ export const removeSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, in
             removeRows.forEach(row => {
                 if (!row.height) {
                     const rowCell = swimlane.cells.find(item => item.rowId === row.id)!;
-                    const cell = getCellWithPoints(board, swimlane, rowCell.id);
-                    if (cell) {
-                        removeRowHeight += RectangleClient.getRectangleByPoints(cell.points).height;
-                    }
+                    const cellPoints = getCellWithPoints(board, swimlane, rowCell.id).points;
+                    removeRowHeight += RectangleClient.getRectangleByPoints(cellPoints).height;
                 } else {
                     removeRowHeight += row.height;
                 }
@@ -129,10 +122,8 @@ export const removeSwimlaneColumn = (board: PlaitBoard, swimlane: PlaitSwimlane,
             removeColumns.forEach(column => {
                 if (!column.width) {
                     const rowCell = swimlane.cells.find(item => item.columnId === column.id)!;
-                    const cells = getCellWithPoints(board, swimlane, rowCell.id);
-                    if (cells) {
-                        removeColumnWidth += RectangleClient.getRectangleByPoints(cells.points).width;
-                    }
+                    const cellPoints = getCellWithPoints(board, swimlane, rowCell.id).points;
+                    removeColumnWidth += RectangleClient.getRectangleByPoints(cellPoints).width;
                 } else {
                     removeColumnWidth += column.width;
                 }

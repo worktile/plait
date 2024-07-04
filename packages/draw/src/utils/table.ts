@@ -6,52 +6,49 @@ import { TEXT_DEFAULT_HEIGHT } from '@plait/text-plugins';
 import { getSelectedCells, getSelectedTableElements, isSingleSelectElementByTable } from './table-selected';
 import { BaseEditor } from 'slate';
 
-export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): PlaitTableCellWithPoints[] | null {
-    const table = (board as PlaitTableBoard)?.buildTable(element);
-    if (table && table.points && table.columns && table.rows) {
-        const rectangle = table.points && RectangleClient.getRectangleByPoints(table.points);
-        const columnsCount = table.columns.length;
-        const rowsCount = table.rows.length;
-        const cellWidths = calculateCellsSize(table.columns, rectangle.width, columnsCount, true);
-        const cellHeights = calculateCellsSize(table.rows, rectangle.height, rowsCount, false);
-        const cells: PlaitTableCellWithPoints[] = table.cells.map(cell => {
-            const rowIdx = table.rows.findIndex(row => row.id === cell.rowId);
-            const columnIdx = table.columns.findIndex(column => column.id === cell.columnId);
+export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): PlaitTableCellWithPoints[] {
+    const table = (board as PlaitTableBoard).buildTable(element);
+    const rectangle = table.points && RectangleClient.getRectangleByPoints(table.points);
+    const columnsCount = table.columns.length;
+    const rowsCount = table.rows.length;
+    const cellWidths = calculateCellsSize(table.columns, rectangle.width, columnsCount, true);
+    const cellHeights = calculateCellsSize(table.rows, rectangle.height, rowsCount, false);
+    const cells: PlaitTableCellWithPoints[] = table.cells.map(cell => {
+        const rowIdx = table.rows.findIndex(row => row.id === cell.rowId);
+        const columnIdx = table.columns.findIndex(column => column.id === cell.columnId);
 
-            let cellTopLeftX = rectangle.x;
-            for (let i = 0; i < columnIdx; i++) {
-                cellTopLeftX += cellWidths[i];
-            }
+        let cellTopLeftX = rectangle.x;
+        for (let i = 0; i < columnIdx; i++) {
+            cellTopLeftX += cellWidths[i];
+        }
 
-            let cellTopLeftY = rectangle.y;
-            for (let i = 0; i < rowIdx; i++) {
-                cellTopLeftY += cellHeights[i];
-            }
+        let cellTopLeftY = rectangle.y;
+        for (let i = 0; i < rowIdx; i++) {
+            cellTopLeftY += cellHeights[i];
+        }
 
-            const cellWidth = calculateCellSize(cell, cellWidths, columnIdx, true);
-            const cellBottomRightX = cellTopLeftX + cellWidth;
+        const cellWidth = calculateCellSize(cell, cellWidths, columnIdx, true);
+        const cellBottomRightX = cellTopLeftX + cellWidth;
 
-            const cellHeight = calculateCellSize(cell, cellHeights, rowIdx, false);
-            const cellBottomRightY = cellTopLeftY + cellHeight;
+        const cellHeight = calculateCellSize(cell, cellHeights, rowIdx, false);
+        const cellBottomRightY = cellTopLeftY + cellHeight;
 
-            return {
-                ...cell,
-                points: [
-                    [cellTopLeftX, cellTopLeftY],
-                    [cellBottomRightX, cellBottomRightY]
-                ]
-            };
-        });
+        return {
+            ...cell,
+            points: [
+                [cellTopLeftX, cellTopLeftY],
+                [cellBottomRightX, cellBottomRightY]
+            ]
+        };
+    });
 
-        return cells;
-    }
-    return null;
+    return cells;
 }
 
 export function getCellWithPoints(board: PlaitBoard, table: PlaitBaseTable, cellId: string) {
     const cells = getCellsWithPoints(board as PlaitTableBoard, table);
-    const cellIndex = cells && table.cells.findIndex(item => item.id === cellId);
-    return cellIndex && cells[cellIndex];
+    const cellIndex = table.cells.findIndex(item => item.id === cellId);
+    return cells[cellIndex];
 }
 
 function calculateCellsSize(items: { id: string; [key: string]: any }[], tableSize: number, count: number, isWidth: boolean) {
@@ -93,12 +90,10 @@ export function getHitCell(board: PlaitTableBoard, element: PlaitBaseTable, poin
     const table = board.buildTable(element);
     const cells = getCellsWithPoints(board, table);
     const rectangle = RectangleClient.getRectangleByPoints([point, point]);
-    const cell =
-        cells &&
-        cells.find(item => {
-            const cellRectangle = RectangleClient.getRectangleByPoints(item.points);
-            return RectangleClient.isHit(rectangle, cellRectangle);
-        });
+    const cell = cells.find(item => {
+        const cellRectangle = RectangleClient.getRectangleByPoints(item.points);
+        return RectangleClient.isHit(rectangle, cellRectangle);
+    });
     if (cell) {
         return table.cells.find(item => item.id === cell.id);
     }
@@ -157,7 +152,7 @@ export function isCellIncludeText(cell: PlaitTableCell) {
 export function getCellsRectangle(board: PlaitTableBoard, element: PlaitTable, cells: PlaitTableCell[]) {
     const cellsWithPoints = getCellsWithPoints(board as PlaitTableBoard, element);
     const points = cells.map(cell => {
-        const cellWithPoints = cellsWithPoints && cellsWithPoints.find(item => item.id === cell.id);
+        const cellWithPoints = cellsWithPoints.find(item => item.id === cell.id);
         return cellWithPoints!.points;
     });
     return RectangleClient.getRectangleByPoints(points);

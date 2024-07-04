@@ -52,21 +52,19 @@ export function withTableResize(board: PlaitTableBoard) {
                     }
                 }
                 const cells = getCellsWithPoints(board, hitElement);
-                if (cells) {
-                    for (let i = 0; i < cells.length; i++) {
-                        rectangle = RectangleClient.getRectangleByPoints(cells[i].points);
-                        handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, 0);
-                        if (handleRef && !isCornerHandle(board, handleRef.handle)) {
-                            return {
-                                element: hitElement,
-                                handle: handleRef.handle,
-                                cursorClass: handleRef.cursorClass,
-                                rectangle,
-                                options: {
-                                    cell: cells[i]
-                                }
-                            };
-                        }
+                for (let i = 0; i < cells.length; i++) {
+                    rectangle = RectangleClient.getRectangleByPoints(cells[i].points);
+                    handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, 0);
+                    if (handleRef && !isCornerHandle(board, handleRef.handle)) {
+                        return {
+                            element: hitElement,
+                            handle: handleRef.handle,
+                            cursorClass: handleRef.cursorClass,
+                            rectangle,
+                            options: {
+                                cell: cells[i]
+                            }
+                        };
                     }
                 }
             }
