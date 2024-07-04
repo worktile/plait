@@ -7,7 +7,10 @@ import { getSelectedCells, getSelectedTableElements, isSingleSelectElementByTabl
 import { BaseEditor } from 'slate';
 
 export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): PlaitTableCellWithPoints[] {
-    const table = (board as PlaitTableBoard).buildTable(element);
+    const table = (board as PlaitTableBoard)?.buildTable(element);
+    if (!table || !table.points || !table.columns || !table.rows) {
+        throw new Error('can not get table cells points');
+    }
     const rectangle = RectangleClient.getRectangleByPoints(table.points);
     const columnsCount = table.columns.length;
     const rowsCount = table.rows.length;
@@ -46,9 +49,13 @@ export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): 
 }
 
 export function getCellWithPoints(board: PlaitBoard, table: PlaitBaseTable, cellId: string) {
-    const cells = getCellsWithPoints(board as PlaitTableBoard, table);
-    const cellIndex = table.cells.findIndex(item => item.id === cellId);
-    return cells[cellIndex];
+    try {
+        const cells = getCellsWithPoints(board as PlaitTableBoard, table);
+        const cellIndex = cells && table.cells.findIndex(item => item.id === cellId);
+        return cells[cellIndex];
+    } catch (error) {
+        throw new Error('can not get table cell points');
+    }
 }
 
 function calculateCellsSize(items: { id: string; [key: string]: any }[], tableSize: number, count: number, isWidth: boolean) {
