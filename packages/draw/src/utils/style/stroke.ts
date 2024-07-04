@@ -1,4 +1,4 @@
-import { PlaitBaseTable, PlaitDrawElement, StrokeStyle } from '../../interfaces';
+import { PlaitDrawElement, StrokeStyle } from '../../interfaces';
 import { DefaultDrawStyle } from '../../constants';
 import { PlaitBoard, PlaitElement } from '@plait/core';
 import { getDrawDefaultStrokeColor, getFlowchartDefaultFill } from '../geometry';
@@ -21,7 +21,7 @@ export const getLineDashByElement = (element: PlaitElement) => {
         case StrokeStyle.dashed:
             return [8, 8 + getStrokeWidthByElement(element)];
         case StrokeStyle.dotted:
-            return [0, 4 + getStrokeWidthByElement(element)];
+            return [2, 4 + getStrokeWidthByElement(element)];
         default:
             return undefined;
     }
