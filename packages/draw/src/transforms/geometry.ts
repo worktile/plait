@@ -1,10 +1,15 @@
 import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction, RectangleClient } from '@plait/core';
 import { PlaitDrawElement, GeometryShapes, PlaitText, FlowchartSymbols, BasicShapes, UMLSymbols, PlaitArrowLine } from '../interfaces';
-import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
+import {
+    collectArrowLineUpdatedRefsByGeometry,
+    createDefaultGeometry,
+    createTextElement,
+    getMemorizedLatestByPointer,
+    getTextShapeProperty,
+    insertElement
+} from '../utils';
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
-import { DrawTransforms } from '.';
-import { collectArrowLineUpdatedRefsByGeometry } from './arrow-line';
 import { DefaultBasicShapeProperty, DefaultBasicShapePropertyMap, DefaultFlowchartPropertyMap, DefaultUMLPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
@@ -67,7 +72,7 @@ export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) =>
     });
     if (refs.length) {
         refs.forEach(ref => {
-            DrawTransforms.resizeArrowLine(board, ref.property, ref.path);
+            Transforms.setNode(board, ref.property, ref.path);
         });
     }
 };

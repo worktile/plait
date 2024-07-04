@@ -1,5 +1,5 @@
-import { idCreator, Point, RectangleClient } from '@plait/core';
-import { DefaultSwimlanePropertyMap, SWIMLANE_HEADER_SIZE } from '../constants';
+import { idCreator, PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { DefaultSwimlanePropertyMap, getSwimlanePointers, SWIMLANE_HEADER_SIZE } from '../constants';
 import { PlaitDrawElement, PlaitSwimlane, PlaitTableCell, SwimlaneDrawSymbols, SwimlaneSymbols } from '../interfaces';
 import { createCell } from './table';
 
@@ -134,4 +134,8 @@ export const adjustSwimlaneShape = (shape: SwimlaneDrawSymbols): SwimlaneSymbols
     return [SwimlaneDrawSymbols.swimlaneHorizontalWithHeader, SwimlaneDrawSymbols.swimlaneHorizontal].includes(shape)
         ? SwimlaneSymbols.swimlaneHorizontal
         : SwimlaneSymbols.swimlaneVertical;
+};
+
+export const isSwimlanePointers = (board: PlaitBoard) => {
+    return PlaitBoard.isInPointer(board, getSwimlanePointers());
 };

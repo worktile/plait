@@ -1,7 +1,6 @@
 import { PlaitBoard, Point, RectangleClient, createG, preventTouchMove, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { PlaitSwimlane, SwimlaneDrawSymbols } from '../interfaces';
 import { insertElement } from '../utils';
-import { getSwimlanePointers } from '../constants';
 import {
     normalizeShapePoints,
     isDndMode,
@@ -13,7 +12,7 @@ import {
 import { isKeyHotkey } from 'is-hotkey';
 import { getSnapResizingRef } from '../utils/snap-resizing';
 import { TableGenerator } from '../generators/table.generator';
-import { createDefaultSwimlane, getDefaultSwimlanePoints } from '../utils/swimlane';
+import { createDefaultSwimlane, getDefaultSwimlanePoints, isSwimlanePointers } from '../utils/swimlane';
 
 export interface FakeCreateTextRef {
     g: SVGGElement;
@@ -21,15 +20,13 @@ export interface FakeCreateTextRef {
 }
 
 const isSwimlaneDndMode = (board: PlaitBoard) => {
-    const swimlanePointers = getSwimlanePointers();
-    const isSwimlanePointer = PlaitBoard.isInPointer(board, swimlanePointers);
+    const isSwimlanePointer = isSwimlanePointers(board);
     const dndMode = isSwimlanePointer && isDndMode(board);
     return dndMode;
 };
 
 const isSwimlaneDrawingMode = (board: PlaitBoard) => {
-    const swimlanePointers = getSwimlanePointers();
-    const isSwimlanePointer = PlaitBoard.isInPointer(board, swimlanePointers);
+    const isSwimlanePointer = isSwimlanePointers(board);
     const drawingMode = isSwimlanePointer && isDrawingMode(board);
     return drawingMode;
 };

@@ -57,6 +57,7 @@
         "graphology": "^0.25.4",
         "graphology-layout": "^0.6.1",
         "graphology-layout-forceatlas2": "^0.10.1",
+        "graphology-types": "^0.24.7",
         "is-hotkey": "^0.2.0",
         "points-on-curve": "^1.0.0",
         "roughjs": "^4.5.2",

@@ -125,20 +125,23 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
             },
             getRenderRectangle: (value: PlaitTable, text: PlaitDrawShapeText) => {
                 const cell = getCellWithPoints(this.board, value, text.key);
-                if (PlaitTableElement.isVerticalText(cell)) {
-                    const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
-                    const strokeWidth = getStrokeWidthByElement(cell);
-                    const width = cell.textHeight || 0;
-                    const height = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-                    return {
-                        width,
-                        height: height > 0 ? height : 0,
-                        x: cellRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-                        y: cellRectangle.y + (cellRectangle.height - height) / 2
-                    };
-                } else {
-                    return getHorizontalTextRectangle(cell);
+                if (cell) {
+                    if (PlaitTableElement.isVerticalText(cell)) {
+                        const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
+                        const strokeWidth = getStrokeWidthByElement(cell);
+                        const width = cell.textHeight || 0;
+                        const height = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+                        return {
+                            width,
+                            height: height > 0 ? height : 0,
+                            x: cellRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
+                            y: cellRectangle.y + (cellRectangle.height - height) / 2
+                        };
+                    } else {
+                        return getHorizontalTextRectangle(cell);
+                    }
                 }
+                return { width: 0, height: 0, x: 0, y: 0 };
             }
         });
         this.textGenerator.initialize();
