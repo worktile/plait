@@ -1,7 +1,6 @@
-import { PlaitBoard, RectangleClient } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitBoard, RectangleClient, setStrokeLinecap } from '@plait/core';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getTextRectangle } from '../../utils';
 import { createEllipseEngine } from '../basic-shapes/ellipse';
 
 export const OrEngine: ShapeEngine = createEllipseEngine({
@@ -10,7 +9,7 @@ export const OrEngine: ShapeEngine = createEllipseEngine({
         const rx = rectangle.width / 2;
         const ry = rectangle.height / 2;
         const startPoint = [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2];
-        return rs.path(
+        const shape = rs.path(
             `M${startPoint[0]} ${startPoint[1]}
         A${rx},${ry} 0 1,1 ${startPoint[0]} ${startPoint[1] - 0.01}
         M${rectangle.x} ${rectangle.y + rectangle.height / 2}
@@ -20,5 +19,7 @@ export const OrEngine: ShapeEngine = createEllipseEngine({
         `,
             { ...options, fillStyle: 'solid' }
         );
+        setStrokeLinecap(shape, 'round');
+        return shape;
     }
 });

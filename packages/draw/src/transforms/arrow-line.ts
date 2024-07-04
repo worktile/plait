@@ -6,12 +6,11 @@ import {
     ArrowLineText,
     MemorizeKey,
     PlaitArrowLine,
-    PlaitDrawElement,
-    PlaitGeometry
+    PlaitShapeElement
 } from '../interfaces';
 import { memorizeLatest } from '@plait/common';
 import { getSelectedArrowLineElements } from '../utils/selected';
-import { getHitConnection, getArrowLinePoints } from '../utils/arrow-line/arrow-line-basic';
+import { getHitConnection } from '../utils/arrow-line/arrow-line-basic';
 
 export const resizeArrowLine = (board: PlaitBoard, options: Partial<PlaitArrowLine>, path: Path) => {
     Transforms.setNode(board, options, path);
@@ -53,49 +52,11 @@ export const setArrowLineShape = (board: PlaitBoard, newProperties: Partial<Plai
     });
 };
 
-export const collectArrowLineUpdatedRefsByGeometry = (
-    board: PlaitBoard,
-    geometry: PlaitGeometry,
-    refs: { property: Partial<PlaitArrowLine>; path: Path }[]
-) => {
-    const lines = findElements(board, {
-        match: (element: PlaitElement) => {
-            if (PlaitDrawElement.isArrowLine(element)) {
-                return element.source.boundId === geometry.id || element.target.boundId === geometry.id;
-            }
-            return false;
-        },
-        recursion: element => true
-    }) as PlaitArrowLine[];
-    if (lines.length) {
-        lines.forEach(line => {
-            const isSourceBound = line.source.boundId === geometry.id;
-            const handle = isSourceBound ? 'source' : 'target';
-            const object = { ...line[handle] };
-            const linePoints = getArrowLinePoints(board, line);
-            const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
-            object.connection = getHitConnection(board, point, geometry);
-            const path = PlaitBoard.findPath(board, line);
-            const index = refs.findIndex(obj => Path.equals(obj.path, path));
-            if (index === -1) {
-                refs.push({
-                    property: {
-                        [handle]: object
-                    },
-                    path
-                });
-            } else {
-                refs[index].property = { ...refs[index].property, [handle]: object };
-            }
-        });
-    }
-};
-
-export const connectArrowLineToGeometry = (
+export const connectArrowLineToDraw = (
     board: PlaitBoard,
     lineElement: PlaitArrowLine,
     handle: ArrowLineHandleKey,
-    geometryElement: PlaitGeometry
+    geometryElement: PlaitShapeElement
 ) => {
     const linePoints = PlaitArrowLine.getPoints(board, lineElement);
     const point = handle === ArrowLineHandleKey.source ? linePoints[0] : linePoints[linePoints.length - 1];

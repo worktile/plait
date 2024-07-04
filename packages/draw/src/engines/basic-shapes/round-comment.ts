@@ -5,7 +5,8 @@ import {
     RectangleClient,
     getNearestPointBetweenPointAndSegments,
     isPointInPolygon,
-    isPointInRoundRectangle
+    isPointInRoundRectangle,
+    setStrokeLinecap
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
@@ -38,10 +39,12 @@ export const RoundCommentEngine: ShapeEngine = {
         const point10 = [x1 + rectangle.width / 4, rectangle.y + rectangle.height];
         const point11 = [x1 + rectangle.width / 2, y2];
 
-        return rs.path(
+        const shape = rs.path(
             `M${point2[0]} ${point2[1]} A ${radius} ${radius}, 0, 0, 1, ${point3[0]} ${point3[1]} L ${point4[0]} ${point4[1]} A ${radius} ${radius}, 0, 0, 1, ${point5[0]} ${point5[1]} L    ${point11[0]} ${point11[1]}  ${point10[0]} ${point10[1]}   ${point9[0]} ${point9[1]}   ${point6[0]} ${point6[1]} A ${radius} ${radius}, 0, 0, 1, ${point7[0]} ${point7[1]} L ${point8[0]} ${point8[1]} A ${radius} ${radius}, 0, 0, 1, ${point1[0]} ${point1[1]} Z`,
             { ...options, fillStyle: 'solid' }
         );
+        setStrokeLinecap(shape, 'round');
+        return shape;
     },
     isInsidePoint(rectangle: RectangleClient, point: Point) {
         const points: Point[] = [

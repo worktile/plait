@@ -1,39 +1,21 @@
-import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction, RectangleClient } from '@plait/core';
-import { PlaitDrawElement, GeometryShapes, PlaitText, FlowchartSymbols, BasicShapes, UMLSymbols, PlaitArrowLine } from '../interfaces';
-import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
+import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements } from '@plait/core';
+import { PlaitDrawElement, GeometryShapes, PlaitText, BasicShapes, PlaitArrowLine } from '../interfaces';
+import {
+    collectArrowLineUpdatedRefsByGeometry,
+    createDefaultGeometry,
+    createTextElement,
+    getMemorizedLatestByPointer,
+    getTextShapeProperty,
+    insertElement
+} from '../utils';
 import { Element } from 'slate';
-import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
+import { normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
-import { collectArrowLineUpdatedRefsByGeometry } from './arrow-line';
-import { DefaultBasicShapeProperty, DefaultBasicShapePropertyMap, DefaultFlowchartPropertyMap, DefaultUMLPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const newElement = createDefaultGeometry(board, points, shape);
     insertElement(board, newElement);
     return newElement;
-};
-
-export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: GeometryShapes, vector: Vector) => {
-    const shapeProperty =
-        DefaultFlowchartPropertyMap[shape as FlowchartSymbols] ||
-        DefaultBasicShapePropertyMap[shape as BasicShapes] ||
-        DefaultUMLPropertyMap[shape as UMLSymbols] ||
-        DefaultBasicShapeProperty;
-    const direction = getDirectionByVector(vector);
-    if (direction) {
-        let offset = 0;
-        if ([Direction.left, Direction.right].includes(direction)) {
-            offset = -shapeProperty.width / 2;
-        } else {
-            offset = -shapeProperty.height / 2;
-        }
-        const vectorPoint = getPointByVectorComponent(point, vector, offset);
-        const points = RectangleClient.getPoints(
-            RectangleClient.getRectangleByCenterPoint(vectorPoint, shapeProperty.width, shapeProperty.height)
-        );
-        return insertGeometry(board, points, shape);
-    }
-    return null;
 };
 
 export const insertText = (board: PlaitBoard, point: Point, text: string | Element) => {

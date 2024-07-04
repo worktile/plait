@@ -57,7 +57,8 @@ import {
     PlaitTableCell,
     getSelectedTableCellsEditor,
     isSingleSelectElementByTable,
-    VectorLineShape
+    VectorLineShape,
+    isDrawElementClosed
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { FontSizes, LinkEditor, MarkTypes, PlaitMarkEditor, TextTransforms } from '@plait/text-plugins';
@@ -127,6 +128,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     swimlaneCount = 3;
 
+    enableSetFillColor = true;
+
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -145,10 +148,12 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedMindElements = getSelectedMindElements(this.board);
         const selectedArrowLineElements = getSelectedArrowLineElements(this.board);
         const selectedVectorLineElements = getSelectedVectorLineElements(this.board);
+        const selectedDrawElements = getSelectedDrawElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedArrowLineElements.length || !!selectedVectorLineElements.length;
         this.isSelectedVectorLine = !!selectedVectorLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
+        this.enableSetFillColor = selectedDrawElements.some(item => isDrawElementClosed(item));
         if (this.isSelectSwimlane) {
             this.swimlaneCount = getSwimlaneCount(getSelectedElements(this.board)[0] as PlaitSwimlane);
         }
@@ -208,7 +213,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
                 this.cdr.markForCheck();
             });
         }
-        const selectedDrawElements = getSelectedDrawElements(this.board);
         this.isIncludeText = selectedMindElements.length ? true : isDrawElementsIncludeText(selectedDrawElements);
     }
 
@@ -252,7 +256,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
                 if (tableElement) {
                     DrawTransforms.setTableFill(this.board, element, property, path);
                 } else {
-                    Transforms.setNode(this.board, { fill: property }, path);
+                    if (isDrawElementClosed(element as PlaitDrawElement)) {
+                        Transforms.setNode(this.board, { fill: property }, path);
+                    }
                 }
             }
         });
