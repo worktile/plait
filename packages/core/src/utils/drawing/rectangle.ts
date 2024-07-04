@@ -39,10 +39,12 @@ export function drawRoundRectangle(
     const point7 = [x1, y2 - radius];
     const point8 = [x1, y1 + radius];
 
-    return rs.path(
+    const rectangleG = rs.path(
         `M${point2[0]} ${point2[1]} A ${radius} ${radius}, 0, 0, 1, ${point3[0]} ${point3[1]} L ${point4[0]} ${point4[1]} A ${radius} ${radius}, 0, 0, 1, ${point5[0]} ${point5[1]} L ${point6[0]} ${point6[1]} A ${radius} ${radius}, 0, 0, 1, ${point7[0]} ${point7[1]} L ${point8[0]} ${point8[1]} A ${radius} ${radius}, 0, 0, 1, ${point1[0]} ${point1[1]} Z`,
         options
     );
+    setStrokeLinecap(rectangleG, 'round');
+    return rectangleG;
 }
 
 export const drawRectangle = (board: PlaitBoard, rectangle: RectangleClient, options: Options) => {
