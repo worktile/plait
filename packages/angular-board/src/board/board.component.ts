@@ -35,6 +35,7 @@ import {
     BOARD_TO_ON_CHANGE,
     BOARD_TO_ROUGH_SVG,
     BoardTransforms,
+    FLUSHING,
     HOST_CLASS_NAME,
     IS_BOARD_ALIVE,
     IS_CHROME,
@@ -254,8 +255,24 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             const options = changes['plaitOptions'];
 
             if (valueChange) {
-                this.board.children = valueChange.currentValue;
-                this.updateListRender();
+                if (!FLUSHING.get(this.board)) {
+                    if (this.board.children !== valueChange.currentValue) {
+                        console.log('', 'set_value');
+                        this.board.children = valueChange.currentValue;
+                        this.updateListRender();
+                    }
+                } else {
+                    Promise.resolve().then(() => {
+                        console.log('wait to update');
+                        if (this.board.children !== valueChange.currentValue) {
+                            console.log('updated', 'set_value in promise period');
+                            this.board.children = valueChange.currentValue;
+                            this.updateListRender();
+                        } else {
+                            console.log('useless update');
+                        }
+                    });
+                }
             }
             if (options) {
                 this.board.options = options.currentValue;

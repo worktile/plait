@@ -39,21 +39,23 @@ export const throttleRAF = (board: PlaitBoard, key: string, fn: () => void) => {
     scheduleFunc();
 };
 
-export const debounce = (func: () => void, wait: number, options?: { leading: boolean }) => {
+export const debounce = <T>(func: (args?: T) => void, wait: number, options?: { leading: boolean }) => {
     let timerSubscription: Subscription | null = null;
-    return () => {
+    return (args?: T) => {
         if (timerSubscription && !timerSubscription.closed) {
             timerSubscription.unsubscribe();
             timerSubscription = timer(wait).subscribe(() => {
-                func();
+                func(args);
             });
         } else {
             if (options?.leading) {
                 timer(0).subscribe(() => {
-                    func();
+                    func(args);
                 });
             }
-            timerSubscription = timer(wait).subscribe();
+            timerSubscription = timer(wait).subscribe(() => {
+                func(args);
+            });
         }
     };
 };
