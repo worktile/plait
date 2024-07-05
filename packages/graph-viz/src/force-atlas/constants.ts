@@ -41,7 +41,7 @@ export const DEFAULT_NODE_STYLES: Options = {
     strokeWidth: 0
 };
 
-export const DEFAULT_NODE_SCALING_RATIO = 600;
+export const DEFAULT_NODE_SCALING_RATIO = 20;
 
 export const DEFAULT_LINE_STYLES = {
     color: {

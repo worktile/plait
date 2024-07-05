@@ -31,10 +31,12 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
         });
         circular.assign(this.graph);
         const settings = forceAtlas2.inferSettings(this.graph);
+        settings.strongGravityMode = false;
+        settings.linLogMode = true;
+        settings.gravity = 2;
         settings.adjustSizes = true;
         settings.scalingRatio = DEFAULT_NODE_SCALING_RATIO;
-        settings.barnesHutOptimize = true;
-        const positions = forceAtlas2(this.graph, { iterations: 500, settings });
+        const positions = forceAtlas2(this.graph, { iterations: 1000, settings });
         this.element.children?.forEach(child => {
             if (ForceAtlasElement.isForceAtlasNodeElement(child)) {
                 const pos = positions[child.id];
