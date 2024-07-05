@@ -4,7 +4,7 @@ import { ForceAtlasNodeElement } from '../../interfaces';
 import { drawNode } from '../utils/draw';
 import { NodeGeneratorData } from '../types';
 import { ForceAtlasNodeIconBoard, NodeIconProps } from '../with-node-icon';
-import { ACTIVE_NODE_ICON_FONT_SIZE, DEFAULT_NODE_BACKGROUND_COLOR, NODE_ICON_CLASS_NAME, NODE_ICON_FONT_SIZE } from '../constants';
+import { ACTIVE_NODE_ICON_CLASS_NAME, ACTIVE_NODE_ICON_FONT_SIZE, NODE_ICON_CLASS_NAME } from '../constants';
 import { getNodeIcon } from '../utils/node';
 
 export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement, NodeGeneratorData> {
@@ -31,16 +31,19 @@ export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement, No
         iconG.append(foreignObject);
         const container = document.createElement('div');
         container.classList.add(NODE_ICON_CLASS_NAME);
+        if (data.isActive) {
+            container.classList.add(ACTIVE_NODE_ICON_CLASS_NAME);
+        }
         foreignObject.append(container);
         const nodeIcon = getNodeIcon(element);
         const props: NodeIconProps = {
             iconItem: {
-                name: nodeIcon.name
+                name: nodeIcon.name,
+                fontSize: data.isActive ? ACTIVE_NODE_ICON_FONT_SIZE : nodeIcon.fontSize,
+                color: nodeIcon.color
             },
             board: this.board,
-            element: element,
-            fontSize: data.isActive ? ACTIVE_NODE_ICON_FONT_SIZE : nodeIcon.fontSize,
-            color: nodeIcon.color
+            element: element
         };
         const ref = ((this.board as unknown) as ForceAtlasNodeIconBoard).renderNodeIcon(container, props);
         return { ref, iconG };

@@ -25,6 +25,8 @@ export const ACTIVE_BACKGROUND_NODE_ALPHA = 0.1;
 
 export const NODE_ICON_CLASS_NAME = 'force-atlas-node-icon';
 
+export const ACTIVE_NODE_ICON_CLASS_NAME = 'force-atlas-node-icon-active';
+
 export const NODE_ICON_FONT_SIZE = 16;
 
 export const ACTIVE_NODE_ICON_FONT_SIZE = 18;

@@ -20,6 +20,4 @@ export interface NodeIconProps {
     board: PlaitBoard;
     iconItem: NodeIconItem;
     element: ForceAtlasNodeElement;
-    fontSize: number;
-    color: string;
 }
