@@ -12,6 +12,7 @@ import { addSelectedElement, isSelectedElement, removeSelectedElement } from '..
 import { ElementFlavour } from './element/element-flavour';
 import { DefaultIterableDiffer } from '../differs/default_iterable_differ';
 import { IterableChangeRecord, IterableDiffer } from '../differs/iterable_differs';
+import { isDebug } from '../utils/debug';
 
 export class ListRender {
     private children: PlaitElement[] = [];
@@ -128,7 +129,13 @@ const createPluginComponent = (
 ) => {
     const instance = new componentType();
     instance.context = context;
-    instance.initialize();
+    try {
+        instance.initialize();
+    } catch (error) {
+        if (isDebug()) {
+            console.error('list-render-initialize',error, 'context', context);
+        } 
+    }
     const g = instance.getContainerG();
     mountElementG(context.index, g, childrenContext);
     instance.initializeListRender();
