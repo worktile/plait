@@ -1,11 +1,13 @@
-import { PlaitBoard, Point, createG, drawLinearPath, idCreator, setStrokeLinecap } from '@plait/core';
-import { ArrowLineHandle, ArrowLineMarkerType, PlaitArrowLine, PlaitVectorLine, StrokeStyle, VectorLineShape } from '../interfaces';
+import { PlaitBoard, Point, catmullRomFitting, createG, drawLinearPath, idCreator, setStrokeLinecap } from '@plait/core';
+import { PlaitVectorLine, StrokeStyle, VectorLineShape } from '../interfaces';
 import { getLineMemorizedLatest } from './memorize';
 import { DefaultLineStyle } from '../constants/line';
-import { alignPoints, getCurvePoints } from './arrow-line';
+import { alignPoints } from './arrow-line';
 import { getStrokeWidthByElement } from './common';
 import { getFillByElement, getLineDashByElement, getStrokeColorByElement } from './style';
-import { LineGenerator } from '../generators/line.generator';
+import { VectorLineGenerator } from '../generators/vector-line-generator';
+import { pointsOnBezierCurves } from 'points-on-curve';
+import { removeDuplicatePoints } from '@plait/common';
 
 export const isClosedVectorLine = (vectorLine: PlaitVectorLine) => {
     const points = vectorLine.points;
@@ -17,11 +19,17 @@ export const isClosedVectorLine = (vectorLine: PlaitVectorLine) => {
 export const getVectorLinePoints = (board: PlaitBoard, element: PlaitVectorLine) => {
     switch (element.shape) {
         case VectorLineShape.straight: {
-            const points = PlaitArrowLine.getPoints(board, element);
-            return points;
+            return element.points;
         }
         case VectorLineShape.curve: {
-            return getCurvePoints(board, (element as unknown) as PlaitArrowLine);
+            if (element.points.length === 2) {
+                return pointsOnBezierCurves(element.points) as Point[];
+            } else {
+                let dataPoints = element.points;
+                dataPoints = removeDuplicatePoints(dataPoints);
+                const points = catmullRomFitting(dataPoints);
+                return pointsOnBezierCurves(points) as Point[];
+            }
         }
         default:
             return null;
@@ -31,16 +39,12 @@ export const getVectorLinePoints = (board: PlaitBoard, element: PlaitVectorLine)
 export const createVectorLineElement = (
     shape: VectorLineShape,
     points: [Point, Point],
-    source: ArrowLineHandle,
-    target: ArrowLineHandle,
     options?: Pick<PlaitVectorLine, 'strokeColor' | 'strokeWidth' | 'fill'>
 ): PlaitVectorLine => {
     return {
         id: idCreator(),
         type: 'vector-line',
         shape,
-        source,
-        target,
         opacity: 1,
         points,
         ...options
@@ -54,22 +58,16 @@ export const vectorLineCreating = (
     movingPoint: Point,
     lineShapeG: SVGGElement
 ) => {
-    const lineGenerator = new LineGenerator(board);
+    const lineGenerator = new VectorLineGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
-    const temporaryLineElement = createVectorLineElement(
-        lineShape,
-        [sourcePoint, movingPoint],
-        { marker: ArrowLineMarkerType.none },
-        { marker: ArrowLineMarkerType.none },
-        {
-            strokeWidth: DefaultLineStyle.strokeWidth,
-            ...memorizedLatest
-        }
-    );
+    const temporaryLineElement = createVectorLineElement(lineShape, [sourcePoint, movingPoint], {
+        strokeWidth: DefaultLineStyle.strokeWidth,
+        ...memorizedLatest
+    });
     const linePoints = getVectorLinePoints(board, temporaryLineElement);
     const otherPoint = linePoints![0];
     temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
-    lineGenerator.processDrawing((temporaryLineElement as unknown) as PlaitArrowLine, lineShapeG);
+    lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
 };

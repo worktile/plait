@@ -1,8 +1,7 @@
 import { PlaitBoard, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { PlaitLine } from '../interfaces/line';
-import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement } from '../interfaces';
+import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitVectorLine } from '../interfaces';
 import {
-    getArrowLinePoints,
     getCurvePoints,
     getElbowLineRouteOptions,
     getElbowPoints,
@@ -11,20 +10,14 @@ import {
 } from './arrow-line';
 import { getVectorLinePoints } from './vector-line';
 
-export const getLinePoints = (board: PlaitBoard, element: PlaitLine) => {
-    if (PlaitDrawElement.isArrowLine(element)) {
-        return getArrowLinePoints(board, element);
-    } else {
-        return getVectorLinePoints(board, element);
-    }
-};
-
 export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     const result: Point[] = [];
     const shape = element.shape;
     const hideBuffer = 10;
     if (shape === ArrowLineShape.straight) {
-        const points = PlaitArrowLine.getPoints(board, element);
+        const points = PlaitDrawElement.isArrowLine(element)
+            ? PlaitArrowLine.getPoints(board, element)
+            : (element as PlaitVectorLine).points;
         for (let i = 0; i < points.length - 1; i++) {
             const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
             if (distance < hideBuffer) continue;
@@ -32,8 +25,12 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
         }
     }
     if (shape === ArrowLineShape.curve) {
-        const points = PlaitArrowLine.getPoints(board, element);
-        const pointsOnBezier = getCurvePoints(board, element);
+        const points = PlaitDrawElement.isArrowLine(element)
+            ? PlaitArrowLine.getPoints(board, element)
+            : (element as PlaitVectorLine).points;
+        const pointsOnBezier = PlaitDrawElement.isArrowLine(element)
+            ? getCurvePoints(board, element)
+            : getVectorLinePoints(board, element)!;
         if (points.length === 2) {
             const start = 0;
             const endIndex = pointsOnBezier.length - 1;

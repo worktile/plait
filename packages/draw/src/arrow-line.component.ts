@@ -1,14 +1,13 @@
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, createDebugGenerator, PlaitNode } from '@plait/core';
-import { ArrowLineText, PlaitArrowLine, PlaitDrawElement, PlaitGeometry } from './interfaces';
+import { ArrowLineText, PlaitArrowLine, PlaitGeometry } from './interfaces';
 import { LineActiveGenerator } from './generators/line-active.generator';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold, MIN_TEXT_WIDTH } from './constants';
 import { CommonElementFlavour, TextManage, TextManageChangeData } from '@plait/common';
 import { getArrowLineTextRectangle } from './utils/arrow-line/arrow-line-basic';
 import { memorizeLatestText } from './utils/memorize';
-import { LineGenerator } from './generators/line.generator';
-import { PlaitLine } from './interfaces/line';
-import { getLinePoints } from './utils';
+import { ArrowLineGenerator } from './generators/arrow-line.generator';
+import { getArrowLinePoints } from './utils';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -18,8 +17,9 @@ interface BoundedElements {
 const debugKey = 'debug:plait:line-turning';
 const debugGenerator = createDebugGenerator(debugKey);
 
-export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> implements OnContextChanged<PlaitLine, PlaitBoard> {
-    shapeGenerator!: LineGenerator;
+export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, PlaitBoard>
+    implements OnContextChanged<PlaitArrowLine, PlaitBoard> {
+    shapeGenerator!: ArrowLineGenerator;
 
     activeGenerator!: LineActiveGenerator;
 
@@ -30,26 +30,22 @@ export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> i
     }
 
     initializeGenerator() {
-        this.shapeGenerator = new LineGenerator(this.board);
+        this.shapeGenerator = new ArrowLineGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
-        if (PlaitDrawElement.isArrowLine(this.element)) {
-            this.initializeTextManagesByElement();
-        }
+        this.initializeTextManagesByElement();
     }
 
     initialize(): void {
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element, this.getElementG());
-        const linePoints = getLinePoints(this.board, this.element)!;
+        const linePoints = getArrowLinePoints(this.board, this.element)!;
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected,
             linePoints
         });
         super.initialize();
-        if (PlaitDrawElement.isArrowLine(this.element)) {
-            this.boundedElements = this.getBoundedElements();
-            this.drawText();
-        }
+        this.boundedElements = this.getBoundedElements();
+        this.drawText();
         debugGenerator.isDebug() && debugGenerator.drawCircles(this.board, this.element.points.slice(1, -1), 4, true);
     }
 
@@ -70,27 +66,26 @@ export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> i
         return boundedElements;
     }
 
-    onContextChanged(value: PlaitPluginElementContext<PlaitLine, PlaitBoard>, previous: PlaitPluginElementContext<PlaitLine, PlaitBoard>) {
+    onContextChanged(
+        value: PlaitPluginElementContext<PlaitArrowLine, PlaitBoard>,
+        previous: PlaitPluginElementContext<PlaitArrowLine, PlaitBoard>
+    ) {
         this.initializeWeakMap();
         let isBoundedElementsChanged = false;
-        if (PlaitDrawElement.isArrowLine(this.element)) {
-            const boundedElements = this.getBoundedElements();
-            isBoundedElementsChanged =
-                boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
-            this.boundedElements = boundedElements;
-        }
+        const boundedElements = this.getBoundedElements();
+        isBoundedElementsChanged =
+            boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
+        this.boundedElements = boundedElements;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-        const linePoints = getLinePoints(this.board, this.element)!;
+        const linePoints = getArrowLinePoints(this.board, this.element)!;
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected,
                 linePoints
             });
-            if (PlaitDrawElement.isArrowLine(this.element)) {
-                this.updateText(previous.element.texts, value.element.texts);
-                this.updateTextRectangle();
-            }
+            this.updateText(previous.element.texts, value.element.texts);
+            this.updateTextRectangle();
         } else {
             const needUpdate = value.selected !== previous.selected || this.activeGenerator.needUpdate();
             if (needUpdate) {
@@ -138,7 +133,7 @@ export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> i
             },
             onChange: (textManageChangeData: TextManageChangeData) => {
                 const path = PlaitBoard.findPath(this.board, this.element);
-                const node = PlaitNode.get(this.board, path) as PlaitLine;
+                const node = PlaitNode.get(this.board, path) as PlaitArrowLine;
                 const texts = [...node.texts];
                 const newWidth = textManageChangeData.width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : textManageChangeData.width;
                 texts.splice(index, 1, {

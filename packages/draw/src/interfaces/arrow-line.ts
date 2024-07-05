@@ -3,7 +3,6 @@ import { Element } from 'slate';
 import { StrokeStyle } from './element';
 import { getConnectionPoint } from '../utils/arrow-line/arrow-line-common';
 import { PlaitShapeElement } from '.';
-import { PlaitLine } from './line';
 
 export enum ArrowLineMarkerType {
     arrow = 'arrow',
@@ -106,7 +105,7 @@ export const PlaitArrowLine = {
     isBoundElementOfTarget(line: PlaitArrowLine, element: PlaitShapeElement) {
         return line.target.boundId === element.id;
     },
-    getPoints(board: PlaitBoard, line: PlaitLine) {
+    getPoints(board: PlaitBoard, line: PlaitArrowLine) {
         let sourcePoint;
         if (line.source.boundId) {
             const sourceElement = getElementById<PlaitShapeElement>(board, line.source.boundId)!;

@@ -32,11 +32,11 @@ import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
 import { LINE_SNAPPING_CONNECTOR_BUFFER } from '../../constants';
 import { getLineMemorizedLatest } from '../memorize';
 import { alignPoints } from './arrow-line-resize';
-import { getElbowLineRouteOptions, getArrowLineHandleRefPair } from './arrow-line-common';
-import { getElbowPoints, getNextSourceAndTargetPoints, isUseDefaultOrthogonalRoute } from './elbow';
+import { getArrowLineHandleRefPair } from './arrow-line-common';
+import { getElbowPoints } from './elbow';
 import { drawArrowLineArrow } from './arrow-line-arrow';
 import { getSnappingRef, getSnappingShape, getStrokeWidthByElement } from '../common';
-import { LineGenerator } from '../../generators/line.generator';
+import { ArrowLineGenerator } from '../../generators/arrow-line.generator';
 
 export const createArrowLineElement = (
     shape: ArrowLineShape,
@@ -204,7 +204,7 @@ export const handleArrowLineCreating = (
     const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
     const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
-    const lineGenerator = new LineGenerator(board);
+    const lineGenerator = new ArrowLineGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
     let sourceMarker, targetMarker;
     sourceMarker = memorizedLatest.source;

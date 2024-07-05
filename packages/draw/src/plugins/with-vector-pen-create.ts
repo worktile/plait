@@ -19,8 +19,8 @@ import { isDrawingMode } from '@plait/common';
 import { vectorLineCreating } from '../utils';
 import { isKeyHotkey } from 'is-hotkey';
 
-export const withVectorPen = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, globalKeyDown, globalPointerUp } = board;
+export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
+    const { pointerDown, pointerMove, dblClick, globalKeyDown, globalPointerUp } = board;
 
     let lineShapeG: SVGGElement | null = null;
 
@@ -90,6 +90,17 @@ export const withVectorPen = (board: PlaitBoard) => {
             }
         }
         pointerMove(event);
+    };
+
+    board.dblClick = (event: MouseEvent) => {
+        if (!PlaitBoard.isReadonly(board)) {
+            if (vectorPenRef || temporaryElement) {
+                vectorPenRef = null;
+                temporaryElement = null;
+            }
+            BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+        }
+        dblClick(event);
     };
 
     board.globalKeyDown = (event: KeyboardEvent) => {

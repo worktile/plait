@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
-import { ArrowLineShape, PlaitArrowLine } from '../../interfaces';
+import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER } from '@plait/common';
 import { PlaitLine } from '../../interfaces/line';
 import { getMiddlePoints } from '../line';
@@ -11,7 +11,7 @@ export enum LineResizeHandle {
 }
 
 export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    let dataPoints = PlaitArrowLine.getPoints(board, element);
+    let dataPoints = PlaitDrawElement.isArrowLine(element) ? PlaitArrowLine.getPoints(board, element) : element.points;
     const index = getHitPointIndex(dataPoints, point);
     if (index !== -1) {
         const handleIndex = index;

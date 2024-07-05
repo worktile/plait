@@ -4,6 +4,7 @@ export * from './plugins/with-arrow-line-auto-complete';
 export * from './constants';
 export * from './utils';
 export * from './geometry.component';
-export * from './line.component';
+export * from './arrow-line.component';
+export * from './vector-line.component';
 export * from './transforms';
 export * from './generators/index';

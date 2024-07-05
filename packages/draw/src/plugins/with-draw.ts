@@ -1,6 +1,7 @@
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
-import { LineComponent } from '../line.component';
+import { ArrowLineComponent } from '../arrow-line.component';
+import { VectorLineComponent } from '../vector-line.component';
 import { PlaitDrawElement } from '../interfaces';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
@@ -20,7 +21,7 @@ import { getArrowLinePoints, getArrowLineTextRectangle } from '../utils/arrow-li
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
-import { withVectorPen } from './with-vector-pen';
+import { withVectorPenCreateByDraw } from './with-vector-pen-create';
 import { getVectorLinePoints } from '../utils/vector-line';
 import { withVectorLineResize } from './with-vector-line-resize';
 
@@ -43,8 +44,10 @@ export const withDraw = (board: PlaitBoard) => {
                 return GeometryComponent;
             }
             return GeometryComponent;
-        } else if (PlaitDrawElement.isLine(context.element)) {
-            return LineComponent;
+        } else if (PlaitDrawElement.isArrowLine(context.element)) {
+            return ArrowLineComponent;
+        } else if (PlaitDrawElement.isVectorLine(context.element)) {
+            return VectorLineComponent;
         } else if (PlaitDrawElement.isImage(context.element)) {
             return ImageComponent;
         }
@@ -158,7 +161,7 @@ export const withDraw = (board: PlaitBoard) => {
     return withSwimlane(
         withTable(
             withDrawResize(
-                withVectorPen(
+                withVectorPenCreateByDraw(
                     withArrowLineAutoCompleteReaction(
                         withArrowLineBoundReaction(
                             withVectorLineResize(
