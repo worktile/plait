@@ -1,7 +1,8 @@
 import { PlaitElement } from '@plait/core';
+import { NodeIconItem } from '../force-atlas/types';
 export interface ForceAtlasNodeElement extends PlaitElement {
     label: string;
-    icon: string;
+    icon: string | NodeIconItem;
     size?: number;
     isActive?: boolean;
 }
