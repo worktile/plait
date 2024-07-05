@@ -11,6 +11,7 @@ import { getRectangleByElements } from './element';
 import { PlaitOptionsBoard } from '../plugins/with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { WithPluginOptions } from '../plugins/with-selection';
+import { isDebug } from './debug';
 
 export const getHitElementsBySelection = (
     board: PlaitBoard,
@@ -34,8 +35,18 @@ export const getHitElementsBySelection = (
     depthFirstRecursion<Ancestor>(
         board,
         node => {
-            if (!PlaitBoard.isBoard(node) && match(node) && board.isRectangleHit(node, newSelection)) {
-                rectangleHitElements.push(node);
+            if (!PlaitBoard.isBoard(node) && match(node)) {
+                let isRectangleHit = false;
+                try {
+                    isRectangleHit = board.isRectangleHit(node, newSelection);
+                } catch (error) {
+                    if (isDebug()) {
+                        console.error('isRectangleHit', error, 'node', node);
+                    }
+                }
+                if (isRectangleHit) {
+                    rectangleHitElements.push(node);
+                }
             }
         },
         getIsRecursionFunc(board),
@@ -56,7 +67,15 @@ export const getHitElementsByPoint = (
             if (PlaitBoard.isBoard(node) || !match(node) || !PlaitElement.hasMounted(node)) {
                 return;
             }
-            if (board.isHit(node, point)) {
+            let isHit = false;
+            try {
+                isHit = board.isHit(node, point);
+            } catch (error) {
+                if (isDebug()) {
+                    console.error('isHit', error, 'node', node);
+                }
+            }
+            if (isHit) {
                 hitElements.push(node);
                 return;
             }
