@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitBoardOptions, PlaitTheme, Viewport, PlaitPlugin } from '@plait/core';
 import { mockForceAtlasData } from './mock-force-atlas';
 import { ForceAtlasElement, withForceAtlas } from '@plait/graph-viz';
@@ -11,6 +11,7 @@ import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
 import { PlaitBoardComponent } from '@plait/angular-board';
+import { withForceAtlasExtend } from './with-force-atlas-extend';
 
 @Component({
     selector: 'app-basic-graph-viz',
@@ -27,7 +28,9 @@ import { PlaitBoardComponent } from '@plait/angular-board';
     ]
 })
 export class BasicGraphVizComponent implements OnInit {
-    plugins: PlaitPlugin[] = [withCommonPlugin, withForceAtlas];
+    @HostBinding('class') hostClass = 'app-graph-viz';
+
+    plugins: PlaitPlugin[] = [withCommonPlugin, withForceAtlas, withForceAtlasExtend];
 
     value: ForceAtlasElement[] = [];
 

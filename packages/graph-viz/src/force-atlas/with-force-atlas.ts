@@ -14,6 +14,7 @@ import { ForceAtlasNodeFlavour } from './node.flavour';
 import { ForceAtlasEdgeFlavour } from './edge.flavour';
 import { ForceAtlasElement } from '../interfaces';
 import { isHitNode } from './utils/node';
+import { withNodeIcon } from './with-node-icon';
 
 export const withForceAtlas = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
@@ -80,5 +81,5 @@ export const withForceAtlas = (board: PlaitBoard) => {
 
     (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
 
-    return board;
+    return withNodeIcon(board);
 };

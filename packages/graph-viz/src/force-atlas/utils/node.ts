@@ -3,6 +3,7 @@ import { ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
 import { getEdges, getEdgesInSourceOrTarget } from './edge';
 import { PlaitCommonElementRef } from '@plait/common';
 import { ForceAtlasNodeGenerator } from '../generators/node.generator';
+import { DEFAULT_NODE_ICON_COLOR, NODE_ICON_FONT_SIZE } from '../constants';
 
 export function getNodes(forceAtlasElement: ForceAtlasElement, andBack?: (edge: ForceAtlasNodeElement) => boolean) {
     return forceAtlasElement.children?.filter(
@@ -54,4 +55,13 @@ export function isFirstDepthNode(currentNodeId: string, activeNodeId: string, fo
     return edges.some(
         s => (s.source === activeNodeId && s.target === currentNodeId) || (s.target === activeNodeId && s.source === currentNodeId)
     );
+}
+
+export function getNodeIcon(node: ForceAtlasNodeElement) {
+    const iconItem = typeof node.icon === 'object' && node.icon.name ? node.icon : null;
+    return {
+        name: iconItem ? iconItem.name : (node.icon as string),
+        fontSize: (iconItem && iconItem.fontSize) || NODE_ICON_FONT_SIZE,
+        color: (iconItem && iconItem.color) || DEFAULT_NODE_ICON_COLOR
+    };
 }

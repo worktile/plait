@@ -38,5 +38,6 @@ export class ForceAtlasEdgeFlavour extends CommonElementFlavour<ForceAtlasEdgeEl
 
     destroy(): void {
         super.destroy();
+        this.edgeGenerator.destroy();
     }
 }

@@ -30,3 +30,9 @@ export interface NodeGeneratorData extends GeneratorExtraData {
     isActive: boolean;
     isFirstDepth: boolean;
 }
+
+export interface NodeIconItem {
+    name: string;
+    fontSize?: number;
+    color?: string;
+}

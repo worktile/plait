@@ -29,6 +29,7 @@ export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement, Ed
     }
 
     destroy(): void {
+        super.destroy();
         this.particleAnimation?.stop();
     }
 }
