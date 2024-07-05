@@ -94,11 +94,12 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
 
     board.dblClick = (event: MouseEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
-            if (vectorPenRef || temporaryElement) {
+            if (vectorPenRef && vectorPenRef.element) {
+                Transforms.setNode(board, { points: vectorPenRef.element.points }, vectorPenRef.path!);
                 vectorPenRef = null;
                 temporaryElement = null;
+                BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
             }
-            BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
         dblClick(event);
     };
