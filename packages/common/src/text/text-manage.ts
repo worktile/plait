@@ -6,6 +6,7 @@ import {
     RectangleClient,
     createForeignObject,
     createG,
+    debounce,
     setAngleForG,
     toHostPoint,
     toViewBoxPoint,
@@ -36,6 +37,16 @@ export class TextManage {
 
     textComponentRef!: TextComponentRef;
 
+    // add debounce to avoid trigger more times(from onChange and onComposition) onChange when user is typing chinese
+    // be going to attract board children are overwritten when fired more times onChange(eg: board is embed in editor)
+    textChange = debounce<TextManageChangeData>((data?: TextManageChangeData) => {
+        if (!data) {
+            return;
+        }
+        this.options.onChange && this.options.onChange({ ...data });
+        MERGING.set(this.board, true);
+    }, 0);
+
     constructor(
         private board: PlaitBoard,
         private options: {
@@ -64,8 +75,7 @@ export class TextManage {
             onChange: (data: TextChangeData) => {
                 if (data.operations.some(op => !Operation.isSelectionOperation(op))) {
                     const { width, height } = this.getSize();
-                    this.options.onChange && this.options.onChange({ ...data, width, height });
-                    MERGING.set(this.board, true);
+                    this.textChange({ ...data, width, height });
                 }
             },
             afterInit: (editor: Editor) => {
@@ -75,8 +85,7 @@ export class TextManage {
                 const fakeRoot = buildCompositionData(this.editor, event.data);
                 if (fakeRoot) {
                     const sizeData = this.getSize(fakeRoot.children[0]);
-                    this.options.onChange && this.options.onChange(sizeData);
-                    MERGING.set(this.board, true);
+                    this.textChange(sizeData);
                 }
             }
         };
