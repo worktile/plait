@@ -1,6 +1,5 @@
 import { Path, PlaitElement } from '../interfaces';
 import { PlaitBoard } from '../interfaces/board';
-import { Subscription, timer } from 'rxjs';
 import { NodeTransforms } from '../transforms/node';
 import { sortElements } from './position';
 
@@ -39,21 +38,24 @@ export const throttleRAF = (board: PlaitBoard, key: string, fn: () => void) => {
     scheduleFunc();
 };
 
-export const debounce = (func: () => void, wait: number, options?: { leading: boolean }) => {
-    let timerSubscription: Subscription | null = null;
-    return () => {
-        if (timerSubscription && !timerSubscription.closed) {
-            timerSubscription.unsubscribe();
-            timerSubscription = timer(wait).subscribe(() => {
-                func();
-            });
+export const debounce = <T>(func: (args?: T) => void, wait: number, options?: { leading: boolean }) => {
+    let timeout: any = null;
+    return (args?: T) => {
+        if (timeout !== null) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func(args);
+                timeout = null;
+            }, wait);
         } else {
             if (options?.leading) {
-                timer(0).subscribe(() => {
-                    func();
-                });
+                func(args);
+            } else {
+                timeout = setTimeout(() => {
+                    func(args);
+                    timeout = null;
+                }, wait);
             }
-            timerSubscription = timer(wait).subscribe();
         }
     };
 };
