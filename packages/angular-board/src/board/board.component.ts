@@ -254,8 +254,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             const options = changes['plaitOptions'];
 
             if (valueChange) {
-                this.board.children = valueChange.currentValue;
-                this.updateListRender();
+                // avoid useless updating
+                if (this.board.children !== valueChange.currentValue) {
+                    this.board.children = valueChange.currentValue;
+                    this.updateListRender();
+                }
             }
             if (options) {
                 this.board.options = options.currentValue;
