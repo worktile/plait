@@ -5,7 +5,7 @@ import { DefaultLineStyle } from '../constants/line';
 import { alignPoints } from './arrow-line';
 import { getStrokeWidthByElement } from './common';
 import { getFillByElement, getLineDashByElement, getStrokeColorByElement } from './style';
-import { VectorLineGenerator } from '../generators/vector-line-generator';
+import { VectorLineShapeGenerator } from '../generators/vector-line-generator';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { removeDuplicatePoints } from '@plait/common';
 
@@ -58,7 +58,7 @@ export const vectorLineCreating = (
     movingPoint: Point,
     lineShapeG: SVGGElement
 ) => {
-    const lineGenerator = new VectorLineGenerator(board);
+    const lineGenerator = new VectorLineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
     const temporaryLineElement = createVectorLineElement(lineShape, [sourcePoint, movingPoint], {
         strokeWidth: DefaultLineStyle.strokeWidth,

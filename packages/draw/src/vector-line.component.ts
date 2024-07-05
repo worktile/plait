@@ -3,14 +3,14 @@ import { PlaitVectorLine } from './interfaces';
 import { LineActiveGenerator } from './generators/line-active.generator';
 import { CommonElementFlavour } from '@plait/common';
 import { getVectorLinePoints } from './utils';
-import { VectorLineGenerator } from './generators/vector-line-generator';
+import { VectorLineShapeGenerator } from './generators/vector-line-generator';
 
 const debugKey = 'debug:plait:vector-line-turning';
 const debugGenerator = createDebugGenerator(debugKey);
 
 export class VectorLineComponent extends CommonElementFlavour<PlaitVectorLine, PlaitBoard>
     implements OnContextChanged<PlaitVectorLine, PlaitBoard> {
-    shapeGenerator!: VectorLineGenerator;
+    shapeGenerator!: VectorLineShapeGenerator;
 
     activeGenerator!: LineActiveGenerator;
 
@@ -19,7 +19,7 @@ export class VectorLineComponent extends CommonElementFlavour<PlaitVectorLine, P
     }
 
     initializeGenerator() {
-        this.shapeGenerator = new VectorLineGenerator(this.board);
+        this.shapeGenerator = new VectorLineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
     }
 

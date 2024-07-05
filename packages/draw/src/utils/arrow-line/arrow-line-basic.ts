@@ -36,7 +36,7 @@ import { getArrowLineHandleRefPair } from './arrow-line-common';
 import { getElbowPoints } from './elbow';
 import { drawArrowLineArrow } from './arrow-line-arrow';
 import { getSnappingRef, getSnappingShape, getStrokeWidthByElement } from '../common';
-import { ArrowLineGenerator } from '../../generators/arrow-line.generator';
+import { ArrowLineShapeGenerator } from '../../generators/arrow-line.generator';
 
 export const createArrowLineElement = (
     shape: ArrowLineShape,
@@ -204,7 +204,7 @@ export const handleArrowLineCreating = (
     const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
     const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
-    const lineGenerator = new ArrowLineGenerator(board);
+    const lineGenerator = new ArrowLineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
     let sourceMarker, targetMarker;
     sourceMarker = memorizedLatest.source;

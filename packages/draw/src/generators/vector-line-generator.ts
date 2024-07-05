@@ -2,7 +2,7 @@ import { PlaitVectorLine } from '../interfaces';
 import { Generator } from '@plait/common';
 import { drawVectorLine } from '../utils';
 
-export class VectorLineGenerator extends Generator<PlaitVectorLine> {
+export class VectorLineShapeGenerator extends Generator<PlaitVectorLine> {
     canDraw(element: PlaitVectorLine): boolean {
         return true;
     }

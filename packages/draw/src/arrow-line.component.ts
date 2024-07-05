@@ -6,7 +6,7 @@ import { GeometryThreshold, MIN_TEXT_WIDTH } from './constants';
 import { CommonElementFlavour, TextManage, TextManageChangeData } from '@plait/common';
 import { getArrowLineTextRectangle } from './utils/arrow-line/arrow-line-basic';
 import { memorizeLatestText } from './utils/memorize';
-import { ArrowLineGenerator } from './generators/arrow-line.generator';
+import { ArrowLineShapeGenerator } from './generators/arrow-line.generator';
 import { getArrowLinePoints } from './utils';
 
 interface BoundedElements {
@@ -19,7 +19,7 @@ const debugGenerator = createDebugGenerator(debugKey);
 
 export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, PlaitBoard>
     implements OnContextChanged<PlaitArrowLine, PlaitBoard> {
-    shapeGenerator!: ArrowLineGenerator;
+    shapeGenerator!: ArrowLineShapeGenerator;
 
     activeGenerator!: LineActiveGenerator;
 
@@ -30,7 +30,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
     }
 
     initializeGenerator() {
-        this.shapeGenerator = new ArrowLineGenerator(this.board);
+        this.shapeGenerator = new ArrowLineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
         this.initializeTextManagesByElement();
     }
@@ -38,7 +38,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
     initialize(): void {
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element, this.getElementG());
-        const linePoints = getArrowLinePoints(this.board, this.element)!;
+        const linePoints = getArrowLinePoints(this.board, this.element);
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected,
             linePoints
@@ -46,6 +46,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
         super.initialize();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
+
         debugGenerator.isDebug() && debugGenerator.drawCircles(this.board, this.element.points.slice(1, -1), 4, true);
     }
 
@@ -71,13 +72,12 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
         previous: PlaitPluginElementContext<PlaitArrowLine, PlaitBoard>
     ) {
         this.initializeWeakMap();
-        let isBoundedElementsChanged = false;
         const boundedElements = this.getBoundedElements();
-        isBoundedElementsChanged =
+        const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
         this.boundedElements = boundedElements;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-        const linePoints = getArrowLinePoints(this.board, this.element)!;
+        const linePoints = getArrowLinePoints(this.board, this.element);
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
