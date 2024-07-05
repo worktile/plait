@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.62.0-next.8
+
+### Patch Changes
+
+-   [#935](https://github.com/worktile/plait/pull/935) [`716e8f23f`](https://github.com/worktile/plait/commit/716e8f23fbfd6394b917b1e35ff3cb34d4d848dc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - handle enter event when editing text
+
+*   [#945](https://github.com/worktile/plait/pull/945) [`46dec5346`](https://github.com/worktile/plait/commit/46dec53469b8b52636e8a9795ea1b6101df09c9f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Add debounce to avoid trigger more times(from onChange and onComposition) onChange when user is typing chinese(Be going to attract board children are overwritten when fired more times onChange(eg: board is embed in editor))
+
 ## 0.62.0-next.7
 
 ### Minor Changes

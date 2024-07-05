@@ -1,5 +1,11 @@
 # @plait/graph-viz
 
+## 0.62.0-next.8
+
+### Minor Changes
+
+-   [#946](https://github.com/worktile/plait/pull/946) [`17406e68c`](https://github.com/worktile/plait/commit/17406e68ce3d040e652836c43dc7a62dc5f0a5a3) Thanks [@Xwatson](https://github.com/Xwatson)! - support icon component rendering
+
 ## 0.62.0-next.7
 
 ### Minor Changes

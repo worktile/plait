@@ -1,5 +1,17 @@
 # plait
 
+## 0.62.0-next.8
+
+### Minor Changes
+
+-   [#947](https://github.com/worktile/plait/pull/947) [`7dcbfcd9e`](https://github.com/worktile/plait/commit/7dcbfcd9e126283637450f23bf4953941754a78e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add try-catch to avoid the list rendering being broken and add try-catch to avoid selection being break on data is invalid. and console the error when env is debug mode.
+
+    add try-catch for initialize element-flavour in list-render
+
+    add try-catch for isHit in selected-element
+
+    add try-catch for isRectangleHit in selected-element
+
 ## 0.62.0-next.7
 
 ### Minor Changes

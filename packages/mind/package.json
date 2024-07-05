@@ -1,6 +1,6 @@
 {
   "name": "@plait/mind",
-  "version": "0.62.0-next.7",
+  "version": "0.62.0-next.8",
   "peerDependencies": {},
   "dependencies": {
     "tslib": "^2.3.0"
@@ -8,10 +8,10 @@
   "license": "MIT",
   "repository": "https://github.com/worktile/plait",
   "keywords": [
-      "mind",
-      "mind map",
-      "whiteboard",
-      "logic",
-      "indent"
+    "mind",
+    "mind map",
+    "whiteboard",
+    "logic",
+    "indent"
   ]
 }

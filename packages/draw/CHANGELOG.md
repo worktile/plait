@@ -1,5 +1,19 @@
 # @plait/draw
 
+## 0.62.0-next.8
+
+### Patch Changes
+
+-   [#939](https://github.com/worktile/plait/pull/939) [`1c58e3448`](https://github.com/worktile/plait/commit/1c58e34484c99afdb36ff9a1ae75664949b1797d) Thanks [@MissLixf](https://github.com/MissLixf)! - add isDrawElementClosed function
+
+*   [#935](https://github.com/worktile/plait/pull/935) [`716e8f23f`](https://github.com/worktile/plait/commit/716e8f23fbfd6394b917b1e35ff3cb34d4d848dc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - handle enter event when editing text
+
+-   [#942](https://github.com/worktile/plait/pull/942) [`7d1e71348`](https://github.com/worktile/plait/commit/7d1e71348f2c4da4c86df5b6402f2e8cef9a8508) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - throw new Error when get cell points
+
+*   [#940](https://github.com/worktile/plait/pull/940) [`ff83a2706`](https://github.com/worktile/plait/commit/ff83a27067e09169eb9caa818e5d419a8a47b5b1) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix link swimlane error by autocomplete
+
+-   [#941](https://github.com/worktile/plait/pull/941) [`b6aad2054`](https://github.com/worktile/plait/commit/b6aad2054861240ebab57e165c675594c8826a2d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - adjust line dash value for dotted
+
 ## 0.62.0-next.7
 
 ### Minor Changes

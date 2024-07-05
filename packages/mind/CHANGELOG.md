@@ -1,5 +1,11 @@
 # mind
 
+## 0.62.0-next.8
+
+### Patch Changes
+
+-   [#935](https://github.com/worktile/plait/pull/935) [`716e8f23f`](https://github.com/worktile/plait/commit/716e8f23fbfd6394b917b1e35ff3cb34d4d848dc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - handle enter event when editing text
+
 ## 0.62.0-next.7
 
 ### Minor Changes
