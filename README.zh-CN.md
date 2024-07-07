@@ -30,7 +30,7 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 
 - 流程图插件
 
-- 知识图谱插件
+- 图形可视化插件
 
 - 流程编排插件
 
@@ -39,7 +39,7 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 
 - 👉 [在线示例 (流程图)](https://plait-gamma.vercel.app?init=draw)
 - 👉 [在线示例 (思维导图)](https://plait-gamma.vercel.app?init=mind)
-- 👉 [在线示例 (知识图谱)](https://plait-gamma.vercel.app/graph-viz?init=force-atlas)
+- 👉 [在线示例 (图形可视化)](https://plait-gamma.vercel.app/graph-viz?init=force-atlas)
 - 👉 [在线示例 (流程控制)](https://plait-gamma.vercel.app/flow)
 - 👉 [在线文档](https://plait-docs.vercel.app)
 

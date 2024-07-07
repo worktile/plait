@@ -34,7 +34,7 @@ Plait will also provide some basic functional plugins, which have been implement
 
 - Draw plugin
 
-- Knowledge graph plugin
+- GraphViz plugin
 
 - Flow plugin
 
