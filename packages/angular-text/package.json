@@ -4,7 +4,9 @@
     "peerDependencies": {
         "@angular/common": "^17.2.4",
         "@angular/core": "^17.2.4",
-        "is-hotkey": "^0.2.0"
+        "slate": "^0.101.5",
+        "slate-angular": "^17.4.0",
+        "slate-history": "^0.100.0"
     },
     "dependencies": {
         "tslib": "^2.3.0"

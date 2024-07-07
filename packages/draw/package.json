@@ -1,9 +1,7 @@
 {
     "name": "@plait/draw",
     "version": "0.62.0-next.8",
-    "peerDependencies": {
-        "is-hotkey": "^0.2.0"
-    },
+    "peerDependencies": {},
     "dependencies": {
         "tslib": "^2.3.0"
     },
