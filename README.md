@@ -44,7 +44,7 @@ Plait will also provide some basic functional plugins, which have been implement
 
 - 👉 [Online example (Draw)](https://plait-gamma.vercel.app?init=draw)
 - 👉 [Online example (Mind)](https://plait-gamma.vercel.app?init=mind)
-- 👉 [Online example (GraphViz)](https://plait-gamma.vercel.app?init=mind)
+- 👉 [Online example (GraphViz)](https://plait-gamma.vercel.app/graph-viz?init=force-atlas)
 - 👉 [Online example (Flow)](https://plait-gamma.vercel.app/flow)
 - 👉 [Documentation](https://plait-docs.vercel.app)
 
@@ -74,6 +74,7 @@ Text rendering in the plait is based on the Slate framework, enabling rich text 
 |@plait/mind| Mind map plugin, based on an independent automatic layout algorithm, supports: logical layout, standard layout, indent layout |
 |@plait/draw| Flowchart plugin, supports: basic shapes, flowchart shapes, connections, free images, etc |
 |@plait/flow| Process orchestration plugin, supports: standard nodes, connections, custom nodes, and connections |
+|@plait/graph-viz| graph visualization，supports: force atlas(Knowledge graph) |
 |@plait/layouts| Mind map layout algorithms |
 |@plait/angular-text| Text rendering component, relies on the Angular framework, Slate rich text editor framework, Angular view layer |
 |@plait/angular-board| Whiteboard view layer component, relies on the Angular framework |

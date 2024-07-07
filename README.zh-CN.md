@@ -30,7 +30,7 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 
 - 流程图插件
 
-- 流程编排插件
+- 知识图谱插件
 
 - 流程编排插件
 
@@ -39,7 +39,7 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 
 - 👉 [在线示例 (流程图)](https://plait-gamma.vercel.app?init=draw)
 - 👉 [在线示例 (思维导图)](https://plait-gamma.vercel.app?init=mind)
-- 👉 [在线示例 (知识图谱)](https://plait-gamma.vercel.app?init=mind)
+- 👉 [在线示例 (知识图谱)](https://plait-gamma.vercel.app/graph-viz?init=force-atlas)
 - 👉 [在线示例 (流程控制)](https://plait-gamma.vercel.app/flow)
 - 👉 [在线文档](https://plait-docs.vercel.app)
 
@@ -69,6 +69,7 @@ Plait 中的文本渲染基于 Slate 框架，实现画板中富文本的渲染�
 |@plait/mind|思维导图插件，基于独立的自动布局算法，支持：逻辑布局、标准布局、缩进布局|
 |@plait/draw|流程图插件，支持：基础图形、流程图图形、连线、自由图片等|
 |@plait/flow|流程编排插件，支持：标准节点、连线、自定节点与连线|
+|@plait/graph-viz|数据可视化插件，支持：知识图谱|
 |@plait/layouts|思维导图布局算法|
 |@plait/angular-text|文本渲染组件，依赖 Angular 框架、富文本编辑器框架 Slate、Angular 视图层|
 |@plait/angular-board|白板视图层组件，依赖 Angular 框架|
