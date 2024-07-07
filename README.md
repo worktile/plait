@@ -92,7 +92,7 @@ HTML：
 
 ```
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value"
-    (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
+    (plaitBoardInitialized)="plaitBoardInitialized($event)" (onChange)="change($event)">
 </plait-board>
 ```
 
@@ -114,7 +114,7 @@ export class BasicBoardComponent {
 
   board!: PlaitBoard;
 
-  change(event: PlaitBoardChangeEvent) {
+  change(event: OnChangeData) {
     // console.log(event.children);
   }
 
