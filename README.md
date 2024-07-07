@@ -14,13 +14,16 @@
     <a href="https://t.me/plaitboard"><img src="https://img.shields.io/badge/-Telegram-red?style=social&logo=telegram" height=20></a>
   </p>
   <h2>
-    A modern drawing framework for building all-in-one whiteboard tools </br>
-    such as mind maps, flow charts, hand writing, etc.
+    A modern drawing framework for building an all-in-one whiteboard tool </br>
+    for interactive drawing features such as mind maps, flowcharts, and freehand drawing.
   </h3>
 </div>
 
 
-Plait is positioned as a drawing framework that provides a plugin mechanism, allowing developers to extend functionality through plugins. It only provides a basic drawing whiteboard at the bottom, which only includes basic functions such as zooming in, zooming out, and moving the canvas. It does not include any business functions. All business functions need to be expanded through plugins to achieve free combination and can be easily implemented independently. Or an all-in-one drawing tool.
+Plait is a modern drawing framework that provides a plugin mechanism, allowing developers to extend drawing functionalities through plugins. It is particularly suitable for the development of interactive whiteboard tools.
+
+
+Plait does not rely on any frontend UI framework at its core, but it provides solutions for integrating with mainstream frontend UI frameworks to ensure a good development experience for upper-layer developers and to reuse mainstream framework components.
 
 
 [中文文档](https://github.com/worktile/plait/blob/develop/README.zh-CN.md)
@@ -31,47 +34,59 @@ Plait will also provide some basic functional plugins, which have been implement
 
 - Draw plugin
 
+- Knowledge graph plugin
+
 - Flow plugin
 
-
-
-Plait architecture is inspired by the rich text editor framework Slate and is used for web-side interactive drawing business development.
 
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
 
 - 👉 [Online example (Draw)](https://plait-gamma.vercel.app?init=draw)
 - 👉 [Online example (Mind)](https://plait-gamma.vercel.app?init=mind)
+- 👉 [Online example (GraphViz)](https://plait-gamma.vercel.app?init=mind)
 - 👉 [Online example (Flow)](https://plait-gamma.vercel.app/flow)
 - 👉 [Documentation](https://plait-docs.vercel.app)
 
 #### Features
 
-- Provide basic drawing board capabilities
+- Independent of UI frameworks
+- Provides basic board capabilities, such as zooming in, zooming out, and moving
 - Plugin mechanism
 - Data model (supports collaboration)
-- Component-based development (currently only supports Angular framework)
-- Basic drawing tool functions
+- Basic drawing utility functions
 
+
+#### UI Framework Integration
+
+The implementation of the framework requires components from frontend UI frameworks as carriers. This ensures that the development of drawing functionalities follows mainstream development patterns (data-driven). Currently, integration with Angular and React frameworks is supported.
+
+Text rendering in the plait is based on the Slate framework, enabling rich text rendering and editing on the board. Slate is an excellent rich text editor framework, and Plait was inspired by the Slate framework in its design
 
 
 #### Packages
 
 |Package Name|Description
 |---|---|
-|@plait/core|Core of the framework: 1. Plugin mechanism 2. Provide data model and transform functions 3. Provide basic board components|
-|@plait/common|Some logic reused by different drawing plugins: 1. Basic tool functions 2. Basic plugins 3. Basic rendering logic|
-|@plait/text|Text support, dependent on packages slate and slate-angular|
-|@plait/mind|Mind plugin implementation, based on an independent automatic layout algorithm, currently supports: logical layout, standard layout, indented layout|
-|@plait/draw|Flowchart plugin implementation, including interactive creation and modification of basic graphics, standard flowchart graphics, connections, free pictures and other elements|
-|@plait/flow|Flow plugin, which can be used for visual configuration of process status|
-|@plait/layouts|Mind support library, including automatic layout algorithms|
+|@plait/core| Framework core: plugin mechanism design, providing data models, data transformation functions, zooming, scrolling, etc |
+|@plait/common|Common functionalities for interactive drawing, text rendering, and editing|
+|@plait/text-plugins| General text extension functionalities, UI framework-independent, relies on the Slate rich text editor framework |
+|@plait/mind| Mind map plugin, based on an independent automatic layout algorithm, supports: logical layout, standard layout, indent layout |
+|@plait/draw| Flowchart plugin, supports: basic shapes, flowchart shapes, connections, free images, etc |
+|@plait/flow| Process orchestration plugin, supports: standard nodes, connections, custom nodes, and connections |
+|@plait/layouts| Mind map layout algorithms |
+|@plait/angular-text| Text rendering component, relies on the Angular framework, Slate rich text editor framework, Angular view layer |
+|@plait/angular-board| Whiteboard view layer component, relies on the Angular framework |
+|@plait/react-text| Text rendering component, relies on the React framework, Slate rich text editor framework, React view layer |
+|@plait/react-board| Whiteboard view layer component, relies on the React framework |
 
+
+React view layer, text rendering component：[https://github.com/plait-board/drawnix](https://github.com/plait-board/drawnix)
 
 #### Who is using
 
 - 🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
-
+- 🔥 [Drawnix](https://github.com/plait-board/drawnix)
 
 ### Development
 

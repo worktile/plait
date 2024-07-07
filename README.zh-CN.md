@@ -32,11 +32,14 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 
 - 流程编排插件
 
+- 流程编排插件
+
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
 
 - 👉 [在线示例 (流程图)](https://plait-gamma.vercel.app?init=draw)
 - 👉 [在线示例 (思维导图)](https://plait-gamma.vercel.app?init=mind)
+- 👉 [在线示例 (知识图谱)](https://plait-gamma.vercel.app?init=mind)
 - 👉 [在线示例 (流程控制)](https://plait-gamma.vercel.app/flow)
 - 👉 [在线文档](https://plait-docs.vercel.app)
 
@@ -51,9 +54,9 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 
 #### UI 框架集成
 
-框架的落地需要已 UI 框架中的组件作为载体，这样可以保证画图图功能的开发主流架构模式进行，当前已支持 Angular 和 React 框架的集成。
+框架落地需要以前端 UI 框架组件作为载体，这样可以保证画图图功能开发沿用主流开发模式进行（数据驱动），当前已支持 Angular 和 React 框架的集成。
 
-画图业务中的文本渲染基于 Slate 框架，实现画板中富文本的渲染和编辑，Slate 是一款优秀的富文本编辑器框架，Plait 在设计上就是一 Slate 框架为灵感。
+Plait 中的文本渲染基于 Slate 框架，实现画板中富文本的渲染和编辑，Slate 是一款优秀的富文本编辑器框架，Plait 在设计上就是一 Slate 框架为灵感。
 
 
 #### 模块
@@ -70,7 +73,7 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 |@plait/angular-text|文本渲染组件，依赖 Angular 框架、富文本编辑器框架 Slate、Angular 视图层|
 |@plait/angular-board|白板视图层组件，依赖 Angular 框架|
 |@plait/react-text|文本渲染组件，依赖 React 框架、富文本编辑器框架 Slate、React 视图层|
-|@plait/react-board|白板视图层组件，依赖 React 框架 |
+|@plait/react-board|白板视图层组件，依赖 React 框架|
 
 
 React 视图层、文本渲染组件：[https://github.com/plait-board/drawnix](https://github.com/plait-board/drawnix)
@@ -102,7 +105,7 @@ HTML 模版：
 
 ```
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value"
-    (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
+    (plaitBoardInitialized)="plaitBoardInitialized($event)" (onChange)="change($event)">
 </plait-board>
 ```
 
@@ -124,7 +127,7 @@ export class BasicBoardComponent {
 
   board!: PlaitBoard;
 
-  change(event: PlaitBoardChangeEvent) {
+  change(event: OnChangeData) {
     // console.log(event.children);
   }
 
