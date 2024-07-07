@@ -1,6 +1,6 @@
 {
   "name": "@plait/mind",
-  "version": "0.62.0-next.8",
+  "version": "0.62.0-next.9",
   "peerDependencies": {},
   "dependencies": {
     "tslib": "^2.3.0"

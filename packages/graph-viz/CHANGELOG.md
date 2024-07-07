@@ -1,5 +1,7 @@
 # @plait/graph-viz
 
+## 0.62.0-next.9
+
 ## 0.62.0-next.8
 
 ### Minor Changes

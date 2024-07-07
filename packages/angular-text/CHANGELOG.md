@@ -1,5 +1,11 @@
 # angular-text
 
+## 0.62.0-next.9
+
+### Patch Changes
+
+-   [`7625c6cb2`](https://github.com/worktile/plait/commit/7625c6cb228fa66a408b00997a7b81d5fd9d8d6d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update peerDependencies
+
 ## 0.62.0-next.8
 
 ## 0.62.0-next.7
