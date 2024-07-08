@@ -1,5 +1,11 @@
 # angular-text
 
+## 0.62.0-next.10
+
+### Patch Changes
+
+-   [`fbd1bdb3c`](https://github.com/worktile/plait/commit/fbd1bdb3cbd2437eb3531f9ef16d2bf6678418c8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add board property for text-editor
+
 ## 0.62.0-next.9
 
 ### Patch Changes

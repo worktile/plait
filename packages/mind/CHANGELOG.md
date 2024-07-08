@@ -1,5 +1,17 @@
 # mind
 
+## 0.62.0-next.10
+
+### Patch Changes
+
+-   [`ec00cb4f4`](https://github.com/worktile/plait/commit/ec00cb4f4c3cff6fbab7ed7ab67ef48e3efb47ee) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support `isPreventClearSelection` in WithSelectionPluginOptions(with-selection)
+
+    extract `getSelectionOptions` and `setSelectionOptions` to set/get options of selection
+
+    rename `isMultipleSelection` to `isMultiple` in WithSelectionPluginOptions(with-selection)
+
+    rename `WithPluginOptions` to `WithSelectionPluginOptions` and rename `PlaitPluginOptions` to `WithPluginOptions`
+
 ## 0.62.0-next.9
 
 ## 0.62.0-next.8

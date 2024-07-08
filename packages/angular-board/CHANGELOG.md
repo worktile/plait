@@ -1,5 +1,7 @@
 # @plait/angular-board
 
+## 0.62.0-next.10
+
 ## 0.62.0-next.9
 
 ### Patch Changes
