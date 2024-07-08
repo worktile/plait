@@ -1,6 +1,6 @@
 # @plait/angular-board
 
-## 0.62.0-next.5
+## 0.62.0-next.5.1
 
 ## 0.62.0-next.4
 
