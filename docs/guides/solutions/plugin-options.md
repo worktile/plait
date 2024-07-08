@@ -20,11 +20,11 @@ order: 2
 
 ```
 export interface WithPluginOptions extends PlaitPluginOptions {
-    isMultiple: boolean;
+    isMultipleSelection: boolean;
 }
 export function withSelection(board: PlaitBoard) {
   	// ...
-	(board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: true });
+	(board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultipleSelection: true });
 }
 ```
 
@@ -35,7 +35,7 @@ export function withSelection(board: PlaitBoard) {
 ```
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     // ...
-    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
+    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultipleSelection: false });
 };
 ```
 

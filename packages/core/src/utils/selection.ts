@@ -7,7 +7,8 @@ import {
     PlaitPluginKey,
     PlaitPointerType,
     RectangleClient,
-    SELECTION_BORDER_COLOR
+    SELECTION_BORDER_COLOR,
+    WithSelectionPluginOptions
 } from '../interfaces';
 import { setDragging } from './dnd';
 import { getRectangleByElements } from './element';
@@ -19,7 +20,6 @@ import { filterSelectedGroups, getAllElementsInGroup, getElementsInGroup, getEle
 import { uniqueById } from './helper';
 import { Selection } from '../interfaces/selection';
 import { PlaitOptionsBoard } from '../plugins/with-options';
-import { WithPluginOptions } from '../plugins/with-selection';
 
 export function isSelectionMoving(board: PlaitBoard) {
     return !!BOARD_TO_IS_SELECTION_MOVING.get(board);
@@ -38,8 +38,8 @@ export function clearSelectionMoving(board: PlaitBoard) {
 }
 
 export function isHandleSelection(board: PlaitBoard) {
-    const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
-    return board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect && !PlaitBoard.isReadonly(board);
+    const options = getSelectionOptions(board);
+    return board.pointer !== PlaitPointerType.hand && !options.isDisabledSelection && !PlaitBoard.isReadonly(board);
 }
 
 export function hasSetSelectionOperation(board: PlaitBoard) {
@@ -166,3 +166,12 @@ export function cacheSelectedElementsWithGroup(
     }
     cacheSelectedElements(board, uniqueById(newElements));
 }
+
+export const getSelectionOptions = (board: PlaitBoard) => {
+    const options = (board as PlaitOptionsBoard).getPluginOptions<WithSelectionPluginOptions>(PlaitPluginKey.withSelection);
+    return options;
+};
+
+export const setSelectionOptions = (board: PlaitBoard, options: Partial<WithSelectionPluginOptions>) => {
+    (board as PlaitOptionsBoard).setPluginOptions<WithSelectionPluginOptions>(PlaitPluginKey.withSelection, options);
+};

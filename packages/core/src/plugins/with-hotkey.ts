@@ -1,16 +1,15 @@
 import { isHotkey, isKeyHotkey } from 'is-hotkey';
-import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey, Point } from '../interfaces';
+import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey, WithSelectionPluginOptions } from '../interfaces';
 import { BoardTransforms, Transforms } from '../transforms';
-import { deleteFragment, depthFirstRecursion, duplicateElements, getRectangleByElements, getSelectedElements, hotkeys } from '../utils';
+import { deleteFragment, depthFirstRecursion, duplicateElements, getSelectedElements, hotkeys } from '../utils';
 import { PlaitOptionsBoard } from './with-options';
-import { WithPluginOptions } from './with-selection';
 
 export const withHotkey = (board: PlaitBoard) => {
     const { keyDown, keyUp, globalKeyDown } = board;
 
     board.keyDown = (event: KeyboardEvent) => {
-        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
-        if (!PlaitBoard.isReadonly(board) && options.isMultiple && isHotkey('mod+a', event)) {
+        const options = (board as PlaitOptionsBoard).getPluginOptions<WithSelectionPluginOptions>(PlaitPluginKey.withSelection);
+        if (!PlaitBoard.isReadonly(board) && options.isMultipleSelection && isHotkey('mod+a', event)) {
             event.preventDefault();
             let elements: PlaitElement[] = [];
             depthFirstRecursion<Ancestor>(

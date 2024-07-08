@@ -9,9 +9,8 @@ import { sortElements } from './position';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { getRectangleByElements } from './element';
 import { PlaitOptionsBoard } from '../plugins/with-options';
-import { PlaitPluginKey } from '../interfaces/plugin-key';
-import { WithPluginOptions } from '../plugins/with-selection';
 import { isDebug } from './debug';
+import { PlaitPluginKey, WithSelectionPluginOptions } from '../interfaces/plugin';
 
 export const getHitElementsBySelection = (
     board: PlaitBoard,
@@ -158,11 +157,11 @@ export const isSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
 
 export const temporaryDisableSelection = (board: PlaitOptionsBoard) => {
     const currentOptions = board.getPluginOptions(PlaitPluginKey.withSelection);
-    board.setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
-        isDisabledSelect: true
+    board.setPluginOptions<WithSelectionPluginOptions>(PlaitPluginKey.withSelection, {
+        isDisabledSelection: true
     });
     setTimeout(() => {
-        board.setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
+        board.setPluginOptions<WithSelectionPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
     }, 0);
 };
 

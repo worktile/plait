@@ -27,17 +27,12 @@ import {
     toHostPoint,
     toViewBoxPoint,
     setSelectedElementsWithGroup,
-    hasSetSelectionOperation
+    hasSetSelectionOperation,
+    getSelectionOptions,
+    setSelectionOptions
 } from '../utils';
-import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
-import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
-
-export interface WithPluginOptions extends PlaitPluginOptions {
-    isMultiple: boolean;
-    isDisabledSelect: boolean;
-}
 
 export function withSelection(board: PlaitBoard) {
     const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawActiveRectangle } = board;
@@ -55,12 +50,10 @@ export function withSelection(board: PlaitBoard) {
         if (isShift && !event.shiftKey) {
             isShift = false;
         }
-        const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-text-container'));
-
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const isHitTarget = isHitElement(board, point);
-        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
-        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !isHitTarget && options.isMultiple && !options.isDisabledSelect) {
+        const options = getSelectionOptions(board);
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !isHitTarget && options.isMultipleSelection && !options.isDisabledSelection) {
             preventTouchMove(board, event, true);
             // start rectangle selection
             start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -114,8 +107,8 @@ export function withSelection(board: PlaitBoard) {
             clearSelectionMoving(board);
             Transforms.setSelection(board, { anchor: start, focus: end });
         }
-
-        if (PlaitBoard.isFocus(board)) {
+        const options = getSelectionOptions(board);
+        if (PlaitBoard.isFocus(board) && !options.isPreventClearSelection) {
             const isInBoard = event.target instanceof Node && PlaitBoard.getBoardContainer(board).contains(event.target);
             const isInDocument = event.target instanceof Node && document.contains(event.target);
             const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
@@ -132,8 +125,8 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.onChange = () => {
-        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
-        if (options.isDisabledSelect) {
+        const options = getSelectionOptions(board);
+        if (options.isDisabledSelection) {
             clearSelectedElement(board);
         }
         // remove selected element if include
@@ -152,7 +145,7 @@ export function withSelection(board: PlaitBoard) {
                     cacheSelectedElements(board, [...temporaryElements]);
                 } else {
                     let elements = getHitElementsBySelection(board);
-                    if (!options.isMultiple && elements.length > 1) {
+                    if (!options.isMultipleSelection && elements.length > 1) {
                         elements = [elements[0]];
                     }
                     const isHitElementWithGroup = elements.some(item => item.groupId);
@@ -232,9 +225,10 @@ export function withSelection(board: PlaitBoard) {
         afterChange();
     };
 
-    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
-        isMultiple: true,
-        isDisabledSelect: false
+    setSelectionOptions(board, {
+        isMultipleSelection: true,
+        isDisabledSelection: false,
+        isPreventClearSelection: false
     });
 
     return board;

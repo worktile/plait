@@ -7,7 +7,8 @@ import {
     Point,
     RectangleClient,
     Selection,
-    WithPluginOptions
+    WithSelectionPluginOptions,
+    setSelectionOptions
 } from '@plait/core';
 import { ForceAtlasFlavour } from './force-atlas.flavour';
 import { ForceAtlasNodeFlavour } from './node.flavour';
@@ -79,7 +80,7 @@ export const withForceAtlas = (board: PlaitBoard) => {
         return isMovable(element);
     };
 
-    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
+    setSelectionOptions(board, { isMultipleSelection: false });
 
     return withNodeIcon(board);
 };

@@ -1,12 +1,9 @@
 import { PlaitBoard } from '../interfaces/board';
-
-export interface PlaitPluginOptions {
-    disabled?: boolean;
-}
+import { WithPluginOptions } from '../interfaces/plugin';
 
 export interface PlaitOptionsBoard extends PlaitBoard {
-    getPluginOptions: <K = PlaitPluginOptions>(key: string) => K;
-    setPluginOptions: <K = PlaitPluginOptions>(key: string, value: Partial<K>) => void;
+    getPluginOptions: <K = WithPluginOptions>(key: string) => K;
+    setPluginOptions: <K = WithPluginOptions>(key: string, value: Partial<K>) => void;
 }
 
 export const withOptions = (board: PlaitBoard) => {

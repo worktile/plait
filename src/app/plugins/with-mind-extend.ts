@@ -7,7 +7,6 @@ export const withMindExtend = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard & PlaitMindEmojiBoard & AngularBoard;
 
     (board as PlaitOptionsBoard).setPluginOptions<WithMindOptions>(WithMindPluginKey, {
-        isMultiple: true,
         emojiPadding: 0,
         spaceBetweenEmojis: 4
     });
