@@ -4,7 +4,7 @@
     "peerDependencies": {
         "immer": "^10.0.3",
         "is-hotkey": "^0.2.0",
-        "rxjs": "~7.8.0",
+        "rxjs": "^7.8.0",
         "roughjs": "^4.5.2",
         "points-on-curve": "^1.0.0"
     },
