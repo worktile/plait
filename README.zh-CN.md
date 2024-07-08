@@ -83,7 +83,7 @@ React 视图层、文本渲染组件：[https://github.com/plait-board/drawnix](
 #### 谁在使用
 
 - 🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
-- 🔥 [Drawnix](https://github.com/plait-board/drawnix)
+- 🔥🔥🔥 [Drawnix](https://github.com/plait-board/drawnix)
 
 
 ### 开发

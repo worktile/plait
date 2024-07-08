@@ -87,7 +87,7 @@ React view layer, text rendering component：[https://github.com/plait-board/dra
 #### Who is using
 
 - 🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
-- 🔥 [Drawnix](https://github.com/plait-board/drawnix)
+- 🔥🔥🔥 [Drawnix](https://github.com/plait-board/drawnix)
 
 ### Development
 
