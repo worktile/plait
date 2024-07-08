@@ -4,5 +4,5 @@ import { AngularEditor, ViewType } from 'slate-angular';
 
 export interface PlaitTextEditor extends AngularEditor {
     renderElement?: (element: Element) => ViewType;
-    board?: PlaitBoard;
+    board: PlaitBoard;
 }
