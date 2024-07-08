@@ -28,9 +28,11 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
     let vectorPenRef: VectorPenRef | null;
 
     const vectorLineComplete = () => {
-        clearSelectedElement(board);
-        if (vectorPenRef?.element) {
-            addSelectedElement(board, vectorPenRef?.element);
+        if (vectorPenRef) {
+            clearSelectedElement(board);
+            if (vectorPenRef?.element) {
+                addSelectedElement(board, vectorPenRef?.element);
+            }
         }
         lineShapeG?.remove();
         lineShapeG = null;
@@ -58,12 +60,19 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
                     vectorPenRef.element = temporaryElement;
                     Transforms.insertNode(board, vectorPenRef.element, [board.children.length]);
                 } else {
-                    const points = vectorPenRef.element.points;
+                    let points = vectorPenRef.element.points;
                     const isClosed = distanceBetweenPointAndPoint(...point, ...vectorPenRef.start!) <= LINE_HIT_GEOMETRY_BUFFER;
                     if (isClosed) {
                         point = vectorPenRef.start!;
                     }
-                    Transforms.setNode(board, { points: [...points, point] }, vectorPenRef.path!);
+                    if (vectorPenRef.path) {
+                        const lastPoint = points[points.length - 1];
+                        const distance = distanceBetweenPointAndPoint(...point, ...lastPoint);
+                        // 处理双击时插入2个密集点
+                        if (distance > 2) {
+                            Transforms.setNode(board, { points: [...points, point] }, vectorPenRef.path);
+                        }
+                    }
                     vectorPenRef.element = getElementById(board, vectorPenRef.element.id);
                     if (isClosed) {
                         vectorLineComplete();
@@ -101,8 +110,10 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
 
     board.dblClick = (event: MouseEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
-            if (vectorPenRef && vectorPenRef.element) {
-                Transforms.setNode(board, { points: vectorPenRef.element.points }, vectorPenRef.path!);
+            if (vectorPenRef) {
+                if (vectorPenRef.path) {
+                    Transforms.setNode(board, { points: vectorPenRef?.element?.points }, vectorPenRef.path);
+                }
                 vectorLineComplete();
                 BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
             }
@@ -115,7 +126,9 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
             const isEsc = isKeyHotkey('esc', event);
             const isV = isKeyHotkey('v', event);
             if ((isEsc || isV) && vectorPenRef) {
-                Transforms.setNode(board, { points: vectorPenRef.element?.points }, vectorPenRef.path!);
+                if (vectorPenRef.path) {
+                    Transforms.setNode(board, { points: vectorPenRef.element?.points }, vectorPenRef.path);
+                }
                 vectorLineComplete();
                 if (isV) {
                     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
