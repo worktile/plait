@@ -1,5 +1,53 @@
 # @plait/flow
 
+## 0.62.0
+
+### Minor Changes
+
+-   [#914](https://github.com/worktile/plait/pull/914) [`92436588f`](https://github.com/worktile/plait/commit/92436588fa95557474c8ebc0c282330376622fb4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Framework agnostic refactoring:
+
+    1. Use `measureElement` to measure text width and height
+
+    2. Use `text-manage` in `@plait/common` to render text
+
+    3. Provide an overridable method `renderEmoji` in `@plait/mind` to remove the dependency on Angular and transform the response generator
+
+    4. Provide an overridable method `renderLabelIcon` in `@plait/flow` to remove the dependency on Angular and transform the response generator
+
+    ***
+
+    Framework agnostic 改造:
+
+    1. 改用 `measureElement` 测量文本宽高
+
+    2. 改用 `@plait/common` 中的 `text-manage` 实现文本的渲染
+
+    3. `@plait/mind` 中提供可重写方法 `renderEmoji` 解除对 Angular 的依赖，并且改造响应 generator
+
+    4. `@plait/flow` 中提供可重写方法 `renderLabelIcon` 解除对 Angular 的依赖，并且改造响应 generator
+
+*   [#929](https://github.com/worktile/plait/pull/929) [`7fabbbedb`](https://github.com/worktile/plait/commit/7fabbbedbb78d2dc11e05c36adbf379496726c95) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Only hide related edge label when node is moving
+
+### Patch Changes
+
+-   [#933](https://github.com/worktile/plait/pull/933) [`21b7ccbe8`](https://github.com/worktile/plait/commit/21b7ccbe832169d946acd2773c58e4edbfc3f072) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix node-render error when node is custom node
+
+*   [`ec00cb4f4`](https://github.com/worktile/plait/commit/ec00cb4f4c3cff6fbab7ed7ab67ef48e3efb47ee) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support `isPreventClearSelection` in WithSelectionPluginOptions(with-selection)
+
+    extract `getSelectionOptions` and `setSelectionOptions` to set/get options of selection
+
+    rename `isMultipleSelection` to `isMultiple` in WithSelectionPluginOptions(with-selection)
+
+    rename `WithPluginOptions` to `WithSelectionPluginOptions` and rename `PlaitPluginOptions` to `WithPluginOptions`
+
+-   [#917](https://github.com/worktile/plait/pull/917) [`e823756ea`](https://github.com/worktile/plait/commit/e823756eab612423b8678ad8deb8b3feeeebb563) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - 1. hide edge label when moving node element
+
+    2. move node element level to the most front when selected node element
+
+*   [#929](https://github.com/worktile/plait/pull/929) [`ca5c8df4e`](https://github.com/worktile/plait/commit/ca5c8df4e52997e484e9a6f0a08e7140533856aa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move node element to the highest layer when node is hovering
+
+-   [`4cc414c3e`](https://github.com/worktile/plait/commit/4cc414c3eb1529f4c9e30f4b06c5c7a35315c6b9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - destroy node g when node is deleted
+
 ## 0.62.0-next.10
 
 ### Patch Changes

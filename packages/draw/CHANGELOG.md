@@ -1,5 +1,75 @@
 # @plait/draw
 
+## 0.62.0
+
+### Minor Changes
+
+-   [#914](https://github.com/worktile/plait/pull/914) [`92436588f`](https://github.com/worktile/plait/commit/92436588fa95557474c8ebc0c282330376622fb4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Framework agnostic refactoring:
+
+    1. Use `measureElement` to measure text width and height
+
+    2. Use `text-manage` in `@plait/common` to render text
+
+    3. Provide an overridable method `renderEmoji` in `@plait/mind` to remove the dependency on Angular and transform the response generator
+
+    4. Provide an overridable method `renderLabelIcon` in `@plait/flow` to remove the dependency on Angular and transform the response generator
+
+    ***
+
+    Framework agnostic 改造:
+
+    1. 改用 `measureElement` 测量文本宽高
+
+    2. 改用 `@plait/common` 中的 `text-manage` 实现文本的渲染
+
+    3. `@plait/mind` 中提供可重写方法 `renderEmoji` 解除对 Angular 的依赖，并且改造响应 generator
+
+    4. `@plait/flow` 中提供可重写方法 `renderLabelIcon` 解除对 Angular 的依赖，并且改造响应 generator
+
+*   [#922](https://github.com/worktile/plait/pull/922) [`0e1ddecc4`](https://github.com/worktile/plait/commit/0e1ddecc45b76f4093944d340bfe5670a80e2b1b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor getHitElementByPoint return value
+
+    add getHitElement to board, the hit element is determined by the plugin
+
+-   [#923](https://github.com/worktile/plait/pull/923) [`e3247409b`](https://github.com/worktile/plait/commit/e3247409b6edd8b5001d3bfb892afe65d8e291d2) Thanks [@MissLixf](https://github.com/MissLixf)! - change PlaitLine to PlaitArrowLine; and change bound function with arrowLine
+
+*   [#918](https://github.com/worktile/plait/pull/918) [`6fff37862`](https://github.com/worktile/plait/commit/6fff37862833aa0ee43adec1c3b266ea9fb2d602) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set border style for table border
+
+### Patch Changes
+
+-   [#921](https://github.com/worktile/plait/pull/921) [`2d8b964d0`](https://github.com/worktile/plait/commit/2d8b964d06443c1643d4c26abe6a2899f4e29e7b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix set text property error when select table
+
+*   [#939](https://github.com/worktile/plait/pull/939) [`1c58e3448`](https://github.com/worktile/plait/commit/1c58e34484c99afdb36ff9a1ae75664949b1797d) Thanks [@MissLixf](https://github.com/MissLixf)! - add isDrawElementClosed function
+
+-   [`ec00cb4f4`](https://github.com/worktile/plait/commit/ec00cb4f4c3cff6fbab7ed7ab67ef48e3efb47ee) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support `isPreventClearSelection` in WithSelectionPluginOptions(with-selection)
+
+    extract `getSelectionOptions` and `setSelectionOptions` to set/get options of selection
+
+    rename `isMultipleSelection` to `isMultiple` in WithSelectionPluginOptions(with-selection)
+
+    rename `WithPluginOptions` to `WithSelectionPluginOptions` and rename `PlaitPluginOptions` to `WithPluginOptions`
+
+*   [#920](https://github.com/worktile/plait/pull/920) [`4bd014d33`](https://github.com/worktile/plait/commit/4bd014d33aa84b34d96344bbf7bda5b6c23c2011) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - memorize line text property
+
+-   [#935](https://github.com/worktile/plait/pull/935) [`716e8f23f`](https://github.com/worktile/plait/commit/716e8f23fbfd6394b917b1e35ff3cb34d4d848dc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - handle enter event when editing text
+
+*   [#924](https://github.com/worktile/plait/pull/924) [`9c1e653e9`](https://github.com/worktile/plait/commit/9c1e653e9767c07677af40017eaa0fa4637123c5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix create swimlane error by drawing
+
+-   [#942](https://github.com/worktile/plait/pull/942) [`7d1e71348`](https://github.com/worktile/plait/commit/7d1e71348f2c4da4c86df5b6402f2e8cef9a8508) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - throw new Error when get cell points
+
+*   [#925](https://github.com/worktile/plait/pull/925) [`9acb332fc`](https://github.com/worktile/plait/commit/9acb332fc2d9dd4f87ce226a725226769508a2af) Thanks [@MissLixf](https://github.com/MissLixf)! - set the fill property of unclosed path to be transparent
+
+-   [#930](https://github.com/worktile/plait/pull/930) [`48a780120`](https://github.com/worktile/plait/commit/48a780120c4ed9d2106dc2e153fd30840a1953f2) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set cell text property
+
+*   [#940](https://github.com/worktile/plait/pull/940) [`ff83a2706`](https://github.com/worktile/plait/commit/ff83a27067e09169eb9caa818e5d419a8a47b5b1) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix link swimlane error by autocomplete
+
+-   [#926](https://github.com/worktile/plait/pull/926) [`42b285ce7`](https://github.com/worktile/plait/commit/42b285ce718f04f4ef67b16d1be2d9a178e15dc3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set table fill
+
+*   [`7625c6cb2`](https://github.com/worktile/plait/commit/7625c6cb228fa66a408b00997a7b81d5fd9d8d6d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update peerDependencies
+
+-   [#934](https://github.com/worktile/plait/pull/934) [`1af156157`](https://github.com/worktile/plait/commit/1af156157cb606c043084e6fae339be5987f14d5) Thanks [@MissLixf](https://github.com/MissLixf)! - fix resize geometry without text error
+
+*   [#941](https://github.com/worktile/plait/pull/941) [`b6aad2054`](https://github.com/worktile/plait/commit/b6aad2054861240ebab57e165c675594c8826a2d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - adjust line dash value for dotted
+
 ## 0.62.0-next.10
 
 ### Patch Changes

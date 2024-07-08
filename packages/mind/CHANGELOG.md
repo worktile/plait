@@ -1,5 +1,53 @@
 # mind
 
+## 0.62.0
+
+### Minor Changes
+
+-   [#914](https://github.com/worktile/plait/pull/914) [`92436588f`](https://github.com/worktile/plait/commit/92436588fa95557474c8ebc0c282330376622fb4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Framework agnostic refactoring:
+
+    1. Use `measureElement` to measure text width and height
+
+    2. Use `text-manage` in `@plait/common` to render text
+
+    3. Provide an overridable method `renderEmoji` in `@plait/mind` to remove the dependency on Angular and transform the response generator
+
+    4. Provide an overridable method `renderLabelIcon` in `@plait/flow` to remove the dependency on Angular and transform the response generator
+
+    ***
+
+    Framework agnostic 改造:
+
+    1. 改用 `measureElement` 测量文本宽高
+
+    2. 改用 `@plait/common` 中的 `text-manage` 实现文本的渲染
+
+    3. `@plait/mind` 中提供可重写方法 `renderEmoji` 解除对 Angular 的依赖，并且改造响应 generator
+
+    4. `@plait/flow` 中提供可重写方法 `renderLabelIcon` 解除对 Angular 的依赖，并且改造响应 generator
+
+*   [`bdfbe315a`](https://github.com/worktile/plait/commit/bdfbe315a48f1b41655f1da89e887dfae2595148) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove the some logic in ImageBaseComponent and MindEmojiBaseComponent to try remove base class
+
+-   [#922](https://github.com/worktile/plait/pull/922) [`0e1ddecc4`](https://github.com/worktile/plait/commit/0e1ddecc45b76f4093944d340bfe5670a80e2b1b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor getHitElementByPoint return value
+
+    add getHitElement to board, the hit element is determined by the plugin
+
+*   [`3f54f62e6`](https://github.com/worktile/plait/commit/3f54f62e61fa5182e2cf178011b495fa27bda398) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove angular/core and angular/common from peerDependencies of package.json
+
+### Patch Changes
+
+-   [`ec00cb4f4`](https://github.com/worktile/plait/commit/ec00cb4f4c3cff6fbab7ed7ab67ef48e3efb47ee) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support `isPreventClearSelection` in WithSelectionPluginOptions(with-selection)
+
+    extract `getSelectionOptions` and `setSelectionOptions` to set/get options of selection
+
+    rename `isMultipleSelection` to `isMultiple` in WithSelectionPluginOptions(with-selection)
+
+    rename `WithPluginOptions` to `WithSelectionPluginOptions` and rename `PlaitPluginOptions` to `WithPluginOptions`
+
+*   [#935](https://github.com/worktile/plait/pull/935) [`716e8f23f`](https://github.com/worktile/plait/commit/716e8f23fbfd6394b917b1e35ff3cb34d4d848dc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - handle enter event when editing text
+
+-   [`59627b552`](https://github.com/worktile/plait/commit/59627b5526d2b710db0ce3b189f443921a165065) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prompt `mind element has not been mounted` when element is mind element
+
 ## 0.62.0-next.10
 
 ### Patch Changes

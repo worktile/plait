@@ -1,5 +1,64 @@
 # plait
 
+## 0.62.0
+
+### Minor Changes
+
+-   [#947](https://github.com/worktile/plait/pull/947) [`7dcbfcd9e`](https://github.com/worktile/plait/commit/7dcbfcd9e126283637450f23bf4953941754a78e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add try-catch to avoid the list rendering being broken and add try-catch to avoid selection being break on data is invalid. and console the error when env is debug mode.
+
+    add try-catch for initialize element-flavour in list-render
+
+    add try-catch for isHit in selected-element
+
+    add try-catch for isRectangleHit in selected-element
+
+*   [#914](https://github.com/worktile/plait/pull/914) [`92436588f`](https://github.com/worktile/plait/commit/92436588fa95557474c8ebc0c282330376622fb4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Framework agnostic refactoring:
+
+    1. Reimplement text-manage in `@plait/common`, and remove the dependency on front-end frameworks such as Angular/React by providing an overridable method renderText
+
+    2. Provide an overridable method renderImage in `@plait/common`
+
+    3. Implement the `measureElement` method based on `canvas`, calculate the width and height of the text in Plait through the `measureText` API of `canvas`, and change all places that originally called `getTextSize` or `measureDivSize` to call `measureElement`
+
+    4. Move the part of `@plait/core` that depends on Angular to `@plait/angular-board`
+
+    ---
+
+    Framework agnostic 改造:
+
+    1. 在 `@plait/common` 中重新实现 text-manage，通过提供可重写方法 renderText 解除和 Angular/React 等前端框架的强依赖
+    2. 在 `@plait/common` 中提供可重写方法 renderImage
+    3. 基于 `canvas` 实现 `measureElement` 方法，通过 `canvas` 的 `measureText` API 计算 Plait 中文本的宽和高，将原本调用 `getTextSize` 或者 `measureDivSize` 的地方全部改为调用 `measureElement`
+    4. 将 `@plait/core` 中依赖 Angular 的部分移入 `@plait/angular-board`
+
+-   [#922](https://github.com/worktile/plait/pull/922) [`0e1ddecc4`](https://github.com/worktile/plait/commit/0e1ddecc45b76f4093944d340bfe5670a80e2b1b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor getHitElementByPoint return value
+
+    add getHitElement to board, the hit element is determined by the plugin
+
+### Patch Changes
+
+-   [`ec00cb4f4`](https://github.com/worktile/plait/commit/ec00cb4f4c3cff6fbab7ed7ab67ef48e3efb47ee) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support `isPreventClearSelection` in WithSelectionPluginOptions(with-selection)
+
+    extract `getSelectionOptions` and `setSelectionOptions` to set/get options of selection
+
+    rename `isMultipleSelection` to `isMultiple` in WithSelectionPluginOptions(with-selection)
+
+    rename `WithPluginOptions` to `WithSelectionPluginOptions` and rename `PlaitPluginOptions` to `WithPluginOptions`
+
+*   [`aa8ce9692`](https://github.com/worktile/plait/commit/aa8ce9692508bcf34d9d233f83086af5a8088006) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove 'plait-image-container' from image-base.component
+
+    remove the dependency of className('plait-image-container') from @plait/core
+
+-   [#928](https://github.com/worktile/plait/pull/928) [`e85f1bf5e`](https://github.com/worktile/plait/commit/e85f1bf5e3c8c54475ce29b3e15a553c2e888510) Thanks [@MissLixf](https://github.com/MissLixf)! - fix interface geometry paste error
+
+*   [`7625c6cb2`](https://github.com/worktile/plait/commit/7625c6cb228fa66a408b00997a7b81d5fd9d8d6d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update peerDependencies
+
+-   [`e119a46ba`](https://github.com/worktile/plait/commit/e119a46ba70fe22f18718492774db3d9e9b6b780) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - should use hasSetSelectionOperation(not isSetSelectionOperation) in withSelection
+
+*   [`38ad91d93`](https://github.com/worktile/plait/commit/38ad91d9346f6ef39eddb264ddaa293bf219f93f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add isSetSelectionOperation and isSetThemeOperation in operation interface
+
+    remove add/remove className in updatePointerType and add className in angular-board component
+
 ## 0.62.0-next.10
 
 ### Patch Changes

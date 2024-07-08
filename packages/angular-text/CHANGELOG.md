@@ -1,5 +1,29 @@
 # angular-text
 
+## 0.62.0
+
+### Minor Changes
+
+-   [#914](https://github.com/worktile/plait/pull/914) [`92436588f`](https://github.com/worktile/plait/commit/92436588fa95557474c8ebc0c282330376622fb4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - 1. Rename package `@plait/text` to `@plait/angular-text`
+
+    2. Move some common processing and plugins into `@plait/text-plugins`
+
+    3. Rename `richtext` component to `text` component
+
+    ***
+
+    1. 将包 `@plait/text` 重命名为 `@plait/angular-text`
+
+    2. 将一些通用处理和插件移入 `@plait/text-plugins` 中
+
+    3. 将 `richtext` 组件重命名 `text` 组件
+
+### Patch Changes
+
+-   [`fbd1bdb3c`](https://github.com/worktile/plait/commit/fbd1bdb3cbd2437eb3531f9ef16d2bf6678418c8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add board property for text-editor
+
+*   [`7625c6cb2`](https://github.com/worktile/plait/commit/7625c6cb228fa66a408b00997a7b81d5fd9d8d6d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update peerDependencies
+
 ## 0.62.0-next.10
 
 ### Patch Changes

@@ -1,5 +1,46 @@
 # @plait/common
 
+## 0.62.0
+
+### Minor Changes
+
+-   [#914](https://github.com/worktile/plait/pull/914) [`92436588f`](https://github.com/worktile/plait/commit/92436588fa95557474c8ebc0c282330376622fb4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Framework agnostic refactoring:
+
+    1. Reimplement text-manage in `@plait/common`, and remove the dependency on front-end frameworks such as Angular/React by providing an overridable method renderText
+
+    2. Provide an overridable method renderImage in `@plait/common`
+
+    3. Implement the `measureElement` method based on `canvas`, calculate the width and height of the text in Plait through the `measureText` API of `canvas`, and change all places that originally called `getTextSize` or `measureDivSize` to call `measureElement`
+
+    4. Move the part of `@plait/core` that depends on Angular to `@plait/angular-board`
+
+    ***
+
+    Framework agnostic 改造:
+
+    1. 在 `@plait/common` 中重新实现 text-manage，通过提供可重写方法 renderText 解除和 Angular/React 等前端框架的强依赖
+    2. 在 `@plait/common` 中提供可重写方法 renderImage
+    3. 基于 `canvas` 实现 `measureElement` 方法，通过 `canvas` 的 `measureText` API 计算 Plait 中文本的宽和高，将原本调用 `getTextSize` 或者 `measureDivSize` 的地方全部改为调用 `measureElement`
+    4. 将 `@plait/core` 中依赖 Angular 的部分移入 `@plait/angular-board`
+
+*   [`bdfbe315a`](https://github.com/worktile/plait/commit/bdfbe315a48f1b41655f1da89e887dfae2595148) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove the some logic in ImageBaseComponent and MindEmojiBaseComponent to try remove base class
+
+-   [#922](https://github.com/worktile/plait/pull/922) [`0e1ddecc4`](https://github.com/worktile/plait/commit/0e1ddecc45b76f4093944d340bfe5670a80e2b1b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor getHitElementByPoint return value
+
+    add getHitElement to board, the hit element is determined by the plugin
+
+### Patch Changes
+
+-   [#935](https://github.com/worktile/plait/pull/935) [`716e8f23f`](https://github.com/worktile/plait/commit/716e8f23fbfd6394b917b1e35ff3cb34d4d848dc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - handle enter event when editing text
+
+*   [`aa8ce9692`](https://github.com/worktile/plait/commit/aa8ce9692508bcf34d9d233f83086af5a8088006) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove 'plait-image-container' from image-base.component
+
+    remove the dependency of className('plait-image-container') from @plait/core
+
+-   [#945](https://github.com/worktile/plait/pull/945) [`46dec5346`](https://github.com/worktile/plait/commit/46dec53469b8b52636e8a9795ea1b6101df09c9f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Add debounce to avoid trigger more times(from onChange and onComposition) onChange when user is typing chinese(Be going to attract board children are overwritten when fired more times onChange(eg: board is embed in editor))
+
+*   [`7625c6cb2`](https://github.com/worktile/plait/commit/7625c6cb228fa66a408b00997a7b81d5fd9d8d6d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update peerDependencies
+
 ## 0.62.0-next.10
 
 ## 0.62.0-next.9

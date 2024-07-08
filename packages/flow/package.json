@@ -1,6 +1,6 @@
 {
   "name": "@plait/flow",
-  "version": "0.62.0-next.10",
+  "version": "0.62.0",
   "peerDependencies": {},
   "dependencies": {
     "tslib": "^2.3.0"
