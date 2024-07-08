@@ -18,15 +18,15 @@ import { withHistory } from 'slate-history';
 import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
 import { withMarkHotkey } from '../plugins/mark-hotkey/with-mark-hotkey';
 import { ParagraphElementComponent } from '../plugins/paragraph/paragraph.component';
-import { PlaitTextEditor } from '../plugins/text.editor';
 import { withSelection } from '../plugins/with-selection';
-import { withSingleLine } from '../plugins/with-single';
+import { withText } from '../plugins/with-text';
 import { PlaitTextNodeComponent } from '../text-node/text.component';
 import { FormsModule } from '@angular/forms';
 import { LinkElement, TextChangeData, TextPlugin } from '@plait/common';
 import { CLIPBOARD_FORMAT_KEY, MarkTypes } from '@plait/text-plugins';
 import { withPasteLink } from '../plugins/link/with-link-insert';
 import { CommonModule } from '@angular/common';
+import { PlaitBoard } from '@plait/core';
 
 @Component({
     selector: 'plait-text',
@@ -60,7 +60,12 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
     @Input()
     onComposition!: (event: CompositionEvent) => void;
 
-    editor = withSelection(withPasteLink(withMarkHotkey(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY))))));
+    @Input()
+    board!: PlaitBoard;
+
+    editor = withSelection(
+        withPasteLink(withMarkHotkey(withText(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY)), this.board)))
+    );
 
     nativeElement() {
         return this.elementRef.nativeElement;
@@ -72,8 +77,7 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
         this.onChange({ newText: this.editor.children[0] as Element, operations: this.editor.operations });
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-    }
+    ngOnChanges(changes: SimpleChanges): void {}
 
     ngOnInit(): void {
         if (this.textPlugins) {
@@ -81,6 +85,7 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
                 plugin(this.editor);
             });
         }
+        this.editor.board = this.board;
     }
 
     ngAfterViewInit(): void {
@@ -88,7 +93,7 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     renderElement = (element: Element) => {
-        const render = ((this.editor as unknown) as PlaitTextEditor)?.renderElement;
+        const render = this.editor.renderElement;
         if (render && render(element)) {
             return render(element);
         }
