@@ -1,12 +1,9 @@
-import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, createDebugGenerator } from '@plait/core';
+import { PlaitBoard, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
 import { PlaitVectorLine } from './interfaces';
 import { LineActiveGenerator } from './generators/line-active.generator';
 import { CommonElementFlavour } from '@plait/common';
 import { getVectorLinePoints } from './utils';
 import { VectorLineShapeGenerator } from './generators/vector-line-generator';
-
-const debugKey = 'debug:plait:vector-line-turning';
-const debugGenerator = createDebugGenerator(debugKey);
 
 export class VectorLineComponent extends CommonElementFlavour<PlaitVectorLine, PlaitBoard>
     implements OnContextChanged<PlaitVectorLine, PlaitBoard> {
@@ -32,8 +29,6 @@ export class VectorLineComponent extends CommonElementFlavour<PlaitVectorLine, P
             linePoints
         });
         super.initialize();
-
-        debugGenerator.isDebug() && debugGenerator.drawCircles(this.board, this.element.points.slice(1, -1), 4, true);
     }
 
     onContextChanged(

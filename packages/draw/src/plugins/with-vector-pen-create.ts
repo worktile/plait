@@ -2,7 +2,6 @@ import {
     BoardTransforms,
     PlaitBoard,
     PlaitPointerType,
-    Point,
     Transforms,
     addSelectedElement,
     clearSelectedElement,
@@ -20,13 +19,24 @@ import { vectorLineCreating } from '../utils';
 import { isKeyHotkey } from 'is-hotkey';
 
 export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, dblClick, globalKeyDown, globalPointerUp } = board;
+    const { pointerDown, pointerMove, dblClick, globalKeyDown } = board;
 
     let lineShapeG: SVGGElement | null = null;
 
     let temporaryElement: PlaitVectorLine | null = null;
 
     let vectorPenRef: VectorPenRef | null;
+
+    const vectorLineComplete = () => {
+        clearSelectedElement(board);
+        if (vectorPenRef?.element) {
+            addSelectedElement(board, vectorPenRef?.element);
+        }
+        lineShapeG?.remove();
+        lineShapeG = null;
+        vectorPenRef = null;
+        temporaryElement = null;
+    };
 
     board.pointerDown = (event: PointerEvent) => {
         const penPointers = getVectorPenPointers();
@@ -35,6 +45,7 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
         if (isVectorPenPointer && !vectorPenRef) {
             vectorPenRef = { shape: VectorLineShape.straight };
         }
+
         if (!PlaitBoard.isReadonly(board) && vectorPenRef && isDrawingMode(board)) {
             let point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             if (!temporaryElement) {
@@ -43,15 +54,23 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
                     start: point
                 };
             } else {
-                vectorPenRef.element = getElementById(board, temporaryElement.id);
-                const isClosed = distanceBetweenPointAndPoint(...point, ...vectorPenRef.start!) <= LINE_HIT_GEOMETRY_BUFFER;
-                if (isClosed) {
-                    vectorPenRef = null;
-                    temporaryElement = null;
+                if (!vectorPenRef.element) {
+                    vectorPenRef.element = temporaryElement;
+                    Transforms.insertNode(board, vectorPenRef.element, [board.children.length]);
+                } else {
+                    const points = vectorPenRef.element.points;
+                    const isClosed = distanceBetweenPointAndPoint(...point, ...vectorPenRef.start!) <= LINE_HIT_GEOMETRY_BUFFER;
+                    if (isClosed) {
+                        point = vectorPenRef.start!;
+                    }
+                    Transforms.setNode(board, { points: [...points, point] }, vectorPenRef.path!);
+                    vectorPenRef.element = getElementById(board, vectorPenRef.element.id);
+                    if (isClosed) {
+                        vectorLineComplete();
+                    }
                 }
+                preventTouchMove(board, event, true);
             }
-
-            preventTouchMove(board, event, true);
         }
         pointerDown(event);
     };
@@ -62,32 +81,20 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
         if (pointer !== VectorPenPointerType.vectorPen) {
-            if (vectorPenRef && vectorPenRef.element) {
-                const points = vectorPenRef.element!.points;
-                Transforms.setNode(board, { points: [...points.slice(0, points.length)] }, vectorPenRef.path!);
-                vectorPenRef = null;
-                temporaryElement = null;
-            }
+            vectorLineComplete();
         }
-        if (vectorPenRef) {
-            if (vectorPenRef.start && !vectorPenRef.element) {
-                temporaryElement = vectorLineCreating(board, vectorPenRef.shape, vectorPenRef.start, movingPoint, lineShapeG);
-                vectorPenRef.element = temporaryElement;
-                Transforms.insertNode(board, temporaryElement, [board.children.length]);
-            } else {
+        if (vectorPenRef && vectorPenRef.start) {
+            let drawPoints = [vectorPenRef.start];
+            if (vectorPenRef.element) {
+                drawPoints = [vectorPenRef.start, ...vectorPenRef.element.points];
                 const path = PlaitBoard.findPath(board, vectorPenRef.element!);
                 vectorPenRef.path = path;
-                const distance = distanceBetweenPointAndPoint(...movingPoint, ...vectorPenRef.start!);
-                if (distance <= LINE_HIT_GEOMETRY_BUFFER) {
-                    movingPoint = vectorPenRef.start!;
-                }
-                let points = vectorPenRef.element!.points;
-
-                if (Point.isEquals(points[0], points[1])) {
-                    points = points.slice(1);
-                }
-                Transforms.setNode(board, { points: [...points, movingPoint] }, vectorPenRef.path!);
             }
+            const distance = distanceBetweenPointAndPoint(...movingPoint, ...vectorPenRef.start);
+            if (distance <= LINE_HIT_GEOMETRY_BUFFER) {
+                movingPoint = vectorPenRef.start;
+            }
+            temporaryElement = vectorLineCreating(board, vectorPenRef.shape, drawPoints, movingPoint, lineShapeG!);
         }
         pointerMove(event);
     };
@@ -96,8 +103,7 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
         if (!PlaitBoard.isReadonly(board)) {
             if (vectorPenRef && vectorPenRef.element) {
                 Transforms.setNode(board, { points: vectorPenRef.element.points }, vectorPenRef.path!);
-                vectorPenRef = null;
-                temporaryElement = null;
+                vectorLineComplete();
                 BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
             }
         }
@@ -109,28 +115,14 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
             const isEsc = isKeyHotkey('esc', event);
             const isV = isKeyHotkey('v', event);
             if ((isEsc || isV) && vectorPenRef) {
-                const points = vectorPenRef.element!.points;
-                Transforms.setNode(board, { points: [...points.slice(0, points.length)] }, vectorPenRef.path!);
-                vectorPenRef = null;
-                temporaryElement = null;
+                Transforms.setNode(board, { points: vectorPenRef.element?.points }, vectorPenRef.path!);
+                vectorLineComplete();
                 if (isV) {
                     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
                 }
             }
         }
         globalKeyDown(event);
-    };
-
-    board.globalPointerUp = (event: PointerEvent) => {
-        if (vectorPenRef && vectorPenRef.element) {
-            clearSelectedElement(board);
-            addSelectedElement(board, vectorPenRef.element);
-        }
-
-        lineShapeG?.remove();
-        lineShapeG = null;
-        preventTouchMove(board, event, false);
-        globalPointerUp(event);
     };
 
     return board;

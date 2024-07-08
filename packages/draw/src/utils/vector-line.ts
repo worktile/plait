@@ -26,7 +26,6 @@ export const getVectorLinePoints = (board: PlaitBoard, element: PlaitVectorLine)
                 return pointsOnBezierCurves(element.points) as Point[];
             } else {
                 let dataPoints = element.points;
-                dataPoints = removeDuplicatePoints(dataPoints);
                 const points = catmullRomFitting(dataPoints);
                 return pointsOnBezierCurves(points) as Point[];
             }
@@ -38,7 +37,7 @@ export const getVectorLinePoints = (board: PlaitBoard, element: PlaitVectorLine)
 
 export const createVectorLineElement = (
     shape: VectorLineShape,
-    points: [Point, Point],
+    points: Point[],
     options?: Pick<PlaitVectorLine, 'strokeColor' | 'strokeWidth' | 'fill'>
 ): PlaitVectorLine => {
     return {
@@ -54,19 +53,19 @@ export const createVectorLineElement = (
 export const vectorLineCreating = (
     board: PlaitBoard,
     lineShape: VectorLineShape,
-    sourcePoint: Point,
+    points: Point[],
     movingPoint: Point,
     lineShapeG: SVGGElement
 ) => {
     const lineGenerator = new VectorLineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
-    const temporaryLineElement = createVectorLineElement(lineShape, [sourcePoint, movingPoint], {
+
+    const temporaryLineElement = createVectorLineElement(lineShape, [...points, movingPoint], {
         strokeWidth: DefaultLineStyle.strokeWidth,
         ...memorizedLatest
     });
-    const linePoints = getVectorLinePoints(board, temporaryLineElement);
-    const otherPoint = linePoints![0];
-    temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
+    const otherPoint = points[points.length - 1];
+    temporaryLineElement.points[temporaryLineElement.points.length - 1] = alignPoints(otherPoint, movingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
@@ -80,12 +79,7 @@ export const drawVectorLine = (board: PlaitBoard, element: PlaitVectorLine) => {
     const options = { stroke: strokeColor, strokeWidth, strokeLineDash, fill };
     const lineG = createG();
     let points = getVectorLinePoints(board, element)!;
-    let line;
-    if (element.shape === VectorLineShape.curve) {
-        line = PlaitBoard.getRoughSVG(board).curve(points, options);
-    } else {
-        line = drawLinearPath(points, options);
-    }
+    const line = drawLinearPath(points, options);
     const id = idCreator();
     line.setAttribute('mask', `url(#${id})`);
     if (element.strokeStyle === StrokeStyle.dotted) {
