@@ -1,5 +1,11 @@
 # angular-text
 
+## 0.63.0
+
+### Patch Changes
+
+-   [`611b1bafe`](https://github.com/worktile/plait/commit/611b1bafe27a703c241da9c91e514007b391d980) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - assign `margin` as `0` to resolve the content can not be displayed completely
+
 ## 0.62.0
 
 ### Minor Changes

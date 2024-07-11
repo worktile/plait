@@ -1,5 +1,11 @@
 # @plait/graph-viz
 
+## 0.63.0
+
+### Minor Changes
+
+-   [#952](https://github.com/worktile/plait/pull/952) [`37dad67de`](https://github.com/worktile/plait/commit/37dad67deb448af3f6c98aea8bf03018136fd5da) Thanks [@Xwatson](https://github.com/Xwatson)! - fix centering of selected node, node title ellipses, displays the line where the target is itself
+
 ## 0.62.0
 
 ### Minor Changes

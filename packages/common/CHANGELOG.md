@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.63.0
+
+### Patch Changes
+
+-   [`e56c9cb9e`](https://github.com/worktile/plait/commit/e56c9cb9e440ff3beb84d58ff2531e85a4fb5d85) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - invoking onChange asap to avoid blinking on typing chinese(onComposition)
+
 ## 0.62.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # plait
 
+## 0.63.0
+
+### Minor Changes
+
+-   [#951](https://github.com/worktile/plait/pull/951) [`332b9661d`](https://github.com/worktile/plait/commit/332b9661da9f620c607542300f0c83d8a7cbd0de) Thanks [@Xwatson](https://github.com/Xwatson)! - support board movement control
+
+*   [#953](https://github.com/worktile/plait/pull/953) [`6ec85feb5`](https://github.com/worktile/plait/commit/6ec85feb54dc3a957c838b6ce74af16e577626d8) Thanks [@Xwatson](https://github.com/Xwatson)! - add moveToCenter utility functions
+
 ## 0.62.0
 
 ### Minor Changes
