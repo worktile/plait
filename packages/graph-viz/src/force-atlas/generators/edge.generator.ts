@@ -18,7 +18,13 @@ export class ForceAtlasEdgeGenerator extends Generator<ForceAtlasEdgeElement, Ed
 
     draw(element: ForceAtlasEdgeElement, data: EdgeGeneratorData) {
         const edgeG = createG();
-        const edgeElement = drawEdge(data.startPoint, data.endPoint, data.direction, data.isSourceActive && data.isTargetActive);
+        const edgeElement = drawEdge(
+            data.startPoint,
+            data.endPoint,
+            data.direction,
+            data.isSourceActive && data.isTargetActive,
+            data.isTargetSelf
+        );
         edgeG.append(edgeElement.g);
         if (data.direction !== EdgeDirection.NONE) {
             const particle = drawParticle(this.board, data.startPoint, data.direction);

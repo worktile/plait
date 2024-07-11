@@ -1,15 +1,17 @@
 import { EdgeDirection, NodeStyles } from '../types';
-import { NS, PlaitBoard, Point, createForeignObject, createG, createPath, drawCircle, normalizePoint } from '@plait/core';
+import { PlaitBoard, Point, createForeignObject, createG, createPath, drawCircle, normalizePoint } from '@plait/core';
 import getArrow from '../../perfect-arrows/get-arrow';
 import {
     ACTIVE_BACKGROUND_NODE_ALPHA,
     DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER,
     DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER,
     DEFAULT_LINE_STYLES,
-    DEFAULT_NODE_LABEL_FONT_SIZE,
-    DEFAULT_NODE_LABEL_MARGIN_TOP,
+    DEFAULT_NODE_LABEL_HEIGHT,
+    DEFAULT_NODE_LABEL_STYLE,
+    DEFAULT_NODE_LABEL_WIDTH,
     DEFAULT_NODE_SIZE,
     DEFAULT_NODE_STYLES,
+    NODE_LABEL_CLASS_NAME,
     SECOND_DEPTH_NODE_ALPHA
 } from '../constants';
 import { DEFAULT_STYLES } from '../../constants/default';
@@ -35,40 +37,57 @@ export function drawNode(
     if (options.iconG) {
         nodeG.append(options.iconG);
     }
-    const text = document.createElementNS(NS, 'text');
-    text.textContent = node.label || '';
-    text.setAttribute('text-anchor', `middle`);
-    text.setAttribute('dominant-baseline', `hanging`);
-    text.setAttribute('x', `${x}`);
-    text.setAttribute('font-size', `${DEFAULT_NODE_LABEL_FONT_SIZE}px`);
-    text.setAttribute('style', `user-select: none;`);
+    const labelWidth = node.styles?.labelWidth ?? DEFAULT_NODE_LABEL_WIDTH;
+    const labelHeight = node.styles?.labelHeight ?? DEFAULT_NODE_LABEL_HEIGHT;
+    const textForeignObject = createForeignObject(x - labelWidth / 2, y, labelWidth, labelHeight);
+    const textContainer = document.createElement('div');
+    textContainer.classList.add(NODE_LABEL_CLASS_NAME);
+    textContainer.setAttribute('style', DEFAULT_NODE_LABEL_STYLE);
+    const text = document.createElement('span');
+    text.innerText = node.label;
+    textContainer.append(text);
+    textForeignObject.append(textContainer);
     if (options.isActive) {
         const waveDiameter = diameter * DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER;
         const waveCircle = drawCircle(roughSVG, [x, y], waveDiameter, nodeStyles);
         waveCircle.setAttribute('opacity', ACTIVE_BACKGROUND_NODE_ALPHA.toString());
         nodeG.append(waveCircle);
-        text.setAttribute('y', `${y + waveDiameter / 2 + DEFAULT_NODE_LABEL_MARGIN_TOP}`);
+        textForeignObject.setAttribute('y', `${y + waveDiameter / 2}`);
     } else {
         if (!options.isFirstDepth) {
             nodeG.setAttribute('opacity', SECOND_DEPTH_NODE_ALPHA.toString());
         }
-        text.setAttribute('y', `${y + diameter / 2 + DEFAULT_NODE_LABEL_MARGIN_TOP}`);
+        textForeignObject.setAttribute('y', `${y + diameter / 2}`);
     }
-    nodeG.append(text);
+    nodeG.append(textForeignObject);
     return nodeG;
 }
 
-export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean) {
+export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean, isTargetSelf?: boolean) {
+    const nodeRadius = DEFAULT_NODE_SIZE / 2;
     const arrow = getArrow(startPoint[0], startPoint[1], endPoint[0], endPoint[1], {
         stretch: 0.4,
         flip: direction === EdgeDirection.NONE ? false : isMutual,
-        padEnd: DEFAULT_NODE_SIZE / 2,
-        padStart: DEFAULT_NODE_SIZE / 2
+        padEnd: nodeRadius,
+        padStart: nodeRadius
     });
     const [sx, sy, cx, cy, ex, ey, ae, as, ec] = arrow;
     const g = createG();
     const path = createPath();
-    path.setAttribute('d', `M${sx},${sy} Q${cx},${cy} ${ex},${ey}`);
+    if (!isTargetSelf) {
+        path.setAttribute('d', `M${sx},${sy} Q${cx},${cy} ${ex},${ey}`);
+    } else {
+        const angle = 55;
+        const angleRad = (angle * Math.PI) / 180;
+        const x = nodeRadius * Math.cos(angleRad);
+        const y = nodeRadius * Math.sin(angleRad);
+        path.setAttribute(
+            'd',
+            `M -${x},-${y}
+            C -45,-85, 45 -85
+            ${x},-${y}`
+        );
+    }
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', DEFAULT_LINE_STYLES.color[direction]);
     g.append(path);

@@ -1,7 +1,18 @@
-import { PlaitElement, Point, RectangleClient, normalizePoint } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    Transforms,
+    clearViewportOrigination,
+    getRealScrollBarWidth,
+    getSelectedElements,
+    getViewBoxCenterPoint,
+    normalizePoint
+} from '@plait/core';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
 import { getEdges, getEdgesInSourceOrTarget } from './edge';
-import { PlaitCommonElementRef } from '@plait/common';
+import { animate, linear, PlaitCommonElementRef } from '@plait/common';
 import { ForceAtlasNodeGenerator } from '../generators/node.generator';
 import { DEFAULT_NODE_ICON_COLOR, NODE_ICON_FONT_SIZE } from '../constants';
 

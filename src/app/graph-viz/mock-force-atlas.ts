@@ -50,6 +50,11 @@ export const mockForceAtlasData: ForceAtlasElement[] = [
                 id: '1-5',
                 source: '4',
                 target: '1'
+            },
+            {
+                id: '1-6',
+                source: '1',
+                target: '1'
             }
         ]
     }

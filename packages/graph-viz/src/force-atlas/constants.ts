@@ -17,6 +17,14 @@ export const DEFAULT_NODE_LABEL_MARGIN_TOP = 4;
 
 export const DEFAULT_NODE_LABEL_FONT_SIZE = 12;
 
+export const DEFAULT_NODE_LABEL_WIDTH = 150;
+
+export const DEFAULT_NODE_LABEL_HEIGHT = 22;
+
+export const DEFAULT_NODE_LABEL_STYLE = `user-select:none;max-width:${DEFAULT_NODE_LABEL_WIDTH}px;text-align:center;line-height:${DEFAULT_NODE_LABEL_HEIGHT}px;font-size:${DEFAULT_NODE_LABEL_FONT_SIZE}px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`;
+
+export const NODE_LABEL_CLASS_NAME = 'force-atlas-node-label';
+
 export const SECOND_DEPTH_NODE_ALPHA = 0.5;
 
 export const SECOND_DEPTH_LINE_ALPHA = 0.5;

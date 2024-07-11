@@ -24,6 +24,7 @@ export interface EdgeGeneratorData extends GeneratorExtraData {
     isSourceActive: boolean;
     isTargetActive: boolean;
     direction: EdgeDirection;
+    isTargetSelf?: boolean;
 }
 
 export interface NodeGeneratorData extends GeneratorExtraData {
