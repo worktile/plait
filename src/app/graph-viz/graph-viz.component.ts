@@ -1,5 +1,15 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitBoardOptions, PlaitTheme, Viewport, PlaitPlugin } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitBoardOptions,
+    PlaitTheme,
+    Viewport,
+    PlaitPlugin,
+    PlaitOperation,
+    Transforms,
+    BoardTransforms,
+    getSelectedElements
+} from '@plait/core';
 import { mockForceAtlasData } from './mock-force-atlas';
 import { ForceAtlasElement, withForceAtlas } from '@plait/graph-viz';
 import { AppSettingPanelComponent } from '../components/setting-panel/setting-panel.component';
@@ -10,7 +20,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
-import { PlaitBoardComponent } from '@plait/angular-board';
+import { OnChangeData, PlaitBoardComponent } from '@plait/angular-board';
 import { withForceAtlasExtend } from './with-force-atlas-extend';
 
 @Component({
@@ -46,6 +56,8 @@ export class BasicGraphVizComponent implements OnInit {
 
     board!: PlaitBoard;
 
+    hasMoved = false;
+
     constructor(private activeRoute: ActivatedRoute) {}
 
     ngOnInit(): void {
@@ -60,5 +72,18 @@ export class BasicGraphVizComponent implements OnInit {
                     break;
             }
         });
+    }
+
+    onChange(event: OnChangeData) {
+        const selectElements = getSelectedElements(this.board);
+        const selectElement = selectElements[0];
+        const isSetViewport = event.operations.length && event.operations.every(op => PlaitOperation.isSetViewportOperation(op));
+        const isSetSelection = event.operations.length && event.operations.every(op => PlaitOperation.isSetSelectionOperation(op));
+        if (isSetViewport) {
+            this.hasMoved = true;
+        }
+        if (isSetSelection && this.hasMoved && selectElement) {
+            BoardTransforms.moveToCenter(this.board, selectElement.points![0]);
+        }
     }
 }

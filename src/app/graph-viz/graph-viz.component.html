@@ -1,4 +1,10 @@
-<plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" [plaitTheme]="theme"
-    [plaitOptions]="options" >
+<plait-board
+    [plaitPlugins]="plugins"
+    [plaitValue]="value"
+    [plaitViewport]="viewport"
+    [plaitTheme]="theme"
+    [plaitOptions]="options"
+    (onChange)="onChange($event)"
+>
     <app-zoom-toolbar></app-zoom-toolbar>
 </plait-board>
