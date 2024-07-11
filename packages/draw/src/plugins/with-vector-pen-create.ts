@@ -34,6 +34,7 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
                 addSelectedElement(board, vectorPenRef?.element);
             }
         }
+        PlaitBoard.getBoardContainer(board).classList.remove(`vector-line-closed`);
         lineShapeG?.remove();
         lineShapeG = null;
         vectorPenRef = null;
@@ -68,7 +69,6 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
                     if (vectorPenRef.path) {
                         const lastPoint = points[points.length - 1];
                         const distance = distanceBetweenPointAndPoint(...point, ...lastPoint);
-                        // 处理双击时插入2个密集点
                         if (distance > 2) {
                             Transforms.setNode(board, { points: [...points, point] }, vectorPenRef.path);
                         }
@@ -102,8 +102,11 @@ export const withVectorPenCreateByDraw = (board: PlaitBoard) => {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...vectorPenRef.start);
             if (distance <= LINE_HIT_GEOMETRY_BUFFER) {
                 movingPoint = vectorPenRef.start;
+                PlaitBoard.getBoardContainer(board).classList.add(`vector-line-closed`);
+            } else {
+                PlaitBoard.getBoardContainer(board).classList.remove(`vector-line-closed`);
             }
-            temporaryElement = vectorLineCreating(board, vectorPenRef.shape, drawPoints, movingPoint, lineShapeG!);
+            temporaryElement = vectorLineCreating(board, vectorPenRef.shape, drawPoints, movingPoint, lineShapeG);
         }
         pointerMove(event);
     };

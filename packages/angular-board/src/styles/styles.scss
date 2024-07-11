@@ -64,6 +64,13 @@
         cursor: default;
     }
 
+    &.pointer-vectorPen {
+        cursor: url(cursor/pen.svg) 6 0, crosshair;
+    }
+    &.vector-line-closed {
+        cursor: url(cursor/closed-vector-line.svg) 6 0, crosshair;
+    }
+
     &.ns-resize {
         cursor: ns-resize;
     }
