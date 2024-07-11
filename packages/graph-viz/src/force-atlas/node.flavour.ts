@@ -11,7 +11,7 @@ import Graph from 'graphology';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
 import { ForceAtlasNodeGenerator } from './generators/node.generator';
 import { getEdgeGenerator, getEdgeGeneratorData, getEdgesInSourceOrTarget } from './utils/edge';
-import { getAssociatedNodesById, getNodeGenerator, isFirstDepthNode } from './utils/node';
+import { getAssociatedNodesById, getNodeGenerator, isFirstDepthNode, moveBoardViewportToCenter } from './utils/node';
 
 export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasNodeElement, PlaitBoard> {
@@ -44,10 +44,12 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
         value: PlaitPluginElementContext<ForceAtlasNodeElement, PlaitBoard>,
         previous: PlaitPluginElementContext<ForceAtlasNodeElement, PlaitBoard>
     ) {
-        if (value !== previous && value.selected !== previous.selected) {
+        const isMoving = PlaitBoard.getBoardContainer(this.board).classList.contains('viewport-moving');
+        if (value !== previous && value.selected !== previous.selected && !isMoving) {
             const parent = value.parent as any;
             if (value.selected) {
                 cacheSelectedElements(this.board, [value.element]);
+                moveBoardViewportToCenter(this.board);
             }
             const selectElements = getSelectedElements(this.board);
             const associatedNodes = getAssociatedNodesById(value.element.id, parent);

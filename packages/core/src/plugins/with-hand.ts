@@ -1,7 +1,8 @@
-import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
+import { PlaitPointerType, PlaitBoard, PlaitBoardMove, WithHandPluginOptions, PlaitPluginKey } from '../interfaces';
 import { BoardTransforms } from '../transforms';
 import { isMainPointer } from '../utils/dom/common';
 import { updateViewportContainerScroll } from '../utils/viewport';
+import { PlaitOptionsBoard } from './with-options';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
     const { pointerDown, pointerMove, globalPointerUp, keyDown, keyUp } = board;
@@ -12,9 +13,9 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.pointerDown = (event: PointerEvent) => {
-        if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && isMainPointer(event)) {
+        const options = ((board as unknown) as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
+        if ((options.isHandMode(board, event) || PlaitBoard.isPointer(board, PlaitPointerType.hand)) && isMainPointer(event)) {
             isMoving = true;
-            PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }
@@ -22,7 +23,9 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.pointerMove = (event: PointerEvent) => {
-        if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && isMoving) {
+        const options = ((board as unknown) as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
+        if ((options.isHandMode(board, event) || PlaitBoard.isPointer(board, PlaitPointerType.hand)) && isMoving) {
+            PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             const viewportContainer = PlaitBoard.getViewportContainer(board);
             const left = viewportContainer.scrollLeft - (event.x - plaitBoardMove.x);
             const top = viewportContainer.scrollTop - (event.y - plaitBoardMove.y);

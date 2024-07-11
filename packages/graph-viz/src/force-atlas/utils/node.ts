@@ -1,7 +1,18 @@
-import { PlaitElement, Point, RectangleClient, normalizePoint } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    Transforms,
+    clearViewportOrigination,
+    getRealScrollBarWidth,
+    getSelectedElements,
+    getViewBoxCenterPoint,
+    normalizePoint
+} from '@plait/core';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../../interfaces';
 import { getEdges, getEdgesInSourceOrTarget } from './edge';
-import { PlaitCommonElementRef } from '@plait/common';
+import { animate, linear, PlaitCommonElementRef } from '@plait/common';
 import { ForceAtlasNodeGenerator } from '../generators/node.generator';
 import { DEFAULT_NODE_ICON_COLOR, NODE_ICON_FONT_SIZE } from '../constants';
 
@@ -64,4 +75,34 @@ export function getNodeIcon(node: ForceAtlasNodeElement) {
         fontSize: (iconItem && iconItem.fontSize) || NODE_ICON_FONT_SIZE,
         color: (iconItem && iconItem.color) || DEFAULT_NODE_ICON_COLOR
     };
+}
+
+export function moveBoardViewportToCenter(board: PlaitBoard) {
+    const plaitElement = getSelectedElements(board)?.[0];
+    if (plaitElement) {
+        const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
+        const scrollBarWidth = getRealScrollBarWidth(board);
+        const oldCenterPoint = getViewBoxCenterPoint(board);
+        const newCenterPoint = plaitElement.points![0];
+        const left = newCenterPoint[0] - oldCenterPoint[0];
+        const top = newCenterPoint[1] - oldCenterPoint[1];
+        const zoom = board.viewport.zoom;
+        animate(
+            (t: number) => {
+                const origination = [
+                    left * t - boardContainerRect.width / 2 / zoom + scrollBarWidth / 2 / zoom,
+                    top * t - boardContainerRect.height / 2 / zoom + scrollBarWidth / 2 / zoom
+                ] as Point;
+
+                Transforms.setViewport(board, {
+                    ...board.viewport,
+                    origination
+                });
+                clearViewportOrigination(board);
+            },
+            500,
+            linear,
+            () => {}
+        );
+    }
 }
