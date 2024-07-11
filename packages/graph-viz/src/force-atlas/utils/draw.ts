@@ -64,11 +64,12 @@ export function drawNode(
 }
 
 export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean, isTargetSelf?: boolean) {
+    const nodeRadius = DEFAULT_NODE_SIZE / 2;
     const arrow = getArrow(startPoint[0], startPoint[1], endPoint[0], endPoint[1], {
         stretch: 0.4,
         flip: direction === EdgeDirection.NONE ? false : isMutual,
-        padEnd: DEFAULT_NODE_SIZE / 2,
-        padStart: DEFAULT_NODE_SIZE / 2
+        padEnd: nodeRadius,
+        padStart: nodeRadius
     });
     const [sx, sy, cx, cy, ex, ey, ae, as, ec] = arrow;
     const g = createG();
@@ -76,11 +77,15 @@ export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDire
     if (!isTargetSelf) {
         path.setAttribute('d', `M${sx},${sy} Q${cx},${cy} ${ex},${ey}`);
     } else {
+        const angle = 55;
+        const angleRad = (angle * Math.PI) / 180;
+        const x = nodeRadius * Math.cos(angleRad);
+        const y = nodeRadius * Math.sin(angleRad);
         path.setAttribute(
             'd',
-            `M -8,-12
+            `M -${x},-${y}
             C -45,-85, 45 -85
-            8,-12`
+            ${x},-${y}`
         );
     }
     path.setAttribute('fill', 'none');
