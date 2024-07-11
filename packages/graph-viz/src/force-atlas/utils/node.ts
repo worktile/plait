@@ -76,27 +76,3 @@ export function getNodeIcon(node: ForceAtlasNodeElement) {
         color: (iconItem && iconItem.color) || DEFAULT_NODE_ICON_COLOR
     };
 }
-
-export function moveBoardViewportToCenter(board: PlaitBoard) {
-    const plaitElement = getSelectedElements(board)?.[0];
-    if (plaitElement) {
-        const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
-        const scrollBarWidth = getRealScrollBarWidth(board);
-        const oldCenterPoint = getViewBoxCenterPoint(board);
-        const newCenterPoint = plaitElement.points![0];
-        const left = newCenterPoint[0] - oldCenterPoint[0];
-        const top = newCenterPoint[1] - oldCenterPoint[1];
-        const zoom = board.viewport.zoom;
-
-        const origination = [
-            left - boardContainerRect.width / 2 / zoom + scrollBarWidth / 2 / zoom,
-            top - boardContainerRect.height / 2 / zoom + scrollBarWidth / 2 / zoom
-        ] as Point;
-
-        Transforms.setViewport(board, {
-            ...board.viewport,
-            origination
-        });
-        clearViewportOrigination(board);
-    }
-}
