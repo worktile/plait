@@ -1,7 +1,7 @@
 @use '../../styles/variables.scss'as variables;
 
 .plait-link-node {
-    margin: 0 1px;
+    margin: 0;
     color: variables.$primary-color;
     text-decoration: none;
     background-color: transparent;
