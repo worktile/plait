@@ -37,7 +37,7 @@ export class TextManage {
 
     textComponentRef!: TextComponentRef;
 
-    // add debounce to avoid trigger more times(from onChange and onComposition) onChange when user is typing chinese
+    // add debounce for composition input end and abandon before change in setTimeout period
     // be going to attract board children are overwritten when fired more times onChange(eg: board is embed in editor)
     textChange = debounce<TextManageChangeData>((data?: TextManageChangeData) => {
         if (!data) {
@@ -82,10 +82,15 @@ export class TextManage {
                 this.editor = editor;
             },
             onComposition: (event: CompositionEvent) => {
+                if (event.type === 'compositionend') {
+                    return;
+                }
                 const fakeRoot = buildCompositionData(this.editor, event.data);
                 if (fakeRoot) {
                     const sizeData = this.getSize(fakeRoot.children[0]);
-                    this.textChange(sizeData);
+                    // invoking onChange asap to avoid blinking on typing chinese
+                    this.options.onChange && this.options.onChange({ ...sizeData });
+                    MERGING.set(this.board, true);
                 }
             }
         };
