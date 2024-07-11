@@ -12,6 +12,11 @@ export interface WithSelectionPluginOptions extends WithPluginOptions {
     isPreventClearSelection: boolean; // is clear selection on click outside of board container
 }
 
+export interface WithHandPluginOptions extends WithPluginOptions {
+    isHandMode: (board: PlaitBoard, event: PointerEvent) => boolean;
+}
+
 export enum PlaitPluginKey {
-    'withSelection' = 'withSelection'
+    'withSelection' = 'withSelection',
+    'withHand' = 'withHand'
 }
