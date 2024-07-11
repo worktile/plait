@@ -1,14 +1,18 @@
 import {
+    isHitElement,
     PlaitBoard,
     PlaitElement,
     PlaitOptionsBoard,
     PlaitPluginElementContext,
     PlaitPluginKey,
+    PlaitPointerType,
     Point,
     RectangleClient,
     Selection,
-    WithSelectionPluginOptions,
-    setSelectionOptions
+    setSelectionOptions,
+    toHostPoint,
+    toViewBoxPoint,
+    WithHandPluginOptions
 } from '@plait/core';
 import { ForceAtlasFlavour } from './force-atlas.flavour';
 import { ForceAtlasNodeFlavour } from './node.flavour';
@@ -73,14 +77,15 @@ export const withForceAtlas = (board: PlaitBoard) => {
         return isInsidePoint(element, point);
     };
 
-    board.isMovable = element => {
-        if (ForceAtlasElement.isForceAtlasNodeElement(element)) {
-            return true;
-        }
-        return isMovable(element);
-    };
+    setSelectionOptions(board, { isMultipleSelection: false, isPreventClearSelection: true });
 
-    setSelectionOptions(board, { isMultipleSelection: false });
+    (board as PlaitOptionsBoard).setPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand, {
+        isHandMode: (board, event) => {
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+            const isHitTarget = isHitElement(board, point);
+            return PlaitBoard.isPointer(board, PlaitPointerType.selection) && !isHitTarget;
+        }
+    });
 
     return withNodeIcon(board);
 };

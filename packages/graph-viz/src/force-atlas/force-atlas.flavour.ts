@@ -5,6 +5,7 @@ import circular from 'graphology-layout/circular';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
 import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './constants';
+import { moveBoardViewportToCenter } from './utils/node';
 
 export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
@@ -48,6 +49,9 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
     initialize(): void {
         super.initialize();
         this.initializeGraph();
+        setTimeout(() => {
+            moveBoardViewportToCenter(this.board);
+        }, 0);
     }
 
     onContextChanged(
