@@ -63,7 +63,7 @@ export function drawNode(
     return nodeG;
 }
 
-export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean) {
+export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDirection, isMutual: boolean, isTargetSelf?: boolean) {
     const arrow = getArrow(startPoint[0], startPoint[1], endPoint[0], endPoint[1], {
         stretch: 0.4,
         flip: direction === EdgeDirection.NONE ? false : isMutual,
@@ -73,7 +73,16 @@ export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDire
     const [sx, sy, cx, cy, ex, ey, ae, as, ec] = arrow;
     const g = createG();
     const path = createPath();
-    path.setAttribute('d', `M${sx},${sy} Q${cx},${cy} ${ex},${ey}`);
+    if (!isTargetSelf) {
+        path.setAttribute('d', `M${sx},${sy} Q${cx},${cy} ${ex},${ey}`);
+    } else {
+        path.setAttribute(
+            'd',
+            `M -8,-12
+            C -45,-85, 45 -85
+            8,-12`
+        );
+    }
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', DEFAULT_LINE_STYLES.color[direction]);
     g.append(path);

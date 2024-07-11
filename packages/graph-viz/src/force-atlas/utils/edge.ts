@@ -51,12 +51,14 @@ export function getEdgeGeneratorData(edge: ForceAtlasEdgeElement, board: PlaitBo
     const isSourceActive = getIsNodeActive(sourceNode.id, selectElements);
     const isTargetActive = getIsNodeActive(targetNode.id, selectElements);
     const direction = getEdgeDirection(isSourceActive, isTargetActive);
+
     return {
         startPoint,
         endPoint,
         direction,
         isSourceActive,
-        isTargetActive
+        isTargetActive,
+        isTargetSelf: sourceNode.id === targetNode.id
     };
 }
 
