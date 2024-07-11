@@ -11,7 +11,7 @@ import {
     initializeViewportContainer
 } from '../utils/viewport';
 import { setViewport } from './viewport';
-import { depthFirstRecursion, getRealScrollBarWidth } from '../utils';
+import { depthFirstRecursion, getRealScrollBarWidth, getSelectedElements } from '../utils';
 import { PlaitElement } from '../interfaces/element';
 import { setTheme } from './theme';
 import { FitViewportOptions } from '../interfaces/viewport';
@@ -131,11 +131,35 @@ const updatePointerType = <T extends string = PlaitPointerType>(board: PlaitBoar
     board.pointer = pointer;
 };
 
+function moveToCenter(board: PlaitBoard, centerPoint: Point) {
+    const plaitElement = getSelectedElements(board)?.[0];
+    if (plaitElement) {
+        const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
+        const scrollBarWidth = getRealScrollBarWidth(board);
+        const oldCenterPoint = getViewBoxCenterPoint(board);
+        const left = centerPoint[0] - oldCenterPoint[0];
+        const top = centerPoint[1] - oldCenterPoint[1];
+        const zoom = board.viewport.zoom;
+
+        const origination = [
+            left - boardContainerRect.width / 2 / zoom + scrollBarWidth / 2 / zoom,
+            top - boardContainerRect.height / 2 / zoom + scrollBarWidth / 2 / zoom
+        ] as Point;
+
+        setViewport(board, {
+            ...board.viewport,
+            origination
+        });
+        clearViewportOrigination(board);
+    }
+}
+
 export const BoardTransforms = {
     updatePointerType,
     updateViewport,
     fitViewport,
     updateZoom,
     updateThemeColor,
-    fitViewportWidth
+    fitViewportWidth,
+    moveToCenter
 };
