@@ -11,7 +11,7 @@ import Graph from 'graphology';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
 import { ForceAtlasNodeGenerator } from './generators/node.generator';
 import { getEdgeGenerator, getEdgeGeneratorData, getEdgesInSourceOrTarget } from './utils/edge';
-import { getAssociatedNodesById, getNodeGenerator, isFirstDepthNode } from './utils/node';
+import { getNodeGenerator, getNodes, isFirstDepthNode } from './utils/node';
 
 export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasNodeElement, PlaitBoard> {
@@ -50,13 +50,14 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
                 cacheSelectedElements(this.board, [value.element]);
             }
             const selectElements = getSelectedElements(this.board);
-            const associatedNodes = getAssociatedNodesById(value.element.id, parent);
-            associatedNodes.forEach(node => {
+            const nodes = getNodes(parent);
+            nodes.forEach(node => {
                 const nodeGenerator = getNodeGenerator(node);
                 nodeGenerator.destroy();
                 nodeGenerator.processDrawing(node, this.getElementG(), {
                     isActive: selectElements?.[0]?.id === node.id,
-                    isFirstDepth: selectElements.length > 0 && isFirstDepthNode(node.id, selectElements[0].id, parent)
+                    isFirstDepth: selectElements.length > 0 && isFirstDepthNode(node.id, selectElements[0].id, parent),
+                    isBlur: selectElements.length === 0
                 });
             });
 

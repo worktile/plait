@@ -53,8 +53,8 @@ export const mockForceAtlasData: ForceAtlasElement[] = [
             },
             {
                 id: '1-6',
-                source: '1',
-                target: '1'
+                source: '2',
+                target: '2'
             }
         ]
     }
