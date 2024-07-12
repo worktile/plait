@@ -1,4 +1,14 @@
-<plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" [plaitTheme]="theme"
-    [plaitOptions]="options" >
+<plait-board
+    [plaitPlugins]="plugins"
+    [plaitValue]="value"
+    [plaitViewport]="viewport"
+    [plaitTheme]="theme"
+    [plaitOptions]="options"
+    (onChange)="onChange($event)"
+    (plaitBoardInitialized)="afterBoardInitialized($event)"
+>
     <app-zoom-toolbar></app-zoom-toolbar>
 </plait-board>
+<!-- @if (board) {
+    <debug-point-display [board]="board"></debug-point-display>
+} -->
