@@ -115,7 +115,7 @@ export class BasicGraphVizComponent implements OnInit {
                 console.log('trigger db click');
                 const targetNodeElement = getHitForceAtlasNode(board, e);
                 if (targetNodeElement) {
-                    console.log(targetNodeElement.label);
+                    console.log(`hit target: ${targetNodeElement.label}`);
                 }
                 if (timeoutId) {
                     clearTimeout(timeoutId);
