@@ -386,11 +386,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<MouseEvent>(this.host, 'dblclick')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(
-                    () =>
-                        (this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board)) ||
-                        PlaitBoard.isPointer(this.board, VectorPenPointerType.vectorPen)
-                )
+                filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: MouseEvent) => {
                 this.board.dblClick(event);
