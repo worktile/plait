@@ -55,7 +55,7 @@ export const DEFAULT_LINE_STYLES = {
     color: {
         [EdgeDirection.IN]: '#73D897',
         [EdgeDirection.OUT]: '#6698FF',
-        [EdgeDirection.NONE]: `#ddd`
+        [EdgeDirection.NONE]: `#eee`
     },
     opacity: 0.4
 };
