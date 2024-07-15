@@ -58,7 +58,7 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
                 const isFirstDepth = selectElements.length > 0 && isFirstDepthNode(node.id, selectElements[0].id, parent);
                 nodeGenerator.processDrawing(node, this.getElementG(), {
                     isActive: selectElements?.[0]?.id === node.id,
-                    opacity: isFirstDepth ? 1 : SECOND_DEPTH_NODE_ALPHA
+                    opacity: selectElements.length === 0 ? 1 : isFirstDepth ? 1 : SECOND_DEPTH_NODE_ALPHA
                 });
             });
 
