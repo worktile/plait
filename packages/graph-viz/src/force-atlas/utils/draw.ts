@@ -22,7 +22,7 @@ export function drawNode(
     board: PlaitBoard,
     node: ForceAtlasNodeElement,
     point: Point,
-    options: { iconG?: SVGGElement; isActive: boolean; isFirstDepth: boolean; isBlur?: boolean }
+    options: { iconG?: SVGGElement; isActive: boolean; opacity?: number }
 ) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
     const nodeStyles: NodeStyles = {
@@ -52,12 +52,8 @@ export function drawNode(
         nodeG.append(waveCircle);
         textForeignObject.setAttribute('y', `${y + waveDiameter / 2}`);
     } else {
-        if (options.isBlur) {
-            nodeG.setAttribute('opacity', '1');
-        } else if (!options.isFirstDepth) {
-            nodeG.setAttribute('opacity', SECOND_DEPTH_NODE_ALPHA.toString());
-        }
         textForeignObject.setAttribute('y', `${y + diameter / 2}`);
+        nodeG.setAttribute('opacity', (options.opacity ?? 1).toString());
     }
     if (options.iconG) {
         nodeG.append(options.iconG);
