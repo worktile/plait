@@ -17,7 +17,7 @@ export const DEFAULT_NODE_LABEL_MARGIN_TOP = 4;
 
 export const DEFAULT_NODE_LABEL_FONT_SIZE = 12;
 
-export const DEFAULT_NODE_LABEL_WIDTH = 150;
+export const DEFAULT_NODE_LABEL_WIDTH = 72;
 
 export const DEFAULT_NODE_LABEL_HEIGHT = 22;
 
@@ -55,6 +55,9 @@ export const DEFAULT_LINE_STYLES = {
     color: {
         [EdgeDirection.IN]: '#73D897',
         [EdgeDirection.OUT]: '#6698FF',
-        [EdgeDirection.NONE]: `#ddd`
-    }
+        [EdgeDirection.NONE]: `#eee`
+    },
+    opacity: 0.4
 };
+
+export const DEFAULT_EDGE_PARTICLE_SIZE = 4;

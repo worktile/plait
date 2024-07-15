@@ -5,6 +5,7 @@ import {
     ACTIVE_BACKGROUND_NODE_ALPHA,
     DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER,
     DEFAULT_ACTIVE_WAVE_NODE_SIZE_MULTIPLIER,
+    DEFAULT_EDGE_PARTICLE_SIZE,
     DEFAULT_LINE_STYLES,
     DEFAULT_NODE_LABEL_HEIGHT,
     DEFAULT_NODE_LABEL_STYLE,
@@ -21,7 +22,7 @@ export function drawNode(
     board: PlaitBoard,
     node: ForceAtlasNodeElement,
     point: Point,
-    options: { iconG?: SVGGElement; isActive: boolean; isFirstDepth: boolean }
+    options: { iconG?: SVGGElement; isActive: boolean; opacity?: number }
 ) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
     const nodeStyles: NodeStyles = {
@@ -34,9 +35,6 @@ export function drawNode(
         diameter = diameter * DEFAULT_ACTIVE_NODE_SIZE_MULTIPLIER;
     }
     const nodeG = drawCircle(roughSVG, [x, y], diameter, nodeStyles);
-    if (options.iconG) {
-        nodeG.append(options.iconG);
-    }
     const labelWidth = node.styles?.labelWidth ?? DEFAULT_NODE_LABEL_WIDTH;
     const labelHeight = node.styles?.labelHeight ?? DEFAULT_NODE_LABEL_HEIGHT;
     const textForeignObject = createForeignObject(x - labelWidth / 2, y, labelWidth, labelHeight);
@@ -54,10 +52,11 @@ export function drawNode(
         nodeG.append(waveCircle);
         textForeignObject.setAttribute('y', `${y + waveDiameter / 2}`);
     } else {
-        if (!options.isFirstDepth) {
-            nodeG.setAttribute('opacity', SECOND_DEPTH_NODE_ALPHA.toString());
-        }
         textForeignObject.setAttribute('y', `${y + diameter / 2}`);
+        nodeG.setAttribute('opacity', (options.opacity ?? 1).toString());
+    }
+    if (options.iconG) {
+        nodeG.append(options.iconG);
     }
     nodeG.append(textForeignObject);
     return nodeG;
@@ -77,19 +76,24 @@ export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDire
     if (!isTargetSelf) {
         path.setAttribute('d', `M${sx},${sy} Q${cx},${cy} ${ex},${ey}`);
     } else {
+        const x = startPoint[0];
+        const y = startPoint[1];
+        const besselX = 40;
+        const besselY = 75;
         const angle = 55;
         const angleRad = (angle * Math.PI) / 180;
-        const x = nodeRadius * Math.cos(angleRad);
-        const y = nodeRadius * Math.sin(angleRad);
+        const offsetX = nodeRadius * Math.cos(angleRad);
+        const offsetY = nodeRadius * Math.sin(angleRad);
         path.setAttribute(
             'd',
-            `M -${x},-${y}
-            C -45,-85, 45 -85
-            ${x},-${y}`
+            `M ${x - offsetX},${y - offsetY}
+            C ${x - besselX},${y - besselY}, ${x + besselX} ${y - besselY}
+            ${x + offsetX},${y - offsetY}`
         );
     }
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', DEFAULT_LINE_STYLES.color[direction]);
+    path.setAttribute('opacity', DEFAULT_LINE_STYLES.opacity.toString());
     g.append(path);
     return {
         g,
@@ -99,7 +103,7 @@ export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDire
 
 export function drawParticle(board: PlaitBoard, startPoint: Point, direction: EdgeDirection) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
-    const pointG = drawCircle(roughSVG, [0, 0], 5, {
+    const pointG = drawCircle(roughSVG, [0, 0], DEFAULT_EDGE_PARTICLE_SIZE, {
         ...DEFAULT_STYLES,
         strokeWidth: 0,
         fill: DEFAULT_LINE_STYLES.color[direction]

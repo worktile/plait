@@ -29,7 +29,7 @@ export interface EdgeGeneratorData extends GeneratorExtraData {
 
 export interface NodeGeneratorData extends GeneratorExtraData {
     isActive: boolean;
-    isFirstDepth: boolean;
+    opacity: number;
 }
 
 export interface NodeIconItem {

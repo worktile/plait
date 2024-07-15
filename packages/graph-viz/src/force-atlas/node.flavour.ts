@@ -11,7 +11,8 @@ import Graph from 'graphology';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
 import { ForceAtlasNodeGenerator } from './generators/node.generator';
 import { getEdgeGenerator, getEdgeGeneratorData, getEdgesInSourceOrTarget } from './utils/edge';
-import { getAssociatedNodesById, getNodeGenerator, isFirstDepthNode } from './utils/node';
+import { getNodeGenerator, getNodes, isFirstDepthNode } from './utils/node';
+import { SECOND_DEPTH_NODE_ALPHA } from './constants';
 
 export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasNodeElement, PlaitBoard> {
@@ -36,7 +37,7 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
         const isActive = activeNodeId === this.element.id;
         this.nodeGenerator.processDrawing(this.element, isActive ? PlaitBoard.getElementActiveHost(this.board) : this.getElementG(), {
             isActive,
-            isFirstDepth: isFirstDepthNode(this.element.id, activeNodeId, parent)
+            opacity: isFirstDepthNode(this.element.id, activeNodeId, parent) ? 1 : SECOND_DEPTH_NODE_ALPHA
         });
     }
 
@@ -50,13 +51,14 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
                 cacheSelectedElements(this.board, [value.element]);
             }
             const selectElements = getSelectedElements(this.board);
-            const associatedNodes = getAssociatedNodesById(value.element.id, parent);
-            associatedNodes.forEach(node => {
+            const nodes = getNodes(parent);
+            nodes.forEach(node => {
                 const nodeGenerator = getNodeGenerator(node);
                 nodeGenerator.destroy();
+                const isFirstDepth = selectElements.length > 0 && isFirstDepthNode(node.id, selectElements[0].id, parent);
                 nodeGenerator.processDrawing(node, this.getElementG(), {
                     isActive: selectElements?.[0]?.id === node.id,
-                    isFirstDepth: selectElements.length > 0 && isFirstDepthNode(node.id, selectElements[0].id, parent)
+                    opacity: selectElements.length === 0 ? 1 : isFirstDepth ? 1 : SECOND_DEPTH_NODE_ALPHA
                 });
             });
 
