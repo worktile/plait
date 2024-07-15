@@ -43,6 +43,7 @@ import { getHitConnectorPoint } from './arrow-line';
 import { getNearestPoint, isGeometryClosed, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { PlaitDrawShapeText } from '../generators/text.generator';
+import { isClosedVectorLine } from '.';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
@@ -102,6 +103,10 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
 export const isDrawElementClosed = (element: PlaitDrawElement) => {
     if (PlaitDrawElement.isText(element) || PlaitDrawElement.isArrowLine(element) || PlaitDrawElement.isImage(element)) {
         return false;
+    }
+
+    if (PlaitDrawElement.isVectorLine(element)) {
+        return isClosedVectorLine(element);
     }
 
     if (PlaitDrawElement.isGeometry(element)) {

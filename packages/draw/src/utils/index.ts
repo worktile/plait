@@ -11,3 +11,5 @@ export * from './snap-resizing';
 export * from './table';
 export * from './table-selected';
 export * from './swimlane';
+export * from './line';
+export * from './vector-line';

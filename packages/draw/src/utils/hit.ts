@@ -11,7 +11,7 @@ import {
     rotatePointsByElement,
     rotateAntiPointsByElement
 } from '@plait/core';
-import { PlaitArrowLine, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
+import { PlaitArrowLine, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement, PlaitVectorLine } from '../interfaces';
 import { getNearestPoint } from './geometry';
 import { getArrowLinePoints } from './arrow-line/arrow-line-basic';
 import { getFillByElement } from './style/stroke';
@@ -21,6 +21,7 @@ import { getHitArrowLineTextIndex } from './position/arrow-line';
 import { getTextRectangle } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { isFilled, sortElementsByArea } from '@plait/common';
+import { getVectorLinePoints } from './vector-line';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -43,6 +44,11 @@ export const isHitArrowLine = (board: PlaitBoard, element: PlaitArrowLine, point
     const points = getArrowLinePoints(board, element);
     const isHitText = isHitArrowLineText(board, element as PlaitArrowLine, point);
     return isHitText || isHitPolyLine(points, point);
+};
+
+export const isHitVectorLine = (board: PlaitBoard, element: PlaitVectorLine, point: Point) => {
+    const points = getVectorLinePoints(board, element);
+    return isHitPolyLine(points!, point);
 };
 
 export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangle: RectangleClient) => {
@@ -168,6 +174,10 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
     if (PlaitDrawElement.isArrowLine(element)) {
         return isHitArrowLine(board, element, point);
     }
+
+    if (PlaitDrawElement.isVectorLine(element)) {
+        return isHitVectorLine(board, element, point);
+    }
     return null;
 };
 
@@ -205,6 +215,10 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
 
     if (PlaitDrawElement.isArrowLine(element)) {
         return isHitArrowLine(board, element, point);
+    }
+
+    if (PlaitDrawElement.isVectorLine(element)) {
+        return isHitVectorLine(board, element, point);
     }
 
     return null;

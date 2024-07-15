@@ -1,7 +1,7 @@
 import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedArrowLineElements } from '../utils/selected';
-import { getHitArrowLineResizeHandleRef, ArrowLineResizeHandle } from '../utils/position/arrow-line';
+import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { ArrowLineHandle, ArrowLineShape, PlaitArrowLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getElbowPoints, getNextRenderPoints, isUseDefaultOrthogonalRoute } from '../utils/arrow-line/elbow';
@@ -23,7 +23,7 @@ export const withArrowLineResize = (board: PlaitBoard) => {
     let elbowTargetPoint: Point | null;
     let elbowNextRenderPoints: Point[] | null;
 
-    const options: WithResizeOptions<PlaitArrowLine, ArrowLineResizeHandle> = {
+    const options: WithResizeOptions<PlaitArrowLine, LineResizeHandle> = {
         key: 'draw-line',
         canResize: () => {
             return true;
@@ -33,7 +33,7 @@ export const withArrowLineResize = (board: PlaitBoard) => {
             if (selectedLineElements.length > 0) {
                 let result = null;
                 selectedLineElements.forEach(value => {
-                    const handleRef = getHitArrowLineResizeHandleRef(board, value, point);
+                    const handleRef = getHitLineResizeHandleRef(board, value, point);
                     if (handleRef) {
                         result = {
                             element: value,
@@ -46,11 +46,11 @@ export const withArrowLineResize = (board: PlaitBoard) => {
             }
             return null;
         },
-        beforeResize: (resizeRef: ResizeRef<PlaitArrowLine, ArrowLineResizeHandle>) => {
+        beforeResize: (resizeRef: ResizeRef<PlaitArrowLine, LineResizeHandle>) => {
             if (
                 resizeRef.element.shape === ArrowLineShape.elbow &&
-                resizeRef.handle !== ArrowLineResizeHandle.source &&
-                resizeRef.handle !== ArrowLineResizeHandle.target
+                resizeRef.handle !== LineResizeHandle.source &&
+                resizeRef.handle !== LineResizeHandle.target
             ) {
                 const params = getElbowLineRouteOptions(board, resizeRef.element);
                 if (isUseDefaultOrthogonalRoute(resizeRef.element, params)) {
@@ -68,14 +68,14 @@ export const withArrowLineResize = (board: PlaitBoard) => {
                 elbowLineDeleteCount = value.deleteCount;
             }
         },
-        onResize: (resizeRef: ResizeRef<PlaitArrowLine, ArrowLineResizeHandle>, resizeState: ResizeState) => {
+        onResize: (resizeRef: ResizeRef<PlaitArrowLine, LineResizeHandle>, resizeState: ResizeState) => {
             let points: Point[] = [...resizeRef.element.points];
             let source: ArrowLineHandle = { ...resizeRef.element.source };
             let target: ArrowLineHandle = { ...resizeRef.element.target };
             let handleIndex = resizeRef.handleIndex!;
             const hitElement = getSnappingShape(board, resizeState.endPoint);
-            if (resizeRef.handle === ArrowLineResizeHandle.source || resizeRef.handle === ArrowLineResizeHandle.target) {
-                const object = resizeRef.handle === ArrowLineResizeHandle.source ? source : target;
+            if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
+                const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[handleIndex] = resizeState.endPoint;
                 if (hitElement) {
                     object.connection = getHitConnection(board, resizeState.endPoint, hitElement);
@@ -112,7 +112,7 @@ export const withArrowLineResize = (board: PlaitBoard) => {
                         }
                     }
                 } else {
-                    if (resizeRef.handle === ArrowLineResizeHandle.addHandle) {
+                    if (resizeRef.handle === LineResizeHandle.addHandle) {
                         points.splice(handleIndex + 1, 0, resizeState.endPoint);
                     } else {
                         points[handleIndex] = resizeState.endPoint;
@@ -121,7 +121,7 @@ export const withArrowLineResize = (board: PlaitBoard) => {
             }
 
             if (!hitElement) {
-                handleIndex = resizeRef.handle === ArrowLineResizeHandle.addHandle ? handleIndex + 1 : handleIndex;
+                handleIndex = resizeRef.handle === LineResizeHandle.addHandle ? handleIndex + 1 : handleIndex;
                 const drawPoints = getArrowLinePoints(board, resizeRef.element);
                 const newPoints = [...points];
                 newPoints[0] = drawPoints[0];
@@ -140,7 +140,7 @@ export const withArrowLineResize = (board: PlaitBoard) => {
             }
             DrawTransforms.resizeArrowLine(board, { points, source, target }, resizeRef.path as Path);
         },
-        afterResize: (resizeRef: ResizeRef<PlaitArrowLine, ArrowLineResizeHandle>) => {
+        afterResize: (resizeRef: ResizeRef<PlaitArrowLine, LineResizeHandle>) => {
             if (resizeRef.element.shape === ArrowLineShape.elbow) {
                 const element = PlaitNode.get(board, resizeRef.path as Path);
                 let points = element && [...element.points!];
@@ -171,7 +171,7 @@ export const withArrowLineResize = (board: PlaitBoard) => {
         }
     };
 
-    withResize<PlaitArrowLine, ArrowLineResizeHandle>(board, options);
+    withResize<PlaitArrowLine, LineResizeHandle>(board, options);
 
     return board;
 };

@@ -9,7 +9,8 @@ import {
     BasicShapes,
     FlowchartSymbols,
     UMLSymbols,
-    SwimlaneDrawSymbols
+    SwimlaneDrawSymbols,
+    VectorPenPointerType
 } from '@plait/draw';
 import { MindElement, MindPointerType, MindTransforms } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
@@ -17,7 +18,7 @@ import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
 import { closeAction } from '../../utils/popover';
 import { PlaitIslandBaseComponent } from '@plait/angular-board';
 
-type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | ArrowLineShape;
+type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | ArrowLineShape | VectorPenPointerType;
 
 @Component({
     selector: 'app-main-toolbar',
@@ -34,6 +35,8 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     PlaitPointerType = PlaitPointerType;
 
     MindPointerType = MindPointerType;
+
+    VectorPenPointerType = VectorPenPointerType;
 
     GeometryShapeType = BasicShapes;
 

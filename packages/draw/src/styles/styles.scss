@@ -4,7 +4,7 @@
             cursor: default;
         }
     }
-    &:not(.pointer-text):not(.pointer-selection):not(.pointer-hand) {
+    &:not(.pointer-text):not(.pointer-selection):not(.pointer-hand):not(.pointer-vectorPen) {
         .board-host-svg {
             cursor: crosshair;
         }
@@ -12,7 +12,7 @@
     &.draw-line-resizing .element-active-host .line-handle {
         display: none;
     }
-    &.line-text-resizing ,
+    &.line-text-resizing,
     &.line-text-resizing .slate-editable-container {
         cursor: move;
     }

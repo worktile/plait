@@ -1,6 +1,7 @@
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { ArrowLineComponent } from '../arrow-line.component';
+import { VectorLineComponent } from '../vector-line.component';
 import { PlaitDrawElement } from '../interfaces';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
@@ -20,6 +21,9 @@ import { getArrowLinePoints, getArrowLineTextRectangle } from '../utils/arrow-li
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
+import { withVectorPenCreateByDraw } from './with-vector-pen-create';
+import { getVectorLinePoints } from '../utils/vector-line';
+import { withVectorLineResize } from './with-vector-line-resize';
 
 export const withDraw = (board: PlaitBoard) => {
     const {
@@ -42,6 +46,8 @@ export const withDraw = (board: PlaitBoard) => {
             return GeometryComponent;
         } else if (PlaitDrawElement.isArrowLine(context.element)) {
             return ArrowLineComponent;
+        } else if (PlaitDrawElement.isVectorLine(context.element)) {
+            return VectorLineComponent;
         } else if (PlaitDrawElement.isImage(context.element)) {
             return ImageComponent;
         }
@@ -60,6 +66,11 @@ export const withDraw = (board: PlaitBoard) => {
             });
             const linePointsRectangle = RectangleClient.getRectangleByPoints(points);
             return RectangleClient.getBoundingRectangle([linePointsRectangle, ...lineTextRectangles]);
+        }
+        if (PlaitDrawElement.isVectorLine(element)) {
+            const points = getVectorLinePoints(board, element);
+            const linePointsRectangle = RectangleClient.getRectangleByPoints(points!);
+            return RectangleClient.getBoundingRectangle([linePointsRectangle]);
         }
         if (PlaitDrawElement.isImage(element)) {
             return RectangleClient.getRectangleByPoints(element.points);
@@ -106,6 +117,9 @@ export const withDraw = (board: PlaitBoard) => {
         if (PlaitDrawElement.isImage(element)) {
             return true;
         }
+        if (PlaitDrawElement.isVectorLine(element)) {
+            return true;
+        }
         if (PlaitDrawElement.isArrowLine(element)) {
             const selectedElements = getSelectedElements(board);
             const isSelected = (boundId: string) => {
@@ -147,17 +161,21 @@ export const withDraw = (board: PlaitBoard) => {
     return withSwimlane(
         withTable(
             withDrawResize(
-                withArrowLineAutoCompleteReaction(
-                    withArrowLineBoundReaction(
-                        withArrowLineResize(
-                            withArrowLineTextMove(
-                                withArrowLineText(
-                                    withGeometryResize(
-                                        withDrawRotate(
-                                            withArrowLineCreateByDraw(
-                                                withArrowLineAutoComplete(
-                                                    withGeometryCreateByDrag(
-                                                        withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
+                withVectorPenCreateByDraw(
+                    withArrowLineAutoCompleteReaction(
+                        withArrowLineBoundReaction(
+                            withVectorLineResize(
+                                withArrowLineResize(
+                                    withArrowLineTextMove(
+                                        withArrowLineText(
+                                            withGeometryResize(
+                                                withDrawRotate(
+                                                    withArrowLineCreateByDraw(
+                                                        withArrowLineAutoComplete(
+                                                            withGeometryCreateByDrag(
+                                                                withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
+                                                            )
+                                                        )
                                                     )
                                                 )
                                             )

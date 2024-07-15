@@ -1,12 +1,13 @@
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, createDebugGenerator, PlaitNode } from '@plait/core';
-import { ArrowLineText, PlaitArrowLine, PlaitDrawElement, PlaitGeometry } from './interfaces';
-import { ArrowLineShapeGenerator } from './generators/arrow-line.generator';
-import { ArrowLineActiveGenerator } from './generators/arrow-line-active.generator';
+import { ArrowLineText, PlaitArrowLine, PlaitGeometry } from './interfaces';
+import { LineActiveGenerator } from './generators/line-active.generator';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold, MIN_TEXT_WIDTH } from './constants';
 import { CommonElementFlavour, TextManage, TextManageChangeData } from '@plait/common';
-import { getArrowLinePoints, getArrowLineTextRectangle } from './utils/arrow-line/arrow-line-basic';
+import { getArrowLineTextRectangle } from './utils/arrow-line/arrow-line-basic';
 import { memorizeLatestText } from './utils/memorize';
+import { ArrowLineShapeGenerator } from './generators/arrow-line.generator';
+import { getArrowLinePoints } from './utils';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -20,7 +21,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
     implements OnContextChanged<PlaitArrowLine, PlaitBoard> {
     shapeGenerator!: ArrowLineShapeGenerator;
 
-    activeGenerator!: ArrowLineActiveGenerator;
+    activeGenerator!: LineActiveGenerator;
 
     boundedElements: BoundedElements = {};
 
@@ -30,7 +31,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
 
     initializeGenerator() {
         this.shapeGenerator = new ArrowLineShapeGenerator(this.board);
-        this.activeGenerator = new ArrowLineActiveGenerator(this.board);
+        this.activeGenerator = new LineActiveGenerator(this.board);
         this.initializeTextManagesByElement();
     }
 
