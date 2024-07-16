@@ -9,7 +9,8 @@ import {
     distanceBetweenPointAndPoint,
     HIT_DISTANCE_BUFFER,
     rotatePointsByElement,
-    rotateAntiPointsByElement
+    rotateAntiPointsByElement,
+    isPointInPolygon
 } from '@plait/core';
 import { PlaitArrowLine, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement, PlaitVectorLine } from '../interfaces';
 import { getNearestPoint } from './geometry';
@@ -18,10 +19,10 @@ import { getFillByElement } from './style/stroke';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { getHitArrowLineTextIndex } from './position/arrow-line';
-import { getTextRectangle } from './common';
+import { getTextRectangle, isDrawElementClosed } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { isFilled, sortElementsByArea } from '@plait/common';
-import { getVectorLinePoints } from './vector-line';
+import { getVectorLinePoints, isClosedVectorLine } from './vector-line';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -47,8 +48,12 @@ export const isHitArrowLine = (board: PlaitBoard, element: PlaitArrowLine, point
 };
 
 export const isHitVectorLine = (board: PlaitBoard, element: PlaitVectorLine, point: Point) => {
-    const points = getVectorLinePoints(board, element);
-    return isHitPolyLine(points!, point);
+    const points = getVectorLinePoints(board, element)!;
+    if (isClosedVectorLine(element)) {
+        return isPointInPolygon(point, points) || isHitPolyLine(points, point);
+    } else {
+        return isHitPolyLine(points, point);
+    }
 };
 
 export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangle: RectangleClient) => {
@@ -107,6 +112,12 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
         const points = getArrowLinePoints(board, element);
         return isPolylineHitRectangle(points, rangeRectangle);
     }
+
+    if (PlaitDrawElement.isVectorLine(element)) {
+        const points = getVectorLinePoints(board, element)!;
+        return isPolylineHitRectangle(points, rangeRectangle, false);
+    }
+
     return null;
 };
 
@@ -129,7 +140,7 @@ export const getFirstFilledDrawElement = (board: PlaitBoard, elements: PlaitDraw
     let filledElement: PlaitGeometry | null = null;
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
-        if (PlaitDrawElement.isGeometry(element) && !PlaitDrawElement.isText(element)) {
+        if (isDrawElementClosed(element)) {
             const fill = getFillByElement(board, element);
             if (isFilled(fill)) {
                 filledElement = element as PlaitGeometry;
