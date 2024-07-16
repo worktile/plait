@@ -29,14 +29,16 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
                 this.graph.addEdge(child.source, child.target);
             }
         });
-        circular.assign(this.graph);
+        circular.assign(this.graph, { scale: 120 });
         const settings = forceAtlas2.inferSettings(this.graph);
-        settings.strongGravityMode = false;
-        settings.linLogMode = true;
-        settings.gravity = 2;
-        settings.adjustSizes = true;
-        settings.scalingRatio = DEFAULT_NODE_SCALING_RATIO;
-        const positions = forceAtlas2(this.graph, { iterations: 1000, settings });
+        settings.scalingRatio = 450;
+        if (this.graph.size > 5) {
+            settings.gravity = 0.2;
+        } else {
+            settings.gravity = 0;
+            settings.adjustSizes = true;
+        }
+        const positions = forceAtlas2(this.graph, { iterations: 500, settings });
         this.element.children?.forEach(child => {
             if (ForceAtlasElement.isForceAtlasNodeElement(child)) {
                 const pos = positions[child.id];

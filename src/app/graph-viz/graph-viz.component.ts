@@ -30,6 +30,7 @@ import { NgIf } from '@angular/common';
 import { OnChangeData, PlaitBoardComponent } from '@plait/angular-board';
 import { withForceAtlasExtend } from './with-force-atlas-extend';
 import { DebugPointDisplayComponent } from '../components/debug/point-display.component';
+import { getData } from './mock-force-atlas-wiki';
 
 @Component({
     selector: 'app-basic-graph-viz',
@@ -76,7 +77,7 @@ export class BasicGraphVizComponent implements OnInit {
             const init = params['init'];
             switch (init) {
                 case 'force-atlas':
-                    this.fetchForceAtlasData();
+                    this.fetchForceAtlasData(0);
                     break;
                 default:
                     this.value = [];
@@ -85,9 +86,9 @@ export class BasicGraphVizComponent implements OnInit {
         });
     }
 
-    fetchForceAtlasData() {
+    fetchForceAtlasData(index: number = 0) {
         setTimeout(() => {
-            this.value = mockForceAtlasData;
+            this.value = getData(index);
             setTimeout(() => {
                 const selectedElement = getSelectedElements(this.board)[0];
                 if (selectedElement) {
