@@ -1,5 +1,12 @@
 # @plait/graph-viz
 
+## 0.64.1
+
+### Patch Changes
+
+-   [#957](https://github.com/worktile/plait/pull/957) [`ecae5564c`](https://github.com/worktile/plait/commit/ecae5564cf7ab9b7fd85cdda7ff0d44111cd3304) Thanks [@Xwatson](https://github.com/Xwatson)! - fix(graph-viz): adjust large number of node data overlaps
+    fix(graph-viz): adjust gray line opacity
+
 ## 0.64.0
 
 ### Patch Changes

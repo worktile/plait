@@ -1,5 +1,11 @@
 # plait
 
+## 0.64.1
+
+### Patch Changes
+
+-   [`4cf4d521c`](https://github.com/worktile/plait/commit/4cf4d521cf33ff7ae6d74b83cc88d40399802744) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct debounce method #WIK-16088
+
 ## 0.64.0
 
 ## 0.63.0

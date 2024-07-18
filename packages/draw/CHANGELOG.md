@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.64.1
+
+### Patch Changes
+
+-   [#956](https://github.com/worktile/plait/pull/956) [`507762a38`](https://github.com/worktile/plait/commit/507762a3815fe4a561e1a09b905ffe9b9fbc6bf6) Thanks [@MissLixf](https://github.com/MissLixf)! - fix vector line hit and rectangle hit
+
 ## 0.64.0
 
 ### Minor Changes
