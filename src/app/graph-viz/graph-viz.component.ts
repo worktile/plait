@@ -95,7 +95,7 @@ export class BasicGraphVizComponent implements OnInit {
                     this.moveBoardToCenter(selectedElement);
                 }
             }, 0);
-        }, 1000);
+        }, 300);
     }
 
     onChange(event: OnChangeData) {
