@@ -4,7 +4,7 @@ import Graph from 'graphology';
 import circular from 'graphology-layout/circular';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
-import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './constants';
+import { DEFAULT_NODE_SIZE } from './constants';
 
 export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
@@ -30,13 +30,17 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
             }
         });
         circular.assign(this.graph);
+        const nodeCount = this.graph.nodes().length;
         const settings = forceAtlas2.inferSettings(this.graph);
-        settings.strongGravityMode = false;
-        settings.linLogMode = true;
-        settings.gravity = 2;
-        settings.adjustSizes = true;
-        settings.scalingRatio = DEFAULT_NODE_SCALING_RATIO;
-        const positions = forceAtlas2(this.graph, { iterations: 1000, settings });
+        settings.scalingRatio = 450;
+        if (nodeCount > 5) {
+            settings.gravity = 0.2;
+            settings.adjustSizes = false;
+        } else {
+            settings.gravity = 0;
+            settings.adjustSizes = true;
+        }
+        const positions = forceAtlas2(this.graph, { iterations: 500, settings });
         this.element.children?.forEach(child => {
             if (ForceAtlasElement.isForceAtlasNodeElement(child)) {
                 const pos = positions[child.id];

@@ -57,7 +57,11 @@ export const DEFAULT_LINE_STYLES = {
         [EdgeDirection.OUT]: '#6698FF',
         [EdgeDirection.NONE]: `#eee`
     },
-    opacity: 0.4
+    opacity: {
+        [EdgeDirection.IN]: 0.4,
+        [EdgeDirection.OUT]: 0.4,
+        [EdgeDirection.NONE]: 1
+    }
 };
 
 export const DEFAULT_EDGE_PARTICLE_SIZE = 4;
