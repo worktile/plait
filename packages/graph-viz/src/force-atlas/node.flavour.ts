@@ -35,7 +35,7 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
         const selectElements = getSelectedElements(this.board);
         const activeNodeId = selectElements[0]?.id;
         const isActive = activeNodeId === this.element.id;
-        this.nodeGenerator.processDrawing(this.element, isActive ? PlaitBoard.getElementActiveHost(this.board) : this.getElementG(), {
+        this.nodeGenerator.processDrawing(this.element, this.getElementG(), {
             isActive,
             opacity: isFirstDepthNode(this.element.id, activeNodeId, parent) ? 1 : SECOND_DEPTH_NODE_ALPHA
         });
