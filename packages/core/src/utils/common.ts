@@ -39,23 +39,24 @@ export const throttleRAF = (board: PlaitBoard, key: string, fn: () => void) => {
 };
 
 export const debounce = <T>(func: (args?: T) => void, wait: number, options?: { leading: boolean }) => {
-    let timeout: any = null;
+    let timeoutId: any = null;
     return (args?: T) => {
-        if (timeout !== null) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
+        if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
                 func(args);
-                timeout = null;
+                timeoutId = null;
             }, wait);
         } else {
             if (options?.leading) {
                 func(args);
-            } else {
-                timeout = setTimeout(() => {
-                    func(args);
-                    timeout = null;
-                }, wait);
             }
+            timeoutId = setTimeout(() => {
+                timeoutId = null;
+                if (!options?.leading) {
+                    func(args);
+                }
+            }, wait);
         }
     };
 };

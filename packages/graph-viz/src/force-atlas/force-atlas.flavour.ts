@@ -4,7 +4,7 @@ import Graph from 'graphology';
 import circular from 'graphology-layout/circular';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
-import { DEFAULT_NODE_SCALING_RATIO, DEFAULT_NODE_SIZE } from './constants';
+import { DEFAULT_NODE_SIZE } from './constants';
 
 export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
     implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
@@ -29,11 +29,13 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
                 this.graph.addEdge(child.source, child.target);
             }
         });
-        circular.assign(this.graph, { scale: 120 });
+        circular.assign(this.graph);
+        const nodeCount = this.graph.nodes().length;
         const settings = forceAtlas2.inferSettings(this.graph);
         settings.scalingRatio = 450;
-        if (this.graph.size > 5) {
+        if (nodeCount > 5) {
             settings.gravity = 0.2;
+            settings.adjustSizes = false;
         } else {
             settings.gravity = 0;
             settings.adjustSizes = true;

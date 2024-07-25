@@ -93,7 +93,7 @@ export function drawEdge(startPoint: Point, endPoint: Point, direction: EdgeDire
     }
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', DEFAULT_LINE_STYLES.color[direction]);
-    path.setAttribute('opacity', DEFAULT_LINE_STYLES.opacity.toString());
+    path.setAttribute('opacity', DEFAULT_LINE_STYLES.opacity[direction].toString());
     g.append(path);
     return {
         g,

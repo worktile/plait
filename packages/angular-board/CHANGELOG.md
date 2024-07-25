@@ -1,5 +1,13 @@
 # @plait/angular-board
 
+## 0.64.1
+
+### Patch Changes
+
+-   [`a48c04a95`](https://github.com/worktile/plait/commit/a48c04a959fa51d7dff41a0c6694837c13a4cc5a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix emoji-icon(graph-viz plugin) can not show in safari browser (`transform: matrix(1, 0, 0, 1, 0, 0);` effect)
+
+## 0.64.0
+
 ## 0.63.0
 
 ## 0.62.0
