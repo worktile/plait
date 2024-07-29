@@ -14,7 +14,8 @@ import {
     temporaryDisableSelection,
     PlaitOptionsBoard,
     PlaitPluginKey,
-    WithSelectionPluginOptions
+    WithSelectionPluginOptions,
+    PlaitElement
 } from '@plait/core';
 import { mockForceAtlasData } from './mock-force-atlas';
 import { ForceAtlasElement, ForceAtlasNodeElement, withForceAtlas } from '@plait/graph-viz';
@@ -29,6 +30,7 @@ import { NgIf } from '@angular/common';
 import { OnChangeData, PlaitBoardComponent } from '@plait/angular-board';
 import { withForceAtlasExtend } from './with-force-atlas-extend';
 import { DebugPointDisplayComponent } from '../components/debug/point-display.component';
+import { getData } from './mock-force-atlas-wiki';
 
 @Component({
     selector: 'app-basic-graph-viz',
@@ -75,13 +77,25 @@ export class BasicGraphVizComponent implements OnInit {
             const init = params['init'];
             switch (init) {
                 case 'force-atlas':
-                    this.value = mockForceAtlasData;
+                    this.fetchForceAtlasData(0);
                     break;
                 default:
                     this.value = [];
                     break;
             }
         });
+    }
+
+    fetchForceAtlasData(index: number = 0) {
+        setTimeout(() => {
+            this.value = getData(index);
+            setTimeout(() => {
+                const selectedElement = getSelectedElements(this.board)[0];
+                if (selectedElement) {
+                    this.moveBoardToCenter(selectedElement);
+                }
+            }, 0);
+        }, 300);
     }
 
     onChange(event: OnChangeData) {
@@ -129,7 +143,7 @@ export class BasicGraphVizComponent implements OnInit {
                 if (targetNodeElement) {
                     if (this.hasViewportMoved || (!this.hasViewportMoved && this.currentNodeId !== targetNodeElement.id)) {
                         console.log('move to center');
-                        BoardTransforms.moveToCenter(this.board, targetNodeElement.points![0]);
+                        this.moveBoardToCenter(targetNodeElement);
                         // to wait moving completing and mark viewport as unmoved
                         setTimeout(() => {
                             this.hasViewportMoved = false;
@@ -141,6 +155,17 @@ export class BasicGraphVizComponent implements OnInit {
                 pointerUp(e);
             }, 250);
         };
+    }
+
+    moveBoardToCenter(selectedElement: PlaitElement) {
+        if (selectedElement && selectedElement.points) {
+            setTimeout(() => {
+                BoardTransforms.moveToCenter(this.board, selectedElement.points![0]);
+                setTimeout(() => {
+                    this.hasViewportMoved = false;
+                }, 0);
+            }, 0);
+        }
     }
 }
 
