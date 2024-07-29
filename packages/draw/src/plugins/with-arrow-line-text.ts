@@ -22,11 +22,9 @@ export const withArrowLineText = (board: PlaitBoard) => {
     board.dblClick = (event: MouseEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
             const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            const hitTarget = getHitElementByPoint(board, clickPoint, (element: PlaitElement) => {
-                return PlaitDrawElement.isArrowLine(element);
-            }) as undefined | PlaitArrowLine;
-            const hitTargetPath = hitTarget && PlaitBoard.findPath(board, hitTarget);
-            if (hitTarget) {
+            const hitTarget = getHitElementByPoint(board, clickPoint) as undefined | PlaitArrowLine;
+            if (hitTarget && PlaitDrawElement.isArrowLine(hitTarget)) {
+                const hitTargetPath = hitTarget && PlaitBoard.findPath(board, hitTarget);
                 const points = getArrowLinePoints(board, hitTarget);
                 const point = getNearestPointBetweenPointAndSegments(clickPoint, points);
                 const texts = hitTarget.texts?.length ? [...hitTarget.texts] : [];

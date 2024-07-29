@@ -124,7 +124,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
     };
 
     board.isMovable = element => {
-        if (PlaitMind.isMind(element) && element.isRoot) {
+        if (MindElement.isMindElement(board, element)) {
             return true;
         }
         return isMovable(element);
