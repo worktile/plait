@@ -119,6 +119,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             });
 
             PlaitBoard.getHost(board).appendChild(dragFakeNodeG);
+            return;
         }
 
         pointerMove(event);
