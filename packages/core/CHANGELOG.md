@@ -1,5 +1,13 @@
 # plait
 
+## 0.64.3
+
+### Patch Changes
+
+-   [`ed2f0906f`](https://github.com/worktile/plait/commit/ed2f0906f242996f1486adbee802c3d0746e0a34) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Identify mind elements by the type of root node rather than the node properties
+
+    Handle the waring of drawing on element can not been identified
+
 ## 0.64.2
 
 ## 0.64.1
