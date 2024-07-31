@@ -43,6 +43,10 @@ export const withNodeImage = (board: PlaitBoard) => {
             pointerUp(event);
             return;
         }
+        if (PlaitBoard.isReadonly(board)) {
+            pointerUp(event);
+            return;
+        }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const hitElement = getHitElementByPoint(board, point);
         const isHitImageResult =
