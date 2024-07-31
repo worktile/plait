@@ -1,5 +1,13 @@
 # mind
 
+## 0.64.2
+
+### Patch Changes
+
+-   [#959](https://github.com/worktile/plait/pull/959) [`a47f09a6f`](https://github.com/worktile/plait/commit/a47f09a6f8fdef405d8cdd8de36470c04c5d2f2d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix defects in dblclick and moving
+
+*   [`5b3e8945a`](https://github.com/worktile/plait/commit/5b3e8945a9826ae5b385d73cc343af29a99524e5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - should not trigger focus when board is readonly
+
 ## 0.64.1
 
 ## 0.64.0

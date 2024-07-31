@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.64.2
+
+### Patch Changes
+
+-   [#959](https://github.com/worktile/plait/pull/959) [`a47f09a6f`](https://github.com/worktile/plait/commit/a47f09a6f8fdef405d8cdd8de36470c04c5d2f2d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix defects in dblclick and moving
+
 ## 0.64.1
 
 ### Patch Changes
