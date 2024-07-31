@@ -1,5 +1,6 @@
 import { Ancestor, PlaitBoard, PlaitElement, Point, RectangleClient } from '../interfaces';
 import { getSelectionAngle, hasSameAngle, getRotatedBoundingRectangle, rotatePointsByElement, getRectangleByAngle } from './angle';
+import { isDebug } from './debug';
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
@@ -11,7 +12,9 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             const rotatedCornerPoints = rotatePointsByElement(cornerPoints, node) || cornerPoints;
             rectanglesCornerPoints.push(rotatedCornerPoints);
         } else {
-            console.error(`can not get rectangle of element:`, node);
+            if (isDebug()) {
+                console.error(`can not get rectangle of element:`, node);
+            }
         }
     };
     elements.forEach(element => {

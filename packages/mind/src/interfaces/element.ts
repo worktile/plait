@@ -54,7 +54,8 @@ export const MindElement = {
         return isIndentedLayout(_layout);
     },
     isMindElement(board: PlaitBoard, element: PlaitElement): element is MindElement {
-        if (element.data && element.data.topic && element.width && element.height) {
+        const root = MindElement.getRoot(board, element as MindElement);
+        if (root && PlaitMind.isMind(root)) {
             return true;
         } else {
             return false;
