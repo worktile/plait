@@ -1,5 +1,5 @@
 import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
-import { NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
+import { isNullOrUndefined, NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
 import { BaseData, EmojiData, ImageData } from './element-data';
@@ -54,7 +54,10 @@ export const MindElement = {
         return isIndentedLayout(_layout);
     },
     isMindElement(board: PlaitBoard, element: PlaitElement): element is MindElement {
-        if (element.data && element.data.topic && element.width && element.height) {
+        // Design error: The type of the element should be identified based on type.
+        // Now it is very awkward whether it is dynamically calculated(query root node) or using other characteristic attributes(current).
+        // Using dynamically calculated will cause more issue like pasting from clipboard, finding elements by id(isRecursion)
+        if (element.data && element.data.topic && !isNullOrUndefined(element.width) && !isNullOrUndefined(element.height)) {
             return true;
         } else {
             return false;
