@@ -1,5 +1,13 @@
 # mind
 
+## 0.64.4
+
+### Patch Changes
+
+-   [`091ad58fd`](https://github.com/worktile/plait/commit/091ad58fd422fee506c1c6f400aa838cd4b8a5e2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Identify mind elements by verifying that the element includes the attributes: data, data.topic, width, and height.
+
+    exist the waring case of height equal 0
+
 ## 0.64.3
 
 ### Patch Changes
