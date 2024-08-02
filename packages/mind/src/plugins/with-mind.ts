@@ -69,7 +69,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
     board.getRectangle = element => {
         if (MindElement.isMindElement(board, element)) {
             if (!PlaitElement.hasMounted(element)) {
-                console.error(`mind element has not been mounted: ${JSON.stringify(element)}`);
+                console.error('mind element has not been mounted');
             }
             return getRectangleByNode(MindElement.getNode(element));
         }

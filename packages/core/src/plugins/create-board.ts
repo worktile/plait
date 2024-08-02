@@ -11,8 +11,6 @@ import { ThemeColorMode } from '../interfaces/theme';
 import { CoreTransforms } from '../transforms/element';
 import { ClipboardData, WritableClipboardContext, WritableClipboardOperationType, drawEntireActiveRectangleG } from '../utils';
 import { Point, RectangleClient } from '../interfaces';
-import { isDebug } from '../utils/debug';
-import { ElementFlavour } from '../core/element/element-flavour';
 
 export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
@@ -111,10 +109,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         getDeletedFragment: (data: PlaitElement[]) => data,
         getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => data,
         drawElement: (context: PlaitPluginElementContext) => {
-            if (isDebug()) {
-                console.error(`can not resolve plugin element: ${JSON.stringify(context.element)}`);
-            } 
-            return ElementFlavour;
+            throw new Error(`can not resolve plugin element component type: ${context.element.type}`);
         },
         isWithinSelection: element => false,
         isRectangleHit: element => false,
