@@ -170,7 +170,7 @@ export class TextManage {
         return exitCallback;
     }
 
-    getSize = (element?: Element) => {
+    getSize = (element?: Element, maxWidth?: number) => {
         const computedStyle = window.getComputedStyle(this.foreignObject.children[0]);
         const fontFamily = computedStyle.fontFamily;
         const fontSize = parseFloat(computedStyle.fontSize);
@@ -181,7 +181,7 @@ export class TextManage {
                 fontSize: fontSize,
                 fontFamily
             },
-            this.options.getMaxWidth!()
+            maxWidth || this.options.getMaxWidth!()
         );
     };
 

@@ -29,8 +29,7 @@ export const insertText = (board: PlaitBoard, point: Point, text: string | Eleme
 export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHeight: number, path: Path) => {
     const normalizePoints = normalizeShapePoints(points);
     const element = PlaitNode.get(board, path);
-    const newHeight = textHeight / board.viewport.zoom;
-    const newProperties = { points: normalizePoints, textHeight: newHeight };
+    const newProperties = { points: normalizePoints, textHeight };
     if (PlaitDrawElement.isText(element) && element.autoSize) {
         (newProperties as Partial<PlaitText>).autoSize = false;
     }

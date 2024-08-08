@@ -51,7 +51,6 @@ export const withNodeResize = (board: PlaitBoard) => {
             };
         },
         onResize: (resizeRef: ResizeRef<MindElement, null>, resizeState: ResizeState) => {
-            const zoom = board.viewport.zoom;
             let resizedWidth = targetElementRef!.currentWidth + Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
             if (resizedWidth <= targetElementRef!.minWidth) {
                 resizedWidth = targetElementRef!.minWidth;
@@ -59,8 +58,8 @@ export const withNodeResize = (board: PlaitBoard) => {
             const newTarget = PlaitNode.get<MindElement>(board, targetElementRef!.path);
             if (newTarget && NodeSpace.getNodeTopicMinWidth(board as PlaitMindBoard, newTarget) !== resizedWidth) {
                 targetElementRef!.textManage.updateRectangleWidth(resizedWidth);
-                const { height } = targetElementRef!.textManage.getSize();
-                MindTransforms.setNodeManualWidth(board as PlaitMindBoard, newTarget, resizedWidth * zoom, height);
+                const { height } = targetElementRef!.textManage.getSize(undefined, resizedWidth);
+                MindTransforms.setNodeManualWidth(board as PlaitMindBoard, newTarget, resizedWidth, height);
             }
         },
         afterResize: (resizeRef: ResizeRef<MindElement, null>) => {

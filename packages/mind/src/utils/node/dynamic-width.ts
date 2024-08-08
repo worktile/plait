@@ -8,17 +8,9 @@ import { getFirstTextManage } from '@plait/common';
  */
 export const getNewNodeHeight = (board: PlaitBoard, element: MindElement, newNodeDynamicWidth: number) => {
     const textManage = getFirstTextManage(element);
-    const { height } = textManage.getSize();
-    textManage.updateRectangleWidth(newNodeDynamicWidth);
-    const { height: newHeight } = textManage.getSize();
-
-    if (height !== newHeight) {
-        return newHeight;
+    const { height } = textManage.getSize(undefined, newNodeDynamicWidth);
+    if (Math.abs(height - element.height) > 2) {
+        return height;
     }
-
-    if (Math.abs(newHeight / board.viewport.zoom - element.height) > 2) {
-        return newHeight;
-    }
-
     return undefined;
 };

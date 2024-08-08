@@ -116,10 +116,9 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         const texts = this.getDrawShapeTexts(this.element.cells);
         this.textGenerator = new TextGenerator(this.board, this.element, texts, {
             onChange: (value: PlaitTable, data: TextManageChangeData, text: PlaitDrawShapeText) => {
-                const height = data.height / this.board.viewport.zoom;
                 const path = PlaitBoard.findPath(this.board, value);
                 if (data.newText) {
-                    DrawTransforms.setTableText(this.board, path, text.key, data.newText, height);
+                    DrawTransforms.setTableText(this.board, path, text.key, data.newText, data.height);
                 }
                 data.operations && memorizeLatestText(value, data.operations);
             },
