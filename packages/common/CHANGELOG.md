@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.64.6
+
+### Patch Changes
+
+-   [`423d5b7a5`](https://github.com/worktile/plait/commit/423d5b7a56eabca488f4a2d6153edad12524b26a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - allow undo once insert_node when first enter mind node editing
+
 ## 0.64.5
 
 ### Patch Changes

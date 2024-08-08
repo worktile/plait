@@ -1,5 +1,13 @@
 # mind
 
+## 0.64.6
+
+### Patch Changes
+
+-   [`423d5b7a5`](https://github.com/worktile/plait/commit/423d5b7a56eabca488f4a2d6153edad12524b26a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - allow undo once insert_node when first enter mind node editing
+
+*   [`11804a707`](https://github.com/worktile/plait/commit/11804a707b11d6c7f95b5a99b498d86bb1d669bd) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix the mind element can not selected issue after press plus icon
+
 ## 0.64.5
 
 ### Patch Changes
