@@ -1,4 +1,4 @@
-import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
+import { addSelectedElement, clearSelectedElement, getSelectedElements, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { editTopic } from './node/common';
 import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './node/create-node';
@@ -66,9 +66,7 @@ export const insertMindElement = (board: PlaitMindBoard, inheritNode: MindElemen
         });
         delete newNode.layout;
     }
-
     const newElement = createMindElement('', TOPIC_FONT_SIZE, TEXT_DEFAULT_HEIGHT, newNode);
-
     Transforms.insertNode(board, newElement, path);
     clearSelectedElement(board);
     addSelectedElement(board, newElement);

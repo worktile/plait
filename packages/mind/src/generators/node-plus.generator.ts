@@ -1,4 +1,4 @@
-import { PlaitBoard, createG } from '@plait/core';
+import { PlaitBoard, PlaitOptionsBoard, createG, temporaryDisableSelection } from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
@@ -113,11 +113,14 @@ export class NodePlusGenerator extends Generator<MindElement> implements AfterDr
             .subscribe(e => {
                 e.preventDefault();
             });
-        fromEvent(this.g, 'pointerup')
+        fromEvent<PointerEvent>(this.g, 'pointerup')
             .pipe(take(1))
-            .subscribe(() => {
-                const path = findNewChildNodePath(this.board, element);
-                insertMindElement(this.board as PlaitMindBoard, element, path);
+            .subscribe((event: PointerEvent) => {
+                // wait the event period end of pointerup to otherwise the pointerup will cause new element lose selected state
+                setTimeout(() => {
+                    const path = findNewChildNodePath(this.board, element);
+                    insertMindElement(this.board as PlaitMindBoard, element, path);
+                }, 0);
             });
     }
 }
