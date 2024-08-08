@@ -47,6 +47,8 @@ export class TextManage {
         MERGING.set(this.board, true);
     }, 0);
 
+    exitCallback?: () => void;
+
     constructor(
         private board: PlaitBoard,
         private options: {
@@ -155,18 +157,22 @@ export class TextManage {
             }
         });
         const exitCallback = () => {
-            this.updateRectangle();
-            mousedown$.unsubscribe();
-            keydown$.unsubscribe();
-            IS_TEXT_EDITABLE.set(this.board, false);
-            MERGING.set(this.board, false);
-            callback && callback();
-            const props = {
-                readonly: true
-            };
-            this.textComponentRef.update(props);
-            this.isEditing = false;
+            if (this.isEditing) {
+                this.updateRectangle();
+                mousedown$.unsubscribe();
+                keydown$.unsubscribe();
+                IS_TEXT_EDITABLE.set(this.board, false);
+                MERGING.set(this.board, false);
+                callback && callback();
+                const props = {
+                    readonly: true
+                };
+                this.textComponentRef.update(props);
+                this.isEditing = false;
+                this.exitCallback = undefined;
+            }
         };
+        this.exitCallback = exitCallback;
         return exitCallback;
     }
 
@@ -192,6 +198,7 @@ export class TextManage {
     destroy() {
         this.g?.remove();
         this.textComponentRef?.destroy();
+        this.exitCallback && this.exitCallback();
     }
 }
 

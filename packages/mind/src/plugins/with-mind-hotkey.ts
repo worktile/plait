@@ -1,14 +1,15 @@
-import { PlaitBoard, Transforms, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitOperation, Transforms, getSelectedElements } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
 import { MindTransforms } from '../transforms';
 import { editTopic } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
-import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey, isDelete } from '@plait/common';
+import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey, isDelete, getFirstTextManage } from '@plait/common';
+import isHotkey from 'is-hotkey';
 
 export const withMindHotkey = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { keyDown } = board;
+    const { keyDown, globalKeyDown } = board;
 
     board.keyDown = (event: KeyboardEvent) => {
         const selectedElements = getSelectedElements(board);
@@ -58,6 +59,20 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
         }
 
         keyDown(event);
+    };
+
+    board.globalKeyDown = (event: KeyboardEvent) => {
+        if (PlaitBoard.isFocus(board) && PlaitBoard.hasBeenTextEditing(board)) {
+            if (isHotkey('mod+z', event)) {
+                const { history } = board;
+                const { undos } = history;
+                const previousOp =  undos.length > 0 ? undos[undos.length - 1][0] : undefined;
+                if (previousOp && previousOp.type === 'insert_node' && MindElement.isMindElement(board, previousOp.node) && getFirstTextManage(previousOp.node).isEditing) {
+                    board.undo();
+                }
+            }
+        }
+        globalKeyDown(event);
     };
 
     return board;
