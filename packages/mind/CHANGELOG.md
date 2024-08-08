@@ -1,5 +1,11 @@
 # mind
 
+## 0.64.7
+
+### Patch Changes
+
+-   [`5fb79e060`](https://github.com/worktile/plait/commit/5fb79e060865bb808f8857ad201317d8faf994ae) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix isHotkey import error
+
 ## 0.64.6
 
 ### Patch Changes
