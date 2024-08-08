@@ -1,11 +1,11 @@
-import { PlaitBoard, PlaitOperation, Transforms, getSelectedElements } from '@plait/core';
+import { PlaitBoard, Transforms, getSelectedElements } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
 import { MindTransforms } from '../transforms';
 import { editTopic } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
 import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey, isDelete, getFirstTextManage } from '@plait/common';
-import isHotkey from 'is-hotkey';
+import { isHotkey } from 'is-hotkey';
 
 export const withMindHotkey = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
