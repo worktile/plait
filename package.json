@@ -37,7 +37,7 @@
         "ci:test": "ng test --watch=false --progress=false --browsers=ChromeHeadlessCI",
         "lint": "ng lint --fix",
         "pretty": "pretty-quick --staged",
-        "copy-to": "cp -r dist/* ../plait-board-template/node_modules/@plait",
+        "copy-to": "cp -r dist/* ../drawnix/node_modules/@plait",
         "copy-to-wiki": "cp -r dist/* ../pc-wiki-sky/node_modules/@plait"
     },
     "private": true,

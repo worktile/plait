@@ -74,8 +74,14 @@ export class TextManage {
             textPlugins: this.options.textPlugins,
             onChange: (data: TextChangeData) => {
                 if (data.operations.some(op => !Operation.isSelectionOperation(op))) {
-                    const { width, height } = this.getSize();
-                    this.textChange({ ...data, width, height });
+                    const { width: newWidth, height: newHeight } = this.getSize();
+                    this.textChange({ ...data, width: newWidth, height: newHeight });
+                    const { x, y, width, height } = this.options.getRectangle();
+                    // update immediately width and height otherwise cursor come up shaking(in drawnix)
+                    // in flowchart case width and height may greater than the calculational width and height
+                    const temporaryWidth = newWidth > width ? newWidth : width;
+                    const temporaryHeight = newHeight > height ? newHeight : height;
+                    updateForeignObject(this.g, temporaryWidth, temporaryHeight, x, y);
                 }
             },
             afterInit: (editor: Editor) => {
