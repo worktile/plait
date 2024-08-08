@@ -1,6 +1,6 @@
 {
     "name": "@plait/graph-viz",
-    "version": "0.64.4",
+    "version": "0.64.5",
     "peerDependencies": {
         "graphology": "^0.25.4",
         "graphology-layout": "^0.6.1",

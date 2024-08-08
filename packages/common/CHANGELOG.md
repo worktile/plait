@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.64.5
+
+### Patch Changes
+
+-   [`a457641ef`](https://github.com/worktile/plait/commit/a457641efb30eedb79d0a20b09198dcddfd3ce4a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - immediately update foreignObject's width and height when text changed
+
+*   [`fe711d3e0`](https://github.com/worktile/plait/commit/fe711d3e037dd72fb5d23ad02fb4c809cc8a1de1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct height, textHeight, width when zoom is not 100% for operations: resize, remove image, add image and so on
+
 ## 0.64.4
 
 ## 0.64.3
