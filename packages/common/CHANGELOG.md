@@ -1,5 +1,15 @@
 # @plait/common
 
+## 0.64.8
+
+### Patch Changes
+
+-   [`2c49d77f9`](https://github.com/worktile/plait/commit/2c49d77f910006b8b7aa763115b5707edfdbd8bc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - invoking updateForeignObject will trigger auto scroll (browser default behavior) which cause board unexceptional scrolling
+
+    so need remove updateForeignObject and invoke immediately onChange to avoid coming up shaking in drawnix
+
+    prevent board children being covered when board is in FLUSHING
+
 ## 0.64.7
 
 ## 0.64.6
