@@ -133,4 +133,8 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
         }
         this.editor.onKeydown(event);
     };
+
+    scrollSelectionIntoView = () => {
+        // prevent auto scroll
+    }
 }

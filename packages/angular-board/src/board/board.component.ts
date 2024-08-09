@@ -35,6 +35,7 @@ import {
     BOARD_TO_ON_CHANGE,
     BOARD_TO_ROUGH_SVG,
     BoardTransforms,
+    FLUSHING,
     HOST_CLASS_NAME,
     IS_BOARD_ALIVE,
     IS_CHROME,
@@ -256,7 +257,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
             if (valueChange) {
                 // avoid useless updating
-                if (this.board.children !== valueChange.currentValue) {
+                if (this.board.children !== valueChange.currentValue && !FLUSHING.get(this.board)) {
                     this.board.children = valueChange.currentValue;
                     this.updateListRender();
                 }
