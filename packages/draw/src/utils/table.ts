@@ -107,13 +107,13 @@ export function getHitCell(board: PlaitTableBoard, element: PlaitBaseTable, poin
     return null;
 }
 
-export function editCell(cell: PlaitTableCell) {
-    const textManage = getTextManageByCell(cell);
+export function editCell(board: PlaitBoard, cell: PlaitTableCell) {
+    const textManage = getTextManageByCell(board, cell);
     textManage && textManage.edit();
 }
 
-export function getTextManageByCell(cell: PlaitTableCell) {
-    return getTextManage(cell.id);
+export function getTextManageByCell(board: PlaitBoard, cell: PlaitTableCell) {
+    return getTextManage(board, cell.id);
 }
 
 export const updateColumns = (table: PlaitBaseTable, columnId: string, width: number, offset: number) => {
@@ -186,7 +186,7 @@ export const getSelectedTableCellsEditor = (board: PlaitBoard): BaseEditor[] | u
         const elements = getSelectedTableElements(board);
         const selectedCells = getSelectedCells(elements[0]);
         const selectedCellsEditor = selectedCells?.map(cell => {
-            const textManage = getTextManageByCell(cell);
+            const textManage = getTextManageByCell(board, cell);
             return textManage?.editor;
         });
         if (selectedCellsEditor?.length) {

@@ -360,7 +360,7 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
 };
 
 export const editText = (board: PlaitBoard, element: PlaitGeometry, text?: PlaitDrawShapeText) => {
-    const textManage = text ? getTextManage(`${element.id}-${text.key}`)! : getFirstTextManage(element);
+    const textManage = text ? getTextManage(board, `${element.id}-${text.key}`)! : getFirstTextManage(element);
     if (textManage) {
         textManage.edit(() => {
             // delay to avoid blinking
