@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.64.9
+
+### Patch Changes
+
+-   [#960](https://github.com/worktile/plait/pull/960) [`56c04df75`](https://github.com/worktile/plait/commit/56c04df75aa8b9d8140edd274fafa5b1dd99d32f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set textManage key to board
+
 ## 0.64.8
 
 ## 0.64.7
