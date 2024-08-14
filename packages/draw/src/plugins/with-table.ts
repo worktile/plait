@@ -84,7 +84,7 @@ export const withTable = (board: PlaitBoard) => {
                     cell = cells.find(item => item.text && item.textHeight);
                 }
                 if (cell) {
-                    editCell(cell);
+                    editCell(board, cell);
                     return;
                 }
             }
@@ -100,7 +100,7 @@ export const withTable = (board: PlaitBoard) => {
             if (hitElement && PlaitDrawElement.isElementByTable(hitElement)) {
                 const hitCell = getHitCell(tableBoard, hitElement, point);
                 if (hitCell && hitCell.text && hitCell.textHeight) {
-                    editCell(hitCell);
+                    editCell(board, hitCell);
                     return;
                 }
             }

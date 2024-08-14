@@ -88,7 +88,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         const table = (this.board as PlaitTableBoard).buildTable(this.element);
         table.cells.forEach(item => {
             if (PlaitTableElement.isVerticalText(item)) {
-                const textManage = getTextManage(item.id);
+                const textManage = getTextManage(this.board, item.id);
                 if (textManage) {
                     const engine = getEngine<PlaitTable>(TableSymbols.table);
                     const rectangle = engine.getTextRectangle!(this.element, { key: item.id, board: this.board });

@@ -25,18 +25,22 @@ export interface TextGeneratorOptions<T> {
     getMaxWidth?: () => number;
 }
 
-export const KEY_TO_TEXT_MANAGE: Map<string, TextManage> = new Map();
+export const KEY_TO_TEXT_MANAGE: WeakMap<PlaitBoard, { [key: string]: TextManage }> = new WeakMap();
 
-export const setTextManage = (key: string, textManage: TextManage) => {
-    return KEY_TO_TEXT_MANAGE.set(key, textManage);
+export const setTextManage = (board: PlaitBoard, key: string, textManage: TextManage) => {
+    const textManages = KEY_TO_TEXT_MANAGE.get(board)!;
+    return KEY_TO_TEXT_MANAGE.set(board, { ...textManages, [key]: textManage });
 };
 
-export const getTextManage = (key: string) => {
-    return KEY_TO_TEXT_MANAGE.get(key);
+export const getTextManage = (board: PlaitBoard, key: string): TextManage => {
+    const textManages = KEY_TO_TEXT_MANAGE.get(board)!;
+    return textManages[key];
 };
 
-export const deleteTextManage = (key: string) => {
-    return KEY_TO_TEXT_MANAGE.delete(key);
+export const deleteTextManage = (board: PlaitBoard, key: string) => {
+    const textManages = KEY_TO_TEXT_MANAGE.get(board)!;
+    delete textManages[key];
+    KEY_TO_TEXT_MANAGE.set(board, textManages);
 };
 
 export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
@@ -66,7 +70,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
             .textPlugins;
         this.textManages = this.texts.map(text => {
             const textManage = this.createTextManage(text, textPlugins);
-            setTextManage(getTextKey(this.element, text), textManage);
+            setTextManage(this.board, getTextKey(this.element, text), textManage);
             return textManage;
         });
         ELEMENT_TO_TEXT_MANAGES.set(this.element, this.textManages);
@@ -75,7 +79,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
     draw(elementG: SVGElement) {
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
         this.texts.forEach(drawShapeText => {
-            const textManage = getTextManage(getTextKey(this.element, drawShapeText));
+            const textManage = getTextManage(this.board, getTextKey(this.element, drawShapeText));
             if (drawShapeText.text && textManage) {
                 textManage.draw(drawShapeText.text);
                 elementG.append(textManage.g);
@@ -95,21 +99,21 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         });
         if (removedTexts.length) {
             removedTexts.forEach(item => {
-                const textManage = getTextManage(item.key);
+                const textManage = getTextManage(this.board, item.key);
                 const index = this.textManages.findIndex(value => value === textManage);
                 if (index > -1 && item.text && item.textHeight) {
                     this.textManages.splice(index, 1);
                 }
                 textManage?.destroy();
-                deleteTextManage(item.key);
+                deleteTextManage(this.board, item.key);
             });
         }
         currentDrawShapeTexts.forEach(drawShapeText => {
             if (drawShapeText.text) {
-                let textManage = getTextManage(getTextKey(this.element, drawShapeText));
+                let textManage = getTextManage(this.board, getTextKey(this.element, drawShapeText));
                 if (!textManage) {
                     textManage = this.createTextManage(drawShapeText, textPlugins);
-                    setTextManage(drawShapeText.key, textManage);
+                    setTextManage(this.board, drawShapeText.key, textManage);
                     textManage.draw(drawShapeText.text);
                     elementG.append(textManage.g);
                     this.textManages.push(textManage);
@@ -160,7 +164,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         this.textManages = [];
         ELEMENT_TO_TEXT_MANAGES.delete(this.element);
         this.texts.forEach(item => {
-            deleteTextManage(item.key);
+            deleteTextManage(this.board, item.key);
         });
     }
 }
