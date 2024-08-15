@@ -29,6 +29,7 @@
         display: inline-block;
         border-radius: 4px;
         cursor: pointer;
+        margin-right: 8px;
         svg {
             background-repeat: no-repeat;
             /* 通过设置 font-size 来改变图标大小 */
@@ -40,7 +41,6 @@
             overflow: hidden;
             transition: transform 200ms;
         }
-        margin-right: 8px;
         &:last-child {
             margin-right: 0;
         }

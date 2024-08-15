@@ -2,9 +2,9 @@
     "name": "@plait/angular-text",
     "version": "0.64.9",
     "peerDependencies": {
-        "@angular/common": "^17.2.4",
-        "@angular/core": "^17.2.4",
-        "slate": ">=0.101.0 <=0.104.0",
+        "@angular/common": "^18.2.0",
+        "@angular/core": "^18.2.0",
+        "slate": "^0.101.5",
         "slate-angular": "^17.4.0",
         "slate-history": "^0.100.0"
     },
