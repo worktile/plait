@@ -13,5 +13,7 @@
     "@plait/mind": "0.64.9",
     "@plait/text-plugins": "0.64.9"
   },
-  "changesets": []
+  "changesets": [
+    "cuddly-waves-heal"
+  ]
 }
