@@ -1,5 +1,11 @@
 # angular-text
 
+## 0.65.0-next.0
+
+### Minor Changes
+
+-   [`3a69e449e`](https://github.com/worktile/plait/commit/3a69e449e758e4d5541855920e3309281e84605d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - upgrade angular into 18
+
 ## 0.64.9
 
 ## 0.64.8
