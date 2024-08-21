@@ -1,5 +1,11 @@
 # @plait/angular-board
 
+## 0.65.0
+
+### Minor Changes
+
+-   [`e667a8e73`](https://github.com/worktile/plait/commit/e667a8e73033087daf672e773eb54da835439f11) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - upgrade angular into 18
+
 ## 0.65.0-next.0
 
 ### Minor Changes
