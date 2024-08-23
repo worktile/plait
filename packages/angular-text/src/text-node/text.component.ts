@@ -12,8 +12,8 @@ import { BaseTextComponent } from 'slate-angular';
     standalone: true
 })
 export class PlaitTextNodeComponent extends BaseTextComponent<CustomText> {
-    constructor(public elementRef: ElementRef, public renderer2: Renderer2, cdr: ChangeDetectorRef) {
-        super(elementRef, cdr);
+    constructor(public renderer2: Renderer2) {
+        super();
     }
 
     excludes = ['color', 'font-size', 'text'];

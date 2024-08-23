@@ -5,7 +5,7 @@
         "@angular/common": "^18.2.0",
         "@angular/core": "^18.2.0",
         "slate": "^0.101.5",
-        "slate-angular": "^17.4.0",
+        "slate-angular": ">= 18.0.1",
         "slate-history": "^0.100.0"
     },
     "dependencies": {
