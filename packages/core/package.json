@@ -1,6 +1,6 @@
 {
     "name": "@plait/core",
-    "version": "0.65.0",
+    "version": "0.65.1",
     "peerDependencies": {
         "immer": "^10.0.3",
         "is-hotkey": "^0.2.0",

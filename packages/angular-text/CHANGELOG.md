@@ -1,5 +1,11 @@
 # angular-text
 
+## 0.65.1
+
+### Patch Changes
+
+-   [`f27cc216d`](https://github.com/worktile/plait/commit/f27cc216d5d5065032634c739d4f0697b4f9d2a8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump slate-angular into 18.0.1
+
 ## 0.65.0
 
 ### Minor Changes
