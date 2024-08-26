@@ -40,29 +40,36 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
 };
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
-    const lines = elements.filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
     elements.forEach(element => {
         if (PlaitDrawElement.isArrowLine(element)) {
-            element.id = idCreator();
-            element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
-            Transforms.insertNode(board, element, [board.children.length]);
-        }
-        if ((PlaitDrawElement.isGeometry(element) && !PlaitDrawElement.isGeometryByTable(element)) || PlaitDrawElement.isImage(element)) {
             const newId = idCreator();
-            updateBoundArrowLinesId(element, lines, newId);
             element.id = newId;
-            element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
-            Transforms.insertNode(board, element, [board.children.length]);
+            if (element.source.boundId) {
+                const boundElement = elements.find(item => item.id === element.source.boundId);
+                if (boundElement) {
+                    const newId = idCreator();
+                    boundElement!.id = newId;
+                    element.source.boundId = newId;
+                }
+            }
+            if (element.target.boundId) {
+                const boundElement = elements.find(item => item.id === element.target.boundId);
+                if (boundElement) {
+                    const newId = idCreator();
+                    boundElement!.id = newId;
+                    element.target.boundId = newId;
+                }
+            }
         }
         if (PlaitDrawElement.isElementByTable(element)) {
-            const newId = idCreator();
-            updateBoundArrowLinesId(element as PlaitTable, lines, newId);
-            element.id = newId;
             updateRowOrColumnIds(element as PlaitTable, 'row');
             updateRowOrColumnIds(element as PlaitTable, 'column');
             updateCellIds(element.cells);
-            element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
         }
+        element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
+    });
+    elements.forEach(element => {
+        Transforms.insertNode(board, element, [board.children.length]);
     });
     Transforms.addSelectionWithTemporaryElements(board, elements);
 };
@@ -79,6 +86,11 @@ export const updateBoundArrowLinesId = (element: PlaitShapeElement, lines: Plait
         }
     });
     // update lines
-    sourceLines.forEach(sourceLine => (sourceLine.source.boundId = newId));
-    targetLines.forEach(targetLine => (targetLine.target.boundId = newId));
+    if (sourceLines.length) {
+        sourceLines.forEach(sourceLine => (sourceLine.source.boundId = newId));
+    }
+    if (targetLines.length) {
+        console.log(targetLines);
+        targetLines.forEach(targetLine => (targetLine.target.boundId = newId));
+    }
 };
