@@ -73,24 +73,3 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
     });
     Transforms.addSelectionWithTemporaryElements(board, elements);
 };
-
-export const updateBoundArrowLinesId = (element: PlaitShapeElement, lines: PlaitArrowLine[], newId: string) => {
-    const sourceLines: PlaitArrowLine[] = [];
-    const targetLines: PlaitArrowLine[] = [];
-    lines.forEach(line => {
-        if (PlaitArrowLine.isBoundElementOfSource(line, element)) {
-            sourceLines.push(line);
-        }
-        if (PlaitArrowLine.isBoundElementOfTarget(line, element)) {
-            targetLines.push(line);
-        }
-    });
-    // update lines
-    if (sourceLines.length) {
-        sourceLines.forEach(sourceLine => (sourceLine.source.boundId = newId));
-    }
-    if (targetLines.length) {
-        console.log(targetLines);
-        targetLines.forEach(targetLine => (targetLine.target.boundId = newId));
-    }
-};
