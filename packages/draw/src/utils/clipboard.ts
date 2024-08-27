@@ -40,52 +40,33 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
 };
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
-    const lines = elements.filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
-    const geometries = elements.filter(
-        value => (PlaitDrawElement.isGeometry(value) && !PlaitDrawElement.isGeometryByTable(value)) || PlaitDrawElement.isImage(value)
-    ) as (PlaitImage | PlaitGeometry)[];
-    const tables = elements.filter(value => PlaitDrawElement.isElementByTable(value)) as PlaitTable[];
-    geometries.forEach(element => {
-        const newId = idCreator();
-        updateBoundArrowLinesId(element, lines, newId);
-        element.id = newId;
-        element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
-        Transforms.insertNode(board, element, [board.children.length]);
+    const idsMap: Record<string, string> = {};
+    elements.forEach(element => {
+        idsMap[element.id] = idCreator();
     });
-    insertClipboardTableData(board, tables, startPoint, lines);
-    lines.forEach(element => {
-        element.id = idCreator();
+    elements.forEach(element => {
+        element.id = idsMap[element.id];
+        if (PlaitDrawElement.isArrowLine(element)) {
+            if (element.source.boundId) {
+                const boundElement = elements.find(item => [element.source.boundId, idsMap[element.source.boundId!]].includes(item.id));
+                if (boundElement) {
+                    element.source.boundId = idsMap[element.source.boundId];
+                }
+            }
+            if (element.target.boundId) {
+                const boundElement = elements.find(item => [element.target.boundId, idsMap[element.target.boundId!]].includes(item.id));
+                if (boundElement) {
+                    element.target.boundId = idsMap[element.target.boundId];
+                }
+            }
+        }
+        if (PlaitDrawElement.isElementByTable(element)) {
+            updateRowOrColumnIds(element as PlaitTable, 'row');
+            updateRowOrColumnIds(element as PlaitTable, 'column');
+            updateCellIds(element.cells);
+        }
         element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
         Transforms.insertNode(board, element, [board.children.length]);
     });
     Transforms.addSelectionWithTemporaryElements(board, elements);
-};
-
-export const insertClipboardTableData = (board: PlaitBoard, elements: PlaitTable[], startPoint: Point, lines: PlaitArrowLine[]) => {
-    elements.forEach(element => {
-        const newId = idCreator();
-        updateBoundArrowLinesId(element, lines, newId);
-        element.id = newId;
-        updateRowOrColumnIds(element, 'row');
-        updateRowOrColumnIds(element, 'column');
-        updateCellIds(element.cells);
-        element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
-        Transforms.insertNode(board, element, [board.children.length]);
-    });
-};
-
-export const updateBoundArrowLinesId = (element: PlaitShapeElement, lines: PlaitArrowLine[], newId: string) => {
-    const sourceLines: PlaitArrowLine[] = [];
-    const targetLines: PlaitArrowLine[] = [];
-    lines.forEach(line => {
-        if (PlaitArrowLine.isBoundElementOfSource(line, element)) {
-            sourceLines.push(line);
-        }
-        if (PlaitArrowLine.isBoundElementOfTarget(line, element)) {
-            targetLines.push(line);
-        }
-    });
-    // update lines
-    sourceLines.forEach(sourceLine => (sourceLine.source.boundId = newId));
-    targetLines.forEach(targetLine => (targetLine.target.boundId = newId));
 };
