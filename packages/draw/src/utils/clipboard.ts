@@ -40,24 +40,23 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
 };
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
+    const idsMap: Record<string, string> = {};
     elements.forEach(element => {
+        idsMap[element.id] = idCreator();
+    });
+    elements.forEach(element => {
+        element.id = idsMap[element.id];
         if (PlaitDrawElement.isArrowLine(element)) {
-            const newId = idCreator();
-            element.id = newId;
             if (element.source.boundId) {
-                const boundElement = elements.find(item => item.id === element.source.boundId);
+                const boundElement = elements.find(item => [element.source.boundId, idsMap[element.source.boundId!]].includes(item.id));
                 if (boundElement) {
-                    const newId = idCreator();
-                    boundElement!.id = newId;
-                    element.source.boundId = newId;
+                    element.source.boundId = idsMap[element.source.boundId];
                 }
             }
             if (element.target.boundId) {
-                const boundElement = elements.find(item => item.id === element.target.boundId);
+                const boundElement = elements.find(item => [element.target.boundId, idsMap[element.target.boundId!]].includes(item.id));
                 if (boundElement) {
-                    const newId = idCreator();
-                    boundElement!.id = newId;
-                    element.target.boundId = newId;
+                    element.target.boundId = idsMap[element.target.boundId];
                 }
             }
         }
@@ -67,8 +66,6 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
             updateCellIds(element.cells);
         }
         element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
-    });
-    elements.forEach(element => {
         Transforms.insertNode(board, element, [board.children.length]);
     });
     Transforms.addSelectionWithTemporaryElements(board, elements);
