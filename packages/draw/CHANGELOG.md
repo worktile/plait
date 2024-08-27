@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.65.2
+
+### Patch Changes
+
+-   [#964](https://github.com/worktile/plait/pull/964) [`99ec49df0`](https://github.com/worktile/plait/commit/99ec49df010875f4b4fb61705f82a864df84ccee) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix insertClipboardData order error
+
 ## 0.65.1
 
 ## 0.65.0
