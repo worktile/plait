@@ -1,5 +1,7 @@
 # angular-text
 
+## 0.65.2
+
 ## 0.65.1
 
 ### Patch Changes
