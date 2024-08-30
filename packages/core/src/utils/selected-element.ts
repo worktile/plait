@@ -146,6 +146,11 @@ export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement, 
     }
 };
 
+export const replaceSelectedElement = (board: PlaitBoard, element: PlaitElement, newElement: PlaitElement) => {
+    const selectedElements = getSelectedElements(board);
+    selectedElements.splice(selectedElements.indexOf(element), 1, newElement);
+};
+
 export const clearSelectedElement = (board: PlaitBoard) => {
     cacheSelectedElements(board, []);
 };

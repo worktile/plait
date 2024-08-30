@@ -9,6 +9,7 @@ import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
 import { ListRender } from '../list-render';
 import { ELEMENT_TO_REF, NODE_TO_CONTAINER_G, NODE_TO_G } from '../../utils/weak-maps';
 import { PlaitElementRef } from './element-ref';
+import { getElementMap } from '../../utils/element';
 
 export class ElementFlavour<
     T extends PlaitElement = PlaitElement,
@@ -42,6 +43,7 @@ export class ElementFlavour<
             const containerG = this.getContainerG();
             NODE_TO_G.set(this.element, elementG);
             NODE_TO_CONTAINER_G.set(this.element, containerG);
+            getElementMap(this.board).set(this.element.id, this.element);
             ELEMENT_TO_REF.set(this.element, this.ref);
             this.updateListRender();
             if (hasOnContextChanged<T>(this)) {
@@ -59,6 +61,7 @@ export class ElementFlavour<
             NODE_TO_G.set(this.element, this._g);
             NODE_TO_CONTAINER_G.set(this.element, this._containerG);
             ELEMENT_TO_REF.set(this.element, this.ref);
+            getElementMap(this.board).set(this.element.id, this.element);
         }
     }
 
@@ -150,6 +153,7 @@ export class ElementFlavour<
         if (NODE_TO_G.get(this.element) === this._g) {
             NODE_TO_G.delete(this.element);
         }
+        getElementMap(this.board).delete(this.element.id);
         if (NODE_TO_CONTAINER_G.get(this.element) === this._containerG) {
             NODE_TO_CONTAINER_G.delete(this.element);
         }

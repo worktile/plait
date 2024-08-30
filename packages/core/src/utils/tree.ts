@@ -7,11 +7,8 @@ export function depthFirstRecursion<T extends TreeNode = TreeNode>(
     recursion?: (node: T) => boolean,
     isReverse?: boolean
 ) {
-    if (!recursion || recursion(node)) {
-        let children: TreeNode[] = [];
-        if (node.children) {
-            children = [...node.children];
-        }
+    if (node.children && (!recursion || recursion(node))) {
+        let children: TreeNode[] = [...node.children];
         children = isReverse ? children.reverse() : children;
         children.forEach(child => {
             depthFirstRecursion(child as T, callback, recursion);

@@ -8,7 +8,7 @@ import {
     PlaitPluginElementContext
 } from '../interfaces';
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps';
-import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../utils/selected-element';
+import { isSelectedElement, replaceSelectedElement } from '../utils/selected-element';
 import { ElementFlavour } from './element/element-flavour';
 import { DefaultIterableDiffer } from '../differs/default_iterable_differ';
 import { IterableChangeRecord, IterableDiffer } from '../differs/iterable_differs';
@@ -133,8 +133,8 @@ const createPluginComponent = (
         instance.initialize();
     } catch (error) {
         if (isDebug()) {
-            console.error('list-render-initialize',error, 'context', context);
-        } 
+            console.error('list-render-initialize', error, 'context', context);
+        }
     }
     const g = instance.getContainerG();
     mountElementG(context.index, g, childrenContext);
@@ -158,8 +158,7 @@ const getContext = (
     const previousElement = previousContext && previousContext.element;
     if (previousElement && previousElement !== element && isSelectedElement(board, previousElement)) {
         isSelected = true;
-        removeSelectedElement(board, previousElement);
-        addSelectedElement(board, element);
+        replaceSelectedElement(board, previousElement, element);
     }
     const context: PlaitPluginElementContext = {
         element: element,

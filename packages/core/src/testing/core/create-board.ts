@@ -1,5 +1,6 @@
 import { PlaitBoardOptions, PlaitElement, PlaitPlugin } from '../../interfaces';
 import { createBoard } from '../../plugins/create-board';
+import { KEY_TO_ELEMENT_MAP } from '../../utils';
 
 /**
  * 1.create board instance
@@ -14,5 +15,6 @@ export const createTestingBoard = (
     plugins.forEach(plugin => {
         board = plugin(board);
     });
+    KEY_TO_ELEMENT_MAP.set(board, new Map());
     return board;
 };
