@@ -41,6 +41,7 @@ import {
     IS_CHROME,
     IS_FIREFOX,
     IS_SAFARI,
+    KEY_TO_ELEMENT_MAP,
     ListRender,
     PlaitBoard,
     PlaitBoardContext,
@@ -306,6 +307,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         if (this.plaitTheme) {
             this.board.theme = this.plaitTheme;
         }
+
+        KEY_TO_ELEMENT_MAP.set(board, new Map());
     }
 
     private initializeHookListener() {
@@ -565,6 +568,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         IS_BOARD_ALIVE.set(this.board, false);
         BOARD_TO_ON_CHANGE.delete(this.board);
         BOARD_TO_AFTER_CHANGE.set(this.board, () => {});
+        KEY_TO_ELEMENT_MAP.delete(this.board);
     }
 
     markForCheck() {

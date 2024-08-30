@@ -184,7 +184,7 @@ export function withSelection(board: PlaitBoard) {
                     }
                 }
                 const newElements = getSelectedElements(board);
-                previousSelectedElements = newElements;
+                previousSelectedElements = [...newElements];
                 deleteTemporaryElements(board);
                 if (!isSelectionMoving(board)) {
                     selectionRectangleG?.remove();
@@ -213,7 +213,7 @@ export function withSelection(board: PlaitBoard) {
                         selectionRectangleG?.remove();
                         selectionRectangleG = board.drawActiveRectangle();
                         PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
-                        previousSelectedElements = currentSelectedElements;
+                        previousSelectedElements = [...currentSelectedElements];
                     }
                 } else {
                     selectionRectangleG?.remove();

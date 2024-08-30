@@ -25,7 +25,8 @@ import {
     drawRectangle,
     depthFirstRecursion,
     getAngleByElement,
-    setAngleForG
+    setAngleForG,
+    NODE_TO_INDEX
 } from '../utils';
 import { getSnapMovingRef } from '../utils/snap/snap-moving';
 import { PlaitGroupElement, PlaitPointerType, RectangleClient, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
@@ -266,9 +267,7 @@ export function getSelectedTargetElements(board: PlaitBoard) {
 }
 
 export function getValidElements(board: PlaitBoard, activeElements: PlaitElement[]) {
-    const validElements = [...activeElements].filter(
-        element => !PlaitGroupElement.isGroup(element) && board.children.findIndex(item => item.id === element.id) > -1
-    );
+    const validElements = [...activeElements].filter(element => !PlaitGroupElement.isGroup(element) && PlaitElement.isRootElement(element));
     return validElements;
 }
 
@@ -277,7 +276,7 @@ export function updatePoints(board: PlaitBoard, activeElements: PlaitElement[], 
     const currentElements = validElements.map(element => {
         const points = element.points || [];
         const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
-        const index = board.children.findIndex(item => item.id === element.id);
+        const index = NODE_TO_INDEX.get(element as PlaitElement) as number;
         Transforms.setNode(
             board,
             {
