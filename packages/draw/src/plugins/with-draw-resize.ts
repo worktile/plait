@@ -70,7 +70,7 @@ export function withDrawResize(board: PlaitBoard) {
             const handleRef = getHitRectangleResizeHandleRef(board, boundingRectangle, point, angle);
             if (handleRef) {
                 return {
-                    element: elements,
+                    element: [...elements],
                     rectangle: boundingRectangle,
                     handle: handleRef.handle,
                     cursorClass: handleRef.cursorClass
