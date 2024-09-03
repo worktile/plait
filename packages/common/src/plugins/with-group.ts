@@ -21,7 +21,9 @@ import {
     getElementsInGroup,
     getRectangleByGroup,
     PlaitPointerType,
-    WritableClipboardOperationType
+    WritableClipboardOperationType,
+    throttleRAF,
+    isMovingElements
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 import { isKeyHotkey } from 'is-hotkey';
@@ -51,20 +53,22 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.pointerMove = (event: PointerEvent) => {
-        groupRectangleG?.remove();
-        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        let selection: Selection = { anchor: point, focus: point };
-        if (board.selection && !Selection.isCollapsed(board.selection)) {
-            selection = board.selection;
-        }
-        const pointer = PlaitBoard.getPointer(board);
-        if (!isResizing(board) && pointer === PlaitPointerType.selection) {
-            const hitElements = getHitElementsBySelection(board, selection);
-            if (hitElements.length) {
-                groupRectangleG = createGroupRectangleG(board, hitElements);
-                groupRectangleG && PlaitBoard.getElementActiveHost(board).append(groupRectangleG);
+        throttleRAF(board, 'with-group', () => {
+            groupRectangleG?.remove();
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+            let selection: Selection = { anchor: point, focus: point };
+            if (board.selection && !Selection.isCollapsed(board.selection)) {
+                selection = board.selection;
             }
-        }
+            const pointer = PlaitBoard.getPointer(board);
+            if (!isResizing(board) && !isMovingElements(board) && pointer === PlaitPointerType.selection) {
+                const hitElements = getHitElementsBySelection(board, selection);
+                if (hitElements.length) {
+                    groupRectangleG = createGroupRectangleG(board, hitElements);
+                    groupRectangleG && PlaitBoard.getElementActiveHost(board).append(groupRectangleG);
+                }
+            }
+        });
         pointerMove(event);
     };
 
