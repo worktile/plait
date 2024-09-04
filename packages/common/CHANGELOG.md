@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.66.0
+
+### Minor Changes
+
+-   [`eb23e9a34`](https://github.com/worktile/plait/commit/eb23e9a34add6d624e28f1cf92bcbbb0cf20d18e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add throttleRAF for pointerMove hook in with-group to reduce the getHitElementsBySelection's invoking times
+
 ## 0.65.2
 
 ## 0.65.1

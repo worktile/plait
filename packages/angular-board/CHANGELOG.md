@@ -1,5 +1,15 @@
 # @plait/angular-board
 
+## 0.66.0
+
+### Minor Changes
+
+-   [#967](https://github.com/worktile/plait/pull/967) [`656f53e9a`](https://github.com/worktile/plait/commit/656f53e9a80f9151b9a69273481214e084673ca6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - performance:
+
+    1. use KEY_TO_ELEMENT_MAP cache the relation between element's key and element and use KEY_TO_ELEMENT_MAP in getElementById to optimize performance
+
+    2. add replaceSelectedElement to take the place of the new selected element
+
 ## 0.65.2
 
 ## 0.65.1

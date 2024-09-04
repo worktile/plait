@@ -1,5 +1,13 @@
 # @plait/draw
 
+## 0.66.0
+
+### Patch Changes
+
+-   [`c118c6d67`](https://github.com/worktile/plait/commit/c118c6d6702c4de7b6d527e48e7cf77d5ee39e7c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - resolve batch resize geometry issue
+
+*   [#966](https://github.com/worktile/plait/pull/966) [`f284daabf`](https://github.com/worktile/plait/commit/f284daabfe830dc5407a9fa47118ca9ebac5b282) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add clipboard test
+
 ## 0.65.2
 
 ### Patch Changes
