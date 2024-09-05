@@ -67,11 +67,14 @@ function createCanvas(width: number, height: number, fillStyle = 'transparent') 
  * @param url image url
  * @returns image base64
  */
-function convertImageToBase64(url: string) {
-    return loadImage(url).then(img => {
-        const { canvas, ctx } = createCanvas(img.width, img.height);
-        ctx?.drawImage(img, 0, 0);
-        return canvas.toDataURL('image/png');
+async function convertImageToBase64(url: string): Promise<string> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
     });
 }
 
