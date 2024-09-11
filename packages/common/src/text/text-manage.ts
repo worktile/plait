@@ -4,6 +4,7 @@ import {
     PlaitBoard,
     Point,
     RectangleClient,
+    ceilToDecimal,
     createForeignObject,
     createG,
     debounce,

@@ -360,6 +360,11 @@ export function toFixed(v: number) {
     return +v.toFixed(2);
 }
 
+export function ceilToDecimal(value: number, decimalPlaces: number) {
+    const factor = Math.pow(10, decimalPlaces);
+    return Math.ceil(value * factor) / factor;
+}
+
 /**
  * Whether two numbers numbers a and b are approximately equal.
  *
