@@ -1,5 +1,13 @@
 # plait
 
+## 0.66.1
+
+### Patch Changes
+
+-   [`875feb44e`](https://github.com/worktile/plait/commit/875feb44e97feffacdc78a0ccd46148c64aae43b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - using ceilToDecimal to set text width to avoid breaking line(like `j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j'j`)
+
+*   [#969](https://github.com/worktile/plait/pull/969) [`14f0296c3`](https://github.com/worktile/plait/commit/14f0296c3d81360837830c77dac0d1a4a4999b7d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix get isOnlySetSelection error
+
 ## 0.66.0
 
 ### Minor Changes
