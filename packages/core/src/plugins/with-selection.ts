@@ -35,7 +35,7 @@ import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawActiveRectangle } = board;
+    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawSelectionRectangle } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -189,7 +189,7 @@ export function withSelection(board: PlaitBoard) {
                 if (!isSelectionMoving(board)) {
                     selectionRectangleG?.remove();
                     if (newElements.length > 1) {
-                        selectionRectangleG = board.drawActiveRectangle();
+                        selectionRectangleG = board.drawSelectionRectangle();
                         PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
                     }
                 }
@@ -211,7 +211,7 @@ export function withSelection(board: PlaitBoard) {
                             currentSelectedElements.some((c, index) => c !== previousSelectedElements[index]))
                     ) {
                         selectionRectangleG?.remove();
-                        selectionRectangleG = board.drawActiveRectangle();
+                        selectionRectangleG = board.drawSelectionRectangle();
                         PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
                         previousSelectedElements = [...currentSelectedElements];
                     }

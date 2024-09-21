@@ -30,7 +30,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { getRotateHandleRectangle } from '../utils/position/geometry';
 
 export const withDrawRotate = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, globalPointerUp, afterChange, drawActiveRectangle } = board;
+    const { pointerDown, pointerMove, globalPointerUp, afterChange, drawSelectionRectangle } = board;
     let rotateRef: RotateRef | null = null;
     let rotateHandleG: SVGGElement | null;
     let needCustomActiveRectangle = false;
@@ -144,7 +144,7 @@ export const withDrawRotate = (board: PlaitBoard) => {
         }
     };
 
-    board.drawActiveRectangle = () => {
+    board.drawSelectionRectangle = () => {
         if (needCustomActiveRectangle && rotateRef) {
             const rectangle = getRectangleByElements(board, rotateRef.elements, false);
             const rectangleG = drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
@@ -157,7 +157,7 @@ export const withDrawRotate = (board: PlaitBoard) => {
             }
             return rectangleG;
         }
-        return drawActiveRectangle();
+        return drawSelectionRectangle();
     };
 
     return board;

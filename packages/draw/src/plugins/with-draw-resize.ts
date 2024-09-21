@@ -49,7 +49,7 @@ export interface BulkRotationRef {
 }
 
 export function withDrawResize(board: PlaitBoard) {
-    const { afterChange, drawActiveRectangle } = board;
+    const { afterChange, drawSelectionRectangle } = board;
     let snapG: SVGGElement | null;
     let handleG: SVGGElement | null;
     let needCustomActiveRectangle = false;
@@ -251,7 +251,7 @@ export function withDrawResize(board: PlaitBoard) {
         }
     };
 
-    board.drawActiveRectangle = () => {
+    board.drawSelectionRectangle = () => {
         if (needCustomActiveRectangle) {
             const rectangle = RectangleClient.getRectangleByPoints(resizeActivePoints!);
             return drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
@@ -259,7 +259,7 @@ export function withDrawResize(board: PlaitBoard) {
                 strokeWidth: ACTIVE_STROKE_WIDTH
             });
         }
-        return drawActiveRectangle();
+        return drawSelectionRectangle();
     };
 
     return board;

@@ -47,7 +47,7 @@ export interface PlaitBoard {
     apply: (operation: PlaitOperation) => void;
     onChange: () => void;
     afterChange: () => void;
-    drawActiveRectangle: () => SVGGElement | null;
+    drawSelectionRectangle: () => SVGGElement | null;
     mousedown: (event: MouseEvent) => void;
     mousemove: (event: MouseEvent) => void;
     mouseleave: (event: MouseEvent) => void;

@@ -1,4 +1,4 @@
-import { ACTIVE_STROKE_WIDTH, SELECTION_RECTANGLE_CLASS_NAME } from '../constants';
+import { ACTIVE_STROKE_WIDTH, SELECTION_RECTANGLE_BOUNDING_CLASS_NAME, SELECTION_RECTANGLE_CLASS_NAME } from '../constants';
 import {
     PlaitBoard,
     PlaitElement,
@@ -63,7 +63,7 @@ export function deleteTemporaryElements(board: PlaitBoard) {
     BOARD_TO_TEMPORARY_ELEMENTS.delete(board);
 }
 
-export function drawEntireActiveRectangleG(board: PlaitBoard) {
+export function drawSelectionRectangleG(board: PlaitBoard) {
     const elements = getSelectedElements(board);
     const rectangle = getRectangleByElements(board, elements, false);
     if (rectangle.width > 0 && rectangle.height > 0 && elements.length > 1) {
@@ -72,7 +72,7 @@ export function drawEntireActiveRectangleG(board: PlaitBoard) {
             strokeWidth: ACTIVE_STROKE_WIDTH,
             fillStyle: 'solid'
         });
-        selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
+        selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME, SELECTION_RECTANGLE_BOUNDING_CLASS_NAME);
         const angle = getSelectionAngle(elements);
         if (angle) {
             setAngleForG(selectionRectangleG, RectangleClient.getCenterPoint(rectangle), angle);
