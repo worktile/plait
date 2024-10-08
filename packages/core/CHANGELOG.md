@@ -1,5 +1,15 @@
 # plait
 
+## 0.67.0
+
+### Patch Changes
+
+-   [`203b6c14c`](https://github.com/worktile/plait/commit/203b6c14cd61ed272703a3b96d2e9227f6799693) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename drawActiveRectangle to drawSelectionRectangle
+
+    add SELECTION_RECTANGLE_BOUNDING_CLASS_NAME for multiple select selection g
+
+*   [#968](https://github.com/worktile/plait/pull/968) [`b768be7ef`](https://github.com/worktile/plait/commit/b768be7ef9734ee33c6bbb24565efcc5eafd09d2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use fetch to load image to resolve CORS Error(second time export img)
+
 ## 0.66.1
 
 ### Patch Changes

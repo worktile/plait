@@ -1,5 +1,11 @@
 # mind
 
+## 0.67.0
+
+### Minor Changes
+
+-   [`4bd3e8316`](https://github.com/worktile/plait/commit/4bd3e83162527e8bc460b58db20ef85614c30cc5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use global selection class (`selection-rectangle`), and use global dragging state for mind node dnd
+
 ## 0.66.1
 
 ## 0.66.0
