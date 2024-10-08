@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, createG, drawRectangle, getSelectedElements } from '@plait/core';
+import { PlaitBoard, Point, SELECTION_RECTANGLE_CLASS_NAME, createG, drawRectangle, getSelectedElements } from '@plait/core';
 import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement } from '../interfaces';
 import { Generator, PRIMARY_COLOR, drawFillPrimaryHandle, drawPrimaryHandle } from '@plait/common';
 import { getMiddlePoints } from '../utils/line';
@@ -29,8 +29,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         const selectedElements = getSelectedElements(this.board);
         this.onlySelectedCurrentLine = selectedElements.length === 1;
         if (this.onlySelectedCurrentLine) {
-            activeG.classList.add('active');
-            activeG.classList.add('line-handle');
+            activeG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
             const points = PlaitDrawElement.isArrowLine(element) ? PlaitArrowLine.getPoints(this.board, element) : element.points;
             let updatePoints = [...points];
             let elbowNextRenderPoints: Point[] = [];

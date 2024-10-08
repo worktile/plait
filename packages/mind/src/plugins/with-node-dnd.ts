@@ -13,7 +13,8 @@ import {
     CoreTransforms,
     getHitElementByPoint,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    isDragging
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../interfaces/element';
@@ -28,7 +29,7 @@ import {
     insertElementHandleAbstract,
     insertElementHandleRightNodeCount
 } from '../utils';
-import { addActiveOnDragOrigin, isDragging, isDropStandardRight, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
+import { addActiveOnDragOrigin, isDropStandardRight, removeActiveOnDragOrigin, setMindDragging } from '../utils/dnd/common';
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNode } from '../utils/draw/node-dnd';
 import { MindTransforms } from '../transforms';
@@ -94,7 +95,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 return;
             }
 
-            setIsDragging(board, true);
+            setMindDragging(board, true);
 
             fakeDropNodeG?.remove();
             const detectPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -218,8 +219,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
 
                 Transforms.addSelectionWithTemporaryElements(board, setActiveElements);
             }
-
-            setIsDragging(board, false);
+            setMindDragging(board, false);
             activeElements = [];
             dragFakeNodeG?.remove();
             dragFakeNodeG = undefined;

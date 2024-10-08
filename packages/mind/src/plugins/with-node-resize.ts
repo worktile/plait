@@ -6,7 +6,8 @@ import {
     RectangleClient,
     ResizeCursorClass,
     distanceBetweenPointAndRectangle,
-    getSelectedElements
+    getSelectedElements,
+    isDragging
 } from '@plait/core';
 import { MindElement } from '../interfaces/element';
 import { getRectangleByNode } from '../utils/position/node';
@@ -14,7 +15,6 @@ import { NodeSpace } from '../utils/space/node-space';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindTransforms } from '../transforms';
 import { EXTEND_OFFSET } from '../constants/default';
-import { isDragging } from '../utils/dnd/common';
 import { ResizeRef, ResizeState, TextManage, WithResizeOptions, getFirstTextManage, withResize } from '@plait/common';
 
 interface TargetElementRef {

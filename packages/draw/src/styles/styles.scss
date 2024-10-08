@@ -9,7 +9,7 @@
             cursor: crosshair;
         }
     }
-    &.draw-line-resizing .element-active-host .line-handle {
+    &.draw-line-resizing .element-active-host .selection-rectangle {
         display: none;
     }
     &.line-text-resizing,
