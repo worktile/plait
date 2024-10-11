@@ -15,12 +15,12 @@ export const renderNode = (board: PlaitBoard, nodeId: string, state?: NodeState)
     if (!selected) {
         if (state === NodeState.hovering) {
             nodeGenerator && nodeGenerator.processDrawing(node, PlaitBoard.getElementActiveHost(board));
-            PlaitBoard.getElementActiveHost(board).append(textManage.g);
+            textManage && PlaitBoard.getElementActiveHost(board).append(textManage.g);
             handleGenerator.processDrawing(node, PlaitBoard.getElementActiveHost(board), { selected, hovered: true });
         } else {
             handleGenerator.destroy();
             nodeGenerator && nodeGenerator.processDrawing(node, PlaitElement.getElementG(node));
-            PlaitElement.getElementG(node).append(textManage.g);
+            textManage && PlaitElement.getElementG(node).append(textManage.g);
         }
     }
 };
