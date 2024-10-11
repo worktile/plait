@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.67.1
+
+### Patch Changes
+
+-   [#970](https://github.com/worktile/plait/pull/970) [`8efcd0a88`](https://github.com/worktile/plait/commit/8efcd0a8832ced9cae167867cc118e422da8829e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - append textManage.g when textManage exist
+
 ## 0.67.0
 
 ## 0.66.1
