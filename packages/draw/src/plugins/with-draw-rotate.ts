@@ -53,7 +53,7 @@ export const withDrawRotate = (board: PlaitBoard) => {
         const rotatedPoint = angle ? rotatePoints(point, RectangleClient.getCenterPoint(boundingRectangle), -angle) : point;
         if (handleRectangle && RectangleClient.isHit(RectangleClient.getRectangleByPoints([rotatedPoint, rotatedPoint]), handleRectangle)) {
             rotateRef = {
-                elements: elements,
+                elements: [...elements],
                 startPoint: point
             };
         }
