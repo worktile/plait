@@ -1,3 +1,4 @@
+import { ceilToDecimal } from '../math';
 import { NS } from './common';
 
 export function createForeignObject(x: number, y: number, width: number, height: number) {
@@ -12,7 +13,7 @@ export function createForeignObject(x: number, y: number, width: number, height:
 export function updateForeignObject(target: SVGForeignObjectElement | SVGGElement, width: number, height: number, x: number, y: number) {
     const foreignObject = target instanceof SVGForeignObjectElement ? target : target.querySelector('foreignObject');
     if (foreignObject) {
-        foreignObject.setAttribute('width', `${width}`);
+        foreignObject.setAttribute('width', `${ceilToDecimal(width, 2)}`);
         foreignObject.setAttribute('height', `${height}`);
         foreignObject.setAttribute('x', `${x}`);
         foreignObject.setAttribute('y', `${y}`);
@@ -22,6 +23,6 @@ export function updateForeignObject(target: SVGForeignObjectElement | SVGGElemen
 export function updateForeignObjectWidth(target: SVGForeignObjectElement | SVGGElement, width: number) {
     const foreignObject = target instanceof SVGForeignObjectElement ? target : target.querySelector('foreignObject');
     if (foreignObject) {
-        foreignObject.setAttribute('width', `${width}`);
+        foreignObject.setAttribute('width', `${ceilToDecimal(width, 2)}`);
     }
 }
