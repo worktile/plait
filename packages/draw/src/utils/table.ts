@@ -116,15 +116,27 @@ export function getTextManageByCell(board: PlaitBoard, cell: PlaitTableCell) {
     return getTextManage(board, cell.id);
 }
 
-export const updateColumns = (table: PlaitBaseTable, columnId: string, width: number, offset: number) => {
+export const updateColumns = (
+    table: PlaitBaseTable,
+    columnId: string,
+    width: number,
+    offset: number,
+    direction: 'start' | 'end' = 'end'
+) => {
     const columns = table.columns.map(item => (item.id === columnId ? { ...item, width } : item));
-    const points = [table.points[0], [table.points[1][0] + offset, table.points[1][1]]] as Point[];
+    let points = [table.points[0], [table.points[1][0] + offset, table.points[1][1]]] as Point[];
+    if (direction === 'start') {
+        points = [[table.points[0][0] - offset, table.points[0][1]], table.points[1]] as Point[];
+    }
     return { columns, points };
 };
 
-export const updateRows = (table: PlaitBaseTable, rowId: string, height: number, offset: number) => {
+export const updateRows = (table: PlaitBaseTable, rowId: string, height: number, offset: number, direction: 'start' | 'end' = 'end') => {
     const rows = table.rows.map(item => (item.id === rowId ? { ...item, height } : item));
-    const points = [table.points[0], [table.points[1][0], table.points[1][1] + offset]] as Point[];
+    let points = [table.points[0], [table.points[1][0], table.points[1][1] + offset]] as Point[];
+    if (direction === 'start') {
+        points = [[table.points[0][0], table.points[0][1] - offset], table.points[1]] as Point[];
+    }
     return { rows, points };
 };
 
