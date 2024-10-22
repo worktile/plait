@@ -10,7 +10,8 @@ import {
     radiansToDegrees,
     rotateElements,
     canSetZIndex,
-    Path
+    Path,
+    DEFAULT_COLOR
 } from '@plait/core';
 
 import {
@@ -104,9 +105,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     canSetZIndex = false;
 
-    fillColor = ['#333333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
+    fillColor = [DEFAULT_COLOR, '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
 
-    textColorOptions = ['#333333', '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
+    textColorOptions = [DEFAULT_COLOR, '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
 
     strokeColor = ['#1e1e1e', '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
 

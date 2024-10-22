@@ -1,4 +1,4 @@
-import { PlaitElement } from '@plait/core';
+import { DEFAULT_COLOR, PlaitElement } from '@plait/core';
 
 export const mockTurningPointData = [
     {
@@ -2213,7 +2213,7 @@ export const mockTurningPointData = [
             [14290.916259765625, 164.20361328125]
         ],
         strokeWidth: 2,
-        fill: '#333333',
+        fill: DEFAULT_COLOR,
         strokeColor: '#1e1e1e'
     },
     {
@@ -2436,7 +2436,7 @@ export const mockTurningPointData = [
             [14624.518920898438, 625.00146484375]
         ],
         strokeWidth: 2,
-        fill: '#333333',
+        fill: DEFAULT_COLOR,
         strokeColor: '#1e1e1e'
     },
     {

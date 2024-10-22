@@ -1,8 +1,8 @@
-import { ThemeColorMode } from '@plait/core';
+import { DEFAULT_COLOR, ThemeColorMode } from '@plait/core';
 
 export const DrawThemeColors = {
     [ThemeColorMode.default]: {
-        strokeColor: '#333333',
+        strokeColor: DEFAULT_COLOR,
         fill: '#FFFFFF'
     },
     [ThemeColorMode.colorful]: {

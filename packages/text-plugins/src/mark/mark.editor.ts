@@ -1,6 +1,7 @@
 import { Editor, Text, Node, Element, Transforms, NodeEntry, Location } from 'slate';
 import { FontSizes, MarkProps, MarkTypes } from './types';
-import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR } from './constant';
+import { DEFAULT_FONT_SIZE } from './constant';
+import { DEFAULT_COLOR } from '@plait/core';
 
 export interface MarkEditor extends Editor {
     removeMark: (key: string, shouldChange?: boolean) => void;
@@ -73,7 +74,7 @@ export const PlaitMarkEditor = {
             Editor.addMark(editor, MarkTypes.fontSize, Number(size));
         }
     },
-    setColorMark(editor: Editor, color: string, defaultTextColor: string = DEFAULT_TEXT_COLOR) {
+    setColorMark(editor: Editor, color: string, defaultTextColor: string = DEFAULT_COLOR) {
         setSelection(editor);
 
         if (color === defaultTextColor) {

@@ -17,28 +17,30 @@ export enum ThemeColorMode {
     'starry' = 'starry'
 }
 
+export const DEFAULT_COLOR = '#333333';
+
 export const DefaultThemeColor: ThemeColor = {
     mode: ThemeColorMode.default,
     boardBackground: '#ffffff',
-    textColor: '#333333'
+    textColor: DEFAULT_COLOR
 };
 
 export const ColorfulThemeColor: ThemeColor = {
     mode: ThemeColorMode.colorful,
     boardBackground: '#ffffff',
-    textColor: '#333333'
+    textColor: DEFAULT_COLOR
 };
 
 export const SoftThemeColor: ThemeColor = {
     mode: ThemeColorMode.soft,
     boardBackground: '#f5f5f5',
-    textColor: '#333333'
+    textColor: DEFAULT_COLOR
 };
 
 export const RetroThemeColor: ThemeColor = {
     mode: ThemeColorMode.retro,
     boardBackground: '#f9f8ed',
-    textColor: '#333333'
+    textColor: DEFAULT_COLOR
 };
 
 export const DarkThemeColor: ThemeColor = {

@@ -6,7 +6,8 @@ import {
     DarkThemeColor,
     ColorfulThemeColor,
     SoftThemeColor,
-    RetroThemeColor
+    RetroThemeColor,
+    DEFAULT_COLOR
 } from '@plait/core';
 import {
     COLORFUL_BRANCH_COLORS,
@@ -28,13 +29,13 @@ export const MindDefaultThemeColor: MindThemeColor = {
     ...DefaultThemeColor,
     branchColors: DEFAULT_BRANCH_COLORS,
     rootFill: '#f5f5f5',
-    rootTextColor: '#333333'
+    rootTextColor: DEFAULT_COLOR
 };
 
 export const MindColorfulThemeColor: MindThemeColor = {
     ...ColorfulThemeColor,
     branchColors: COLORFUL_BRANCH_COLORS,
-    rootFill: '#333333',
+    rootFill: DEFAULT_COLOR,
     rootTextColor: '#FFFFFF'
 };
 
@@ -42,7 +43,7 @@ export const MindSoftThemeColor: MindThemeColor = {
     ...SoftThemeColor,
     branchColors: SOFT_BRANCH_COLORS,
     rootFill: '#FFFFFF',
-    rootTextColor: '#333333'
+    rootTextColor: DEFAULT_COLOR
 };
 
 export const MindRetroThemeColor: MindThemeColor = {
@@ -56,14 +57,14 @@ export const MindDarkThemeColor: MindThemeColor = {
     ...DarkThemeColor,
     branchColors: DARK_BRANCH_COLORS,
     rootFill: '#FFFFFF',
-    rootTextColor: '#333333'
+    rootTextColor: DEFAULT_COLOR
 };
 
 export const MindStarryThemeColor: MindThemeColor = {
     ...StarryThemeColor,
     branchColors: STARRY_BRANCH_COLORS,
     rootFill: '#FFFFFF',
-    rootTextColor: '#333333'
+    rootTextColor: DEFAULT_COLOR
 };
 
 export const MindThemeColors: MindThemeColor[] = [
