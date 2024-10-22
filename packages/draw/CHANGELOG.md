@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.67.2
+
+### Patch Changes
+
+-   [`e0674af84`](https://github.com/worktile/plait/commit/ca05380e50dc90decad34ce63996266e0674af84) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix rotate error #WIK-16663
+
 ## 0.67.1
 
 ## 0.67.0

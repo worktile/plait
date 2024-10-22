@@ -1,5 +1,11 @@
 # plait
 
+## 0.67.2
+
+### Patch Changes
+
+-   [`63b276d57`](https://github.com/worktile/plait/commit/63b276d571a7848d272101dc8119f124c69a21b3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract `#333333` as `DEFAULT_COLOR` instant value
+
 ## 0.67.1
 
 ## 0.67.0
