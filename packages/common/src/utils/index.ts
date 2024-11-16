@@ -14,3 +14,4 @@ export * from './drawing';
 export * from './rotate';
 export * from './elements';
 export * from './animate';
+export * from './stroke';

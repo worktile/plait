@@ -3,6 +3,7 @@ import { drawIndentedLink } from './indented-link';
 import { drawLogicLink } from './logic-link';
 import { MindElement } from '../../../interfaces/element';
 import { MindNode } from '../../../interfaces/node';
+import { StrokeStyle } from '@plait/common';
 
 export function drawLink(
     board: PlaitBoard,
@@ -10,10 +11,11 @@ export function drawLink(
     node: MindNode,
     isHorizontal: boolean,
     needDrawUnderline?: boolean,
-    defaultStroke?: string,
-    defaultStrokeWidth?: number
+    defaultStrokeColor?: string,
+    defaultStrokeWidth?: number,
+    defaultStrokeStyle?: StrokeStyle
 ) {
     return MindElement.isIndentedLayout(parentNode.origin)
-        ? drawIndentedLink(board, parentNode, node, defaultStroke, needDrawUnderline, defaultStrokeWidth)
-        : drawLogicLink(board, parentNode, node, isHorizontal, defaultStroke, defaultStrokeWidth);
+        ? drawIndentedLink(board, parentNode, node, needDrawUnderline, defaultStrokeColor, defaultStrokeWidth, defaultStrokeStyle)
+        : drawLogicLink(board, parentNode, node, isHorizontal, defaultStrokeColor, defaultStrokeWidth, defaultStrokeStyle);
 }

@@ -30,7 +30,6 @@ export function drawLinearPath(points: Point[], options?: Options, closePath?: b
     path.setAttribute('fill', `${options?.fill || 'none'}`);
     options?.strokeLineDash && path.setAttribute('stroke-dasharray', `${options.strokeLineDash}`);
     g.appendChild(path);
-
     return g;
 }
 

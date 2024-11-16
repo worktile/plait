@@ -1,21 +1,24 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { MindNode } from '../../../interfaces/node';
 import { PlaitBoard, Point, drawBezierPath, drawLinearPath } from '@plait/core';
-import { getShapeByElement, getRectangleByNode, isChildUp } from '../..';
+import { getShapeByElement, getRectangleByNode, isChildUp, getStrokeStyleByElement } from '../..';
 import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
 import { BranchShape, MindElementShape } from '../../../interfaces/element';
+import { getStrokeLineDash, StrokeStyle } from '@plait/common';
 
 export function drawIndentedLink(
     board: PlaitBoard,
     parent: MindNode,
     child: MindNode,
-    defaultStroke: string | null = null,
     needDrawUnderline = true,
-    defaultStrokeWidth?: number
+    defaultStrokeColor: string | null = null,
+    defaultStrokeWidth?: number,
+    defaultStrokeStyle?: StrokeStyle
 ) {
     const branchShape = getBranchShapeByMindElement(board, parent.origin);
-    const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, parent.origin);
-    const branchColor = defaultStroke || getBranchColorByMindElement(board, child.origin);
+    const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, child.origin);
+    const branchColor = defaultStrokeColor || getBranchColorByMindElement(board, child.origin);
+    const strokeStyle = defaultStrokeStyle || getStrokeStyleByElement(board, child.origin);
 
     const isUnderlineShape = (getShapeByElement(board, child.origin) as MindElementShape) === MindElementShape.underline;
     let beginX,
@@ -46,7 +49,7 @@ export function drawIndentedLink(
         isUnderlineShape && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
         isUnderlineShape && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
     ];
-
+    const strokeLineDash = getStrokeLineDash(strokeStyle, branchWidth);
     if (branchShape === BranchShape.polyline) {
         const polylinePoints = [
             [beginX, beginY],
@@ -55,9 +58,9 @@ export function drawIndentedLink(
             isUnderlineShape && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
         ];
 
-        return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
+        return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth, strokeLineDash });
     }
 
     const points = pointsOnBezierCurves(curve, 0.001);
-    return drawBezierPath(points as Point[], { stroke: branchColor, strokeWidth: branchWidth });
+    return drawBezierPath(points as Point[], { stroke: branchColor, strokeWidth: branchWidth, strokeLineDash });
 }

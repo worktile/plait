@@ -1,15 +1,18 @@
-import { PlaitBoard, Point, createG, drawLinearPath, getRectangleByElements } from '@plait/core';
+import { PlaitBoard, createG, drawLinearPath, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../../interfaces/node';
 import { getRectangleByNode } from '../../position/node';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, getXDistanceBetweenPoint, moveXOfPoint, transformPlacement } from '../../point-placement';
 import { getAbstractBranchColor, getAbstractBranchWidth, getBranchShapeByMindElement } from '../../node-style/branch';
 import { BranchShape } from '../../../interfaces/element';
+import { getStrokeStyleByElement } from '../../node-style';
+import { getStrokeLineDash } from '@plait/common';
 
 export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal: boolean) {
     const linkPadding = 15;
     const branchWidth = getAbstractBranchWidth(board, node.origin);
     const branchColor = getAbstractBranchColor(board, node.origin);
+    const strokeStyle = getStrokeStyleByElement(board, node.origin);
     const parent = node.parent;
     const branchShape = getBranchShapeByMindElement(board, node.origin);
     const abstractRectangle = getRectangleByNode(node);
@@ -36,7 +39,7 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
     bezierEndPoint = moveXOfPoint(bezierEndPoint, linkPadding, linkDirection);
     let c2 = moveXOfPoint(bezierEndPoint, curveDistance, linkDirection);
     let bezierConnectorPoint = moveXOfPoint(abstractConnectorPoint, -linkPadding, linkDirection);
-
+    const strokeLineDash = getStrokeLineDash(strokeStyle, branchWidth);
     if (branchShape === BranchShape.polyline) {
         const g = createG();
         const polyline = drawLinearPath([bezierBeginPoint, c1, bezierConnectorPoint, c2, bezierEndPoint], {
@@ -45,7 +48,8 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
         });
         const straightLine = drawLinearPath([abstractConnectorPoint, bezierConnectorPoint], {
             stroke: branchColor,
-            strokeWidth: branchWidth
+            strokeWidth: branchWidth,
+            strokeLineDash
         });
 
         g.appendChild(polyline);
@@ -58,7 +62,8 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
         `M${bezierBeginPoint[0]},${bezierBeginPoint[1]} Q${c1[0]},${c1[1]} ${bezierConnectorPoint[0]},${bezierConnectorPoint[1]} Q${c2[0]},${c2[1]} ${bezierEndPoint[0]},${bezierEndPoint[1]} M${abstractConnectorPoint[0]},${abstractConnectorPoint[1]} L${bezierConnectorPoint[0]},${bezierConnectorPoint[1]}`,
         {
             stroke: branchColor,
-            strokeWidth: branchWidth
+            strokeWidth: branchWidth,
+            strokeLineDash
         }
     );
     return link;

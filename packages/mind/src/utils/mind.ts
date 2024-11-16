@@ -1,4 +1,4 @@
-import { addSelectedElement, clearSelectedElement, getSelectedElements, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
+import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { editTopic } from './node/common';
 import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './node/create-node';

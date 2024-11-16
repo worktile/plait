@@ -14,7 +14,7 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint } from '@plait/common';
+import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint, getStrokeLineDash } from '@plait/common';
 import {
     ArrowLineHandle,
     ArrowLineMarkerType,
@@ -25,7 +25,7 @@ import {
     PlaitShapeElement,
     StrokeStyle
 } from '../../interfaces';
-import { getLineDashByElement, getStrokeColorByElement } from '../style/stroke';
+import { getStrokeColorByElement, getStrokeStyleByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
@@ -115,7 +115,8 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitArrowLine) => {
 export const drawArrowLine = (board: PlaitBoard, element: PlaitArrowLine) => {
     const strokeWidth = getStrokeWidthByElement(element);
     const strokeColor = getStrokeColorByElement(board, element);
-    const strokeLineDash = getLineDashByElement(element);
+    const strokeStyle = getStrokeStyleByElement(board, element);
+    const strokeLineDash = getStrokeLineDash(strokeStyle, strokeWidth);
     const options = { stroke: strokeColor, strokeWidth, strokeLineDash };
     const lineG = createG();
     let points = getArrowLinePoints(board, element);

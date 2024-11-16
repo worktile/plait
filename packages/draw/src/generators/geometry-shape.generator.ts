@@ -1,6 +1,6 @@
 import { BasicShapes, PlaitGeometry } from '../interfaces';
-import { Generator } from '@plait/common';
-import { getFillByElement, getLineDashByElement, getStrokeColorByElement } from '../utils/style/stroke';
+import { Generator, getStrokeLineDash } from '@plait/common';
+import { getFillByElement, getStrokeColorByElement, getStrokeStyleByElement } from '../utils/style/stroke';
 import { drawGeometry, getStrokeWidthByElement } from '../utils';
 import { RectangleClient } from '@plait/core';
 
@@ -17,10 +17,11 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
         if (shape === BasicShapes.text) {
             return;
         }
+        const fill = getFillByElement(this.board, element);
         const strokeWidth = getStrokeWidthByElement(element);
         const strokeColor = getStrokeColorByElement(this.board, element);
-        const fill = getFillByElement(this.board, element);
-        const strokeLineDash = getLineDashByElement(element);
+        const strokeStyle = getStrokeStyleByElement(this.board, element);
+        const strokeLineDash = getStrokeLineDash(strokeStyle, strokeWidth);
         return drawGeometry(this.board, RectangleClient.inflate(rectangle, -strokeWidth), shape, {
             stroke: strokeColor,
             strokeWidth,

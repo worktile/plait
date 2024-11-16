@@ -4,7 +4,6 @@ export const BASE = 4;
 export const PRIMARY_COLOR = '#6698FF';
 export const GRAY_COLOR = '#AAAAAA';
 export const STROKE_WIDTH = 3;
-export const BRANCH_WIDTH = 3;
 
 export const EXTEND_OFFSET = 8;
 export const EXTEND_DIAMETER = 16;

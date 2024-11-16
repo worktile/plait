@@ -1,23 +1,26 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { MindNode } from '../../../interfaces/node';
-import { PlaitBoard, Point, drawLinearPath } from '@plait/core';
-import { getRectangleByNode, getShapeByElement } from '../..';
+import { PlaitBoard, Point, drawLinearPath, setStrokeLinecap } from '@plait/core';
+import { getRectangleByNode, getShapeByElement, getStrokeStyleByElement } from '../..';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
 import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
 import { BranchShape, MindElementShape } from '../../../interfaces/element';
+import { getStrokeLineDash, StrokeStyle } from '@plait/common';
 
 export function drawLogicLink(
     board: PlaitBoard,
     parent: MindNode,
     node: MindNode,
     isHorizontal: boolean,
-    defaultStroke: string | null = null,
-    defaultStrokeWidth?: number
+    defaultStrokeColor: string | null = null,
+    defaultStrokeWidth?: number,
+    defaultStrokeStyle?: StrokeStyle
 ) {
     const branchShape = getBranchShapeByMindElement(board, parent.origin);
-    const branchColor = defaultStroke || getBranchColorByMindElement(board, node.origin);
-    const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, parent.origin);
+    const branchColor = defaultStrokeColor || getBranchColorByMindElement(board, node.origin);
+    const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, node.origin);
+    const strokeStyle = defaultStrokeStyle || getStrokeStyleByElement(board, node.origin);
     const hasStraightLine = branchShape === BranchShape.polyline ? true : !parent.origin.isRoot;
     const parentShape = getShapeByElement(board, parent.origin);
     const shape = getShapeByElement(board, node.origin);
@@ -64,9 +67,10 @@ export function drawLogicLink(
     // ④ underline shape and horizontal
     const underlineEnd = moveXOfPoint(endPoint, nodeClient.width, linkDirection);
     const underline: Point[] = hasUnderlineShape && isHorizontal ? [underlineEnd, underlineEnd, underlineEnd] : [];
-
     const points = pointsOnBezierCurves([...straightLine, ...curve, ...underline]);
-
+    const strokeLineDash = getStrokeLineDash(strokeStyle, branchWidth);
+    console.log(`strokeStyle: ${strokeStyle}, strokeLineDash: `, strokeLineDash);
+    let linkG: SVGGElement;
     if (branchShape === BranchShape.polyline) {
         const buffer = 8;
         const movePoint = moveXOfPoint(beginPoint2, buffer, linkDirection);
@@ -77,7 +81,12 @@ export function drawLogicLink(
             endPoint,
             ...underline
         ];
-        return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
+        linkG = drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth, strokeLineDash });
+    } else {
+        linkG = PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth, strokeLineDash });
     }
-    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
+    if (strokeStyle === StrokeStyle.dotted) {
+        setStrokeLinecap(linkG, 'round');
+    }
+    return linkG;
 }

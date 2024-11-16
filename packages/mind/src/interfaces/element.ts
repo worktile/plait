@@ -3,7 +3,7 @@ import { isNullOrUndefined, NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, Plai
 import { MindQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
 import { BaseData, EmojiData, ImageData } from './element-data';
-import { MindNodeComponent } from '../mind-node.component';
+import { StrokeStyle } from '@plait/common';
 
 export interface MindElement<T = BaseData> extends PlaitElement {
     data: T;
@@ -18,6 +18,7 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
+    strokeStyle?: StrokeStyle;
     shape?: MindElementShape;
 
     // link style attributes

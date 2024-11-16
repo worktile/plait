@@ -1,9 +1,10 @@
 import { MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, RectangleClient, drawRoundRectangle } from '@plait/core';
-import { getFillByElement, getStrokeByMindElement, getStrokeWidthByElement } from '../node-style/shape';
+import { getFillByElement, getStrokeColorByElement, getStrokeStyleByElement, getStrokeWidthByElement } from '../node-style/shape';
 import { DefaultNodeStyle } from '../../constants/node-style';
 import { MindElement } from '../../interfaces';
+import { getStrokeLineDash } from '@plait/common';
 
 export function drawRoundRectangleByNode(board: PlaitBoard, node: MindNode) {
     const rectangle = getRectangleByNode(node);
@@ -12,8 +13,10 @@ export function drawRoundRectangleByNode(board: PlaitBoard, node: MindNode) {
 
 export function drawRoundRectangleByElement(board: PlaitBoard, nodeRectangle: RectangleClient, element: MindElement) {
     const fill = getFillByElement(board, element);
-    const stroke = getStrokeByMindElement(board, element);
+    const stroke = getStrokeColorByElement(board, element);
     const strokeWidth = getStrokeWidthByElement(board, element);
+    const strokeStyle = getStrokeStyleByElement(board, element);
+    const strokeLineDash = getStrokeLineDash(strokeStyle, strokeWidth);
     const newNodeRectangle = RectangleClient.inflate(nodeRectangle, -strokeWidth);
     const nodeG = drawRoundRectangle(
         PlaitBoard.getRoughSVG(board),
@@ -25,7 +28,8 @@ export function drawRoundRectangleByElement(board: PlaitBoard, nodeRectangle: Re
             stroke,
             strokeWidth,
             fill,
-            fillStyle: 'solid'
+            fillStyle: 'solid',
+            strokeLineDash
         },
         false,
         DefaultNodeStyle.shape.rectangleRadius

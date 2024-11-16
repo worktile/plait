@@ -56,6 +56,7 @@ export interface InheritAttribute {
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
+    strokeStyle?: number;
     shape?: MindElementShape;
     layout?: MindLayoutType;
     branchColor?: string;
@@ -67,6 +68,7 @@ export const INHERIT_ATTRIBUTE_KEYS = [
     'fill',
     'strokeColor',
     'strokeWidth',
+    'strokeStyle',
     'shape',
     'layout',
     'branchColor',
