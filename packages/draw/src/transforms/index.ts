@@ -10,7 +10,7 @@ import {
     setArrowLineTexts
 } from './arrow-line';
 import { addSwimlaneColumn, addSwimlaneRow, removeSwimlaneColumn, removeSwimlaneRow, updateSwimlaneCount } from './swimlane';
-import { setDrawShapeText } from './multi-text-geometry-text';
+import { setDrawTexts } from './multi-text-geometry-text';
 import { setTableText } from './table-text';
 import { setTableFill } from './table';
 import { setVectorLineShape } from './vector-line';
@@ -18,7 +18,7 @@ import { insertDrawByVector } from './common';
 
 export const DrawTransforms = {
     setText,
-    setDrawShapeText,
+    setDrawTexts,
     insertGeometry,
     resizeGeometry,
     insertText,

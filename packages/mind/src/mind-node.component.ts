@@ -55,7 +55,7 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
     collapseGenerator!: CollapseGenerator;
 
     get textManage() {
-        return this.getTextManages()[0];
+        return this.getRef().getTextManages()[0];
     }
 
     constructor() {
@@ -100,10 +100,10 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
             },
             textPlugins: plugins || []
         });
-        this.initializeTextManages([textManage]);
         this.getRef().addGenerator(NodeActiveGenerator.key, this.activeGenerator);
         this.getRef().addGenerator(NodeEmojisGenerator.key, this.nodeEmojisGenerator);
         this.getRef().addGenerator(ImageGenerator.key, this.imageGenerator);
+        this.getRef().initializeTextManage(textManage);
     }
 
     initialize(): void {
@@ -130,7 +130,6 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
         value: PlaitPluginElementContext<MindElement, PlaitMindBoard>,
         previous: PlaitPluginElementContext<MindElement, PlaitMindBoard>
     ) {
-        this.initializeWeakMap();
         const newNode = MindElement.getNode(value.element);
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
@@ -236,6 +235,6 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
         }
-        this.destroyTextManages();
+        this.getRef().destroyTextManage();
     }
 }

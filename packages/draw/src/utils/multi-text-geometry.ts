@@ -1,9 +1,9 @@
-import { Point, RectangleClient, idCreator } from '@plait/core';
-import { GeometryShapes, UMLSymbols, PlaitMultipleTextGeometry, PlaitCommonGeometry } from '../interfaces/geometry';
+import { PlaitElement, Point, RectangleClient, idCreator } from '@plait/core';
+import { GeometryShapes, UMLSymbols, PlaitMultipleTextGeometry } from '../interfaces/geometry';
 import { DefaultTextProperty, GEOMETRY_WITH_MULTIPLE_TEXT, MultipleTextGeometryTextKeys } from '../constants';
 import { getEngine } from '../engines';
 import { getMemorizedLatestByPointer } from './memorize';
-import { PlaitDrawShapeText } from '../generators/text.generator';
+import { DrawTextInfo } from '../generators/text.generator';
 import { GeometryStyleOptions, getDefaultGeometryProperty } from './geometry';
 import { PlaitDrawElement } from '../interfaces';
 import { Alignment, buildText } from '@plait/common';
@@ -12,7 +12,7 @@ export const isMultipleTextShape = (shape: GeometryShapes) => {
     return GEOMETRY_WITH_MULTIPLE_TEXT.includes(shape as UMLSymbols);
 };
 
-export const isMultipleTextGeometry = (geometry: PlaitCommonGeometry): geometry is PlaitMultipleTextGeometry => {
+export const isMultipleTextGeometry = (geometry: PlaitElement): geometry is PlaitMultipleTextGeometry => {
     return PlaitDrawElement.isGeometry(geometry) && isMultipleTextShape(geometry.shape);
 };
 
@@ -26,7 +26,7 @@ export const createMultipleTextGeometryElement = (
     options: GeometryStyleOptions = {}
 ): PlaitMultipleTextGeometry => {
     const id = idCreator();
-    const drawShapeTexts: PlaitDrawShapeText[] = buildDefaultTextsByShape(shape);
+    const drawShapeTexts: DrawTextInfo[] = buildDefaultTextsByShape(shape);
     return {
         id,
         type: 'geometry',
@@ -39,7 +39,7 @@ export const createMultipleTextGeometryElement = (
     };
 };
 
-export const buildDefaultTextsByShape = (shape: GeometryShapes) => {
+export const buildDefaultTextsByShape = (shape: GeometryShapes): DrawTextInfo[] => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const textProperties = { ...memorizedLatest.textProperties };
     const alignment = textProperties?.align;
@@ -51,7 +51,7 @@ export const buildDefaultTextsByShape = (shape: GeometryShapes) => {
     return (textKeys || []).map((textKey: string) => {
         const text = defaultTexts?.find((item: { key: string }) => item?.key === textKey);
         return {
-            key: textKey,
+            id: textKey,
             text: buildText(text?.text || '', alignment || text?.align || Alignment.center, textProperties),
             textHeight: textHeight
         };
@@ -64,7 +64,7 @@ export const getHitMultipleGeometryText = (element: PlaitMultipleTextGeometry, p
     let hitText;
     if (engine.getTextRectangle) {
         hitText = element.texts.find(text => {
-            const textRectangle = engine.getTextRectangle!(element, { key: text.key });
+            const textRectangle = engine.getTextRectangle!(element, { id: text.id });
             return RectangleClient.isHit(rectangle, textRectangle);
         });
     }

@@ -2,13 +2,13 @@ import { PlaitBoard, RectangleClient, Point, createG, drawLine, setStrokeLinecap
 import { Options } from 'roughjs/bin/core';
 import { getCellsWithPoints, getCellWithPoints } from '../../utils/table';
 import { ShapeEngine } from '../../interfaces';
-import { PlaitDrawShapeText } from '../../generators/text.generator';
+import { DrawTextInfo } from '../../generators/text.generator';
 import { PlaitTable, PlaitTableCellWithPoints, PlaitTableDrawOptions, PlaitTableElement } from '../../interfaces/table';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { getNearestPointBetweenPointAndRoundRectangle, getRoundRectangleRadius } from '../basic-shapes/round-rectangle';
 
-export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDrawShapeText> = {
+export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, DrawTextInfo> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {
         const g = createG();
         try {
@@ -56,10 +56,10 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-    getTextRectangle(element: PlaitTable, options?: PlaitDrawShapeText) {
+    getTextRectangle(element: PlaitTable, options?: DrawTextInfo) {
         try {
-            if (options && options.key) {
-                const cell = getCellWithPoints(options?.board!, element, options!.key);
+            if (options && options.id) {
+                const cell = getCellWithPoints(options?.board!, element, options!.id);
                 if (cell) {
                     if (PlaitTableElement.isVerticalText(cell)) {
                         return getVerticalTextRectangle(cell);

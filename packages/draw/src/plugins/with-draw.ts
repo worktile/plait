@@ -21,7 +21,7 @@ import { getArrowLinePoints, getArrowLineTextRectangle } from '../utils/arrow-li
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
-import { withVectorPenCreateByDraw } from './with-vector-pen-create';
+import { withVectorLineCreateByDraw } from './with-vector-line-create';
 import { getVectorLinePoints } from '../utils/vector-line';
 import { withVectorLineResize } from './with-vector-line-resize';
 
@@ -161,7 +161,7 @@ export const withDraw = (board: PlaitBoard) => {
     return withSwimlane(
         withTable(
             withDrawResize(
-                withVectorPenCreateByDraw(
+                withVectorLineCreateByDraw(
                     withArrowLineAutoCompleteReaction(
                         withArrowLineBoundReaction(
                             withVectorLineResize(

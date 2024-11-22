@@ -113,7 +113,7 @@ export function editCell(board: PlaitBoard, cell: PlaitTableCell) {
 }
 
 export function getTextManageByCell(board: PlaitBoard, cell: PlaitTableCell) {
-    return getTextManage(board, cell.id);
+    return getTextManage(board, undefined, cell);
 }
 
 export const updateColumns = (table: PlaitBaseTable, columnId: string, width: number, offset: number) => {

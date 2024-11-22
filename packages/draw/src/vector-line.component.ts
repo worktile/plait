@@ -35,7 +35,6 @@ export class VectorLineComponent extends CommonElementFlavour<PlaitVectorLine, P
         value: PlaitPluginElementContext<PlaitVectorLine, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitVectorLine, PlaitBoard>
     ) {
-        this.initializeWeakMap();
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         const linePoints = getVectorLinePoints(this.board, this.element)!;
         if (value.element !== previous.element || isChangeTheme) {

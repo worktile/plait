@@ -33,7 +33,7 @@ import { createArrowLineElement } from './arrow-line/arrow-line-basic';
 import { ArrowLineMarkerType, ArrowLineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer } from './memorize';
-import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
+import { DrawTextInfo, getTextManage } from '../generators/text.generator';
 import { createUMLClassOrInterfaceGeometryElement } from './uml';
 import { createMultipleTextGeometryElement, isMultipleTextGeometry, isMultipleTextShape } from './multi-text-geometry';
 import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
@@ -359,8 +359,8 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
     }
 };
 
-export const editText = (board: PlaitBoard, element: PlaitGeometry, text?: PlaitDrawShapeText) => {
-    const textManage = text ? getTextManage(board, `${element.id}-${text.key}`)! : getFirstTextManage(element);
+export const editText = (board: PlaitBoard, element: PlaitGeometry, text?: DrawTextInfo) => {
+    const textManage = text ? getTextManage(board, element, text) : getFirstTextManage(element);
     if (textManage) {
         textManage.edit(() => {
             // delay to avoid blinking

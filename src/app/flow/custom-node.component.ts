@@ -14,9 +14,9 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
                 return { x, y, width, height };
             }
         });
-        this.initializeTextManages([this.textManage]);
         this.getRef().addGenerator<NodeActiveGenerator>(NodeActiveGenerator.key, this.nodeActiveGenerator);
         this.getRef().addGenerator<NodeGenerator>(CustomNodeGenerator.key, this.nodeGenerator);
+        this.getRef().initializeTextManage(this.textManage);
     }
 
     initialize(): void {

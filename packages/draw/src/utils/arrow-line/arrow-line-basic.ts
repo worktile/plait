@@ -14,7 +14,7 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint, getStrokeLineDash } from '@plait/common';
+import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint, getStrokeLineDash, StrokeStyle } from '@plait/common';
 import {
     ArrowLineHandle,
     ArrowLineMarkerType,
@@ -22,8 +22,7 @@ import {
     ArrowLineText,
     PlaitArrowLine,
     PlaitDrawElement,
-    PlaitShapeElement,
-    StrokeStyle
+    PlaitShapeElement
 } from '../../interfaces';
 import { getStrokeColorByElement, getStrokeStyleByElement } from '../style/stroke';
 import { getEngine } from '../../engines';

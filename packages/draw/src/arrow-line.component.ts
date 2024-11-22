@@ -32,7 +32,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
     initializeGenerator() {
         this.shapeGenerator = new ArrowLineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
-        this.initializeTextManagesByElement();
+        this.initializeTextManages();
     }
 
     initialize(): void {
@@ -71,7 +71,6 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
         value: PlaitPluginElementContext<PlaitArrowLine, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitArrowLine, PlaitBoard>
     ) {
-        this.initializeWeakMap();
         const boundedElements = this.getBoundedElements();
         const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
@@ -106,23 +105,25 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
         }
     }
 
-    initializeTextManagesByElement() {
+    initializeTextManages() {
         if (this.element.texts?.length) {
             const textManages: TextManage[] = [];
             this.element.texts.forEach((text: ArrowLineText, index: number) => {
                 const manage = this.createTextManage(text, index);
                 textManages.push(manage);
             });
-            this.initializeTextManages(textManages);
+            this.getRef().initializeTextManage(textManages);
         }
     }
 
     drawText() {
         if (this.element.texts?.length) {
-            this.getTextManages().forEach((manage, index) => {
-                manage.draw(this.element.texts![index].text);
-                this.getElementG().append(manage.g);
-            });
+            this.getRef()
+                .getTextManages()
+                .forEach((manage, index) => {
+                    manage.draw(this.element.texts![index].text);
+                    this.getElementG().append(manage.g);
+                });
         }
     }
 
@@ -154,7 +155,7 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
         if (previousTexts === currentTexts) return;
         const previousTextsLength = previousTexts.length;
         const currentTextsLength = currentTexts.length;
-        const textManages = this.getTextManages();
+        const textManages = this.getRef().getTextManages();
         if (currentTextsLength === previousTextsLength) {
             for (let i = 0; i < previousTextsLength; i++) {
                 if (previousTexts[i].text !== currentTexts[i].text) {
@@ -162,14 +163,14 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
                 }
             }
         } else {
-            this.destroyTextManages();
-            this.initializeTextManagesByElement();
+            this.getRef().destroyTextManage();
+            this.initializeTextManages();
             this.drawText();
         }
     }
 
     updateTextRectangle() {
-        const textManages = this.getTextManages();
+        const textManages = this.getRef().getTextManages();
         textManages.forEach(manage => {
             manage.updateRectangle();
         });
@@ -178,6 +179,6 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
     destroy(): void {
         super.destroy();
         this.activeGenerator.destroy();
-        this.destroyTextManages();
+        this.getRef().destroyTextManage();
     }
 }

@@ -1,7 +1,6 @@
 import { PlaitElement, Point } from '@plait/core';
-import { StrokeStyle } from './element';
-import { PlaitDrawShapeText } from '../generators/text.generator';
-import { ParagraphElement } from '@plait/common';
+import { DrawTextInfo } from '../generators/text.generator';
+import { ParagraphElement, StrokeStyle } from '@plait/common';
 
 export enum BasicShapes {
     rectangle = 'rectangle',
@@ -78,7 +77,7 @@ export enum UMLSymbols {
     requiredInterface = 'requiredInterface'
 }
 
-export enum MultipleTextGeometryCommonTextKeys {
+export enum GeometryCommonTextKeys {
     name = 'name',
     content = 'content'
 }
@@ -99,13 +98,12 @@ export interface PlaitCommonGeometry extends PlaitBaseGeometry {
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-
     angle?: number;
     opacity?: number;
 }
 
 export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
-    texts: PlaitDrawShapeText[];
+    texts: DrawTextInfo[];
 }
 
 export interface PlaitGeometry extends PlaitCommonGeometry {

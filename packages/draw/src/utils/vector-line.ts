@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, catmullRomFitting, createG, drawLinearPath, idCreator, setStrokeLinecap } from '@plait/core';
-import { PlaitVectorLine, StrokeStyle, VectorLineShape } from '../interfaces';
+import { PlaitVectorLine, VectorLineShape } from '../interfaces';
 import { getLineMemorizedLatest } from './memorize';
 import { DefaultLineStyle } from '../constants/line';
 import { alignPoints } from './arrow-line';
@@ -7,7 +7,7 @@ import { getStrokeWidthByElement } from './common';
 import { getFillByElement, getStrokeColorByElement, getStrokeStyleByElement } from './style';
 import { VectorLineShapeGenerator } from '../generators/vector-line-generator';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getStrokeLineDash } from '@plait/common';
+import { getStrokeLineDash, StrokeStyle } from '@plait/common';
 
 export const isClosedVectorLine = (vectorLine: PlaitVectorLine) => {
     const points = vectorLine.points;

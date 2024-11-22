@@ -6,15 +6,15 @@ import {
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
-import { MultipleTextGeometryCommonTextKeys, PlaitMultipleTextGeometry, ShapeEngine } from '../../interfaces';
+import { GeometryCommonTextKeys, PlaitMultipleTextGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
-import { PlaitDrawShapeText } from '../../generators/text.generator';
+import { DrawTextInfo } from '../../generators/text.generator';
 
-export const CombinedFragmentEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, PlaitDrawShapeText> = {
+export const CombinedFragmentEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, DrawTextInfo> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
@@ -53,11 +53,11 @@ export const CombinedFragmentEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, 
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-    getTextRectangle(element: PlaitMultipleTextGeometry, options?: PlaitDrawShapeText) {
+    getTextRectangle(element: PlaitMultipleTextGeometry, options?: DrawTextInfo) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const textHeight = element.texts?.find(item => item.key === options?.key)?.textHeight!;
-        if (options?.key === MultipleTextGeometryCommonTextKeys.name) {
+        const textHeight = element.texts?.find(item => item.id === options?.id)?.textHeight!;
+        if (options?.id === GeometryCommonTextKeys.name) {
             const width = elementRectangle.width / 3 - 8 - ShapeDefaultSpace.rectangleAndText - strokeWidth;
             return {
                 height: textHeight,
@@ -66,7 +66,7 @@ export const CombinedFragmentEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, 
                 y: elementRectangle.y + (25 - textHeight) / 2
             };
         }
-        if (options?.key === MultipleTextGeometryCommonTextKeys.content) {
+        if (options?.id === GeometryCommonTextKeys.content) {
             const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
             return {
                 height: textHeight,

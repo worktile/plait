@@ -7,14 +7,14 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { getUnitVectorByPointAndPoint } from '@plait/common';
-import { MultipleTextGeometryCommonTextKeys, PlaitMultipleTextGeometry, ShapeEngine } from '../../interfaces';
+import { GeometryCommonTextKeys, PlaitMultipleTextGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
-import { PlaitDrawShapeText } from '../../generators/text.generator';
+import { DrawTextInfo } from '../../generators/text.generator';
 
-export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, PlaitDrawShapeText> = {
+export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, DrawTextInfo> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
@@ -65,11 +65,11 @@ export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, PlaitDraw
         }
         return getUnitVectorByPointAndPoint([rectangle.x + rectangle.width * 0.8, rectangle.y + 25], connectionPoint);
     },
-    getTextRectangle(element: PlaitMultipleTextGeometry, options?: PlaitDrawShapeText) {
+    getTextRectangle(element: PlaitMultipleTextGeometry, options?: DrawTextInfo) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const textHeight = element.texts?.find(item => item.key === options?.key)?.textHeight!;
-        if (options?.key === MultipleTextGeometryCommonTextKeys.name) {
+        const textHeight = element.texts?.find(item => item.id === options?.id)?.textHeight!;
+        if (options?.id === GeometryCommonTextKeys.name) {
             const width = elementRectangle.width * 0.7 - ShapeDefaultSpace.rectangleAndText - strokeWidth;
             return {
                 height: textHeight,
@@ -78,7 +78,7 @@ export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, PlaitDraw
                 y: elementRectangle.y + (25 - textHeight) / 2
             };
         }
-        if (options?.key === MultipleTextGeometryCommonTextKeys.content) {
+        if (options?.id === GeometryCommonTextKeys.content) {
             const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
             return {
                 height: textHeight,

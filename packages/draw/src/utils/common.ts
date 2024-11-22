@@ -23,12 +23,11 @@ import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, Shape
 import {
     DrawShapes,
     EngineExtraData,
-    MultipleTextGeometryCommonTextKeys,
+    GeometryCommonTextKeys,
     PlaitBaseGeometry,
     PlaitCommonGeometry,
     PlaitDrawElement,
     PlaitGeometry,
-    PlaitMultipleTextGeometry,
     PlaitShapeElement
 } from '../interfaces';
 import { Alignment, getTextEditorsByElement } from '@plait/common';
@@ -42,7 +41,7 @@ import { isHitEdgeOfShape, isInsideOfShape } from './hit';
 import { getHitConnectorPoint } from './arrow-line';
 import { getNearestPoint, isGeometryClosed, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
 import { isMultipleTextGeometry } from './multi-text-geometry';
-import { PlaitDrawShapeText } from '../generators/text.generator';
+import { DrawTextInfo } from '../generators/text.generator';
 import { isClosedVectorLine } from '.';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
@@ -223,19 +222,17 @@ export const drawBoundReaction = (
     return g;
 };
 
-export const getTextKey = <T extends PlaitElement = PlaitGeometry>(element: T, text: PlaitDrawShapeText) => {
-    if (isMultipleTextGeometry((element as unknown) as PlaitCommonGeometry)) {
-        return `${element.id}-${text.key}`;
+export const getTextKey = (element: PlaitElement | undefined, text: Pick<DrawTextInfo, 'id'>) => {
+    if (element && isMultipleTextGeometry(element)) {
+        return `${element.id}-${text.id}`;
     } else {
-        return text.key;
+        return text.id;
     }
 };
 
 export const getGeometryAlign = (board: PlaitBoard, element: PlaitCommonGeometry | PlaitBaseTable) => {
-    if (isMultipleTextGeometry(element as PlaitCommonGeometry)) {
-        const drawShapeText = (element as PlaitMultipleTextGeometry).texts.find(item =>
-            item.key.includes(MultipleTextGeometryCommonTextKeys.content)
-        );
+    if (isMultipleTextGeometry(element)) {
+        const drawShapeText = element.texts.find(item => item.id.includes(GeometryCommonTextKeys.content));
         return drawShapeText?.text.align || Alignment.center;
     }
     if (isSingleTextGeometry(element as PlaitCommonGeometry)) {

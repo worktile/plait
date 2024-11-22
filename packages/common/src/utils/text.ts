@@ -2,17 +2,19 @@ import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
 import { Editor, Node, Element } from 'slate';
 import { TextManage } from '../text/text-manage';
 import { Alignment, CustomText, ParagraphElement } from '../text/types';
+import { PlaitCommonElementRef } from '../core';
 
 export interface TextInterface {
     getTextEditors: (board: PlaitBoard, elements?: PlaitElement[]) => Editor[] | undefined;
     findFirstTextEditor: (board: PlaitBoard) => null;
     getFirstTextEditor: (element: PlaitElement) => Editor;
     getTextEditorsByElement: (element: PlaitElement) => Editor[];
-    getEditingTextEditor: (board: PlaitBoard, elements?: PlaitElement[]) => Editor | undefined
+    getEditingTextEditor: (board: PlaitBoard, elements?: PlaitElement[]) => Editor | undefined;
 }
 
 export const getTextManages = (element: PlaitElement) => {
-    return ELEMENT_TO_TEXT_MANAGES.get(element) || [];
+    const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
+    return ref?.getTextManages() || [];
 };
 
 export const getFirstTextManage = (element: PlaitElement) => {
@@ -120,5 +122,3 @@ export const getLineHeightByFontSize = (fontSize: number) => {
     }
     return fontSize * 1.5;
 };
-
-export const ELEMENT_TO_TEXT_MANAGES: WeakMap<PlaitElement, TextManage[]> = new WeakMap();

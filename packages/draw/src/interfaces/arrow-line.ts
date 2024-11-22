@@ -1,8 +1,8 @@
 import { Direction, PlaitBoard, PlaitElement, Point, PointOfRectangle, Vector, getElementById, rotatePointsByElement } from '@plait/core';
 import { Element } from 'slate';
-import { StrokeStyle } from './element';
 import { getConnectionPoint } from '../utils/arrow-line/arrow-line-common';
 import { PlaitShapeElement } from '.';
+import { StrokeStyle } from '@plait/common';
 
 export enum ArrowLineMarkerType {
     arrow = 'arrow',

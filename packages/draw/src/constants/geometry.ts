@@ -1,5 +1,5 @@
 import { ACTIVE_STROKE_WIDTH, DEFAULT_COLOR } from '@plait/core';
-import { BasicShapes, FlowchartSymbols, GeometryShapes, MultipleTextGeometryCommonTextKeys, UMLSymbols } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, GeometryCommonTextKeys, UMLSymbols } from '../interfaces';
 import { Alignment, DEFAULT_FILL } from '@plait/common';
 
 export const ShapeDefaultSpace = {
@@ -125,12 +125,12 @@ export const DefaultPackageProperty = {
     height: 150,
     texts: [
         {
-            key: MultipleTextGeometryCommonTextKeys.name,
+            id: GeometryCommonTextKeys.name,
             text: '包名',
             align: Alignment.left
         },
         {
-            key: MultipleTextGeometryCommonTextKeys.content,
+            id: GeometryCommonTextKeys.content,
             text: '',
             align: Alignment.left
         }
@@ -182,12 +182,12 @@ export const DefaultCombinedFragmentProperty = {
     height: 280,
     texts: [
         {
-            key: MultipleTextGeometryCommonTextKeys.name,
+            id: GeometryCommonTextKeys.name,
             text: 'Opt | Alt | Loop',
             align: Alignment.left
         },
         {
-            key: MultipleTextGeometryCommonTextKeys.content,
+            id: GeometryCommonTextKeys.content,
             text: '[Condition]',
             align: Alignment.left
         }
@@ -283,8 +283,8 @@ export const DefaultUMLPropertyMap = {
 };
 
 export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] } = {
-    [UMLSymbols.package]: Object.keys(MultipleTextGeometryCommonTextKeys),
-    [UMLSymbols.combinedFragment]: Object.keys(MultipleTextGeometryCommonTextKeys)
+    [UMLSymbols.package]: Object.keys(GeometryCommonTextKeys),
+    [UMLSymbols.combinedFragment]: Object.keys(GeometryCommonTextKeys)
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;

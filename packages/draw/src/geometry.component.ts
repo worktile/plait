@@ -13,7 +13,7 @@ import { DrawTransforms } from './transforms';
 import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, canResize } from '@plait/common';
 import { ArrowLineAutoCompleteGenerator } from './generators/arrow-line-auto-complete.generator';
 import { getTextRectangle, isGeometryIncludeText, isMultipleTextGeometry, memorizeLatestText } from './utils';
-import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
+import { DrawTextInfo, TextGenerator } from './generators/text.generator';
 import { SingleTextGenerator } from './generators/single-text.generator';
 import { PlaitText } from './interfaces';
 import { GeometryThreshold } from './constants';
@@ -123,11 +123,11 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
     }
 
     initializeTextManage() {
-        const onTextChange = (element: PlaitCommonGeometry, textManageChangeData: TextManageChangeData, text: PlaitDrawShapeText) => {
+        const onTextChange = (element: PlaitCommonGeometry, textManageChangeData: TextManageChangeData, text: DrawTextInfo) => {
             if (textManageChangeData.newText) {
                 if (isMultipleTextGeometry(element)) {
-                    DrawTransforms.setDrawShapeText(this.board, element, {
-                        key: text.key,
+                    DrawTransforms.setDrawTexts(this.board, element, {
+                        id: text.id,
                         text: textManageChangeData.newText,
                         textHeight: textManageChangeData.height
                     });

@@ -9,10 +9,10 @@ import {
 } from '@plait/core';
 import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, canResize } from '@plait/common';
 import { PlaitTable, PlaitTableBoard, PlaitTableCell, PlaitTableElement } from './interfaces/table';
-import { getTextManage, PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
+import { DrawTextInfo, TextGenerator } from './generators/text.generator';
 import { TableGenerator } from './generators/table.generator';
 import { DrawTransforms } from './transforms';
-import { getCellWithPoints, isCellIncludeText } from './utils/table';
+import { getCellWithPoints, getTextManageByCell, isCellIncludeText } from './utils/table';
 import {
     clearSelectedCells,
     getCellsRectangle,
@@ -88,7 +88,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         const table = (this.board as PlaitTableBoard).buildTable(this.element);
         table.cells.forEach(item => {
             if (PlaitTableElement.isVerticalText(item)) {
-                const textManage = getTextManage(this.board, item.id);
+                const textManage = getTextManageByCell(this.board, item);
                 if (textManage) {
                     const engine = getEngine<PlaitTable>(TableSymbols.table);
                     const rectangle = engine.getTextRectangle!(this.element, { key: item.id, board: this.board });
@@ -99,12 +99,12 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         });
     }
 
-    getDrawShapeTexts(cells: PlaitTableCell[]): PlaitDrawShapeText[] {
+    getDrawShapeTexts(cells: PlaitTableCell[]): DrawTextInfo[] {
         return cells
             .filter(item => isCellIncludeText(item))
             .map(item => {
                 return {
-                    key: item.id,
+                    id: item.id,
                     text: item.text!,
                     textHeight: item.textHeight!,
                     board: this.board
@@ -115,15 +115,15 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
     initializeTextManage() {
         const texts = this.getDrawShapeTexts(this.element.cells);
         this.textGenerator = new TextGenerator(this.board, this.element, texts, {
-            onChange: (value: PlaitTable, data: TextManageChangeData, text: PlaitDrawShapeText) => {
+            onChange: (value: PlaitTable, data: TextManageChangeData, text: DrawTextInfo) => {
                 const path = PlaitBoard.findPath(this.board, value);
                 if (data.newText) {
-                    DrawTransforms.setTableText(this.board, path, text.key, data.newText, data.height);
+                    DrawTransforms.setTableText(this.board, path, text.id, data.newText, data.height);
                 }
                 data.operations && memorizeLatestText(value, data.operations);
             },
-            getRenderRectangle: (value: PlaitTable, text: PlaitDrawShapeText) => {
-                const cell = getCellWithPoints(this.board, value, text.key);
+            getRenderRectangle: (value: PlaitTable, text: DrawTextInfo) => {
+                const cell = getCellWithPoints(this.board, value, text.id);
                 if (PlaitTableElement.isVerticalText(cell)) {
                     const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
                     const strokeWidth = getStrokeWidthByElement(cell);
