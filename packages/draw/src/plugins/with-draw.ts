@@ -16,7 +16,7 @@ import { withArrowLineAutoCompleteReaction } from './with-arrow-line-auto-comple
 import { withArrowLineAutoComplete } from './with-arrow-line-auto-complete';
 import { withArrowLineTextMove } from './with-arrow-line-text-move';
 import { withDrawResize } from './with-draw-resize';
-import { getDrawHitElement, isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
+import { getHitDrawElement, isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getArrowLinePoints, getArrowLineTextRectangle } from '../utils/arrow-line/arrow-line-basic';
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
@@ -95,9 +95,9 @@ export const withDraw = (board: PlaitBoard) => {
     };
 
     board.getHitElement = elements => {
-        const isDrawElements = elements.every(item => PlaitDrawElement.isDrawElement(item));
-        if (isDrawElements) {
-            return getDrawHitElement(board, elements as PlaitDrawElement[]);
+        const isAllDrawElements = elements.every(item => PlaitDrawElement.isDrawElement(item));
+        if (isAllDrawElements) {
+            return getHitDrawElement(board, elements as PlaitDrawElement[]);
         }
         return getHitElement(elements);
     };

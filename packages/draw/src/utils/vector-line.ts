@@ -9,13 +9,6 @@ import { VectorLineShapeGenerator } from '../generators/vector-line-generator';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { getStrokeLineDash, StrokeStyle } from '@plait/common';
 
-export const isClosedVectorLine = (vectorLine: PlaitVectorLine) => {
-    const points = vectorLine.points;
-    const startPoint = points[0];
-    const endPoint = points[points.length - 1];
-    return startPoint[0] === endPoint[0] && startPoint[1] === endPoint[1];
-};
-
 export const getVectorLinePoints = (board: PlaitBoard, element: PlaitVectorLine) => {
     switch (element.shape) {
         case VectorLineShape.straight: {

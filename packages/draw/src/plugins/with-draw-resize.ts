@@ -57,7 +57,10 @@ export function withDrawResize(board: PlaitBoard) {
 
     const canResize = () => {
         const elements = getSelectedElements(board);
-        return elements.length > 1 && elements.every(el => PlaitDrawElement.isDrawElement(el));
+        return (
+            elements.length > 1 &&
+            elements.every(el => PlaitDrawElement.isDrawElement(el) || PlaitDrawElement.isCustomGeometryElement(board, el))
+        );
     };
 
     const options: WithResizeOptions<PlaitDrawElement[]> = {
@@ -179,14 +182,14 @@ export function withDrawResize(board: PlaitBoard) {
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
-                    if (isGeometryIncludeText(target)) {
+                    if (PlaitDrawElement.isGeometry(target) && isGeometryIncludeText(target)) {
                         const { height: textHeight } = getFirstTextManage(target).getSize();
                         DrawTransforms.resizeGeometry(board, points as [Point, Point], textHeight, path);
                     } else {
                         points = normalizeShapePoints(points as [Point, Point]);
                         Transforms.setNode(board, { points }, path);
                     }
-                } else if (PlaitDrawElement.isArrowLine(target)) {
+                } else if (PlaitDrawElement.isArrowLine(target) || PlaitDrawElement.isCustomGeometryElement(board, target) || PlaitDrawElement.isVectorLine(target)) {
                     Transforms.setNode(board, { points }, path);
                 } else if (PlaitDrawElement.isImage(target)) {
                     if (isAspectRatio) {

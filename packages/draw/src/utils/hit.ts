@@ -12,17 +12,25 @@ import {
     rotateAntiPointsByElement,
     isPointInPolygon
 } from '@plait/core';
-import { PlaitArrowLine, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement, PlaitVectorLine } from '../interfaces';
+import {
+    PlaitArrowLine,
+    PlaitCommonGeometry,
+    PlaitCustomGeometry,
+    PlaitDrawElement,
+    PlaitGeometry,
+    PlaitShapeElement,
+    PlaitVectorLine
+} from '../interfaces';
 import { getNearestPoint } from './geometry';
 import { getArrowLinePoints } from './arrow-line/arrow-line-basic';
 import { getFillByElement } from './style/stroke';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { getHitArrowLineTextIndex } from './position/arrow-line';
-import { getTextRectangle, isDrawElementClosed } from './common';
+import { getTextRectangle, isClosedPoints, isCustomGeometryClosed, isDrawElementClosed } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { isFilled, sortElementsByArea } from '@plait/common';
-import { getVectorLinePoints, isClosedVectorLine } from './vector-line';
+import { getVectorLinePoints } from './vector-line';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -49,7 +57,7 @@ export const isHitArrowLine = (board: PlaitBoard, element: PlaitArrowLine, point
 
 export const isHitVectorLine = (board: PlaitBoard, element: PlaitVectorLine, point: Point) => {
     const points = getVectorLinePoints(board, element)!;
-    if (isClosedVectorLine(element)) {
+    if (isClosedPoints(element.points)) {
         return isPointInPolygon(point, points) || isHitPolyLine(points, point);
     } else {
         return isHitPolyLine(points, point);
@@ -121,7 +129,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     return null;
 };
 
-export const getDrawHitElement = (board: PlaitBoard, elements: PlaitDrawElement[]) => {
+export const getHitDrawElement = (board: PlaitBoard, elements: (PlaitDrawElement | PlaitCustomGeometry)[]) => {
     let firstFilledElement = getFirstFilledDrawElement(board, elements);
     let endIndex = elements.length;
     if (firstFilledElement) {
@@ -136,11 +144,11 @@ export const getDrawHitElement = (board: PlaitBoard, elements: PlaitDrawElement[
     return sortElements[0];
 };
 
-export const getFirstFilledDrawElement = (board: PlaitBoard, elements: PlaitDrawElement[]) => {
-    let filledElement: PlaitGeometry | null = null;
+export const getFirstFilledDrawElement = (board: PlaitBoard, elements: (PlaitDrawElement | PlaitCustomGeometry)[]) => {
+    let filledElement: PlaitGeometry | PlaitCustomGeometry | null = null;
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
-        if (isDrawElementClosed(element)) {
+        if (isCustomGeometryClosed(board, element) || isDrawElementClosed(element)) {
             const fill = getFillByElement(board, element);
             if (isFilled(fill)) {
                 filledElement = element as PlaitGeometry;
@@ -151,7 +159,7 @@ export const getFirstFilledDrawElement = (board: PlaitBoard, elements: PlaitDraw
     return filledElement;
 };
 
-export const getFirstTextOrLineElement = (elements: PlaitDrawElement[]) => {
+export const getFirstTextOrLineElement = (elements: PlaitElement[]) => {
     const texts = elements.filter(item => PlaitDrawElement.isText(item));
     if (texts.length) {
         return texts[0];

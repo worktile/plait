@@ -285,7 +285,7 @@ export const getDrawDefaultStrokeColor = (theme: ThemeColorMode) => {
     return DrawThemeColors[theme].strokeColor;
 };
 
-export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
+export const getDefaultFill = (theme: ThemeColorMode) => {
     return DrawThemeColors[theme].fill;
 };
 

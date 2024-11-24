@@ -1,10 +1,10 @@
-import { isClosedVectorLine } from './../utils/vector-line';
 import { Path, PlaitBoard, Point, Transforms, distanceBetweenPointAndPoint } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
 import { getSelectedVectorLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { PlaitVectorLine } from '../interfaces';
 import { LINE_HIT_GEOMETRY_BUFFER } from '../constants';
+import { isClosedPoints } from '../utils';
 
 export const withVectorLineResize = (board: PlaitBoard) => {
     const options: WithResizeOptions<PlaitVectorLine, LineResizeHandle> = {
@@ -36,7 +36,7 @@ export const withVectorLineResize = (board: PlaitBoard) => {
             let handleIndex = resizeRef.handleIndex!;
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 points[handleIndex] = resizeState.endPoint;
-                if (isClosedVectorLine(resizeRef.element)) {
+                if (isClosedPoints(resizeRef.element.points)) {
                     points[points.length - 1] = resizeState.endPoint;
                 } else {
                     const targetPoint = resizeRef.handle === LineResizeHandle.source ? points[points.length - 1] : points[0];

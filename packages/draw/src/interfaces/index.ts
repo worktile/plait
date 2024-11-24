@@ -1,4 +1,11 @@
-import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitBaseGeometry, PlaitGeometry, UMLSymbols } from './geometry';
+import {
+    BasicShapes,
+    FlowchartSymbols,
+    GeometryShapes,
+    PlaitCustomGeometry,
+    PlaitGeometry,
+    UMLSymbols
+} from './geometry';
 import { PlaitImage } from './image';
 import { PlaitArrowLine } from './arrow-line';
 import { PlaitSwimlane, SwimlaneSymbols } from './swimlane';
@@ -6,6 +13,9 @@ import { PlaitBaseTable, PlaitTable, PlaitTableElement, TableSymbols } from './t
 import { PlaitText } from './text';
 import { PlaitVectorLine } from './vector-line';
 import { PlaitLine } from './line';
+import { PlaitBoard, PlaitOptionsBoard } from '@plait/core';
+import { WithDrawOptions } from './options';
+import { WithDrawPluginKey } from '../constants/default';
 
 export * from './arrow-line';
 export * from './geometry';
@@ -15,6 +25,7 @@ export * from './engine';
 export * from './swimlane';
 export * from './table';
 export * from './vector-line';
+export * from './options';
 
 export type PlaitDrawElement = PlaitGeometry | PlaitArrowLine | PlaitVectorLine | PlaitImage | PlaitBaseTable | PlaitSwimlane;
 
@@ -52,6 +63,15 @@ export const PlaitDrawElement = {
             PlaitDrawElement.isTable(value) ||
             PlaitDrawElement.isSwimlane(value)
         ) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    isCustomGeometryElement: (board: PlaitBoard, value: any): value is PlaitCustomGeometry => {
+        const options = (board as PlaitOptionsBoard).getPluginOptions<WithDrawOptions | undefined>(WithDrawPluginKey);
+        const customGeometryTypes = options?.customGeometryTypes || [];
+        if (customGeometryTypes.includes(value.type)) {
             return true;
         } else {
             return false;

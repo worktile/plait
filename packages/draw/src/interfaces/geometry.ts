@@ -86,13 +86,15 @@ export type GeometryShapes = BasicShapes | FlowchartSymbols | UMLSymbols;
 
 export type SwimlaneDirection = 'horizontal' | 'vertical';
 
-export interface PlaitBaseGeometry extends PlaitElement {
-    type: 'geometry';
-    points: [Point, Point];
-    shape: GeometryShapes;
+export interface PlaitBaseGeometry<T extends string = 'geometry', P extends Point[] = [Point, Point], S extends string = GeometryShapes>
+    extends PlaitElement {
+    type: T;
+    points: P;
+    shape: S;
 }
 
-export interface PlaitCommonGeometry extends PlaitBaseGeometry {
+export interface PlaitCommonGeometry<T extends string = 'geometry', P extends Point[] = [Point, Point], S extends string = GeometryShapes>
+    extends PlaitBaseGeometry<T, P, S> {
     // node style attributes
     fill?: string;
     strokeColor?: string;
@@ -101,6 +103,9 @@ export interface PlaitCommonGeometry extends PlaitBaseGeometry {
     angle?: number;
     opacity?: number;
 }
+
+export interface PlaitCustomGeometry<T extends string = string, P extends Point[] = Point[], S extends string = string>
+    extends PlaitBaseGeometry<T, P, S> {}
 
 export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
     texts: DrawTextInfo[];

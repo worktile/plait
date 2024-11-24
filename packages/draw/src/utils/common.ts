@@ -26,6 +26,7 @@ import {
     GeometryCommonTextKeys,
     PlaitBaseGeometry,
     PlaitCommonGeometry,
+    PlaitCustomGeometry,
     PlaitDrawElement,
     PlaitGeometry,
     PlaitShapeElement
@@ -42,7 +43,6 @@ import { getHitConnectorPoint } from './arrow-line';
 import { getNearestPoint, isGeometryClosed, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { DrawTextInfo } from '../generators/text.generator';
-import { isClosedVectorLine } from '.';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
@@ -105,14 +105,17 @@ export const isDrawElementClosed = (element: PlaitDrawElement) => {
     }
 
     if (PlaitDrawElement.isVectorLine(element)) {
-        return isClosedVectorLine(element);
+        return isClosedPoints(element.points);
     }
 
     if (PlaitDrawElement.isGeometry(element)) {
         return isGeometryClosed(element);
     }
-
     return true;
+};
+
+export const isCustomGeometryClosed = (board: PlaitBoard, value: PlaitElement): value is PlaitCustomGeometry => {
+    return PlaitDrawElement.isCustomGeometryElement(board, value) && isClosedPoints(value.points);
 };
 
 export const getSnappingShape = (board: PlaitBoard, point: Point): PlaitShapeElement | null => {
@@ -244,4 +247,10 @@ export const getGeometryAlign = (board: PlaitBoard, element: PlaitCommonGeometry
         return firstTextCell?.text?.align || Alignment.center;
     }
     return Alignment.center;
+};
+
+export const isClosedPoints = (points: Point[]) => {
+    const startPoint = points[0];
+    const endPoint = points[points.length - 1];
+    return startPoint[0] === endPoint[0] && startPoint[1] === endPoint[1];
 };
