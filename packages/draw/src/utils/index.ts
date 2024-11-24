@@ -13,3 +13,4 @@ export * from './table-selected';
 export * from './swimlane';
 export * from './line';
 export * from './vector-line';
+export * from './clipboard';

@@ -61,7 +61,7 @@ export function getElementById<T extends PlaitElement = PlaitElement>(
     id: string,
     dataSource?: PlaitElement[]
 ): T | undefined {
-    const cachedElement = getElementMap(board).get(id);
+    const cachedElement = !dataSource && getElementMap(board).get(id);
     if (cachedElement) {
         return cachedElement as T;
     }

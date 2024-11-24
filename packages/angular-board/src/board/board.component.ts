@@ -82,7 +82,6 @@ import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { withAngular } from '../plugins/with-angular';
 import { withImage, withText } from '@plait/common';
 import { OnChangeData } from '../plugins/angular-board';
-import { VectorPenPointerType } from '@plait/draw';
 
 const ElementLowerHostClass = 'element-lower-host';
 const ElementHostClass = 'element-host';
