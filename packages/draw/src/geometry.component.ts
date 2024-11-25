@@ -84,8 +84,7 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
         value: PlaitPluginElementContext<PlaitCommonGeometry, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitCommonGeometry, PlaitBoard>
     ) {
-        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-        if (value.element !== previous.element || isChangeTheme) {
+        if (value.element !== previous.element || value.hasThemeChanged) {
             this.shapeGenerator.processDrawing(this.element as PlaitGeometry, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getElementActiveHost(this.board), {

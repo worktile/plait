@@ -44,7 +44,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
         canAddToGroup,
         canSetZIndex,
         isExpanded,
-        getHitElement
+        getOneHitElement
     } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
@@ -115,12 +115,12 @@ export const withMind = (baseBoard: PlaitBoard) => {
         return isHit(element, point);
     };
 
-    board.getHitElement = elements => {
-        const isMindElements = elements.every(item => MindElement.isMindElement(board, item));
-        if (isMindElements) {
+    board.getOneHitElement = elements => {
+        const isAllMindElements = elements.every(item => MindElement.isMindElement(board, item));
+        if (isAllMindElements) {
             return elements[0];
         }
-        return getHitElement(elements);
+        return getOneHitElement(elements);
     };
 
     board.isMovable = element => {

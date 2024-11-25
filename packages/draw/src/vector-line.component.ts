@@ -35,9 +35,8 @@ export class VectorLineComponent extends CommonElementFlavour<PlaitVectorLine, P
         value: PlaitPluginElementContext<PlaitVectorLine, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitVectorLine, PlaitBoard>
     ) {
-        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         const linePoints = getVectorLinePoints(this.board, this.element)!;
-        if (value.element !== previous.element || isChangeTheme) {
+        if (value.element !== previous.element || value.hasThemeChanged) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected,

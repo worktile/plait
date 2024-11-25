@@ -6,6 +6,7 @@ export interface PlaitPluginElementContext<T extends PlaitElement = PlaitElement
     selected: boolean;
     board: K;
     index: number;
+    hasThemeChanged: boolean;
 }
 
 export interface PlaitChildrenContext<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard> {

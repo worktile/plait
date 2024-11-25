@@ -165,7 +165,8 @@ const getContext = (
         parent: parent,
         board: board,
         selected: isSelected,
-        index
+        index,
+        hasThemeChanged: !!board.operations?.find(op => op.type === 'set_theme')
     };
     return context;
 };

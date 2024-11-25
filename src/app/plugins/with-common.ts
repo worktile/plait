@@ -9,20 +9,20 @@ import { getFillByElement as getMindFillByElement } from '@plait/mind';
 export const withCommonPlugin = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitImageBoard & AngularBoard;
 
-    const { getHitElement } = newBoard;
+    const { getOneHitElement } = newBoard;
 
     newBoard.renderImage = (container: Element | DocumentFragment, props: ImageProps) => {
         const { ref } = newBoard.renderComponent(PlaitImageComponent, container, props);
         return ref;
     };
 
-    newBoard.getHitElement = (elements: PlaitElement[]) => {
+    newBoard.getOneHitElement = (elements: PlaitElement[]) => {
         const hasMindElements = elements.some(item => MindElement.isMindElement(board, item));
         const hasDrawElements = elements.some(item => PlaitDrawElement.isDrawElement(item));
         if (hasMindElements && hasDrawElements) {
             return getCommonHitElement(board, elements);
         }
-        return getHitElement(elements);
+        return getOneHitElement(elements);
     };
 
     return board;

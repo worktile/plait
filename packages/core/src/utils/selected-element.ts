@@ -91,7 +91,7 @@ export const getHitElementByPoint = (
     match: (element: PlaitElement) => boolean = () => true
 ): undefined | PlaitElement => {
     const pointHitElements = getHitElementsByPoint(board, point, match);
-    const hitElement = board.getHitElement(pointHitElements);
+    const hitElement = board.getOneHitElement(pointHitElements);
     return hitElement;
 };
 

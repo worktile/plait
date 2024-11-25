@@ -35,7 +35,7 @@ export const withDraw = (board: PlaitBoard) => {
         isMovable,
         isAlign,
         getRelatedFragment,
-        getHitElement
+        getOneHitElement
     } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
@@ -94,12 +94,12 @@ export const withDraw = (board: PlaitBoard) => {
         return isHit(element, point);
     };
 
-    board.getHitElement = elements => {
+    board.getOneHitElement = elements => {
         const isAllDrawElements = elements.every(item => PlaitDrawElement.isDrawElement(item));
         if (isAllDrawElements) {
             return getHitDrawElement(board, elements as PlaitDrawElement[]);
         }
-        return getHitElement(elements);
+        return getOneHitElement(elements);
     };
 
     board.isInsidePoint = (element: PlaitElement, point: Point) => {

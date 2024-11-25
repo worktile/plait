@@ -133,8 +133,7 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
         const newNode = MindElement.getNode(value.element);
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
-        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-        if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
+        if (!isEqualNode || value.element !== previous.element || value.hasThemeChanged) {
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected
             });

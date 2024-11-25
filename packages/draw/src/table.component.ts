@@ -144,8 +144,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
     }
 
     onContextChanged(value: PlaitPluginElementContext<T, PlaitBoard>, previous: PlaitPluginElementContext<T, PlaitBoard>) {
-        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-        if (value.element !== previous.element || isChangeTheme) {
+        if (value.element !== previous.element || value.hasThemeChanged) {
             const previousSelectedCells = getSelectedCells(previous.element);
             if (previousSelectedCells?.length) {
                 clearSelectedCells(previous.element);

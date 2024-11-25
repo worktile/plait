@@ -75,9 +75,8 @@ export class ArrowLineComponent extends CommonElementFlavour<PlaitArrowLine, Pla
         const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
         this.boundedElements = boundedElements;
-        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         const linePoints = getArrowLinePoints(this.board, this.element);
-        if (value.element !== previous.element || isChangeTheme) {
+        if (value.element !== previous.element || value.hasThemeChanged) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected,
