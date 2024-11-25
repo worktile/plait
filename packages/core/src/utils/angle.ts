@@ -68,7 +68,11 @@ export const rotatedDataPoints = (points: Point[], rotateCenterPoint: Point, ang
 };
 
 export const hasValidAngle = (node: PlaitElement) => {
-    return node.angle && node.angle !== 0;
+    return isValidAngle(node.angle);
+};
+
+export const isValidAngle = (angle: undefined | number) => {
+    return angle && angle !== 0;
 };
 
 export const rotatePointsByElement = <T>(points: T, element: PlaitElement): T | null => {
@@ -76,6 +80,16 @@ export const rotatePointsByElement = <T>(points: T, element: PlaitElement): T | 
         let rectangle = RectangleClient.getRectangleByPoints(element.points!);
         const centerPoint = RectangleClient.getCenterPoint(rectangle);
         return rotatePoints(points, centerPoint, element.angle);
+    } else {
+        return null;
+    }
+};
+
+export const rotatePointsByAngle = (points: Point[], angle: number | undefined): Point[] | null => {
+    if (isValidAngle(angle)) {
+        let rectangle = RectangleClient.getRectangleByPoints(points);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        return rotatePoints(points, centerPoint, angle);
     } else {
         return null;
     }
