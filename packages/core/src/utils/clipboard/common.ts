@@ -81,6 +81,14 @@ export const addClipboardContext = (
     return clipboardContext;
 };
 
+export const addOrCreateClipboardContext = (clipboardContext: WritableClipboardContext | null, addition: WritableClipboardContext) => {
+    if (!clipboardContext) {
+        return addition;
+    } else {
+        return addClipboardContext(clipboardContext, addition);
+    }
+};
+
 export const replaceAngleBrackets = (str: string) => {
     return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };

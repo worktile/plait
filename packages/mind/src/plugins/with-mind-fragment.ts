@@ -9,9 +9,8 @@ import {
     WritableClipboardContext,
     WritableClipboardOperationType,
     WritableClipboardType,
-    addClipboardContext,
-    addSelectedElement,
-    createClipboardContext
+    addOrCreateClipboardContext,
+    addSelectedElement
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
@@ -65,15 +64,12 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         if (firstLevelElements.length) {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
             const text = getElementsText(targetMindElements);
-            if (!clipboardContext) {
-                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
-            } else {
-                clipboardContext = addClipboardContext(clipboardContext, {
-                    text,
-                    type: WritableClipboardType.elements,
-                    elements
-                });
-            }
+            const addition: WritableClipboardContext = {
+                text,
+                type: WritableClipboardType.elements,
+                elements: elements
+            };
+            addOrCreateClipboardContext(clipboardContext, addition);
         }
         return buildFragment(clipboardContext, rectangle, operationType, originData);
     };

@@ -7,8 +7,7 @@ import {
     WritableClipboardContext,
     WritableClipboardOperationType,
     WritableClipboardType,
-    addClipboardContext,
-    createClipboardContext,
+    addOrCreateClipboardContext,
     getSelectedElements
 } from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
@@ -73,15 +72,12 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const selectedElements = [...targetDrawElements, ...boundLineElements];
             const elements = buildClipboardData(board, selectedElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
             const text = getElementsText(selectedElements);
-            if (!clipboardContext) {
-                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
-            } else {
-                clipboardContext = addClipboardContext(clipboardContext, {
-                    text,
-                    type: WritableClipboardType.elements,
-                    elements
-                });
-            }
+            const addition: WritableClipboardContext = {
+                text,
+                type: WritableClipboardType.elements,
+                elements: elements
+            };
+            addOrCreateClipboardContext(clipboardContext, addition);
         }
         return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
