@@ -1,7 +1,6 @@
 import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
-import { PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitSwimlane, PlaitVectorLine } from '../interfaces';
+import { PlaitArrowLine, PlaitCustomGeometry, PlaitDrawElement, PlaitGeometry, PlaitSwimlane, PlaitVectorLine } from '../interfaces';
 import { PlaitImage } from '../interfaces/image';
-import { PlaitTable, PlaitTableElement } from '../interfaces/table';
 
 export const getSelectedDrawElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
@@ -10,6 +9,13 @@ export const getSelectedDrawElements = (board: PlaitBoard, elements?: PlaitEleme
 
 export const getSelectedGeometryElements = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+    return selectedElements;
+};
+
+export const getSelectedCustomGeometryElements = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board).filter(value =>
+        PlaitDrawElement.isCustomGeometryElement(board, value)
+    ) as PlaitCustomGeometry[];
     return selectedElements;
 };
 
@@ -31,6 +37,11 @@ export const getSelectedImageElements = (board: PlaitBoard) => {
 export const isSingleSelectSwimlane = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board);
     return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isSwimlane(selectedElements[0]);
+};
+
+export const isSingleSelectArrowLine = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board);
+    return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isArrowLine(selectedElements[0]);
 };
 
 export const getSelectedSwimlane = (board: PlaitBoard): PlaitSwimlane => {

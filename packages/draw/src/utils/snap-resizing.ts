@@ -26,7 +26,7 @@ import {
     getMinPointDelta
 } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
-import { PlaitDrawElement } from '../interfaces';
+import { PlaitCustomGeometry, PlaitDrawElement } from '../interfaces';
 
 const debugKey = 'debug:plait:point-for-geometry';
 export const debugGenerator = createDebugGenerator(debugKey);
@@ -53,7 +53,7 @@ const EQUAL_SPACING = 10;
 
 export function getSnapResizingRefOptions(
     board: PlaitBoard,
-    resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
+    resizeRef: ResizeRef<PlaitDrawElement | PlaitCustomGeometry | (PlaitDrawElement | PlaitCustomGeometry)[]>,
     resizeState: ResizeState,
     resizeOriginPointAndHandlePoint: {
         originPoint: Point;

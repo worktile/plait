@@ -7,7 +7,6 @@ import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
 import { withArrowLineCreateByDraw } from './with-arrow-line-create';
-import { withGeometryResize } from './with-geometry-resize';
 import { withArrowLineResize } from './with-arrow-line-resize';
 import { withArrowLineBoundReaction } from './with-arrow-line-bound-reaction';
 import { withArrowLineText } from './with-arrow-line-text';
@@ -168,13 +167,11 @@ export const withDraw = (board: PlaitBoard) => {
                                 withArrowLineResize(
                                     withArrowLineTextMove(
                                         withArrowLineText(
-                                            withGeometryResize(
-                                                withDrawRotate(
-                                                    withArrowLineCreateByDraw(
-                                                        withArrowLineAutoComplete(
-                                                            withGeometryCreateByDrag(
-                                                                withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
-                                                            )
+                                            withDrawRotate(
+                                                withArrowLineCreateByDraw(
+                                                    withArrowLineAutoComplete(
+                                                        withGeometryCreateByDrag(
+                                                            withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
                                                         )
                                                     )
                                                 )

@@ -23,7 +23,7 @@ import {
     normalizeAngle,
     degreesToRadians
 } from '@plait/core';
-import { addRotating, removeRotating, drawHandle, drawRotateHandle, isRotating, RotateRef } from '@plait/common';
+import { addRotating, removeRotating, drawRotateHandle, RotateRef } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
 import { getRotateHandleRectangle } from '../utils/position/geometry';
 
@@ -35,7 +35,10 @@ export const withDrawRotate = (board: PlaitBoard) => {
 
     const canRotate = () => {
         const elements = getSelectedElements(board);
-        return elements.length > 0 && elements.every(el => PlaitDrawElement.isGeometry(el) || PlaitDrawElement.isImage(el));
+        return (
+            elements.length > 0 &&
+            elements.every(el => PlaitDrawElement.isDrawElement(el) || PlaitDrawElement.isCustomGeometryElement(board, el))
+        );
     };
 
     board.pointerDown = (event: PointerEvent) => {

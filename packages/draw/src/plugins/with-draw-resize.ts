@@ -36,7 +36,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getSnapResizingRefOptions, getSnapResizingRef } from '../utils/snap-resizing';
-import { isGeometryIncludeText } from '../utils';
+import { isGeometryIncludeText, isSingleSelectArrowLine, isSingleSelectSwimlane } from '../utils';
 
 const debugKey = 'debug:plait:resize-for-rotation';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -58,8 +58,13 @@ export function withDrawResize(board: PlaitBoard) {
     const canResize = () => {
         const elements = getSelectedElements(board);
         return (
-            elements.length > 1 &&
-            elements.every(el => PlaitDrawElement.isDrawElement(el) || PlaitDrawElement.isCustomGeometryElement(board, el))
+            elements.length >= 1 &&
+            elements.every(
+                el =>
+                    (PlaitDrawElement.isDrawElement(el) || PlaitDrawElement.isCustomGeometryElement(board, el)) &&
+                    !isSingleSelectArrowLine(board) &&
+                    !isSingleSelectSwimlane(board)
+            )
         );
     };
 
@@ -85,7 +90,7 @@ export function withDrawResize(board: PlaitBoard) {
             snapG?.remove();
             debugGenerator.isDebug() && debugGenerator.clear();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
-            const isAspectRatio = resizeState.isShift || isFromCorner;
+            const isAspectRatio = resizeState.isShift;
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
             const handleIndex = getIndexByResizeHandle(resizeRef.handle);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
@@ -189,7 +194,11 @@ export function withDrawResize(board: PlaitBoard) {
                         points = normalizeShapePoints(points as [Point, Point]);
                         Transforms.setNode(board, { points }, path);
                     }
-                } else if (PlaitDrawElement.isArrowLine(target) || PlaitDrawElement.isCustomGeometryElement(board, target) || PlaitDrawElement.isVectorLine(target)) {
+                } else if (
+                    PlaitDrawElement.isLine(target) ||
+                    PlaitDrawElement.isCustomGeometryElement(board, target) ||
+                    PlaitDrawElement.isVectorLine(target)
+                ) {
                     Transforms.setNode(board, { points }, path);
                 } else if (PlaitDrawElement.isImage(target)) {
                     if (isAspectRatio) {
