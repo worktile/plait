@@ -21,7 +21,7 @@ export function withRelatedFragment(board: PlaitBoard) {
                     type: WritableClipboardType.elements,
                     elements: relatedFragment
                 };
-                addOrCreateClipboardContext(clipboardContext, addition);
+                clipboardContext = addOrCreateClipboardContext(clipboardContext, addition);
             }
         }
         return buildFragment(clipboardContext, rectangle, operationType, originData);

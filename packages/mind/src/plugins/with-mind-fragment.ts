@@ -69,7 +69,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
                 type: WritableClipboardType.elements,
                 elements: elements
             };
-            addOrCreateClipboardContext(clipboardContext, addition);
+            clipboardContext = addOrCreateClipboardContext(clipboardContext, addition);
         }
         return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
