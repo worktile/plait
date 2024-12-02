@@ -1,9 +1,8 @@
-import { PlaitBoard } from '@plait/core';
 import { CLIPBOARD_FORMAT_KEY } from '@plait/text-plugins';
 import { AngularEditor } from 'slate-angular';
 import { PlaitTextEditor } from './text.editor';
 
-export const withText = <T extends AngularEditor>(editor: T, board: PlaitBoard) => {
+export const withText = <T extends AngularEditor>(editor: T) => {
     const e = editor as T & PlaitTextEditor;
     const { insertData } = e;
 
@@ -24,8 +23,6 @@ export const withText = <T extends AngularEditor>(editor: T, board: PlaitBoard) 
         }
         insertData(data);
     };
-
-    e.board = board;
 
     return e;
 };

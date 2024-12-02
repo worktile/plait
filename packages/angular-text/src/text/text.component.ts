@@ -18,7 +18,7 @@ import { withHistory } from 'slate-history';
 import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
 import { withMarkHotkey } from '../plugins/mark-hotkey/with-mark-hotkey';
 import { ParagraphElementComponent } from '../plugins/paragraph/paragraph.component';
-import { withSelection } from '../plugins/with-selection';
+import { withInlineMove } from '../plugins/with-inline-move';
 import { withText } from '../plugins/with-text';
 import { PlaitTextNodeComponent } from '../text-node/text.component';
 import { FormsModule } from '@angular/forms';
@@ -63,9 +63,7 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
     @Input()
     board!: PlaitBoard;
 
-    editor = withSelection(
-        withPasteLink(withMarkHotkey(withText(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY)), this.board)))
-    );
+    editor = withInlineMove(withPasteLink(withMarkHotkey(withText(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY))))));
 
     nativeElement() {
         return this.elementRef.nativeElement;
@@ -136,5 +134,5 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
 
     scrollSelectionIntoView = () => {
         // prevent auto scroll
-    }
+    };
 }

@@ -1,7 +1,7 @@
 import { Editor, Element, Transforms, Range, Path } from 'slate';
 import { AngularEditor, hotkeys } from 'slate-angular';
 
-export const withSelection = <T extends AngularEditor>(editor: T): T => {
+export const withInlineMove = <T extends AngularEditor>(editor: T): T => {
     const { onKeydown } = editor;
 
     editor.onKeydown = (event: KeyboardEvent) => {

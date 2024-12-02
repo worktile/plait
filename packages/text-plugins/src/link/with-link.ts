@@ -2,7 +2,7 @@ import { LinkElement } from '@plait/common';
 import { Element, NodeEntry, Transforms, Node, Editor } from 'slate';
 
 export const withLink = <T extends Editor>(editor: T): T => {
-    const { isInline, normalizeNode, insertFragment } = editor;
+    const { isInline, normalizeNode } = editor;
 
     editor.isInline = (element: Element) => {
         return (element as LinkElement).type === 'link' ? true : isInline(element);
