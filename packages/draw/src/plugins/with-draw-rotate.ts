@@ -37,7 +37,11 @@ export const withDrawRotate = (board: PlaitBoard) => {
         const elements = getSelectedElements(board);
         return (
             elements.length > 0 &&
-            elements.every(el => PlaitDrawElement.isDrawElement(el) || PlaitDrawElement.isCustomGeometryElement(board, el))
+            elements.every(
+                el =>
+                    (PlaitDrawElement.isDrawElement(el) && !PlaitDrawElement.isArrowLine(el)) ||
+                    PlaitDrawElement.isCustomGeometryElement(board, el)
+            )
         );
     };
 
