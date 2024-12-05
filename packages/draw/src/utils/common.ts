@@ -21,8 +21,8 @@ import {
 } from '@plait/core';
 import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, ShapeDefaultSpace } from '../constants';
 import {
+    DrawOptions,
     DrawShapes,
-    EngineExtraData,
     GeometryCommonTextKeys,
     PlaitBaseGeometry,
     PlaitCommonGeometry,
@@ -165,7 +165,7 @@ export const drawShape = (
     outerRectangle: RectangleClient,
     shape: DrawShapes,
     roughOptions: Options,
-    drawOptions: EngineExtraData
+    drawOptions?: DrawOptions
 ) => {
     return getEngine(shape).draw(board, outerRectangle, roughOptions, drawOptions);
 };
@@ -179,7 +179,7 @@ export const drawBoundReaction = (
     const rectangle = RectangleClient.getRectangleByPoints(element.points);
     const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
     const shape = getElementShape(element);
-    let drawOptions: EngineExtraData = {};
+    let drawOptions: DrawOptions | undefined;
     if (PlaitDrawElement.isElementByTable(element)) {
         drawOptions = { element };
     }

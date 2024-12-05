@@ -91,7 +91,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
                 const textManage = getTextManageByCell(this.board, item);
                 if (textManage) {
                     const engine = getEngine<PlaitTable>(TableSymbols.table);
-                    const rectangle = engine.getTextRectangle!(this.element, { key: item.id, board: this.board });
+                    const rectangle = engine.getTextRectangle!(this.element, { id: item.id, board: this.board });
                     textManage.g.classList.add('vertical-cell-text');
                     setAngleForG(textManage.g, RectangleClient.getCenterPoint(rectangle), degreesToRadians(-90));
                 }

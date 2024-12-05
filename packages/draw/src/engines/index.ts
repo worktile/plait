@@ -1,12 +1,13 @@
 import {
     BasicShapes,
+    DrawOptions,
     DrawShapes,
-    EngineExtraData,
     FlowchartSymbols,
     PlaitGeometry,
     ShapeEngine,
     SwimlaneSymbols,
     TableSymbols,
+    TextRectangleOptions,
     UMLSymbols
 } from '../interfaces';
 import { CommentEngine } from './basic-shapes/comment';
@@ -139,8 +140,8 @@ const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
 
 export const getEngine = <
     T extends PlaitElement = PlaitGeometry,
-    P extends EngineExtraData = EngineExtraData,
-    K extends EngineExtraData = EngineExtraData
+    P extends DrawOptions = DrawOptions,
+    K extends TextRectangleOptions = TextRectangleOptions
 >(
     shape: DrawShapes
 ): ShapeEngine<T, P, K> => {

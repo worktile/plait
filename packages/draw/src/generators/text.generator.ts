@@ -9,14 +9,12 @@ import {
 } from '@plait/common';
 import { PlaitBoard, PlaitElement, PlaitOptionsBoard, RectangleClient } from '@plait/core';
 import { getEngine } from '../engines';
-import { DrawShapes, EngineExtraData, PlaitGeometry } from '../interfaces';
+import { DrawShapes, PlaitGeometry, TextRectangleOptions } from '../interfaces';
 import { getTextKey, getTextRectangle } from '../utils';
 
-export interface DrawTextInfo extends EngineExtraData {
-    id: string;
+export interface DrawTextInfo extends TextRectangleOptions {
     text: ParagraphElement;
     textHeight: number;
-    board?: PlaitBoard;
 }
 
 export interface TextGeneratorOptions<T> {
