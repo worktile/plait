@@ -90,7 +90,7 @@ export function withDrawResize(board: PlaitBoard) {
             snapG?.remove();
             debugGenerator.isDebug() && debugGenerator.clear();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
-            const isAspectRatio = resizeState.isShift;
+            const isAspectRatio = resizeState.isShift || (resizeRef.element.length === 1 && PlaitDrawElement.isImage(resizeRef.element[0]));
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
             const handleIndex = getIndexByResizeHandle(resizeRef.handle);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
