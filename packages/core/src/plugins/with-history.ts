@@ -66,6 +66,11 @@ export function withHistory<T extends PlaitBoard>(board: T) {
                 }
             }
 
+            if (PlaitHistoryBoard.isSplittingOnce(board)) {
+                merge = false;
+                PlaitHistoryBoard.setSplittingOnce(board, undefined);
+            }
+
             if (lastBatch && merge) {
                 lastBatch.push(op);
             } else {

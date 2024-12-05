@@ -8,3 +8,5 @@ export interface PlaitHistory {
 
 export const SAVING = new WeakMap<PlaitBoard, boolean | undefined>();
 export const MERGING = new WeakMap<PlaitBoard, boolean | undefined>();
+export const HISTORY = new WeakMap<PlaitBoard, History>();
+export const SPLITTING_ONCE = new WeakMap<PlaitBoard, boolean | undefined>();
