@@ -28,7 +28,7 @@ import { getFillByElement } from './style/stroke';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { getHitArrowLineTextIndex } from './position/arrow-line';
-import { getTextRectangle, isClosedPoints, isCustomGeometryClosed, isDrawElementClosed } from './common';
+import { getTextRectangle, isClosedCustomGeometry, isClosedDrawElement, isClosedPoints } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { isFilled, sortElementsByArea } from '@plait/common';
 import { getVectorLinePoints } from './vector-line';
@@ -153,7 +153,7 @@ export const getFirstFilledDrawElement = (board: PlaitBoard, elements: (PlaitDra
     let filledElement: PlaitGeometry | PlaitCustomGeometry | null = null;
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
-        if (isCustomGeometryClosed(board, element) || isDrawElementClosed(element)) {
+        if (isClosedCustomGeometry(board, element) || isClosedDrawElement(element)) {
             const fill = getFillByElement(board, element);
             if (isFilled(fill)) {
                 filledElement = element as PlaitGeometry;

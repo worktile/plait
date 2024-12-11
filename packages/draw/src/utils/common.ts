@@ -99,22 +99,23 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
     });
 };
 
-export const isDrawElementClosed = (element: PlaitDrawElement) => {
-    if (PlaitDrawElement.isText(element) || PlaitDrawElement.isArrowLine(element) || PlaitDrawElement.isImage(element)) {
-        return false;
+export const isClosedDrawElement = (element: PlaitElement) => {
+    if (PlaitDrawElement.isDrawElement(element)) {
+        if (PlaitDrawElement.isText(element) || PlaitDrawElement.isArrowLine(element) || PlaitDrawElement.isImage(element)) {
+            return false;
+        }
+        if (PlaitDrawElement.isVectorLine(element)) {
+            return isClosedPoints(element.points);
+        }
+        if (PlaitDrawElement.isGeometry(element)) {
+            return isGeometryClosed(element);
+        }
+        return true;
     }
-
-    if (PlaitDrawElement.isVectorLine(element)) {
-        return isClosedPoints(element.points);
-    }
-
-    if (PlaitDrawElement.isGeometry(element)) {
-        return isGeometryClosed(element);
-    }
-    return true;
+    return false;
 };
 
-export const isCustomGeometryClosed = (board: PlaitBoard, value: PlaitElement): value is PlaitCustomGeometry => {
+export const isClosedCustomGeometry = (board: PlaitBoard, value: PlaitElement): value is PlaitCustomGeometry => {
     return PlaitDrawElement.isCustomGeometryElement(board, value) && isClosedPoints(value.points);
 };
 
@@ -203,7 +204,7 @@ export const drawBoundReaction = (
             {
                 stroke: SELECTION_BORDER_COLOR,
                 strokeWidth: 0,
-                fill: isDrawElementClosed(element) ? SELECTION_FILL_COLOR : DefaultDrawStyle.fill,
+                fill: isClosedDrawElement(element) ? SELECTION_FILL_COLOR : DefaultDrawStyle.fill,
                 fillStyle: 'solid'
             },
             drawOptions

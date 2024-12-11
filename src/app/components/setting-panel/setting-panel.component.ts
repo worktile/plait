@@ -13,7 +13,6 @@ import {
     Path,
     DEFAULT_COLOR
 } from '@plait/core';
-
 import {
     MindElement,
     MindPointerType,
@@ -55,11 +54,9 @@ import {
     getGeometryAlign,
     PlaitDrawElement,
     getSwimlaneCount,
-    PlaitTableCell,
     getSelectedTableCellsEditor,
-    isSingleSelectElementByTable,
     VectorLineShape,
-    isDrawElementClosed
+    isClosedDrawElement
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { FontSizes, LinkEditor, MarkTypes, PlaitMarkEditor, TextTransforms } from '@plait/text-plugins';
@@ -154,7 +151,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         this.isSelectedLine = !!selectedArrowLineElements.length || !!selectedVectorLineElements.length;
         this.isSelectedVectorLine = !!selectedVectorLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
-        this.enableSetFillColor = selectedDrawElements.some(item => isDrawElementClosed(item));
+        this.enableSetFillColor = selectedDrawElements.some(item => isClosedDrawElement(item));
         if (this.isSelectSwimlane) {
             this.swimlaneCount = getSwimlaneCount(getSelectedElements(this.board)[0] as PlaitSwimlane);
         }
@@ -257,7 +254,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
                 if (tableElement) {
                     DrawTransforms.setTableFill(this.board, element, property, path);
                 } else {
-                    if (isDrawElementClosed(element as PlaitDrawElement)) {
+                    if (isClosedDrawElement(element as PlaitDrawElement)) {
                         Transforms.setNode(this.board, { fill: property }, path);
                     }
                 }
