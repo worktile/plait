@@ -83,7 +83,7 @@ export const withHotkey = (board: PlaitBoard) => {
         if (PlaitBoard.getMovingPointInBoard(board) || PlaitBoard.isMovingPointInBoard(board)) {
             if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
                 event.preventDefault();
-                BoardTransforms.updateZoom(board, board.viewport.zoom + 0.1, false);
+                BoardTransforms.updateZoom(board, board.viewport.zoom + 0.1);
                 return;
             }
             if (isHotkey(['mod+shift+=', 'mod+shift++'], { byKey: true })(event)) {

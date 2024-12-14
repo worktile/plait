@@ -428,3 +428,15 @@ export function getCrossingPointsBetweenEllipseAndSegment(
             .map(t => [startPoint[0] + (endPoint[0] - startPoint[0]) * t + cx, startPoint[1] + (endPoint[1] - startPoint[1]) * t + cy])
     );
 }
+
+/**
+ * Get a point between two points.
+ * @param x0 The x-axis coordinate of the first point.
+ * @param y0 The y-axis coordinate of the first point.
+ * @param x1 The x-axis coordinate of the second point.
+ * @param y1 The y-axis coordinate of the second point.
+ * @param d Normalized
+ */
+export function getPointBetween(x0: number, y0: number, x1: number, y1: number, d = 0.5) {
+    return [x0 + (x1 - x0) * d, y0 + (y1 - y0) * d];
+}

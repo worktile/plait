@@ -543,7 +543,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                         -sign *
                         // reduced amplification for small deltas (small movements on a trackpad)
                         Math.min(1, absDelta / 20);
-                    BoardTransforms.updateZoom(this.board, newZoom, false);
+                    BoardTransforms.updateZoom(this.board, newZoom, PlaitBoard.getMovingPointInBoard(this.board));
                 }
             });
     }

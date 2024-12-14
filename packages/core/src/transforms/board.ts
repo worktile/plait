@@ -27,17 +27,16 @@ function updateViewport(board: PlaitBoard, origination: Point, zoom?: number) {
     clearViewportOrigination(board);
 }
 
-function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
+function updateZoom(board: PlaitBoard, newZoom: number, center?: Point) {
     newZoom = clampZoomLevel(newZoom);
 
-    const movingPoint = PlaitBoard.getMovingPointInBoard(board);
     const nativeElement = PlaitBoard.getBoardContainer(board);
     const nativeElementRect = nativeElement.getBoundingClientRect();
     const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     let focusPoint = [boardContainerRect.width / 2, boardContainerRect.height / 2];
 
-    if (!isCenter && movingPoint && distanceBetweenPointAndRectangle(movingPoint[0], movingPoint[1], nativeElementRect) === 0) {
-        focusPoint = [movingPoint[0] - nativeElementRect.x, movingPoint[1] - nativeElementRect.y];
+    if (center && distanceBetweenPointAndRectangle(center[0], center[1], nativeElementRect) === 0) {
+        focusPoint = [center[0] - nativeElementRect.x, center[1] - nativeElementRect.y];
     }
 
     const zoom = board.viewport.zoom;

@@ -89,18 +89,6 @@ export function projectPoint(x0: number, y0: number, a: number, d: number) {
 }
 
 /**
- * Get a point between two points.
- * @param x0 The x-axis coordinate of the first point.
- * @param y0 The y-axis coordinate of the first point.
- * @param x1 The x-axis coordinate of the second point.
- * @param y1 The y-axis coordinate of the second point.
- * @param d Normalized
- */
-export function getPointBetween(x0: number, y0: number, x1: number, y1: number, d = 0.5) {
-    return [x0 + (x1 - x0) * d, y0 + (y1 - y0) * d];
-}
-
-/**
  * Get the sector of an angle (e.g. quadrant, octant)
  * @param a The angle to check.
  * @param s The number of sectors to check.
