@@ -50,7 +50,7 @@ export const PlaitNode = {
     first(board: PlaitBoard, path: Path) {
         const p = path.slice();
         let n = PlaitNode.get(board, p);
-        if (!n.children) {
+        if (!n.children || !board.isExpanded(n)) {
             return n;
         }
         while (n) {

@@ -52,6 +52,7 @@ export class ListRender {
         if (diffResult) {
             const newContexts: PlaitPluginElementContext[] = [];
             const newInstances: ElementFlavour[] = [];
+            // for moving scene: the current index for first element before moving
             let currentIndexForFirstElement: number | null = null;
             diffResult.forEachItem((record: IterableChangeRecord<PlaitElement>) => {
                 NODE_TO_INDEX.set(record.item, record.currentIndex as number);
@@ -235,7 +236,7 @@ const mountOnItemMove = (
 ) => {
     const containerG = PlaitElement.getContainerG(element, { suppressThrow: false });
     mountElementG(index, containerG, childrenContext, currentIndexForFirstElement);
-    if (element.children && !PlaitElement.isRootElement(element)) {
+    if (element.children && !PlaitElement.isRootElement(element) && childrenContext.board.isExpanded(element)) {
         element.children.forEach((child, index) => {
             mountOnItemMove(child, index, { ...childrenContext, parent: element }, null);
         });
