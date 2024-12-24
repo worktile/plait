@@ -117,7 +117,7 @@ export function getNearestPointBetweenPointAndEllipse(point: Point, center: Poin
     const a = Math.abs(rectangleClient.width) / 2;
     const b = Math.abs(rectangleClient.height) / 2;
 
-    [0, 1, 2, 3].forEach(x => {
+    [0, 1, 2, 3].forEach((x) => {
         const xx = a * tx;
         const yy = b * ty;
 
@@ -186,17 +186,36 @@ export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClie
         if (i === len - 1 && !isClose) continue;
         const p1 = points[i];
         const p2 = points[(i + 1) % len];
-        const isHit =
-            isLineHitLine(p1, p2, rectanglePoints[0], rectanglePoints[1]) ||
-            isLineHitLine(p1, p2, rectanglePoints[1], rectanglePoints[2]) ||
-            isLineHitLine(p1, p2, rectanglePoints[2], rectanglePoints[3]) ||
-            isLineHitLine(p1, p2, rectanglePoints[3], rectanglePoints[0]);
+        const isHit = isLineHitRectangleEdge(p1, p2, rectangle);
         if (isHit || isPointInPolygon(p1, rectanglePoints) || isPointInPolygon(p2, rectanglePoints)) {
             return true;
         }
     }
-
     return false;
+};
+
+export const isPolylineHitRectangleEdge = (points: Point[], rectangle: RectangleClient, isClose: boolean = true) => {
+    const len = points.length;
+    for (let i = 0; i < len; i++) {
+        if (i === len - 1 && !isClose) continue;
+        const p1 = points[i];
+        const p2 = points[(i + 1) % len];
+        const isHit = isLineHitRectangleEdge(p1, p2, rectangle);
+        if (isHit) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const isLineHitRectangleEdge = (p1: Point, p2: Point, rectangle: RectangleClient) => {
+    const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
+    return (
+        isLineHitLine(p1, p2, rectanglePoints[0], rectanglePoints[1]) ||
+        isLineHitLine(p1, p2, rectanglePoints[1], rectanglePoints[2]) ||
+        isLineHitLine(p1, p2, rectanglePoints[2], rectanglePoints[3]) ||
+        isLineHitLine(p1, p2, rectanglePoints[3], rectanglePoints[0])
+    );
 };
 
 //https://stackoverflow.com/questions/22521982/check-if-point-is-inside-a-polygon
@@ -262,7 +281,7 @@ export const isPointInRoundRectangle = (point: Point, rectangle: RectangleClient
 };
 
 // https://gist.github.com/nicholaswmin/c2661eb11cad5671d816
-export const catmullRomFitting = function(points: Point[]) {
+export const catmullRomFitting = function (points: Point[]) {
     const alpha = 0.5;
     let p0, p1, p2, p3, bp1, bp2, d1, d2, d3, A, B, N, M;
     var d3powA, d2powA, d3pow2A, d2pow2A, d1pow2A, d1powA;
@@ -423,9 +442,9 @@ export function getCrossingPointsBetweenEllipseAndSegment(
     return (
         tValues
             // Filter to only points that are on the segment.
-            .filter(t => !segment_only || (t >= 0 && t <= 1))
+            .filter((t) => !segment_only || (t >= 0 && t <= 1))
             // Solve for points.
-            .map(t => [startPoint[0] + (endPoint[0] - startPoint[0]) * t + cx, startPoint[1] + (endPoint[1] - startPoint[1]) * t + cy])
+            .map((t) => [startPoint[0] + (endPoint[0] - startPoint[0]) * t + cx, startPoint[1] + (endPoint[1] - startPoint[1]) * t + cy])
     );
 }
 

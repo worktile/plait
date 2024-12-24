@@ -11,7 +11,8 @@ import {
     rotatePointsByElement,
     rotateAntiPointsByElement,
     isPointInPolygon,
-    rotatePointsByAngle
+    rotatePointsByAngle,
+    isPolylineHitRectangleEdge
 } from '@plait/core';
 import {
     PlaitArrowLine,
@@ -30,8 +31,9 @@ import { getElementShape } from './shape';
 import { getHitArrowLineTextIndex } from './position/arrow-line';
 import { getTextRectangle, isClosedCustomGeometry, isClosedDrawElement, isClosedPoints } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
-import { isFilled, sortElementsByArea } from '@plait/common';
+import { getFirstTextEditor, isFilled, sortElementsByArea } from '@plait/common';
 import { getVectorLinePoints } from './vector-line';
+import { Editor, Element } from 'slate';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -69,7 +71,7 @@ export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangl
     const engine = getEngine<PlaitCommonGeometry>(element.shape);
     if (isMultipleTextGeometry(element)) {
         const texts = element.texts;
-        return texts.some(item => {
+        return texts.some((item) => {
             const textClient = engine.getTextRectangle!(element, { id: item.id });
             return isRectangleHitRotatedPoints(rectangle, RectangleClient.getCornerPoints(textClient), element.angle);
         });
@@ -83,7 +85,7 @@ export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => 
     const engine = getEngine<PlaitCommonGeometry>(element.shape);
     if (isMultipleTextGeometry(element)) {
         const texts = element.texts;
-        return texts.some(item => {
+        return texts.some((item) => {
             const textClient = engine.getTextRectangle!(element, { id: item.id });
             return RectangleClient.isPointInRectangle(textClient, point);
         });
@@ -93,6 +95,11 @@ export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => 
     }
 };
 
+export const isEmptyTextElement = (element: PlaitCommonGeometry) => {
+    const editor = getFirstTextEditor(element);
+    return Editor.isEmpty(editor, editor.children[0] as Element);
+};
+
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {
     const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
     if (PlaitDrawElement.isGeometry(element)) {
@@ -100,7 +107,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
         if (isHitElement) {
             return isHitElement;
         }
-        return isRectangleHitElementText(element, rangeRectangle);
+        return !isEmptyTextElement(element) && isRectangleHitElementText(element, rangeRectangle);
     }
 
     if (PlaitDrawElement.isImage(element)) {
@@ -131,7 +138,7 @@ export const isRectangleHitRotatedElement = (
 
 export const isRectangleHitRotatedPoints = (rectangle: RectangleClient, points: Point[], angle: number | undefined) => {
     let rotatedPoints = rotatePointsByAngle(points, angle) || points;
-    return isPolylineHitRectangle(rotatedPoints, rectangle);
+    return isPolylineHitRectangleEdge(rotatedPoints, rectangle);
 };
 
 export const getHitDrawElement = (board: PlaitBoard, elements: (PlaitDrawElement | PlaitCustomGeometry)[]) => {
@@ -164,12 +171,16 @@ export const getFirstFilledDrawElement = (board: PlaitBoard, elements: (PlaitDra
     return filledElement;
 };
 
+export const isFilledDrawElement = (board: PlaitBoard, element: PlaitDrawElement | PlaitCustomGeometry) => {
+    return getFirstFilledDrawElement(board, [element]) !== null;
+};
+
 export const getFirstTextOrLineElement = (elements: PlaitElement[]) => {
-    const texts = elements.filter(item => PlaitDrawElement.isText(item));
+    const texts = elements.filter((item) => PlaitDrawElement.isText(item));
     if (texts.length) {
         return texts[0];
     }
-    const lines = elements.filter(item => PlaitDrawElement.isArrowLine(item));
+    const lines = elements.filter((item) => PlaitDrawElement.isArrowLine(item));
     if (lines.length) {
         return lines[0];
     }
@@ -187,6 +198,9 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         if (PlaitDrawElement.isText(element)) {
             const textClient = getTextRectangle(element);
             return RectangleClient.isPointInRectangle(textClient, point);
+        }
+        if (isEmptyTextElement(element) && !isFilledDrawElement(board, element)) {
+            return false;
         }
         const isHitText = isHitElementText(element, point);
         return isHitText || engine.isInsidePoint(rectangle!, point);
