@@ -187,7 +187,7 @@ export const getFirstTextOrLineElement = (elements: PlaitElement[]) => {
     return null;
 };
 
-export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
+export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point, isStrict: boolean = true) => {
     const rectangle = board.getRectangle(element);
     point = rotateAntiPointsByElement(point, element) || point;
     if (PlaitDrawElement.isGeometry(element)) {
@@ -199,7 +199,7 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
             const textClient = getTextRectangle(element);
             return RectangleClient.isPointInRectangle(textClient, point);
         }
-        if (isEmptyTextElement(element) && !isFilledDrawElement(board, element)) {
+        if (!!isStrict && isEmptyTextElement(element) && !isFilledDrawElement(board, element)) {
             return false;
         }
         const isHitText = isHitElementText(element, point);

@@ -71,7 +71,7 @@ export interface PlaitBoard {
     drawElement: (context: PlaitPluginElementContext) => ComponentType<ElementFlavour>;
     isRectangleHit: (element: PlaitElement, range: Selection) => boolean;
     // When the element has no fill color, it is considered a hit only if it hits the border.
-    isHit: (element: PlaitElement, point: Point) => boolean;
+    isHit: (element: PlaitElement, point: Point, isStrict?: boolean) => boolean;
     isInsidePoint: (element: PlaitElement, point: Point) => boolean;
     // the hit element is determined by the plugin
     getOneHitElement: (hitElements: PlaitElement[]) => PlaitElement;

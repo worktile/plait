@@ -49,7 +49,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         return isRectangleHit(element, range);
     };
 
-    board.isHit = (element, point) => {
+    board.isHit = (element, point, isStrict?: boolean) => {
         if (!board.options.readonly) {
             if (FlowElement.isFlowElement(element) && PlaitElement.hasMounted(element)) {
                 if (FlowNode.isFlowNodeElement(element)) {
@@ -60,7 +60,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 }
             }
         }
-        return isHit(element, point);
+        return isHit(element, point, isStrict);
     };
 
     board.isMovable = element => {

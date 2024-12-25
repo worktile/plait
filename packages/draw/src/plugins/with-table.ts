@@ -33,12 +33,12 @@ export const withTable = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    tableBoard.isHit = (element, point) => {
+    tableBoard.isHit = (element, point, isStrict?: boolean) => {
         if (PlaitDrawElement.isElementByTable(element)) {
             const client = RectangleClient.getRectangleByPoints(element.points);
             return RectangleClient.isPointInRectangle(client, point);
         }
-        return isHit(element, point);
+        return isHit(element, point, isStrict);
     };
 
     tableBoard.getRectangle = (element: PlaitElement) => {

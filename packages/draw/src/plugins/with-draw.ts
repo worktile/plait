@@ -85,12 +85,12 @@ export const withDraw = (board: PlaitBoard) => {
         return isRectangleHit(element, selection);
     };
 
-    board.isHit = (element, point) => {
-        const result = isHitDrawElement(board, element, point);
+    board.isHit = (element, point, isStrict?: boolean) => {
+        const result = isHitDrawElement(board, element, point, isStrict);
         if (result !== null) {
             return result;
         }
-        return isHit(element, point);
+        return isHit(element, point, isStrict);
     };
 
     board.getOneHitElement = elements => {

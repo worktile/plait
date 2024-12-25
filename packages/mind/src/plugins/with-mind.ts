@@ -106,13 +106,13 @@ export const withMind = (baseBoard: PlaitBoard) => {
         return isRectangleHit(element, selection);
     };
 
-    board.isHit = (element, point: Point) => {
+    board.isHit = (element, point: Point, isStrict?: boolean) => {
         if (MindElement.isMindElement(board, element)) {
             const client = getRectangleByNode(MindElement.getNode(element));
             const isHit = RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), client);
             return isHit;
         }
-        return isHit(element, point);
+        return isHit(element, point, isStrict);
     };
 
     board.getOneHitElement = elements => {

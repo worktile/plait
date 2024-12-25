@@ -33,7 +33,7 @@ export const getHitElementsBySelection = (
     }
     depthFirstRecursion<Ancestor>(
         board,
-        node => {
+        (node) => {
             if (!PlaitBoard.isBoard(node) && match(node)) {
                 let isRectangleHit = false;
                 try {
@@ -57,18 +57,19 @@ export const getHitElementsBySelection = (
 export const getHitElementsByPoint = (
     board: PlaitBoard,
     point: Point,
-    match: (element: PlaitElement) => boolean = () => true
+    match: (element: PlaitElement) => boolean = () => true,
+    isStrict = true
 ): PlaitElement[] => {
     let hitElements: PlaitElement[] = [];
     depthFirstRecursion<Ancestor>(
         board,
-        node => {
+        (node) => {
             if (PlaitBoard.isBoard(node) || !match(node) || !PlaitElement.hasMounted(node)) {
                 return;
             }
             let isHit = false;
             try {
-                isHit = board.isHit(node, point);
+                isHit = board.isHit(node, point, isStrict);
             } catch (error) {
                 if (isDebug()) {
                     console.error('isHit', error, 'node', node);
@@ -88,9 +89,10 @@ export const getHitElementsByPoint = (
 export const getHitElementByPoint = (
     board: PlaitBoard,
     point: Point,
-    match: (element: PlaitElement) => boolean = () => true
+    match: (element: PlaitElement) => boolean = () => true,
+    isStrict = true
 ): undefined | PlaitElement => {
-    const pointHitElements = getHitElementsByPoint(board, point, match);
+    const pointHitElements = getHitElementsByPoint(board, point, match, isStrict);
     const hitElement = board.getOneHitElement(pointHitElements);
     return hitElement;
 };
@@ -133,15 +135,15 @@ export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement, 
         if (board.isRecursion(element) && isRemoveChildren) {
             depthFirstRecursion(
                 element,
-                node => {
+                (node) => {
                     targetElements.push(node);
                 },
-                node => board.isRecursion(node)
+                (node) => board.isRecursion(node)
             );
         } else {
             targetElements.push(element);
         }
-        const newSelectedElements = selectedElements.filter(value => !targetElements.includes(value));
+        const newSelectedElements = selectedElements.filter((value) => !targetElements.includes(value));
         cacheSelectedElements(board, newSelectedElements);
     }
 };
@@ -157,7 +159,7 @@ export const clearSelectedElement = (board: PlaitBoard) => {
 
 export const isSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
     const selectedElements = getSelectedElements(board);
-    return !!selectedElements.find(value => value === element);
+    return !!selectedElements.find((value) => value === element);
 };
 
 export const temporaryDisableSelection = (board: PlaitOptionsBoard) => {

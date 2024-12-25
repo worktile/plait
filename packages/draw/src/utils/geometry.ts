@@ -1,4 +1,12 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, ThemeColorMode, getSelectedElements, idCreator } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    ThemeColorMode,
+    getSelectedElements,
+    idCreator
+} from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols } from '../interfaces/geometry';
 import { Element } from 'slate';
 import {
@@ -273,7 +281,7 @@ export const getAutoCompletePoints = (element: PlaitShapeElement) => {
 };
 
 export const getHitIndexOfAutoCompletePoint = (movingPoint: Point, points: Point[]) => {
-    return points.findIndex(point => {
+    return points.findIndex((point) => {
         const movingRectangle = RectangleClient.getRectangleByPoints([movingPoint]);
         let rectangle = RectangleClient.getRectangleByPoints([point]);
         rectangle = RectangleClient.inflate(rectangle, RESIZE_HANDLE_DIAMETER);
@@ -362,15 +370,8 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
 export const editText = (board: PlaitBoard, element: PlaitGeometry, text?: DrawTextInfo) => {
     const textManage = text ? getTextManage(board, element, text) : getFirstTextManage(element);
     if (textManage) {
-        textManage.edit(() => {
-            // delay to avoid blinking
-            setTimeout(() => {
-                rerenderGeometryActive(board, element);
-            }, 200);
-        });
+        textManage.edit(() => {});
     }
-
-    rerenderGeometryActive(board, element);
 };
 
 export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry) => {
