@@ -29,7 +29,7 @@ import { getFillByElement } from './style/stroke';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { getHitArrowLineTextIndex } from './position/arrow-line';
-import { getTextRectangle, isClosedCustomGeometry, isClosedDrawElement, isClosedPoints } from './common';
+import { getTextRectangle, isClosedCustomGeometry, isClosedDrawElement, isClosedPoints, isDrawElementIncludeText } from './common';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { getFirstTextEditor, isFilled, sortElementsByArea } from '@plait/common';
 import { getVectorLinePoints } from './vector-line';
@@ -96,6 +96,9 @@ export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => 
 };
 
 export const isEmptyTextElement = (element: PlaitCommonGeometry) => {
+    if (!isDrawElementIncludeText(element)) {
+        return true;
+    }
     const editor = getFirstTextEditor(element);
     return Editor.isEmpty(editor, editor.children[0] as Element);
 };
