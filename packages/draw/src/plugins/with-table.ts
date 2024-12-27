@@ -6,7 +6,7 @@ import {
     PlaitElement,
     RectangleClient,
     Selection,
-    isPolylineHitRectangle,
+    isLineHitRectangle,
     toViewBoxPoint,
     toHostPoint,
     getHitElementByPoint,
@@ -59,7 +59,7 @@ export const withTable = (board: PlaitBoard) => {
     tableBoard.isRectangleHit = (element: PlaitElement, selection: Selection) => {
         if (PlaitDrawElement.isElementByTable(element)) {
             const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
-            return isPolylineHitRectangle(element.points, rangeRectangle);
+            return isLineHitRectangle(element.points, rangeRectangle);
         }
         return isRectangleHit(element, selection);
     };

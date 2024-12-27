@@ -3,7 +3,7 @@ import {
     RectangleClient,
     Selection,
     PlaitBoard,
-    isPolylineHitRectangle,
+    isLineHitRectangle,
     Point,
     distanceBetweenPointAndSegments,
     distanceBetweenPointAndPoint,
@@ -12,7 +12,7 @@ import {
     rotateAntiPointsByElement,
     isPointInPolygon,
     rotatePointsByAngle,
-    isPolylineHitRectangleEdge
+    isLineHitRectangleEdge
 } from '@plait/core';
 import {
     PlaitArrowLine,
@@ -116,12 +116,12 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
 
     if (PlaitDrawElement.isArrowLine(element)) {
         const points = getArrowLinePoints(board, element);
-        return isPolylineHitRectangle(points, rangeRectangle);
+        return isLineHitRectangle(points, rangeRectangle);
     }
 
     if (PlaitDrawElement.isVectorLine(element)) {
         const points = getVectorLinePoints(board, element)!;
-        return isPolylineHitRectangle(points, rangeRectangle, false);
+        return isLineHitRectangle(points, rangeRectangle, false);
     }
 
     return null;
@@ -138,7 +138,7 @@ export const isRectangleHitRotatedElement = (
 
 export const isRectangleHitRotatedPoints = (rectangle: RectangleClient, points: Point[], angle: number | undefined) => {
     let rotatedPoints = rotatePointsByAngle(points, angle) || points;
-    return isPolylineHitRectangleEdge(rotatedPoints, rectangle);
+    return isLineHitRectangle(rotatedPoints, rectangle);
 };
 
 export const getHitDrawElement = (board: PlaitBoard, elements: (PlaitDrawElement | PlaitCustomGeometry)[]) => {

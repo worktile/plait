@@ -179,14 +179,14 @@ export const isLineHitLine = (a: Point, b: Point, c: Point, d: Point): boolean =
     return crossProduct(ab, ac) * crossProduct(ab, ad) <= 0 && crossProduct(cd, ca) * crossProduct(cd, cb) <= 0;
 };
 
-export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClient, isClose: boolean = true) => {
+export const isLineHitRectangle = (points: Point[], rectangle: RectangleClient, isClose: boolean = true) => {
     const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
     const len = points.length;
     for (let i = 0; i < len; i++) {
         if (i === len - 1 && !isClose) continue;
         const p1 = points[i];
         const p2 = points[(i + 1) % len];
-        const isHit = isLineHitRectangleEdge(p1, p2, rectangle);
+        const isHit = isSingleLineHitRectangleEdge(p1, p2, rectangle);
         if (isHit || isPointInPolygon(p1, rectanglePoints) || isPointInPolygon(p2, rectanglePoints)) {
             return true;
         }
@@ -194,13 +194,13 @@ export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClie
     return false;
 };
 
-export const isPolylineHitRectangleEdge = (points: Point[], rectangle: RectangleClient, isClose: boolean = true) => {
+export const isLineHitRectangleEdge = (points: Point[], rectangle: RectangleClient, isClose: boolean = true) => {
     const len = points.length;
     for (let i = 0; i < len; i++) {
         if (i === len - 1 && !isClose) continue;
         const p1 = points[i];
         const p2 = points[(i + 1) % len];
-        const isHit = isLineHitRectangleEdge(p1, p2, rectangle);
+        const isHit = isSingleLineHitRectangleEdge(p1, p2, rectangle);
         if (isHit) {
             return true;
         }
@@ -208,7 +208,7 @@ export const isPolylineHitRectangleEdge = (points: Point[], rectangle: Rectangle
     return false;
 };
 
-export const isLineHitRectangleEdge = (p1: Point, p2: Point, rectangle: RectangleClient) => {
+export const isSingleLineHitRectangleEdge = (p1: Point, p2: Point, rectangle: RectangleClient) => {
     const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
     return (
         isLineHitLine(p1, p2, rectanglePoints[0], rectanglePoints[1]) ||
