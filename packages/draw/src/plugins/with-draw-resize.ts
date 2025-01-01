@@ -36,7 +36,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getSnapResizingRefOptions, getSnapResizingRef } from '../utils/snap-resizing';
-import { isGeometryIncludeText, isSingleSelectArrowLine, isSingleSelectSwimlane } from '../utils';
+import { isGeometryIncludeText, isSingleSelectLine, isSingleSelectSwimlane } from '../utils';
 
 const debugKey = 'debug:plait:resize-for-rotation';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -62,7 +62,7 @@ export function withDrawResize(board: PlaitBoard) {
             elements.every(
                 el =>
                     (PlaitDrawElement.isDrawElement(el) || PlaitDrawElement.isCustomGeometryElement(board, el)) &&
-                    !isSingleSelectArrowLine(board) &&
+                    !isSingleSelectLine(board) &&
                     !isSingleSelectSwimlane(board)
             )
         );

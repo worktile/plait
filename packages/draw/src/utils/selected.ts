@@ -39,9 +39,9 @@ export const isSingleSelectSwimlane = (board: PlaitBoard) => {
     return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isSwimlane(selectedElements[0]);
 };
 
-export const isSingleSelectArrowLine = (board: PlaitBoard) => {
+export const isSingleSelectLine = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board);
-    return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isArrowLine(selectedElements[0]);
+    return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isLine(selectedElements[0]);
 };
 
 export const getSelectedSwimlane = (board: PlaitBoard): PlaitSwimlane => {
