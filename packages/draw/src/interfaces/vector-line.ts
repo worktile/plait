@@ -11,13 +11,6 @@ export enum VectorLineShape {
     curve = ArrowLineShape.curve
 }
 
-export interface VectorLineRef {
-    start?: Point;
-    element?: PlaitVectorLine;
-    path?: Path;
-    shape: VectorLineShape;
-}
-
 export interface PlaitVectorLine extends PlaitElement {
     type: 'vector-line';
     shape: VectorLineShape;
