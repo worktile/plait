@@ -32,6 +32,7 @@ import {
 } from '../utils';
 import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
+import { distanceBetweenPointAndPoint } from '@plait/core';
 
 export function withSelection(board: PlaitBoard) {
     const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawSelectionRectangle } = board;
@@ -41,6 +42,8 @@ export function withSelection(board: PlaitBoard) {
     let selectionRectangleG: SVGGElement | null;
     let previousSelectedElements: PlaitElement[];
     let isShift = false;
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+    let pointerDownEvent: PointerEvent | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         if (!isShift && event.shiftKey) {
@@ -59,12 +62,24 @@ export function withSelection(board: PlaitBoard) {
             !options.isDisabledSelection
         ) {
             // start rectangle selection
-            start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+            timerId = setTimeout(() => {
+                start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+                timerId = null;
+            }, 500);
         }
+        pointerDownEvent = event;
         pointerDown(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {
+        if (
+            timerId &&
+            pointerDownEvent &&
+            distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y) > PRESS_AND_MOVE_BUFFER
+        ) {
+            clearTimeout(timerId);
+            timerId = null;
+        }
         if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && start) {
             const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
@@ -132,7 +147,7 @@ export function withSelection(board: PlaitBoard) {
             clearSelectedElement(board);
         }
         // remove selected element if include
-        board.operations.forEach(op => {
+        board.operations.forEach((op) => {
             if (op.type === 'remove_node') {
                 removeSelectedElement(board, op.node, true);
             }
@@ -150,7 +165,7 @@ export function withSelection(board: PlaitBoard) {
                     if (!options.isMultipleSelection && elements.length > 1) {
                         elements = [elements[0]];
                     }
-                    const isHitElementWithGroup = elements.some(item => item.groupId);
+                    const isHitElementWithGroup = elements.some((item) => item.groupId);
                     const selectedElements = getSelectedElements(board);
                     if (isHitElementWithGroup) {
                         setSelectedElementsWithGroup(board, elements, isShift);
@@ -164,7 +179,7 @@ export function withSelection(board: PlaitBoard) {
                         if (isShift) {
                             const newElements = [...selectedElements];
                             if (board.selection && Selection.isCollapsed(board.selection)) {
-                                elements.forEach(element => {
+                                elements.forEach((element) => {
                                     if (newElements.includes(element)) {
                                         newElements.splice(newElements.indexOf(element), 1);
                                     } else {
@@ -173,7 +188,7 @@ export function withSelection(board: PlaitBoard) {
                                 });
                                 cacheSelectedElements(board, newElements);
                             } else {
-                                elements.forEach(element => {
+                                elements.forEach((element) => {
                                     if (!newElements.includes(element)) {
                                         newElements.push(element);
                                     }
