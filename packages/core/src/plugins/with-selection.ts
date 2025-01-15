@@ -28,11 +28,11 @@ import {
     setSelectedElementsWithGroup,
     hasSetSelectionOperation,
     getSelectionOptions,
-    setSelectionOptions
+    setSelectionOptions,
+    distanceBetweenPointAndPoint
 } from '../utils';
 import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
-import { distanceBetweenPointAndPoint } from '@plait/core';
 
 export function withSelection(board: PlaitBoard) {
     const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawSelectionRectangle } = board;
