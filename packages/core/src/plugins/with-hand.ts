@@ -27,25 +27,21 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.pointerMove = (event: PointerEvent) => {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
+        // 必须要比 withSelection 中 pointerMove 的 PRESS_AND_MOVE_BUFFER 大，确保不会触发拖选才会执行 withHand 逻辑
+        // Must be greater than the PRESS_AND_MOVE_BUFFER value in withSelection's pointerMove, to ensure drag selection won't be triggered before executing withHand logic.
+        const triggerDistance = PRESS_AND_MOVE_BUFFER + 3;
         if (
             movingPoint &&
             !isMoving &&
             !isSelectionMoving(board) &&
             pointerDownEvent &&
-            distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y) > PRESS_AND_MOVE_BUFFER + 3 &&
+            distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y) > triggerDistance &&
             !isMovingElements(board)
         ) {
             isMoving = true;
             PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
         }
-        if (
-            (options?.isHandMode(board, event) ||
-                PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
-                PlaitBoard.isPointer(board, PlaitPointerType.selection)) &&
-            isMoving &&
-            movingPoint &&
-            !isSelectionMoving(board)
-        ) {
+        if ((options?.isHandMode(board, event) || isSmartHand(board, event)) && isMoving && movingPoint && !isSelectionMoving(board)) {
             const viewportContainer = PlaitBoard.getViewportContainer(board);
             const left = viewportContainer.scrollLeft - (event.x - movingPoint.x);
             const top = viewportContainer.scrollTop - (event.y - movingPoint.y);
