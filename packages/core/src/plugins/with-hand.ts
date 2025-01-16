@@ -27,8 +27,12 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.pointerMove = (event: PointerEvent) => {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
-        // 必须要比 withSelection 中 pointerMove 的 PRESS_AND_MOVE_BUFFER 大，确保不会触发拖选才会执行 withHand 逻辑
-        // Must be greater than the PRESS_AND_MOVE_BUFFER value in withSelection's pointerMove, to ensure drag selection won't be triggered before executing withHand logic.
+        // 阈值必须大于 withSelection 中 pointerMove 的 PRESS_AND_MOVE_BUFFER：
+        // 1. 首先检测是否满足进入拖选状态的条件
+        // 2. 仅当不满足拖选条件时，才会考虑触发 withHand 行为
+        // Must exceed the PRESS_AND_MOVE_BUFFER threshold defined in withSelection's pointerMove.
+        // The system first checks for drag selection state eligibility
+        // withHand behavior is only triggered if drag selection state is not initiated.
         const triggerDistance = PRESS_AND_MOVE_BUFFER + 3;
         if (
             movingPoint &&
