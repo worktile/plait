@@ -117,247 +117,5355 @@ export const mockMindData: PlaitMind[] = [
 // 基础流程图数据结构
 export const mockDrawData: PlaitDrawElement[] = [
     {
-        id: 'GMKAE',
-        type: 'geometry',
-        shape: 'terminal',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '结束'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-107, 443.9999999999999],
-            [13, 503.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'WEycp',
-        type: 'geometry',
-        shape: 'process',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '过程'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [98, 283.9999999999999],
-            [218, 343.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'rJcaT',
-        type: 'geometry',
-        shape: 'decision',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '判断'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-117, 278.9999999999999],
-            [23, 348.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'RpDPy',
-        type: 'geometry',
-        shape: 'process',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '过程'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-107, 163.9999999999999],
-            [13, 223.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'xRzpF',
-        type: 'geometry',
-        shape: 'terminal',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '开始'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-107, 48.999999999999886],
-            [13, 108.99999999999989]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'hhyEm',
-        type: 'arrow-line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'WEycp'
-        },
-        texts: [],
-        target: {
-            marker: 'arrow',
-            connection: [1, 0.5],
-            boundId: 'GMKAE'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'NQbHa',
-        type: 'arrow-line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [1, 0.5],
-            boundId: 'rJcaT'
-        },
-        texts: [
+        children: [
             {
-                text: {
-                    children: [
-                        {
-                            text: '否'
-                        }
-                    ]
+                children: [
+                    {
+                        children: [
+                            {
+                                children: [
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'DYEyH',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'JwzDC',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文-文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 119,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'RwYeR',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'NxCMZ',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 56,
+                                        height: 20
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [],
+                                                        id: 'FSwYM',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 196,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'aGFGT',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 42,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [],
+                                                        id: 'zNwjA',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文文，文文url文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 241.6982421875,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'RtaKP',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 42,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'JCYYH',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 70,
+                                        height: 20
+                                    }
+                                ],
+                                id: 'ibcsH',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 70,
+                                height: 20
+                            }
+                        ],
+                        id: 'kQKTt',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文文文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 84,
+                        height: 20
+                    },
+                    {
+                        children: [
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'GEtFQ',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 56,
+                                        height: 20
+                                    }
+                                ],
+                                id: 'bPRGt',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 70,
+                                height: 20
+                            }
+                        ],
+                        id: 'nRnxd',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 56,
+                        height: 20
+                    },
+                    {
+                        children: [
+                            {
+                                children: [],
+                                id: 'cEXKj',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文文文文文文-文文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 189,
+                                height: 20
+                            }
+                        ],
+                        id: 'HkyXs',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文文文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 84,
+                        height: 20
+                    },
+                    {
+                        children: [
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'czhiP',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文文文文-文文-文文文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 223,
+                                        height: 20,
+                                        points: [[0, 0]]
+                                    }
+                                ],
+                                id: 'aNiDT',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 84,
+                                height: 20
+                            }
+                        ],
+                        id: 'pbbyR',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 28,
+                        height: 20
+                    }
+                ],
+                id: 'ejXWp',
+                data: {
+                    topic: {
+                        children: [
+                            {
+                                text: '文文文文'
+                            }
+                        ]
+                    }
                 },
-                position: 0.5,
-                width: 14,
+                width: 56,
                 height: 20
+            },
+            {
+                children: [
+                    {
+                        children: [
+                            {
+                                children: [
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'cAfDc',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 182,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'xaHwM',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 252,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'HnEnw',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'ECwNE',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 196,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'JXyEP',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 196,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'JXySG',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'wBYXs',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'TpHbY',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文“文文3文文”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 121,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'zfyWF',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'adRkX',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文3文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 65,
+                                                                                height: 20
+                                                                            },
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'MGYHf',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文2文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 65,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            },
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'GBwjJ',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文1文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 65,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'XMxzC',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'dFJpT',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'bxdKX',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'PteGp',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 98,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'iePdP',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 42,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'jRdYC',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 98,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'ARWba',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'JhTSy',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'ipYNz',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'ADWCT',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 98,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [],
+                                                                id: 'pdWBY',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 84,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'fxRdk',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 84,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'ZNxPH',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'NrPCT',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'ckRef',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: 'tab'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 22,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'EyQxs',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文，文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 196,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'JaYjm',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'cfRFM',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'hZQZK',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'MMwEQ',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 84,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [],
+                                                                id: 'fDBGG',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 84,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [],
+                                                                id: 'pQdhj',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 98,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'sjybQ',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 112,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [],
+                                                        id: 'JdiyG',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [],
+                                                        id: 'jmZjY',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 70,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [],
+                                                        id: 'BFyJe',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 84,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'bawSF',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'GFPDw',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'mTWXi',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'rQmWG',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文，文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 98,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'CEjFD',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 190,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'CempX',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 14,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'YQKax',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文-xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 245,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'PWjmp',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 42,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'yAKFJ',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'JJjth',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文、文文文文、文文文文文文、文文文文文文文、文文文文文文、文文文文文文、文文文文文文、文文文（文文文/文文文文）'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 476,
+                                                                        height: 40
+                                                                    }
+                                                                ],
+                                                                id: 'DtfEf',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'ajTJM',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文：文文文文文文文文文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 350,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'NiPKW',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'dXYTB',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文(文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 234,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'GYkNJ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'xrZyY',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文(文文文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 262,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'nJmMP',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 84,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'wNSsS',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'TxfbZ',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 84,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'KAJAA',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'wnPTm',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'kZihw',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文，文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 98,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'xYSyM',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 190,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'FhxtM',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 14,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'ptbcA',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文-xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 245,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'DbjbX',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 42,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'KEzri',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 116]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'yWmyw',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文、文文文文、文文文文、文文文文文文、文文文文文文、文文文文文文、文文文（文文文/文文文文）'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 476,
+                                                                        height: 40
+                                                                    }
+                                                                ],
+                                                                id: 'pBYBc',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'AXBXr',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文：文文文文文文文文文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 350,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'QsPWK',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'WrxMH',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文(文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 234,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'XsTNT',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'xAxYa',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文(文文文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 262,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'amFQc',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 84,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'wJWPr',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'bceaD',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 84,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'DYDrX',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'rnafT',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'hndJZ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文，文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 98,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'bknHG',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 190,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'WmYtE',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 14,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'wWphY',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文-xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 245,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'MAhSM',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 42,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'mBKis',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 116]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'mkNEt',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文、文文文文、文文文文文文、文文文、文文文文文文、文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 420,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'jaEYC',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'ynbFj',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文：文文文文文文文文文文文文文文文文文，文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 462,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'ybPrk',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'PcWRN',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文(文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 220,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'EfwTS',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'TphcT',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文(文文文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 248,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'dwcwC',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 84,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'AyrhS',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'hKzBZ',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 70,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'tMain',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'hsMjw',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'YtxbJ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文，文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 98,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'fZzXf',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 190,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'rkmRd',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 14,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'NNbZy',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文-xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 245,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'GehYp',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 42,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'iRHMd',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 116]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'hkTAn',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文、文文文文、文文文文、文文文文文文、文文文文文文、文文文（文文文/文文文文）'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 476,
+                                                                        height: 40
+                                                                    }
+                                                                ],
+                                                                id: 'weKzw',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'asFeK',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文：文文文文文文文文文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 350,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'wjjWx',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'YwbMZ',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文文(文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 248,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'twMwW',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'ZdjCy',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文文(文文文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 276,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'EfDNn',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 84,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'BCEPC',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'WQSWZ',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 98,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'XYzED',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'Sjist',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'BiwDT',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文，文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 98,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'nFxHS',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 190,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'GmRpM',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 14,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'NdfGk',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文xx文x文-xx文x文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 245,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'pwjcQ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 42,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'hrPkS',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 116]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'FQGkh',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文、文文文文、文文文文、文文文文文文、文文文、文文文文文文、文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 476,
+                                                                        height: 40
+                                                                    }
+                                                                ],
+                                                                id: 'DxMDM',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'jKWcM',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文：文文文文文文文文文文文文文文文文文，文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 462,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'bBpxc',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'cfjFi',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文文文(文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 262,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'iACKh',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'MQzTk',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文“文文文文文文文文文文(文文文文)”'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 290,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'tDwrW',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 84,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'xmHNs',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'crppT',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 112,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'pCaZi',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'EJSHp',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 56,
+                                        height: 20
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'tDDPY',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 42,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'swGFj',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 42,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'rChyt',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'sNieC',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 98,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'sWnmx',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 42,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'zdtzH',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 196,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'axyxK',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20,
+                                                                points: [[0, 58]]
+                                                            }
+                                                        ],
+                                                        id: 'ncrHw',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [],
+                                                        id: 'Pfxct',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [],
+                                                        id: 'QdrCQ',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'edKER',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 28,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'SnNRQ',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文、文文文文、文文文、文文文、文文文文、文文文、文文文、文文文、文文文文文、文文文文、文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 476,
+                                                                height: 40
+                                                            }
+                                                        ],
+                                                        id: 'HhTHd',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'QsRRd',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 84,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'prZmP',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'ByHrw',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文、文文文、文文文文、文文文、文文文、文文文、文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 420,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'QByMx',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'mZfRj',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 56,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'bSNak',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20,
+                                                                        points: [[0, 0]]
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'GBnXP',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 56,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'twTfz',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20,
+                                                                        points: [[0, 58]]
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'YESsS',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 84,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'bNTKB',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20,
+                                                                        points: [[0, 116]]
+                                                                    }
+                                                                ],
+                                                                id: 'XFxsi',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'QeeHP',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'wAedW',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 112,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'PCXws',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [
+                                                                                    {
+                                                                                        children: [],
+                                                                                        id: 'eEChe',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文，文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 98,
+                                                                                        height: 20
+                                                                                    }
+                                                                                ],
+                                                                                id: 'AKHWT',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 84,
+                                                                                height: 20
+                                                                            },
+                                                                            {
+                                                                                children: [
+                                                                                    {
+                                                                                        children: [],
+                                                                                        id: 'QJnrs',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 56,
+                                                                                        height: 20
+                                                                                    }
+                                                                                ],
+                                                                                id: 'XYMTb',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 84,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'hCQRN',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'MrQjQ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 140,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'QnZbF',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'GEQES',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'fxhbN',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 28,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'GeKCD',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 98,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'Dxbim',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'rHpTn',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 70,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'ktJyK',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 140,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'brxBp',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 112,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'JNtYt',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 196,
+                                                                        height: 20,
+                                                                        points: [[0, 0]]
+                                                                    }
+                                                                ],
+                                                                id: 'Xcfry',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 42,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'PWDJY',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'ppQdG',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 98,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'zzdRm',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 42,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'FEMBd',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文文文文文文、文文、文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 280,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'Zyzxt',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 84,
+                                                        height: 20,
+                                                        points: [[0, 0]]
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'hbdKx',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文/文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 272,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'SkmZS',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 70,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'YtrMP',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 168,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'ybcpc',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'ydesH',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20,
+                                                        points: [[0, 0]]
+                                                    }
+                                                ],
+                                                id: 'PTKhF',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'yXRdK',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文：文文文文文文文文文文\n文文：文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 182,
+                                                                height: 40
+                                                            }
+                                                        ],
+                                                        id: 'nkXiM',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'axdQf',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文、文文文文、文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 210,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'dNZKQ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 28,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'tDPjY',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文文文文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 168,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'HcNfw',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 28,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'pQHNM',
+                                                                height: 20,
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [],
+                                                                                id: 'KQYPt',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文、文文、文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 154,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'kcbGr',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 28,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [
+                                                                                    {
+                                                                                        children: [],
+                                                                                        id: 'tbapw',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文文文文文文文文文文文文文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 266,
+                                                                                        height: 20
+                                                                                    }
+                                                                                ],
+                                                                                id: 'BWAXH',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 70,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            },
+                                                                            {
+                                                                                children: [
+                                                                                    {
+                                                                                        children: [],
+                                                                                        id: 'dXfWH',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文文文文文文文文文文文文文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 266,
+                                                                                        height: 20
+                                                                                    }
+                                                                                ],
+                                                                                id: 'YyNmY',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 28,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            },
+                                                                            {
+                                                                                children: [
+                                                                                    {
+                                                                                        children: [],
+                                                                                        id: 'cikxa',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文/文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 90,
+                                                                                        height: 20
+                                                                                    }
+                                                                                ],
+                                                                                id: 'XfXRN',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 28,
+                                                                                height: 20,
+                                                                                points: [[0, 0]]
+                                                                            }
+                                                                        ],
+                                                                        id: 'HPeZa',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 28,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [
+                                                                            {
+                                                                                children: [
+                                                                                    {
+                                                                                        children: [],
+                                                                                        id: 'HTeWM',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 112,
+                                                                                        height: 20
+                                                                                    }
+                                                                                ],
+                                                                                id: 'cnXwH',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 56,
+                                                                                height: 20
+                                                                            },
+                                                                            {
+                                                                                children: [
+                                                                                    {
+                                                                                        children: [
+                                                                                            {
+                                                                                                children: [],
+                                                                                                id: 'RpHjc',
+                                                                                                data: {
+                                                                                                    topic: {
+                                                                                                        children: [
+                                                                                                            {
+                                                                                                                text: '文文文文'
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                },
+                                                                                                width: 56,
+                                                                                                height: 20
+                                                                                            }
+                                                                                        ],
+                                                                                        id: 'MRjCr',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 56,
+                                                                                        height: 20
+                                                                                    },
+                                                                                    {
+                                                                                        children: [
+                                                                                            {
+                                                                                                children: [],
+                                                                                                id: 'GfBed',
+                                                                                                data: {
+                                                                                                    topic: {
+                                                                                                        children: [
+                                                                                                            {
+                                                                                                                text: '文文文文'
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                },
+                                                                                                width: 56,
+                                                                                                height: 20
+                                                                                            }
+                                                                                        ],
+                                                                                        id: 'mBEXn',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 56,
+                                                                                        height: 20
+                                                                                    },
+                                                                                    {
+                                                                                        children: [
+                                                                                            {
+                                                                                                children: [],
+                                                                                                id: 'yTCNt',
+                                                                                                data: {
+                                                                                                    topic: {
+                                                                                                        children: [
+                                                                                                            {
+                                                                                                                text: '文文文文文文'
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                },
+                                                                                                width: 84,
+                                                                                                height: 20
+                                                                                            }
+                                                                                        ],
+                                                                                        id: 'hBhrr',
+                                                                                        data: {
+                                                                                            topic: {
+                                                                                                children: [
+                                                                                                    {
+                                                                                                        text: '文文文文'
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        },
+                                                                                        width: 56,
+                                                                                        height: 20
+                                                                                    }
+                                                                                ],
+                                                                                id: 'RQsae',
+                                                                                data: {
+                                                                                    topic: {
+                                                                                        children: [
+                                                                                            {
+                                                                                                text: '文文文文'
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                width: 56,
+                                                                                height: 20
+                                                                            }
+                                                                        ],
+                                                                        id: 'zMCwF',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 28,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'TNQGa',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'ickQX',
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'jxMti',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'cETkm',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 28,
+                                                                        height: 20
+                                                                    },
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'mwffp',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 56,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'bCTFn',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'fpPxQ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 238,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'FBQWe',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'RPBBz',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 224,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'fRJYx',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 140,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'tnKBZ',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 252,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'acXZH',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文“文文”'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 154,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'tTDCY',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 112,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'EGfeX',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 28,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'msQdb',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 140,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'zJBxp',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 84,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'jADwH',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20,
+                                                        isCollapsed: false
+                                                    }
+                                                ],
+                                                id: 'jtSTj',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 98,
+                                                height: 20,
+                                                isCollapsed: false
+                                            }
+                                        ],
+                                        id: 'CDreb',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 56,
+                                        height: 20
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                children: [],
+                                                id: 'wnhyt',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文文文文文文文文文，文文文文文文文，文文文文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 420,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'ZCwac',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 84,
+                                        height: 20
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'HEwTy',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 70,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'NnKWh',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 42,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'hKFfd',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'SmWbN',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 98,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'tfPHi',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 42,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [
+                                                                    {
+                                                                        children: [],
+                                                                        id: 'bPjiD',
+                                                                        data: {
+                                                                            topic: {
+                                                                                children: [
+                                                                                    {
+                                                                                        text: '文文文文文文文文文文文文文文'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        width: 196,
+                                                                        height: 20
+                                                                    }
+                                                                ],
+                                                                id: 'rxcWj',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 56,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'MfjBx',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'zXrQr',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 28,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [],
+                                                        id: 'BFndz',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 98,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'ppmQt',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 70,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [],
+                                                        id: 'ctBTC',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文文文文文文、文文、文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 280,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'wZxte',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 84,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'mDCpP',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文文文文文/文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 272,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'tfRNR',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 70,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'eyGPy',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文文文文文文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 280,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'mrRwa',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 28,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'NGTyz',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 28,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'heQNA',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 56,
+                                        height: 20
+                                    }
+                                ],
+                                id: 'HTrre',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 84,
+                                height: 20
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [
+                                            {
+                                                children: [],
+                                                id: 'EEMGJ',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'XHayD',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 56,
+                                        height: 20
+                                    }
+                                ],
+                                id: 'XAJpE',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 84,
+                                height: 20
+                            }
+                        ],
+                        id: 'bbsEb',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 56,
+                        height: 20
+                    },
+                    {
+                        children: [
+                            {
+                                children: [
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'iYbCQ',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文文文文文80'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 185,
+                                                                height: 20
+                                                            },
+                                                            {
+                                                                children: [],
+                                                                id: 'HCJCm',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文70'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 129,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'jRCCb',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 42,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'yhkFx',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '1~99文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 78,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'xaCEB',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 56,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'pmxhR',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 28,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [],
+                                                        id: 'ritsK',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文文 <、文文文文文 >'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 240,
+                                                        height: 20
+                                                    }
+                                                ],
+                                                id: 'NstMd',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [],
+                                                        id: 'nidSG',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文文文文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 224,
+                                                        height: 20,
+                                                        points: [[0, 0]]
+                                                    },
+                                                    {
+                                                        children: [],
+                                                        id: 'fecXn',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文文文文文文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 168,
+                                                        height: 20,
+                                                        points: [[0, 58]]
+                                                    }
+                                                ],
+                                                id: 'ktkYF',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'irdXp',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 42,
+                                        height: 20
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                children: [],
+                                                id: 'pCtZp',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 56,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'yNDRm',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 28,
+                                        height: 20
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'tNzEa',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文“文文文文”'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 168,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'EnzmE',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文文文文文文文<文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 269,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'GrTYN',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文“文文”'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 140,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'MKAmr',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文文文文文文文≥文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 269,
+                                                        height: 20,
+                                                        points: [[0, 0]]
+                                                    }
+                                                ],
+                                                id: 'RwNJt',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 126,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'NDmWy',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'WsCAx',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文-文文文文文文文文文＞文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 321,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'miBXy',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20
+                                                            }
+                                                        ],
+                                                        id: 'NGrdG',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文-文文文文文文文文文≤文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 317,
+                                                        height: 20,
+                                                        points: [[0, 0]]
+                                                    }
+                                                ],
+                                                id: 'cKcMz',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 70,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'xynxx',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 42,
+                                        height: 20
+                                    }
+                                ],
+                                id: 'KcnXX',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文-文文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 119,
+                                height: 20
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'RwhTx',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'GiKFs',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文-文文文文-文文文文文文文文文文文文文>文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 435,
+                                                        height: 20
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'xFHsc',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'GXnRe',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文-文文文文-文文文文文文文文文文文文文≤文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 435,
+                                                        height: 20,
+                                                        points: [[0, 0]]
+                                                    }
+                                                ],
+                                                id: 'FSTRr',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文文文文文文文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 210,
+                                                height: 20
+                                            },
+                                            {
+                                                children: [
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'EhAbt',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'iTZyt',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文-文文文文-文文文文文文文文文文文文文文>文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 449,
+                                                        height: 20,
+                                                        points: [[0, 0]]
+                                                    },
+                                                    {
+                                                        children: [
+                                                            {
+                                                                children: [],
+                                                                id: 'bphQJ',
+                                                                data: {
+                                                                    topic: {
+                                                                        children: [
+                                                                            {
+                                                                                text: '文文文文文文文文'
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                width: 112,
+                                                                height: 20,
+                                                                points: [[0, 0]]
+                                                            }
+                                                        ],
+                                                        id: 'QwkJe',
+                                                        data: {
+                                                            topic: {
+                                                                children: [
+                                                                    {
+                                                                        text: '文文文文文文-文文文文-文文文文-文文文文文文文文文文文文文文≤文文'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        width: 449,
+                                                        height: 20,
+                                                        points: [[0, 58]]
+                                                    }
+                                                ],
+                                                id: 'BwYax',
+                                                data: {
+                                                    topic: {
+                                                        children: [
+                                                            {
+                                                                text: '文文文文文文文文文文文文文文文文'
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                width: 224,
+                                                height: 20
+                                            }
+                                        ],
+                                        id: 'xsDAa',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: '文文文'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 42,
+                                        height: 20
+                                    }
+                                ],
+                                id: 'QBshb',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: '文文-文文文文文文'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 119,
+                                height: 20
+                            }
+                        ],
+                        id: 'WdpSe',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 56,
+                        height: 20
+                    }
+                ],
+                id: 'tpzZt',
+                data: {
+                    topic: {
+                        children: [
+                            {
+                                text: '文文文'
+                            }
+                        ]
+                    }
+                },
+                width: 42,
+                height: 20
+            },
+            {
+                children: [
+                    {
+                        children: [
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'fZYEZ',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: 'id、qc_group_id、qc_group_name、qc_bodypart_id、qc_bodypart_name、study_date、department_id、qc_bodypart_day_statistics_json_result、create_time、update_time'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 476,
+                                        height: 60
+                                    }
+                                ],
+                                id: 'waBJM',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: 'study_qc_qc_bodypart_day_statistics'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 244,
+                                height: 20
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'acPAM',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: 'id、qc_bodypart_day_statistics_id、qualitative_detail_json、create_time、update_time'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 476,
+                                        height: 40
+                                    }
+                                ],
+                                id: 'QHxTY',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: 'study_qc_qc_bodypart_qualitative_detail'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 269,
+                                height: 20
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'pCWac',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: 'id、qc_bodypart_day_statistics_id、deduction_item_id、deduction_item_detail_json、create_time、update_time'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 476,
+                                        height: 40
+                                    }
+                                ],
+                                id: 'KNZjc',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: 'study_qc_qc_bodypart_deduction_item_detail'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 304,
+                                height: 20
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'jHdee',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: 'id、study_doctor_id、study_doctor_name、qc_bodypart_id、qc_bodypart_name、study_date、department_id、qc_bodypart_study_statistics_json、create_time、update_time'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 476,
+                                        height: 60
+                                    }
+                                ],
+                                id: 'PNBCQ',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: 'study_qc_study_doctor_qc_bodypart_day_statistics'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 337,
+                                height: 20
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'YBYib',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: 'id、study_doctor_qc_bodypart_day_statistics_id、qualitative_detail_json、create_time、update_time'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 476,
+                                        height: 40
+                                    }
+                                ],
+                                id: 'JcFaR',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: 'study_qc_study_doctor_qc_bodypart_qualitative_detail'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 363,
+                                height: 20
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        id: 'TTYaE',
+                                        data: {
+                                            topic: {
+                                                children: [
+                                                    {
+                                                        text: 'id、study_doctor_qc_bodypart_day_statistics_id、deduction_item_id、deduction_item_detail_json、create_time、update_time、'
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        width: 476,
+                                        height: 40
+                                    }
+                                ],
+                                id: 'JDEMF',
+                                data: {
+                                    topic: {
+                                        children: [
+                                            {
+                                                text: 'study_qc_study_doctor_qc_bodypart_deduction_item_detail'
+                                            }
+                                        ]
+                                    }
+                                },
+                                width: 397,
+                                height: 20
+                            }
+                        ],
+                        id: 'ckDic',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 42,
+                        height: 20
+                    }
+                ],
+                id: 'enHrX',
+                data: {
+                    topic: {
+                        children: [
+                            {
+                                text: '文文文文文'
+                            }
+                        ]
+                    }
+                },
+                width: 70,
+                height: 20
+            },
+            {
+                children: [
+                    {
+                        children: [],
+                        id: 'sKSQp',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: 'MM01-544【文文文文文文文文文文】文文文文文文文文文文文文，文文500'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 476,
+                        height: 40
+                    },
+                    {
+                        children: [],
+                        id: 'aaJHY',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: 'MM01-543【文文文文文文文文】文文文文文文文文文文文文，文文文文文文文文，文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 476,
+                        height: 40
+                    },
+                    {
+                        children: [],
+                        id: 'eJmni',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: 'MM01-542【文文文文文文文文】文文文文文文文，文文文文文文文文文文文文，文文文文文文文文文文文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 476,
+                        height: 40
+                    },
+                    {
+                        children: [],
+                        id: 'WiPnA',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: 'MM01-56【文文文文文文】文文文文，文文文文文文文/文文文文文文/文文文文文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 476,
+                        height: 40
+                    },
+                    {
+                        children: [],
+                        id: 'CxRCP',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: 'MM01-510【文文文文文文文文】文文文文文文文文文文文文文文文文文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 453,
+                        height: 20
+                    }
+                ],
+                id: 'HEKKs',
+                data: {
+                    topic: {
+                        children: [
+                            {
+                                text: '文文文文'
+                            }
+                        ]
+                    }
+                },
+                width: 56,
+                height: 20
+            },
+            {
+                children: [
+                    {
+                        children: [],
+                        id: 'DiQPP',
+                        data: {
+                            topic: {
+                                children: [
+                                    {
+                                        text: '文'
+                                    }
+                                ]
+                            }
+                        },
+                        width: 14,
+                        height: 20
+                    }
+                ],
+                id: 'rbYKp',
+                data: {
+                    topic: {
+                        children: [
+                            {
+                                text: '文文文文'
+                            }
+                        ]
+                    }
+                },
+                width: 56,
+                height: 20
+            },
+            {
+                children: [],
+                id: 'YKMsm',
+                data: {
+                    topic: {
+                        children: [
+                            {
+                                text: '文文文文文文文文'
+                            }
+                        ]
+                    }
+                },
+                width: 112,
+                height: 20,
+                strokeWidth: 2,
+                branchWidth: 2,
+                start: 1,
+                end: 1
             }
         ],
-        target: {
-            marker: 'arrow',
-            connection: [0, 0.5],
-            boundId: 'WEycp'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'dBQka',
-        type: 'arrow-line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'rJcaT'
-        },
-        texts: [
-            {
-                text: {
-                    children: [
-                        {
-                            text: '是'
-                        }
-                    ]
-                },
-                position: 0.5,
-                width: 14,
-                height: 20
+        id: 'ijPxT',
+        data: {
+            topic: {
+                children: [
+                    {
+                        text: 'V2.1.0-文文文文文文文文文文文文文文文文文文文'
+                    }
+                ]
             }
-        ],
-        target: {
-            marker: 'arrow',
-            connection: [0.5, 0],
-            boundId: 'GMKAE'
         },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'nTHrr',
-        type: 'arrow-line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'RpDPy'
-        },
-        texts: [],
-        target: {
-            marker: 'arrow',
-            connection: [0.5, 0],
-            boundId: 'rJcaT'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'PMShX',
-        type: 'arrow-line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'xRzpF'
-        },
-        texts: [],
-        target: {
-            marker: 'arrow',
-            connection: [0.5, 0],
-            boundId: 'RpDPy'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
+        width: 403,
+        height: 25,
+        layout: 'right',
+        rightNodeCount: 4,
+        isRoot: true,
+        type: 'mindmap',
+        points: [[230, 208]]
     }
-] as PlaitDrawElement[];
+] as any as PlaitDrawElement[];
 
 export const mockTableData: PlaitDrawElement[] = [
     {
