@@ -8,11 +8,10 @@ import {
     isIndentedLayout
 } from '@plait/layouts';
 import { MindElement, MindElementShape } from '../../interfaces/element';
-import { BASE, STROKE_WIDTH } from '../../constants/default';
+import { BASE } from '../../constants/default';
 import { getRootLayout } from '../layout';
 import { NodeSpace } from './node-space';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
-import { isNormalized, normalizedElement } from '../normalize';
 
 export const getLayoutOptions = (board: PlaitMindBoard) => {
     function getMainAxle(element: MindElement, parent?: LayoutNode) {
@@ -34,15 +33,9 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
 
     return {
         getHeight(element: MindElement) {
-            if (!isNormalized(element)) {
-                normalizedElement(element);
-            }
             return NodeSpace.getNodeHeight(board, element);
         },
         getWidth(element: MindElement) {
-            if (!isNormalized(element)) {
-                normalizedElement(element);
-            }
             return NodeSpace.getNodeWidth(board, element);
         },
         getHorizontalGap(element: MindElement, parent?: LayoutNode) {

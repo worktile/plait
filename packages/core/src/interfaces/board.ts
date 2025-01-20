@@ -68,6 +68,7 @@ export interface PlaitBoard {
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => PlaitElement[];
     dblClick: (event: MouseEvent) => void;
+    normalizeElement: (context: PlaitPluginElementContext) => void;
     drawElement: (context: PlaitPluginElementContext) => ComponentType<ElementFlavour>;
     isRectangleHit: (element: PlaitElement, range: Selection) => boolean;
     // When the element has no fill color, it is considered a hit only if it hits the border.

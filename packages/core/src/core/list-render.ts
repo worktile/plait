@@ -130,6 +130,7 @@ const createPluginComponent = (
 ) => {
     const instance = new componentType();
     instance.context = context;
+    board.normalizeElement(context);
     try {
         instance.initialize();
     } catch (error) {
