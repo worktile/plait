@@ -71,6 +71,9 @@ export function getNearestPointBetweenPointAndSegment(point: Point, linePoints: 
 export function distanceBetweenPointAndSegments(points: Point[], point: Point) {
     const len = points.length;
     let distance = Infinity;
+    if (points.length === 1) {
+        return distanceBetweenPointAndPoint(...points[0], ...point);
+    }
     for (let i = 0; i < len - 1; i++) {
         const p = points[i];
         const p2 = points[i + 1];
@@ -184,6 +187,9 @@ export const isLineHitLine = (a: Point, b: Point, c: Point, d: Point): boolean =
 };
 
 export const isLineHitRectangle = (points: Point[], rectangle: RectangleClient) => {
+    if (points.length === 1) {
+        return RectangleClient.isPointInRectangle(rectangle, points[0]);
+    }
     const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
     const len = points.length;
     for (let i = 0; i < len; i++) {

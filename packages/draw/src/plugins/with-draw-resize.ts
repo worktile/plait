@@ -60,8 +60,8 @@ export function withDrawResize(board: PlaitBoard) {
         return (
             elements.length >= 1 &&
             elements.every(
-                el =>
-                    (PlaitDrawElement.isDrawElement(el) || PlaitDrawElement.isCustomGeometryElement(board, el)) &&
+                (el) =>
+                    (PlaitDrawElement.isDrawElement(el) || (PlaitDrawElement.isCustomGeometryElement(board, el) && el.points.length > 1)) &&
                     !isSingleSelectLine(board) &&
                     !isSingleSelectSwimlane(board)
             )
@@ -129,7 +129,7 @@ export function withDrawResize(board: PlaitBoard) {
 
             if (bulkRotationRef) {
                 const boundingBoxCornerPoints = RectangleClient.getPoints(resizeRef.rectangle!);
-                const resizedBoundingBoxCornerPoints = boundingBoxCornerPoints.map(p => {
+                const resizedBoundingBoxCornerPoints = boundingBoxCornerPoints.map((p) => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                 });
                 const newBoundingBox = RectangleClient.getRectangleByPoints(resizedBoundingBoxCornerPoints);
@@ -154,7 +154,7 @@ export function withDrawResize(board: PlaitBoard) {
                 debugGenerator.isDebug() && debugGenerator.drawRectangle(board, adjustedNewBoundingBoxPoints);
             }
 
-            resizeRef.element.forEach(target => {
+            resizeRef.element.forEach((target) => {
                 const path = PlaitBoard.findPath(board, target);
                 let points;
                 if (bulkRotationRef) {
@@ -162,7 +162,7 @@ export function withDrawResize(board: PlaitBoard) {
                     points = reversedPoints.map((p: Point) => {
                         return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                     }) as [Point, Point];
-                    const adjustTargetPoints = points.map(p => [
+                    const adjustTargetPoints = points.map((p) => [
                         p[0] + bulkRotationRef!.offsetX,
                         p[1] + bulkRotationRef!.offsetY
                     ]) as Point[];
@@ -180,7 +180,7 @@ export function withDrawResize(board: PlaitBoard) {
                             resizeSnapRef.yZoom
                         );
                     } else {
-                        points = target.points.map(p => {
+                        points = target.points.map((p) => {
                             return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                         });
                     }
@@ -255,7 +255,7 @@ export function withDrawResize(board: PlaitBoard) {
                 const centerPoint = RectangleClient.getCenterPoint(boundingRectangle);
                 corners = rotatePoints(corners, centerPoint, angle) as [Point, Point, Point, Point];
             }
-            corners.forEach(corner => {
+            corners.forEach((corner) => {
                 const g = drawHandle(board, corner);
                 handleG && handleG.append(g);
             });
@@ -350,7 +350,7 @@ export const getResizePointsByOtherwiseAxis = (
     let resultPoints = points;
     resultPoints = rotatePoints(resultPoints, RectangleClient.getCenterPoint(currentRectangle), (1 / 2) * Math.PI);
     debugGenerator.isDebug() && debugGenerator.drawRectangle(board, resultPoints, { stroke: 'blue' });
-    resultPoints = resultPoints.map(p => {
+    resultPoints = resultPoints.map((p) => {
         return movePointByZoomAndOriginPoint(p, resizeOriginPoint, xZoom, yZoom);
     });
     debugGenerator.isDebug() && debugGenerator.drawRectangle(board, resultPoints);
