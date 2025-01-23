@@ -10,9 +10,14 @@ import {
     HIT_DISTANCE_BUFFER,
     rotateAntiPointsByElement,
     isPointInPolygon,
-    rotatePointsByAngle
+    rotatePointsByAngle,
+    createDebugGenerator,
+    getNearestPointBetweenPointAndArc,
+    getEllipseArcCenter
 } from '@plait/core';
 import {
+    BasicShapes,
+    GeometryShapes,
     PlaitArrowLine,
     PlaitCommonGeometry,
     PlaitCustomGeometry,
@@ -32,6 +37,7 @@ import { isMultipleTextGeometry } from './multi-text-geometry';
 import { getFirstTextEditor, isFilled, sortElementsByArea } from '@plait/common';
 import { getVectorLinePoints } from './vector-line';
 import { Editor, Element } from 'slate';
+import { generateCloudPath } from '../engines/basic-shapes/cloud';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -188,10 +194,36 @@ export const getFirstTextOrLineElement = (elements: PlaitElement[]) => {
     return null;
 };
 
+const debugKey = 'debug:plait:hit:shape:edge:sample-points';
+const debugGenerator = createDebugGenerator(debugKey);
+const shapes: GeometryShapes[] = [BasicShapes.cloud];
+
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point, isStrict: boolean = true) => {
     const rectangle = board.getRectangle(element);
     point = rotateAntiPointsByElement(point, element) || point;
-    if (PlaitDrawElement.isGeometry(element)) {
+    if (PlaitDrawElement.isGeometry(element) && rectangle) {
+        if (debugGenerator.isDebug() && shapes.includes(element.shape)) {
+            debugGenerator.clear();
+            const { startPoint, arcs } = generateCloudPath(rectangle);
+            const points = [startPoint, ...arcs.map((arc) => [arc.endX, arc.endY])] as Point[];
+            debugGenerator.drawCircles(board, points, 5, false);
+            let minDistance = Infinity;
+            let nearestPoint = point;
+            let currentStart = startPoint;
+            for (const arc of arcs) {
+                const arcNearestPoint = getNearestPointBetweenPointAndArc(point, currentStart, arc);
+                const distance = distanceBetweenPointAndPoint(point[0], point[1], arcNearestPoint[0], arcNearestPoint[1]);
+                const { center } = getEllipseArcCenter(currentStart, arc);
+                debugGenerator.drawCircles(board, [center], 8, false, { fill: 'yellow' });
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestPoint = arcNearestPoint;
+                }
+                currentStart = [arc.endX, arc.endY];
+            }
+            debugGenerator.drawCircles(board, [point], 12, false, { fill: 'black', stroke: 'black' });
+            debugGenerator.drawCircles(board, [nearestPoint], 12, false, { fill: 'green', stroke: 'green' });
+        }
         if (isHitEdgeOfShape(board, element, point, HIT_DISTANCE_BUFFER)) {
             return true;
         }

@@ -1,37 +1,120 @@
-import {
-    PlaitBoard,
-    Point,
-    PointOfRectangle,
-    RectangleClient,
-    getNearestPointBetweenPointAndSegments,
-    setPathStrokeLinecap
-} from '@plait/core';
+import { PlaitBoard, Point, PointOfRectangle, RectangleClient, distanceBetweenPointAndPoint, setPathStrokeLinecap } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
+import { getNearestPointBetweenPointAndArc } from '@plait/core';
+
+interface CloudArcPoint {
+    rx: number;
+    ry: number;
+    xAxisRotation: number;
+    largeArcFlag: 0 | 1;
+    sweepFlag: 0 | 1;
+    endX: number;
+    endY: number;
+}
+
+export function generateCloudPath(rectangle: RectangleClient): { startPoint: Point; arcs: CloudArcPoint[] } {
+    const divisionWidth = rectangle.width / 7;
+    const divisionHeight = rectangle.height / 3.2;
+    const xRadius = divisionWidth / 8.5;
+    const yRadius = divisionHeight / 20;
+
+    const startPoint = [rectangle.x + divisionWidth, rectangle.y + divisionHeight] as Point;
+
+    const arcs: CloudArcPoint[] = [
+        {
+            rx: xRadius,
+            ry: yRadius * 1.2,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth * 2,
+            endY: rectangle.y + divisionHeight / 2
+        },
+        {
+            rx: xRadius,
+            ry: yRadius,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth * 4.2,
+            endY: rectangle.y + divisionHeight / 2.2
+        },
+        {
+            rx: xRadius,
+            ry: yRadius,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth * 5.8,
+            endY: rectangle.y + divisionHeight
+        },
+        {
+            rx: xRadius,
+            ry: yRadius * 1.3,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth * 6,
+            endY: rectangle.y + divisionHeight * 2.2
+        },
+        {
+            rx: xRadius,
+            ry: yRadius * 1.2,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth * 5,
+            endY: rectangle.y + divisionHeight * 2.8
+        },
+        {
+            rx: xRadius,
+            ry: yRadius / 1.2,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth * 2.8,
+            endY: rectangle.y + divisionHeight * 2.8
+        },
+        {
+            rx: xRadius,
+            ry: yRadius,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth,
+            endY: rectangle.y + divisionHeight * 2.2
+        },
+        {
+            rx: xRadius,
+            ry: yRadius * 1.42,
+            xAxisRotation: 0,
+            largeArcFlag: 1,
+            sweepFlag: 1,
+            endX: rectangle.x + divisionWidth,
+            endY: rectangle.y + divisionHeight
+        }
+    ];
+
+    return { startPoint, arcs };
+}
 
 export const CloudEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
-        const divisionWidth = rectangle.width / 7;
-        const divisionHeight = rectangle.height / 3.2;
-        const xRadius = divisionWidth / 8.5;
-        const yRadius = divisionHeight / 20;
-        const svgElement = rs.path(
-            `M ${rectangle.x + divisionWidth} ${rectangle.y + divisionHeight}
-             A ${xRadius} ${yRadius * 1.2} 0 1 1 ${rectangle.x + divisionWidth * 2} ${rectangle.y + divisionHeight / 2}
-             A ${xRadius} ${yRadius} 0 1 1 ${rectangle.x + divisionWidth * 4.2} ${rectangle.y + divisionHeight / 2.2}
-             A ${xRadius} ${yRadius} 0 1 1 ${rectangle.x + divisionWidth * 5.8} ${rectangle.y + divisionHeight}
-             A ${xRadius} ${yRadius * 1.3} 0 1 1 ${rectangle.x + divisionWidth * 6} ${rectangle.y + divisionHeight * 2.2}
-             A ${xRadius} ${yRadius * 1.2} 0 1 1 ${rectangle.x + divisionWidth * 5} ${rectangle.y + divisionHeight * 2.8}
-             A ${xRadius} ${yRadius / 1.2} 0 1 1 ${rectangle.x + divisionWidth * 2.8} ${rectangle.y + divisionHeight * 2.8}
-             A ${xRadius} ${yRadius} 0 1 1 ${rectangle.x + divisionWidth} ${rectangle.y + divisionHeight * 2.2}
-             A ${xRadius} ${yRadius * 1.42} 0 1 1 ${rectangle.x + divisionWidth} ${rectangle.y + divisionHeight}
-            Z`,
-            { ...options, fillStyle: 'solid' }
-        );
+        const { startPoint, arcs } = generateCloudPath(rectangle);
+
+        const pathData =
+            `M ${startPoint[0]} ${startPoint[1]} ` +
+            arcs
+                .map((arc) => `A ${arc.rx} ${arc.ry} ${arc.xAxisRotation} ${arc.largeArcFlag} ${arc.sweepFlag} ${arc.endX} ${arc.endY}`)
+                .join('\n') +
+            ' Z';
+
+        const svgElement = rs.path(pathData, { ...options, fillStyle: 'solid' });
         setPathStrokeLinecap(svgElement, 'round');
         return svgElement;
     },
@@ -43,7 +126,25 @@ export const CloudEngine: ShapeEngine = {
         return RectangleClient.getCornerPoints(rectangle);
     },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
-        return getNearestPointBetweenPointAndSegments(point, CloudEngine.getCornerPoints(rectangle));
+        const { startPoint, arcs } = generateCloudPath(rectangle);
+        let minDistance = Infinity;
+        let nearestPoint = point;
+
+        // 检查每个弧段
+        let currentStart = startPoint;
+        for (const arc of arcs) {
+            const arcNearestPoint = getNearestPointBetweenPointAndArc(point, currentStart, arc);
+            const distance = distanceBetweenPointAndPoint(point[0], point[1], arcNearestPoint[0], arcNearestPoint[1]);
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestPoint = arcNearestPoint;
+            }
+
+            currentStart = [arc.endX, arc.endY];
+        }
+
+        return nearestPoint;
     },
     getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
         const corners = CloudEngine.getCornerPoints(rectangle);
