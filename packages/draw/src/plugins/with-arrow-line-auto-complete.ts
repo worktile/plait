@@ -84,6 +84,7 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
                     sourceElement,
                     lineShapeG
                 );
+                Transforms.addSelectionWithTemporaryElements(board, []);
             }
         }
         pointerMove(event);
