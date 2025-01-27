@@ -10,7 +10,7 @@ import {
 import { PlaitCommonGeometry, PlaitGeometry, PlaitMultipleTextGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { DrawTransforms } from './transforms';
-import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, canResize } from '@plait/common';
+import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, hasResizeHandle } from '@plait/common';
 import { ArrowLineAutoCompleteGenerator } from './generators/arrow-line-auto-complete.generator';
 import { getTextRectangle, isGeometryIncludeText, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { DrawTextInfo, TextGenerator } from './generators/text.generator';
@@ -55,7 +55,7 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
                 return RectangleClient.getRectangleByPoints(element.points);
             },
             hasResizeHandle: () => {
-                return canResize(this.board, this.element);
+                return hasResizeHandle(this.board, this.element);
             }
         });
         this.lineAutoCompleteGenerator = new ArrowLineAutoCompleteGenerator(this.board);

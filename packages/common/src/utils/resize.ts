@@ -169,10 +169,15 @@ export const resetPointsAfterResize = (
     return rotatePoints(rotatedPoints, correctElementCenterPoint, -angle) as [Point, Point];
 };
 
-export const canResize = (board: PlaitBoard, element: PlaitElement) => {
+export const hasMoreThanOnePoint = (element: PlaitElement) => {
+    const points = element.points as Point[];
+    return points && points.length > 1;
+};
+
+export const hasResizeHandle = (board: PlaitBoard, element: PlaitElement) => {
     if (PlaitBoard.hasBeenTextEditing(board) || isSelectionMoving(board)) {
         return false;
     }
     const selectedElements = getSelectedElements(board);
-    return selectedElements.length === 1 && selectedElements[0] === element;
+    return selectedElements.length === 1 && selectedElements[0] === element && hasMoreThanOnePoint(element);
 };

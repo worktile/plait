@@ -11,7 +11,7 @@ import {
     updateForeignObject
 } from '@plait/core';
 import { Generator, GeneratorExtraData, GeneratorOptions } from '../generators/generator';
-import { CommonImageItem, canResize, getElementOfFocusedImage } from '../utils';
+import { CommonImageItem, hasResizeHandle, getElementOfFocusedImage } from '../utils';
 import { ActiveGenerator } from '../generators/active.generator';
 import { PlaitImageBoard, ImageComponentRef, ImageProps } from './with-image';
 
@@ -85,7 +85,7 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
                 return this.options.getRectangle(this.element);
             },
             hasResizeHandle: () => {
-                const isSelectedImageElement = canResize(this.board, this.element);
+                const isSelectedImageElement = hasResizeHandle(this.board, this.element);
                 const isSelectedImage = !!getElementOfFocusedImage(this.board);
                 return isSelectedImage || isSelectedImageElement;
             }

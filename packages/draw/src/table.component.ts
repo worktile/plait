@@ -7,7 +7,7 @@ import {
     setAngleForG,
     degreesToRadians
 } from '@plait/core';
-import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, canResize } from '@plait/common';
+import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, hasResizeHandle } from '@plait/common';
 import { PlaitTable, PlaitTableBoard, PlaitTableCell, PlaitTableElement } from './interfaces/table';
 import { DrawTextInfo, TextGenerator } from './generators/text.generator';
 import { TableGenerator } from './generators/table.generator';
@@ -60,7 +60,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
                 if (cells?.length) {
                     return false;
                 }
-                return canResize(this.board, this.element);
+                return hasResizeHandle(this.board, this.element);
             }
         });
         this.tableGenerator = new TableGenerator<T>(this.board);
