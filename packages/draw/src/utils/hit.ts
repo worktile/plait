@@ -204,13 +204,13 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
     if (PlaitDrawElement.isGeometry(element) && rectangle) {
         if (debugGenerator.isDebug() && shapes.includes(element.shape)) {
             debugGenerator.clear();
-            const { startPoint, arcs } = generateCloudPath(rectangle);
-            const points = [startPoint, ...arcs.map((arc) => [arc.endX, arc.endY])] as Point[];
+            const { startPoint, arcCommands } = generateCloudPath(rectangle);
+            const points = [startPoint, ...arcCommands.map((arc) => [arc.endX, arc.endY])] as Point[];
             debugGenerator.drawCircles(board, points, 5, false);
             let minDistance = Infinity;
             let nearestPoint = point;
             let currentStart = startPoint;
-            for (const arc of arcs) {
+            for (const arc of arcCommands) {
                 const arcNearestPoint = getNearestPointBetweenPointAndArc(point, currentStart, arc);
                 const distance = distanceBetweenPointAndPoint(point[0], point[1], arcNearestPoint[0], arcNearestPoint[1]);
                 const { center } = getEllipseArcCenter(currentStart, arc);

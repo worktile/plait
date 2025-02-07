@@ -15,3 +15,4 @@ export * from './history';
 export * from './theme';
 export * from './direction';
 export * from './group';
+export * from './svg-arc-command';

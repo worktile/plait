@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, distanceBetweenPointAndPoint, setPathStrokeLinecap } from '@plait/core';
+import { PlaitBoard, Point, PointOfRectangle, RectangleClient, SVGArcCommand, distanceBetweenPointAndPoint, setPathStrokeLinecap } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
@@ -6,17 +6,8 @@ import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { getNearestPointBetweenPointAndArc } from '@plait/core';
 
-interface CloudArcPoint {
-    rx: number;
-    ry: number;
-    xAxisRotation: number;
-    largeArcFlag: 0 | 1;
-    sweepFlag: 0 | 1;
-    endX: number;
-    endY: number;
-}
 
-export function generateCloudPath(rectangle: RectangleClient): { startPoint: Point; arcs: CloudArcPoint[] } {
+export function generateCloudPath(rectangle: RectangleClient): { startPoint: Point; arcCommands: SVGArcCommand[] } {
     const divisionWidth = rectangle.width / 7;
     const divisionHeight = rectangle.height / 3.2;
     const xRadius = divisionWidth / 8.5;
@@ -24,7 +15,7 @@ export function generateCloudPath(rectangle: RectangleClient): { startPoint: Poi
 
     const startPoint = [rectangle.x + divisionWidth, rectangle.y + divisionHeight] as Point;
 
-    const arcs: CloudArcPoint[] = [
+    const arcCommands: SVGArcCommand[] = [
         {
             rx: xRadius,
             ry: yRadius * 1.2,
@@ -99,18 +90,18 @@ export function generateCloudPath(rectangle: RectangleClient): { startPoint: Poi
         }
     ];
 
-    return { startPoint, arcs };
+    return { startPoint, arcCommands };
 }
 
 export const CloudEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
-        const { startPoint, arcs } = generateCloudPath(rectangle);
+        const { startPoint, arcCommands } = generateCloudPath(rectangle);
 
         const pathData =
             `M ${startPoint[0]} ${startPoint[1]} ` +
-            arcs
-                .map((arc) => `A ${arc.rx} ${arc.ry} ${arc.xAxisRotation} ${arc.largeArcFlag} ${arc.sweepFlag} ${arc.endX} ${arc.endY}`)
+            arcCommands
+                .map((command) => `A ${command.rx} ${command.ry} ${command.xAxisRotation} ${command.largeArcFlag} ${command.sweepFlag} ${command.endX} ${command.endY}`)
                 .join('\n') +
             ' Z';
 
@@ -126,14 +117,13 @@ export const CloudEngine: ShapeEngine = {
         return RectangleClient.getCornerPoints(rectangle);
     },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
-        const { startPoint, arcs } = generateCloudPath(rectangle);
+        const { startPoint, arcCommands } = generateCloudPath(rectangle);
         let minDistance = Infinity;
         let nearestPoint = point;
 
-        // 检查每个弧段
         let currentStart = startPoint;
-        for (const arc of arcs) {
-            const arcNearestPoint = getNearestPointBetweenPointAndArc(point, currentStart, arc);
+        for (const arcCommand of arcCommands) {
+            const arcNearestPoint = getNearestPointBetweenPointAndArc(point, currentStart, arcCommand);
             const distance = distanceBetweenPointAndPoint(point[0], point[1], arcNearestPoint[0], arcNearestPoint[1]);
 
             if (distance < minDistance) {
@@ -141,7 +131,7 @@ export const CloudEngine: ShapeEngine = {
                 nearestPoint = arcNearestPoint;
             }
 
-            currentStart = [arc.endX, arc.endY];
+            currentStart = [arcCommand.endX, arcCommand.endY];
         }
 
         return nearestPoint;
