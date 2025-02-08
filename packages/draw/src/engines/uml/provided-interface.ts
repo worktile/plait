@@ -3,6 +3,7 @@ import {
     Point,
     PointOfRectangle,
     RectangleClient,
+    SVGArcCommand,
     distanceBetweenPointAndPoint,
     getEllipseTangentSlope,
     getNearestPointBetweenPointAndEllipse,
@@ -16,39 +17,74 @@ import { getUnitVectorByPointAndPoint } from '@plait/common';
 
 const percentage = 0.54;
 
-export const getStartPoint = (rectangle: RectangleClient): Point => {
-    return [rectangle.x, rectangle.y + rectangle.height / 2];
-};
+interface ProvidedInterfacePathData {
+    startPoint: Point;
+    line: {
+        startX: number;
+        startY: number;
+        endX: number;
+        endY: number;
+    };
+    arcCommands: SVGArcCommand[];
+}
 
-export const getEndPoint = (rectangle: RectangleClient): Point => {
-    return [rectangle.x + rectangle.width * percentage, rectangle.y + rectangle.height / 2];
-};
+function generateProvidedInterfacePath(rectangle: RectangleClient): ProvidedInterfacePathData {
+    const centerY = rectangle.y + rectangle.height / 2;
+    const rx = (rectangle.width * (1 - percentage)) / 2;
+    const ry = rectangle.height / 2;
 
-export const arcPercentage = percentage + (1 - percentage) / 2;
+    const startPoint: Point = [rectangle.x, centerY];
+    const lineEndX = rectangle.x + rectangle.width * percentage;
 
-export const getArcCenter = (rectangle: RectangleClient): Point => {
-    return [rectangle.x + arcPercentage * rectangle.width, rectangle.y + rectangle.height / 2];
-};
+    return {
+        startPoint,
+        line: {
+            startX: startPoint[0],
+            startY: centerY,
+            endX: lineEndX,
+            endY: centerY
+        },
+        arcCommands: [
+            {
+                rx,
+                ry,
+                xAxisRotation: 0,
+                largeArcFlag: 1,
+                sweepFlag: 1,
+                endX: rectangle.x + rectangle.width,
+                endY: centerY
+            },
+            {
+                rx,
+                ry,
+                xAxisRotation: 0,
+                largeArcFlag: 1,
+                sweepFlag: 1,
+                endX: lineEndX,
+                endY: centerY
+            }
+        ]
+    };
+}
 
 export const ProvidedInterfaceEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
-        const startPoint = getStartPoint(rectangle);
-        const endPoint = getEndPoint(rectangle);
-        const shape = rs.path(
-            `M${startPoint[0]} ${startPoint[1]} 
-        H${endPoint[0]}
-        A${(rectangle.width * (1 - percentage)) / 2} ${rectangle.height / 2}, 0, 1, 1 ${rectangle.x + rectangle.width} ${
-                rectangle.y + rectangle.height / 2
-            }
-        A${(rectangle.width * (1 - percentage)) / 2} ${rectangle.height / 2}, 0, 1, 1 ${rectangle.x + rectangle.width * percentage} ${
-                rectangle.y + rectangle.height / 2
-            }`,
-            {
-                ...options,
-                fillStyle: 'solid'
-            }
-        );
+        const { startPoint, line, arcCommands } = generateProvidedInterfacePath(rectangle);
+
+        const pathData = [
+            `M${startPoint[0]} ${startPoint[1]}`,
+            `H${line.endX}`,
+            ...arcCommands.map(
+                (command) =>
+                    `A${command.rx} ${command.ry} ${command.xAxisRotation} ${command.largeArcFlag} ${command.sweepFlag} ${command.endX} ${command.endY}`
+            )
+        ].join(' ');
+
+        const shape = rs.path(pathData, {
+            ...options,
+            fillStyle: 'solid'
+        });
         setStrokeLinecap(shape, 'round');
         return shape;
     },
@@ -63,22 +99,20 @@ export const ProvidedInterfaceEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
-        const startPoint = getStartPoint(rectangle);
-        const endPoint = getEndPoint(rectangle);
-        const nearestPointForLine = getNearestPointBetweenPointAndSegments(point, [startPoint, endPoint]);
+        const { startPoint, line, arcCommands } = generateProvidedInterfacePath(rectangle);
+
+        // 检查直线段
+        const lineStart: Point = [line.startX, line.startY];
+        const lineEnd: Point = [line.endX, line.endY];
+        const nearestPointForLine = getNearestPointBetweenPointAndSegments(point, [lineStart, lineEnd]);
         const distanceForLine = distanceBetweenPointAndPoint(...point, ...nearestPointForLine);
-        const arcCenter = getArcCenter(rectangle);
-        const nearestPointForEllipse = getNearestPointBetweenPointAndEllipse(
-            point,
-            arcCenter,
-            (rectangle.width * (1 - percentage)) / 2,
-            rectangle.height / 2
-        );
+
+        // 检查圆弧段
+        const arcCenter = [rectangle.x + (3 * rectangle.width) / 4, line.startY] as Point;
+        const nearestPointForEllipse = getNearestPointBetweenPointAndEllipse(point, arcCenter, arcCommands[0].rx, arcCommands[0].ry);
         const distanceForEllipse = distanceBetweenPointAndPoint(...point, ...nearestPointForEllipse);
-        if (distanceForLine < distanceForEllipse) {
-            return nearestPointForLine;
-        }
-        return nearestPointForEllipse;
+
+        return distanceForLine < distanceForEllipse ? nearestPointForLine : nearestPointForEllipse;
     },
     getTangentVectorByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle) {
         const connectionPoint = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
