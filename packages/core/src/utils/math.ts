@@ -68,7 +68,7 @@ export function getNearestPointBetweenPointAndSegment(point: Point, linePoints: 
     return [xx, yy] as Point;
 }
 
-export function distanceBetweenPointAndSegments(points: Point[], point: Point) {
+export function distanceBetweenPointAndSegments(point: Point, points: Point[]) {
     const len = points.length;
     let distance = Infinity;
     if (points.length === 1) {
@@ -101,6 +101,23 @@ export function getNearestPointBetweenPointAndSegments(point: Point, points: Poi
         }
     }
     return result;
+}
+
+export function getNearestPointBetweenPointAndDiscreteSegments(point: Point, segments: [Point, Point][]): Point {
+    let minDistance = Infinity;
+    let nearestPoint = point;
+
+    for (const segment of segments) {
+        const currentNearestPoint = getNearestPointBetweenPointAndSegment(point, segment);
+        const currentDistance = distanceBetweenPointAndPoint(point[0], point[1], currentNearestPoint[0], currentNearestPoint[1]);
+
+        if (currentDistance < minDistance) {
+            minDistance = currentDistance;
+            nearestPoint = currentNearestPoint;
+        }
+    }
+
+    return nearestPoint;
 }
 
 export function getNearestPointBetweenPointAndEllipse(point: Point, center: Point, rx: number, ry: number): Point {
@@ -479,43 +496,38 @@ export function getPointBetween(x0: number, y0: number, x1: number, y1: number, 
 /**
  * 计算椭圆弧的中心点和实际半径
  */
-export function getEllipseArcCenter(
-    startPoint: Point,
-    arcCommand: SVGArcCommand
-): { center: Point; rx: number; ry: number } {
+export function getEllipseArcCenter(startPoint: Point, arcCommand: SVGArcCommand): { center: Point; rx: number; ry: number } {
     // 1. 将坐标转换到标准位置
     const dx = (arcCommand.endX - startPoint[0]) / 2;
     const dy = (arcCommand.endY - startPoint[1]) / 2;
     const cosAngle = Math.cos(arcCommand.xAxisRotation);
     const sinAngle = Math.sin(arcCommand.xAxisRotation);
-    
+
     // 旋转到椭圆坐标系
     const x1 = cosAngle * dx + sinAngle * dy;
     const y1 = -sinAngle * dx + cosAngle * dy;
-    
+
     // 2. 计算中心点
     const rx = Math.abs(arcCommand.rx);
     const ry = Math.abs(arcCommand.ry);
-    
+
     // 确保半径足够大
     const lambda = (x1 * x1) / (rx * rx) + (y1 * y1) / (ry * ry);
     const factor = lambda > 1 ? Math.sqrt(lambda) : 1;
-    
+
     const adjustedRx = rx * factor;
     const adjustedRy = ry * factor;
-    
+
     // 计算中心点坐标
     const sign = arcCommand.largeArcFlag === arcCommand.sweepFlag ? -1 : 1;
-    const sq = ((adjustedRx * adjustedRx * adjustedRy * adjustedRy) - 
-                (adjustedRx * adjustedRx * y1 * y1) - 
-                (adjustedRy * adjustedRy * x1 * x1)) / 
-               ((adjustedRx * adjustedRx * y1 * y1) + 
-                (adjustedRy * adjustedRy * x1 * x1));
+    const sq =
+        (adjustedRx * adjustedRx * adjustedRy * adjustedRy - adjustedRx * adjustedRx * y1 * y1 - adjustedRy * adjustedRy * x1 * x1) /
+        (adjustedRx * adjustedRx * y1 * y1 + adjustedRy * adjustedRy * x1 * x1);
     const coef = sign * Math.sqrt(Math.max(0, sq));
-    
+
     const centerX = coef * ((adjustedRx * y1) / adjustedRy);
     const centerY = coef * (-(adjustedRy * x1) / adjustedRx);
-    
+
     // 3. 转换回原始坐标系
     const cx = cosAngle * centerX - sinAngle * centerY + (startPoint[0] + arcCommand.endX) / 2;
     const cy = sinAngle * centerX + cosAngle * centerY + (startPoint[1] + arcCommand.endY) / 2;
@@ -527,20 +539,11 @@ export function getEllipseArcCenter(
     };
 }
 
-export function getNearestPointBetweenPointAndArc(
-    point: Point,
-    startPoint: Point,
-    arcCommand: SVGArcCommand
-): Point {
+export function getNearestPointBetweenPointAndArc(point: Point, startPoint: Point, arcCommand: SVGArcCommand): Point {
     const { center, rx, ry } = getEllipseArcCenter(startPoint, arcCommand);
 
     // 获取椭圆上的最近点
-    const nearestPoint = getNearestPointBetweenPointAndEllipse(
-        point,
-        center,
-        rx,
-        ry
-    );
+    const nearestPoint = getNearestPointBetweenPointAndEllipse(point, center, rx, ry);
 
     // 判断最近点是否在弧段上
     const startAngle = Math.atan2(startPoint[1] - center[1], startPoint[0] - center[0]);
@@ -563,14 +566,14 @@ export function getNearestPointBetweenPointAndArc(
 function isAngleBetween(angle: number, start: number, end: number, clockwise: boolean): boolean {
     // 标准化角度到 [0, 2π]
     const normalize = (a: number) => ((a % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-    
+
     const a = normalize(angle);
     const s = normalize(start);
     const e = normalize(end);
 
     if (clockwise) {
-        return s <= e ? (a >= s && a <= e) : (a >= s || a <= e);
+        return s <= e ? a >= s && a <= e : a >= s || a <= e;
     } else {
-        return s >= e ? (a <= s && a >= e) : (a <= s || a >= e);
+        return s >= e ? a <= s && a >= e : a <= s || a >= e;
     }
 }

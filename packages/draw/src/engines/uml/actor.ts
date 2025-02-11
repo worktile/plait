@@ -3,9 +3,13 @@ import {
     Point,
     PointOfRectangle,
     RectangleClient,
+    SVGArcCommand,
     W,
+    distanceBetweenPointAndPoint,
     getEllipseTangentSlope,
+    getNearestPointBetweenPointAndDiscreteSegments,
     getNearestPointBetweenPointAndEllipse,
+    getNearestPointBetweenPointAndSegment,
     getNearestPointBetweenPointAndSegments,
     getVectorFromPointAndSlope,
     setStrokeLinecap
@@ -16,26 +20,86 @@ import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getUnitVectorByPointAndPoint, rotateVector } from '@plait/common';
 
+interface ActorPathData {
+    headArcCommand: SVGArcCommand;
+    bodyLine: [Point, Point];
+    armsLine: [Point, Point];
+    leftLegLine: [Point, Point];
+    rightLegLine: [Point, Point];
+}
+
+function generateActorPath(rectangle: RectangleClient): ActorPathData {
+    const centerX = rectangle.x + rectangle.width / 2;
+    const headRadius = { width: rectangle.width / 3 / 2, height: rectangle.height / 4 / 2 };
+    const centerY = rectangle.y + rectangle.height / 4 / 2;
+
+    return {
+        headArcCommand: {
+            rx: headRadius.width,
+            ry: headRadius.height,
+            xAxisRotation: 0,
+            largeArcFlag: 0,
+            sweepFlag: 1,
+            endX: centerX,
+            endY: rectangle.y
+        },
+        bodyLine: [
+            [centerX, rectangle.y + rectangle.height / 4],
+            [centerX, rectangle.y + (rectangle.height / 4) * 3]
+        ],
+        armsLine: [
+            [rectangle.x, rectangle.y + rectangle.height / 2],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2]
+        ],
+        leftLegLine: [
+            [centerX, rectangle.y + (rectangle.height / 4) * 3],
+            [rectangle.x + rectangle.width / 12, rectangle.y + rectangle.height]
+        ],
+        rightLegLine: [
+            [centerX, rectangle.y + (rectangle.height / 4) * 3],
+            [rectangle.x + (rectangle.width / 12) * 11, rectangle.y + rectangle.height]
+        ]
+    };
+}
+
 export const ActorEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
-        const shape = rs.path(
-            `M${rectangle.x + rectangle.width / 2} ${rectangle.y + rectangle.height / 4}  
-            A${rectangle.width / 3 / 2} ${rectangle.height / 4 / 2}, 0, 0, 1, ${rectangle.x + rectangle.width / 2} ${rectangle.y} 
-            A${rectangle.width / 3 / 2} ${rectangle.height / 4 / 2}, 0, 0, 1, ${rectangle.x + rectangle.width / 2} ${rectangle.y +
-                rectangle.height / 4}
-            V${rectangle.y + (rectangle.height / 4) * 3}
-            M${rectangle.x + rectangle.width / 2} ${rectangle.y + rectangle.height / 2} H${rectangle.x}
-            M${rectangle.x + rectangle.width / 2} ${rectangle.y + rectangle.height / 2} H${rectangle.x + rectangle.width}
-            M${rectangle.x + rectangle.width / 2} ${rectangle.y + (rectangle.height / 4) * 3}
-            L${rectangle.x + rectangle.width / 12} ${rectangle.y + rectangle.height}
-            M${rectangle.x + rectangle.width / 2} ${rectangle.y + (rectangle.height / 4) * 3}
-            L${rectangle.x + (rectangle.width / 12) * 11} ${rectangle.y + rectangle.height}
-            `,
-            { ...options, fillStyle: 'solid' }
-        );
+        const { headArcCommand, bodyLine, armsLine, leftLegLine, rightLegLine } = generateActorPath(rectangle);
+
+        const pathData = [
+            // 头部（从中间开始画）
+            `M${bodyLine[0][0]} ${bodyLine[0][1]}`,
+            `A${headArcCommand.rx} ${headArcCommand.ry} ${headArcCommand.xAxisRotation} ${headArcCommand.largeArcFlag} ${headArcCommand.sweepFlag} ${headArcCommand.endX} ${headArcCommand.endY}`,
+            `A${headArcCommand.rx} ${headArcCommand.ry} ${headArcCommand.xAxisRotation} ${headArcCommand.largeArcFlag} ${headArcCommand.sweepFlag} ${bodyLine[0][0]} ${bodyLine[0][1]}`,
+            // 身体
+            `V${bodyLine[1][1]}`,
+            // 手臂
+            `M${armsLine[0][0]} ${armsLine[0][1]} H${armsLine[1][0]}`,
+            // 腿
+            `M${leftLegLine[0][0]} ${leftLegLine[0][1]} L${leftLegLine[1][0]} ${leftLegLine[1][1]}`,
+            `M${rightLegLine[0][0]} ${rightLegLine[0][1]} L${rightLegLine[1][0]} ${rightLegLine[1][1]}`
+        ].join(' ');
+
+        const shape = rs.path(pathData, { ...options, fillStyle: 'solid' });
         setStrokeLinecap(shape, 'round');
         return shape;
+    },
+
+    getNearestPoint(rectangle: RectangleClient, point: Point) {
+        const { headArcCommand, bodyLine, armsLine, leftLegLine, rightLegLine } = generateActorPath(rectangle);
+
+        // 检查头部椭圆
+        const headCenter: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 4 / 2];
+        const nearestPointForHead = getNearestPointBetweenPointAndEllipse(point, headCenter, headArcCommand.rx, headArcCommand.ry);
+        const distanceForHead = distanceBetweenPointAndPoint(...point, ...nearestPointForHead);
+
+        // 检查所有线段
+        const allSegments = [bodyLine, armsLine, leftLegLine, rightLegLine];
+        const nearestPointForLines = getNearestPointBetweenPointAndDiscreteSegments(point, allSegments);
+        const distanceForLines = distanceBetweenPointAndPoint(...point, ...nearestPointForLines);
+
+        return distanceForHead < distanceForLines ? nearestPointForHead : nearestPointForLines;
     },
     isInsidePoint(rectangle: RectangleClient, point: Point) {
         const rangeRectangle = RectangleClient.getRectangleByPoints([point, point]);
@@ -44,39 +108,9 @@ export const ActorEngine: ShapeEngine = {
     getCornerPoints(rectangle: RectangleClient) {
         return RectangleClient.getCornerPoints(rectangle);
     },
-    getNearestPoint(rectangle: RectangleClient, point: Point) {
-        let nearestPoint = getNearestPointBetweenPointAndSegments(point, RectangleEngine.getCornerPoints(rectangle));
-
-        if (nearestPoint[1] >= rectangle.y && nearestPoint[1] <= rectangle.y + rectangle.height / 4) {
-            const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 4 / 2];
-            nearestPoint = getNearestPointBetweenPointAndEllipse(point, centerPoint, rectangle.width / 3 / 2, rectangle.height / 4 / 2);
-            return nearestPoint;
-        }
-        if (nearestPoint[1] >= rectangle.y + rectangle.height / 4 && nearestPoint[1] < rectangle.y + (rectangle.height / 4) * 3) {
-            if (nearestPoint[1] === rectangle.x + rectangle.width / 2) {
-                nearestPoint = getNearestPointBetweenPointAndSegments(point, [
-                    [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 4],
-                    [rectangle.x + rectangle.width / 2, rectangle.y + (rectangle.height / 4) * 3]
-                ]);
-            } else {
-                nearestPoint = getNearestPointBetweenPointAndSegments(point, [
-                    [rectangle.x, rectangle.y + rectangle.height / 2],
-                    [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2]
-                ]);
-            }
-            return nearestPoint;
-        }
-        nearestPoint = getNearestPointBetweenPointAndSegments(point, [
-            [rectangle.x + rectangle.width / 12, rectangle.y + rectangle.height],
-            [rectangle.x + rectangle.width / 2, rectangle.y + (rectangle.height / 4) * 3],
-            [rectangle.x + (rectangle.width / 12) * 11, rectangle.y + rectangle.height]
-        ]);
-        return nearestPoint;
-    },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-
     getTangentVectorByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle) {
         const connectionPoint = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
         if (connectionPoint[1] >= rectangle.y && connectionPoint[1] <= rectangle.y + rectangle.height / 4) {

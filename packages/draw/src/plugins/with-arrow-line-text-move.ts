@@ -41,7 +41,7 @@ export const withArrowLineTextMove = (board: PlaitBoard) => {
             if (element) {
                 const movingPoint = resizeState.endPoint;
                 const points = getArrowLinePoints(board, element);
-                const distance = distanceBetweenPointAndSegments(points, movingPoint);
+                const distance = distanceBetweenPointAndSegments(movingPoint, points);
                 if (distance <= movableBuffer) {
                     const point = getNearestPointBetweenPointAndSegments(movingPoint, points, false);
                     const position = getRatioByPoint(points, point);

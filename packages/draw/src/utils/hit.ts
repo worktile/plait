@@ -52,7 +52,7 @@ export const isHitArrowLineText = (board: PlaitBoard, element: PlaitArrowLine, p
 };
 
 export const isHitPolyLine = (pathPoints: Point[], point: Point) => {
-    const distance = distanceBetweenPointAndSegments(pathPoints, point);
+    const distance = distanceBetweenPointAndSegments(point, pathPoints);
     return distance <= HIT_DISTANCE_BUFFER;
 };
 
