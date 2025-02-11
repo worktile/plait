@@ -210,9 +210,9 @@ export const isLineHitRectangle = (points: Point[], rectangle: RectangleClient) 
     const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
     const len = points.length;
     for (let i = 0; i < len; i++) {
-        if (i === len - 1) continue;
         const p1 = points[i];
         const p2 = points[(i + 1) % len];
+        if (i === len - 1 && Point.isEquals(p1, p2)) continue;
         const isHit = isSingleLineHitRectangleEdge(p1, p2, rectangle);
         if (isHit || isPointInPolygon(p1, rectanglePoints) || isPointInPolygon(p2, rectanglePoints)) {
             return true;

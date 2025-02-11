@@ -59,7 +59,8 @@ export const withTable = (board: PlaitBoard) => {
     tableBoard.isRectangleHit = (element: PlaitElement, selection: Selection) => {
         if (PlaitDrawElement.isElementByTable(element)) {
             const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
-            return isLineHitRectangle(element.points, rangeRectangle);
+            const client = RectangleClient.getRectangleByPoints(element.points);
+            return isLineHitRectangle(RectangleClient.getCornerPoints(client), rangeRectangle);
         }
         return isRectangleHit(element, selection);
     };
