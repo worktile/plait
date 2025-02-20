@@ -58,11 +58,11 @@ export function withSelection(board: PlaitBoard) {
         const options = getSelectionOptions(board);
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
+            isMainPointer(event) &&
             !isHitTarget &&
             options.isMultipleSelection &&
             !options.isDisabledSelection
-        ) {
-            // start drag selection
+        ) { 
             if (isMobileDeviceEvent(event)) {
                 timerId = setTimeout(() => {
                     start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -86,6 +86,7 @@ export function withSelection(board: PlaitBoard) {
             timerId = null;
         }
         if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && start) {
+            event.preventDefault();
             const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
             selectionMovingG?.remove();

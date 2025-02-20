@@ -85,3 +85,7 @@ export const isSecondaryPointer = (event: MouseEvent) => {
 export const isMainPointer = (event: MouseEvent) => {
     return event.button === POINTER_BUTTON.MAIN;
 };
+
+export const isWheelPointer = (event: MouseEvent) => {
+    return event.button === POINTER_BUTTON.WHEEL;
+};

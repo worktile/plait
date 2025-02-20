@@ -2,7 +2,7 @@ import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove, WithHandPluginOptions, PlaitPluginKey } from '../interfaces';
 import { BoardTransforms } from '../transforms';
 import { distanceBetweenPointAndPoint, isHitElement, isMovingElements, isSelectionMoving, toHostPoint, toViewBoxPoint } from '../utils';
-import { isMainPointer } from '../utils/dom/common';
+import { isMainPointer, isWheelPointer } from '../utils/dom/common';
 import { isSmartHand } from '../utils/mobile';
 import { updateViewportContainerScroll } from '../utils/viewport';
 import { PlaitOptionsBoard } from './with-options';
@@ -13,6 +13,8 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     let movingPoint: PlaitBoardMove | null = null;
     let pointerDownEvent: PointerEvent | null = null;
 
+    let isWheelPointerState = false;
+
     board.pointerDown = (event: PointerEvent) => {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -22,6 +24,20 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
                 x: event.x,
                 y: event.y
             };
+            if (!PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
+                BoardTransforms.updatePointerType(board, PlaitPointerType.hand);
+                isMoving = true;
+                PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
+            }
+        } else if (isWheelPointer(event)) {
+            isWheelPointerState = true;
+            event.preventDefault();
+            movingPoint = {
+                x: event.x,
+                y: event.y
+            };
+            isMoving = true;
+            PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
         }
         pointerDownEvent = event;
         pointerDown(event);
@@ -48,7 +64,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
         }
         if (
-            (options?.isHandMode(board, event) || isSmartHand(board, event)) &&
+            (options?.isHandMode(board, event) || isSmartHand(board, event) || isWheelPointerState) &&
             isMoving &&
             movingPoint &&
             !isSelectionMoving(board) &&
@@ -75,10 +91,9 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         if (movingPoint) {
             movingPoint = null;
         }
-        if (isMoving) {
-            isMoving = false;
-            PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
-        }
+        isMoving = false;
+        PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
+        isWheelPointerState = false;
         globalPointerUp(event);
     };
 
@@ -86,6 +101,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         if (event.code === 'Space') {
             if (!PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
                 BoardTransforms.updatePointerType(board, PlaitPointerType.hand);
+                PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             }
             event.preventDefault();
         }
@@ -95,6 +111,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.keyUp = (event: KeyboardEvent) => {
         if (!board.options.readonly && event.code === 'Space') {
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+            PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
         }
         keyUp(event);
     };
