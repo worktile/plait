@@ -2,6 +2,7 @@ import {
     CursorClass,
     PlaitBoard,
     PlaitElement,
+    Point,
     RectangleClient,
     RgbaToHEX,
     drawCircle,
@@ -9,8 +10,8 @@ import {
     isSelectionMoving,
     rotateAntiPointsByElement,
     setAngleForG,
-    toHostPoint,
-    toViewBoxPoint
+    toActivePoint,
+    toActiveRectangleFromViewBoxRectangle
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
@@ -26,10 +27,13 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
         PlaitBoard.getBoardContainer(board).classList.remove(CursorClass.crosshair);
         const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
-        const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+        const activePoint = toActivePoint(board, event.x, event.y);
         if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShapeElement(targetElement)) {
-            const points = getAutoCompletePoints(targetElement);
-            const hitIndex = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(movingPoint, targetElement) || movingPoint, points);
+            const points = getAutoCompletePoints(board, targetElement, true);
+            const hitIndex = getHitIndexOfAutoCompletePoint(
+                rotateAntiPointsByElement(board, activePoint, targetElement, true) || activePoint,
+                points
+            );
             const hitPoint = points[hitIndex];
             const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(targetElement);
             const lineAutoCompleteGenerator = ref.getGenerator<ArrowLineAutoCompleteGenerator>(ArrowLineAutoCompleteGenerator.key);
@@ -41,10 +45,12 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
                     fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_HOVERED_OPACITY),
                     fillStyle: 'solid'
                 });
-                PlaitBoard.getElementActiveHost(board).append(reactionG);
+                PlaitBoard.getActiveHost(board).append(reactionG);
                 PlaitBoard.getBoardContainer(board).classList.add(CursorClass.crosshair);
                 if (hasValidAngle(targetElement)) {
-                    setAngleForG(reactionG, RectangleClient.getCenterPoint(board.getRectangle(targetElement)!), targetElement.angle!);
+                    const rectangle = board.getRectangle(targetElement)!;
+                    const activeRectangle = toActiveRectangleFromViewBoxRectangle(board, rectangle);
+                    setAngleForG(reactionG, RectangleClient.getCenterPoint(activeRectangle), targetElement.angle!);
                 }
             }
         }

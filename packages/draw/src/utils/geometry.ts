@@ -5,7 +5,8 @@ import {
     RectangleClient,
     ThemeColorMode,
     getSelectedElements,
-    idCreator
+    idCreator,
+    toActiveRectangleFromViewBoxRectangle
 } from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols } from '../interfaces/geometry';
 import { Element } from 'slate';
@@ -273,11 +274,12 @@ export const createDefaultFlowchart = (point: Point) => {
     return [startElement, processElement1, decisionElement, processElement2, endElement, line1, line2, line3, line4, line5];
 };
 
-export const getAutoCompletePoints = (element: PlaitShapeElement) => {
+export const getAutoCompletePoints = (board: PlaitBoard, element: PlaitShapeElement, isToActive = false) => {
     const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
-    let rectangle = RectangleClient.getRectangleByPoints(element.points);
-    rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
-    return RectangleClient.getEdgeCenterPoints(rectangle);
+    const rectangle = RectangleClient.getRectangleByPoints(element.points);
+    const activeRectangle = toActiveRectangleFromViewBoxRectangle(board, rectangle);
+    const targetRectangle = isToActive ? activeRectangle : rectangle;
+    return RectangleClient.getEdgeCenterPoints(RectangleClient.inflate(targetRectangle, AutoCompleteMargin));
 };
 
 export const getHitIndexOfAutoCompletePoint = (movingPoint: Point, points: Point[]) => {
@@ -378,7 +380,7 @@ export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry
     const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
     const activeGenerator = elementRef.getGenerator(ActiveGenerator.key);
     const selected = getSelectedElements(board).includes(element);
-    activeGenerator.processDrawing(element, PlaitBoard.getElementActiveHost(board), { selected });
+    activeGenerator.processDrawing(element, PlaitBoard.getElementTopHost(board), { selected });
 };
 
 export const isGeometryIncludeText = (element: PlaitGeometry) => {

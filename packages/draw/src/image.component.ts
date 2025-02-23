@@ -22,7 +22,7 @@ export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard>
                     height: element.points[1][1] - element.points[0][1]
                 };
             },
-            getImageItem: element => {
+            getImageItem: (element) => {
                 return {
                     url: element.url,
                     width: element.points[1][0] - element.points[0][0],
@@ -38,7 +38,7 @@ export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard>
         super.initialize();
         this.initializeGenerator();
         this.imageGenerator.processDrawing(this.element, this.getElementG());
-        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
             selected: this.selected
         });
     }
@@ -50,7 +50,7 @@ export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard>
         if (value.element !== previous.element) {
             this.imageGenerator.updateImage(this.getElementG(), previous.element, value.element);
             this.imageGenerator.setFocus(this.element, this.selected);
-            this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                 selected: this.selected
             });
         } else {
@@ -58,9 +58,9 @@ export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard>
             const hasSameHandleState =
                 this.imageGenerator.activeGenerator &&
                 this.imageGenerator.activeGenerator.options.hasResizeHandle() === this.imageGenerator.activeGenerator.hasResizeHandle;
-            if (!hasSameSelected || !hasSameHandleState) {
+            if (!hasSameSelected || !hasSameHandleState || value.selected) {
                 this.imageGenerator.setFocus(this.element, this.selected);
-                this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                     selected: this.selected
                 });
             }

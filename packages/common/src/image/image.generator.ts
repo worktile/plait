@@ -12,7 +12,7 @@ import {
 } from '@plait/core';
 import { Generator, GeneratorExtraData, GeneratorOptions } from '../generators/generator';
 import { CommonImageItem, hasResizeHandle, getElementOfFocusedImage } from '../utils';
-import { ActiveGenerator } from '../generators/active.generator';
+import { ActiveGenerator, createActiveGenerator } from '../generators/active.generator';
 import { PlaitImageBoard, ImageComponentRef, ImageProps } from './with-image';
 
 export const FOREIGN_OBJECT_IMAGE_CLASS_NAME = 'foreign-object-image';
@@ -64,7 +64,7 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
         };
         this.imageComponentRef = ((this.board as unknown) as PlaitImageBoard).renderImage(this.foreignObject, props);
 
-        this.activeGenerator = new ActiveGenerator(this.board, {
+        this.activeGenerator = createActiveGenerator(this.board, {
             getStrokeWidth: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (!(selectedElements.length === 1 && !isSelectionMoving(this.board))) {
@@ -116,13 +116,13 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
         if (currentForeignObject && current.angle) {
             setAngleForG(this.g!, RectangleClient.getCenterPoint(currentForeignObject), current.angle);
         }
-        const activeG = PlaitBoard.getElementActiveHost(this.board);
+        const activeG = PlaitBoard.getActiveHost(this.board);
         this.activeGenerator.processDrawing(current, activeG, { selected: this.isFocus });
     }
 
     setFocus(element: PlaitElement, isFocus: boolean) {
         this.isFocus = isFocus;
-        const activeG = PlaitBoard.getElementActiveHost(this.board);
+        const activeG = PlaitBoard.getActiveHost(this.board);
         this.activeGenerator.processDrawing(element, activeG, { selected: isFocus });
         const props: Partial<ImageProps> = {
             isFocus

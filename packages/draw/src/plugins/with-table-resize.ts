@@ -79,7 +79,7 @@ export function withTableResize(board: PlaitTableBoard) {
                 const resizePoints: [Point, Point] = [resizeState.startPoint, resizeState.endPoint];
                 const { xZoom, yZoom } = getResizeZoom(resizePoints, originPoint, handlePoint, false, false);
                 const originPoints = resizeRef.options?.cell.points;
-                const targetPoints = originPoints.map(p => {
+                const targetPoints = originPoints.map((p) => {
                     return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
                 }) as [Point, Point];
                 const offsetX = targetPoints[1][0] - originPoints[1][0];
@@ -111,7 +111,7 @@ export function withTableResize(board: PlaitTableBoard) {
                 );
                 const resizeSnapRef = getSnapResizingRef(board, [resizeRef.element], resizeSnapRefOptions);
                 snapG = resizeSnapRef.snapG;
-                PlaitBoard.getElementActiveHost(board).append(snapG);
+                PlaitBoard.getElementTopHost(board).append(snapG);
                 const points = resizeSnapRef.activePoints as [Point, Point];
                 const originPoints = resizeRef.element.points;
                 const originRect = RectangleClient.getRectangleByPoints(originPoints);
@@ -121,7 +121,7 @@ export function withTableResize(board: PlaitTableBoard) {
                 let columns = [...resizeRef.element.columns];
                 let rows = [...resizeRef.element.rows];
                 if (offsetWidth !== 0) {
-                    columns = columns.map(item => {
+                    columns = columns.map((item) => {
                         if (item.width) {
                             return {
                                 ...item,
@@ -132,7 +132,7 @@ export function withTableResize(board: PlaitTableBoard) {
                     });
                 }
                 if (offsetHeight !== 0) {
-                    rows = rows.map(item => {
+                    rows = rows.map((item) => {
                         if (item.height) {
                             return {
                                 ...item,

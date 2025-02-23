@@ -52,7 +52,7 @@ export function withMoving(board: PlaitBoard) {
                 event.preventDefault();
                 if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
                     pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
-                    pendingNodesG && PlaitBoard.getElementActiveHost(board).append(pendingNodesG);
+                    pendingNodesG && PlaitBoard.getElementTopHost(board).append(pendingNodesG);
                 }
             }
         }
@@ -137,10 +137,10 @@ export function withMoving(board: PlaitBoard) {
                     offsetY += ref.deltaY;
                     snapG = ref.snapG;
                     snapG.classList.add(ACTIVE_MOVING_CLASS_NAME);
-                    PlaitBoard.getElementActiveHost(board).append(snapG);
+                    PlaitBoard.getElementTopHost(board).append(snapG);
                     if (event.altKey) {
                         pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
-                        pendingNodesG && PlaitBoard.getElementActiveHost(board).append(pendingNodesG);
+                        pendingNodesG && PlaitBoard.getElementTopHost(board).append(pendingNodesG);
                     } else {
                         const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
                         PlaitBoard.getBoardContainer(board).classList.add('element-moving');

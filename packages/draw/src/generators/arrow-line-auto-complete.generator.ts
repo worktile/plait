@@ -11,7 +11,7 @@ export class ArrowLineAutoCompleteGenerator<T extends PlaitShapeElement = PlaitG
     hoverElement: SVGGElement | null = null;
 
     constructor(public board: PlaitBoard) {
-        super(board);
+        super(board, { active: true });
     }
 
     canDraw(element: PlaitShapeElement, data: ActiveGeneratorExtraData): boolean {
@@ -25,7 +25,7 @@ export class ArrowLineAutoCompleteGenerator<T extends PlaitShapeElement = PlaitG
 
     draw(element: T, data: ActiveGeneratorExtraData): SVGGElement {
         this.autoCompleteG = createG();
-        const middlePoints = getAutoCompletePoints(element);
+        const middlePoints = getAutoCompletePoints(this.board, element, true);
         middlePoints.forEach((point, index) => {
             const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, LINE_AUTO_COMPLETE_DIAMETER, {
                 stroke: 'none',

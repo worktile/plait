@@ -30,7 +30,8 @@ import {
     drawRectangle,
     ACTIVE_STROKE_WIDTH,
     SELECTION_BORDER_COLOR,
-    Path
+    Path,
+    toActiveRectangleFromViewBoxRectangle
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
@@ -125,7 +126,7 @@ export function withDrawResize(board: PlaitBoard) {
             const resizeSnapRef = getSnapResizingRef(board, resizeRef.element, resizeSnapRefOptions);
             resizeActivePoints = resizeSnapRef.activePoints;
             snapG = resizeSnapRef.snapG;
-            PlaitBoard.getElementActiveHost(board).append(snapG);
+            PlaitBoard.getElementTopHost(board).append(snapG);
 
             if (bulkRotationRef) {
                 const boundingBoxCornerPoints = RectangleClient.getPoints(resizeRef.rectangle!);
@@ -249,24 +250,26 @@ export function withDrawResize(board: PlaitBoard) {
             const boundingRectangle = needCustomActiveRectangle
                 ? RectangleClient.getRectangleByPoints(resizeActivePoints!)
                 : getRectangleByElements(board, elements, false);
-            let corners = RectangleClient.getCornerPoints(boundingRectangle);
+            const boundingActiveRectangle = toActiveRectangleFromViewBoxRectangle(board, boundingRectangle);
+            let corners = RectangleClient.getCornerPoints(boundingActiveRectangle);
             const angle = getSelectionAngle(elements);
             if (angle) {
-                const centerPoint = RectangleClient.getCenterPoint(boundingRectangle);
+                const centerPoint = RectangleClient.getCenterPoint(boundingActiveRectangle);
                 corners = rotatePoints(corners, centerPoint, angle) as [Point, Point, Point, Point];
             }
             corners.forEach((corner) => {
                 const g = drawHandle(board, corner);
                 handleG && handleG.append(g);
             });
-            PlaitBoard.getElementActiveHost(board).append(handleG);
+            PlaitBoard.getActiveHost(board).append(handleG);
         }
     };
 
     board.drawSelectionRectangle = () => {
         if (needCustomActiveRectangle) {
             const rectangle = RectangleClient.getRectangleByPoints(resizeActivePoints!);
-            return drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
+            const activeRectangle = toActiveRectangleFromViewBoxRectangle(board, rectangle);
+            return drawRectangle(board, RectangleClient.inflate(activeRectangle, ACTIVE_STROKE_WIDTH), {
                 stroke: SELECTION_BORDER_COLOR,
                 strokeWidth: ACTIVE_STROKE_WIDTH
             });

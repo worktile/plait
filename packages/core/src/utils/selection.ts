@@ -20,6 +20,7 @@ import { filterSelectedGroups, getAllElementsInGroup, getElementsInGroup, getEle
 import { uniqueById } from './helper';
 import { Selection } from '../interfaces/selection';
 import { PlaitOptionsBoard } from '../plugins/with-options';
+import { toActiveRectangleFromViewBoxRectangle } from './to-point';
 
 export function isSelectionMoving(board: PlaitBoard) {
     return !!BOARD_TO_IS_SELECTION_MOVING.get(board);
@@ -43,7 +44,7 @@ export function isHandleSelection(board: PlaitBoard) {
 }
 
 export function hasSetSelectionOperation(board: PlaitBoard) {
-    return !!board.operations.find(op => PlaitOperation.isSetSelectionOperation(op));
+    return !!board.operations.find((op) => PlaitOperation.isSetSelectionOperation(op));
 }
 
 export function getTemporaryElements(board: PlaitBoard) {
@@ -66,8 +67,9 @@ export function deleteTemporaryElements(board: PlaitBoard) {
 export function drawSelectionRectangleG(board: PlaitBoard) {
     const elements = getSelectedElements(board);
     const rectangle = getRectangleByElements(board, elements, false);
-    if (rectangle.width > 0 && rectangle.height > 0 && elements.length > 1) {
-        const selectionRectangleG = drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
+    const activeRectangle = toActiveRectangleFromViewBoxRectangle(board, rectangle);
+    if (activeRectangle.width > 0 && activeRectangle.height > 0 && elements.length > 1) {
+        const selectionRectangleG = drawRectangle(board, RectangleClient.inflate(activeRectangle, ACTIVE_STROKE_WIDTH), {
             stroke: SELECTION_BORDER_COLOR,
             strokeWidth: ACTIVE_STROKE_WIDTH,
             fillStyle: 'solid'
@@ -75,7 +77,7 @@ export function drawSelectionRectangleG(board: PlaitBoard) {
         selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME, SELECTION_RECTANGLE_BOUNDING_CLASS_NAME);
         const angle = getSelectionAngle(elements);
         if (angle) {
-            setAngleForG(selectionRectangleG, RectangleClient.getCenterPoint(rectangle), angle);
+            setAngleForG(selectionRectangleG, RectangleClient.getCenterPoint(activeRectangle), angle);
         }
         return selectionRectangleG;
     }
@@ -89,7 +91,7 @@ export function setSelectedElementsWithGroup(board: PlaitBoard, elements: PlaitE
     const selectedElements = getSelectedElements(board);
     if (!Selection.isCollapsed(board.selection)) {
         let newElements = [...selectedElements];
-        elements.forEach(item => {
+        elements.forEach((item) => {
             if (!item.groupId) {
                 newElements.push(item);
             } else {
@@ -104,7 +106,9 @@ export function setSelectedElementsWithGroup(board: PlaitBoard, elements: PlaitE
         const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
         if (hitElementGroups.length) {
             const elementsInHighestGroup = getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
-            const isSelectGroupElement = selectedElements.some(element => elementsInHighestGroup.map(item => item.id).includes(element.id));
+            const isSelectGroupElement = selectedElements.some((element) =>
+                elementsInHighestGroup.map((item) => item.id).includes(element.id)
+            );
             if (isShift) {
                 cacheSelectedElementsWithGroupOnShift(board, elements, isSelectGroupElement, elementsInHighestGroup);
             } else {
@@ -127,15 +131,15 @@ export function cacheSelectedElementsWithGroupOnShift(
     if (!isSelectGroupElement) {
         pendingElements = elementsInHighestGroup;
     } else {
-        const isHitSelectedElement = selectedElements.some(item => item.id === hitElement.id);
-        const selectedElementsInGroup = elementsInHighestGroup.filter(item => selectedElements.includes(item));
+        const isHitSelectedElement = selectedElements.some((item) => item.id === hitElement.id);
+        const selectedElementsInGroup = elementsInHighestGroup.filter((item) => selectedElements.includes(item));
         if (isHitSelectedElement) {
-            pendingElements = selectedElementsInGroup.filter(item => item.id !== hitElement.id);
+            pendingElements = selectedElementsInGroup.filter((item) => item.id !== hitElement.id);
         } else {
             pendingElements.push(...selectedElementsInGroup, ...elements);
         }
     }
-    elementsInHighestGroup.forEach(element => {
+    elementsInHighestGroup.forEach((element) => {
         if (newElements.includes(element)) {
             newElements.splice(newElements.indexOf(element), 1);
         }

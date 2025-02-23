@@ -1,3 +1,4 @@
+import { RectangleClient } from '../interfaces';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 
@@ -14,6 +15,33 @@ export function toHostPoint(board: PlaitBoard, x: number, y: number): Point {
     return [x - rect.x, y - rect.y];
 }
 
+export function toActiveRectangleFromViewBoxRectangle(board: PlaitBoard, rectangle: RectangleClient) {
+    const leftTop = [rectangle.x, rectangle.y] as Point;
+    const rightBottom = [rectangle.x + rectangle.width, rectangle.y + rectangle.height] as Point;
+    const leftTopOfScreen = toScreenPointFromHostPoint(board, toHostPointFromViewBoxPoint(board, leftTop));
+    const rightBottomOfScreen = toScreenPointFromHostPoint(board, toHostPointFromViewBoxPoint(board, rightBottom));
+    return RectangleClient.getRectangleByPoints([leftTopOfScreen, rightBottomOfScreen]);
+}
+
+export function toActivePointFromViewBoxPoint(board: PlaitBoard, point: Point) {
+    return toScreenPointFromHostPoint(board, toHostPointFromViewBoxPoint(board, point));
+}
+
+/**
+ * Get the screen point starting from the upper left corner of the svg element (based on the svg screen coordinate system)
+ */
+export function toActivePoint(board: PlaitBoard, x: number, y: number): Point {
+    const boardContainer = PlaitBoard.getBoardContainer(board);
+    const rect = boardContainer.getBoundingClientRect();
+    return [x - rect.x, y - rect.y];
+}
+
+export function toScreenPointFromActivePoint(board: PlaitBoard, activePoint: Point): Point {
+    const boardContainer = PlaitBoard.getBoardContainer(board);
+    const rect = boardContainer.getBoundingClientRect();
+    return [rect.x + activePoint[0], rect.y + activePoint[1]];
+}
+
 /**
  * Get the point in the coordinate system of the svg viewBox
  */
@@ -27,7 +55,7 @@ export function toViewBoxPoint(board: PlaitBoard, hostPoint: Point) {
 }
 
 export function toViewBoxPoints(board: PlaitBoard, hostPoints: Point[]) {
-    const newPoints = hostPoints.map(point => {
+    const newPoints = hostPoints.map((point) => {
         return toViewBoxPoint(board, point);
     });
     return newPoints;

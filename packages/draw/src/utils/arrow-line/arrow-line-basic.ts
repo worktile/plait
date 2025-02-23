@@ -14,7 +14,14 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint, getStrokeLineDash, StrokeStyle } from '@plait/common';
+import {
+    getPointOnPolyline,
+    getPointByVectorComponent,
+    removeDuplicatePoints,
+    getExtendPoint,
+    getStrokeLineDash,
+    StrokeStyle
+} from '@plait/common';
 import {
     ArrowLineHandle,
     ArrowLineMarkerType,
@@ -151,7 +158,7 @@ export const getHitConnectorPoint = (point: Point, hitElement: PlaitShapeElement
     const rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
     const shape = getElementShape(hitElement);
     const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
-    return connectorPoints.find(connectorPoint => {
+    return connectorPoints.find((connectorPoint) => {
         return distanceBetweenPointAndPoint(...connectorPoint, ...point) <= LINE_SNAPPING_CONNECTOR_BUFFER;
     });
 };
@@ -226,7 +233,7 @@ export const handleArrowLineCreating = (
     const otherPoint = linePoints[0];
     temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
-    PlaitBoard.getElementActiveHost(board).append(lineShapeG);
+    PlaitBoard.getElementTopHost(board).append(lineShapeG);
     return temporaryLineElement;
 };
 

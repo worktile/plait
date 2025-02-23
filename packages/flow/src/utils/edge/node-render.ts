@@ -14,9 +14,9 @@ export const renderNode = (board: PlaitBoard, nodeId: string, state?: NodeState)
     const nodeGenerator = elementRef.getGenerator<NodeGenerator>(NodeGenerator.key);
     if (!selected) {
         if (state === NodeState.hovering) {
-            nodeGenerator && nodeGenerator.processDrawing(node, PlaitBoard.getElementActiveHost(board));
-            textManage && PlaitBoard.getElementActiveHost(board).append(textManage.g);
-            handleGenerator.processDrawing(node, PlaitBoard.getElementActiveHost(board), { selected, hovered: true });
+            nodeGenerator && nodeGenerator.processDrawing(node, PlaitBoard.getElementTopHost(board));
+            textManage && PlaitBoard.getElementTopHost(board).append(textManage.g);
+            handleGenerator.processDrawing(node, PlaitBoard.getElementTopHost(board), { selected, hovered: true });
         } else {
             handleGenerator.destroy();
             nodeGenerator && nodeGenerator.processDrawing(node, PlaitElement.getElementG(node));

@@ -9,7 +9,7 @@ import {
     isSelectionMoving
 } from '@plait/core';
 import { GroupGenerator } from '../generators/group.generator';
-import { ActiveGenerator } from '../generators';
+import { ActiveGenerator, createActiveGenerator } from '../generators';
 import { CommonElementFlavour } from './element-flavour';
 import { Subscription } from 'rxjs';
 
@@ -25,7 +25,7 @@ export class GroupComponent extends CommonElementFlavour<PlaitGroup, PlaitBoard>
     groupGenerator!: GroupGenerator;
 
     initializeGenerator() {
-        this.activeGenerator = new ActiveGenerator<PlaitGroup>(this.board, {
+        this.activeGenerator = createActiveGenerator<PlaitGroup>(this.board, {
             getRectangle: (element: PlaitGroup) => {
                 return getRectangleByGroup(this.board, element);
             },

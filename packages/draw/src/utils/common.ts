@@ -88,13 +88,13 @@ export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
         return editors.length > 0;
     }
     if (PlaitDrawElement.isElementByTable(element)) {
-        return element.cells.some(cell => isCellIncludeText(cell));
+        return element.cells.some((cell) => isCellIncludeText(cell));
     }
     return true;
 };
 
 export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
-    return elements.some(item => {
+    return elements.some((item) => {
         return isDrawElementIncludeText(item);
     });
 };
@@ -131,7 +131,7 @@ export const getSnappingShape = (board: PlaitBoard, point: Point): PlaitShapeEle
 };
 
 export const getSnappingRef = (board: PlaitBoard, hitElement: PlaitShapeElement, point: Point) => {
-    const rotatedPoint = rotateAntiPointsByElement(point, hitElement) || point;
+    const rotatedPoint = rotateAntiPointsByElement(board, point, hitElement) || point;
     const connectorPoint = getHitConnectorPoint(rotatedPoint, hitElement);
     const edgePoint = getNearestPoint(hitElement, rotatedPoint);
     const isHitEdge = isHitEdgeOfShape(board, hitElement, rotatedPoint, LINE_SNAPPING_BUFFER);
@@ -141,7 +141,7 @@ export const getSnappingRef = (board: PlaitBoard, hitElement: PlaitShapeElement,
 export const getHitShape = (board: PlaitBoard, point: Point, offset = LINE_HIT_GEOMETRY_BUFFER): PlaitShapeElement | null => {
     let hitShape: PlaitShapeElement | null = null;
     traverseDrawShapes(board, (element: PlaitShapeElement) => {
-        if (hitShape === null && isInsideOfShape(board, element, rotateAntiPointsByElement(point, element) || point, offset * 2)) {
+        if (hitShape === null && isInsideOfShape(board, element, rotateAntiPointsByElement(board, point, element) || point, offset * 2)) {
             hitShape = element;
         }
     });
@@ -151,7 +151,7 @@ export const getHitShape = (board: PlaitBoard, point: Point, offset = LINE_HIT_G
 export const traverseDrawShapes = (board: PlaitBoard, callback: (element: PlaitShapeElement) => void) => {
     depthFirstRecursion<Ancestor>(
         board,
-        node => {
+        (node) => {
             if (!PlaitBoard.isBoard(node) && PlaitDrawElement.isShapeElement(node)) {
                 callback(node);
             }
@@ -213,7 +213,7 @@ export const drawBoundReaction = (
     }
     if (roughOptions.hasConnector) {
         const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
-        connectorPoints.forEach(point => {
+        connectorPoints.forEach((point) => {
             const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 8, {
                 stroke: SELECTION_BORDER_COLOR,
                 strokeWidth: ACTIVE_STROKE_WIDTH,
@@ -236,7 +236,7 @@ export const getTextKey = (element: PlaitElement | undefined, text: Pick<DrawTex
 
 export const getGeometryAlign = (board: PlaitBoard, element: PlaitCommonGeometry | PlaitBaseTable) => {
     if (isMultipleTextGeometry(element)) {
-        const drawShapeText = element.texts.find(item => item.id.includes(GeometryCommonTextKeys.content));
+        const drawShapeText = element.texts.find((item) => item.id.includes(GeometryCommonTextKeys.content));
         return drawShapeText?.text.align || Alignment.center;
     }
     if (isSingleTextGeometry(element as PlaitCommonGeometry)) {
@@ -244,7 +244,7 @@ export const getGeometryAlign = (board: PlaitBoard, element: PlaitCommonGeometry
     }
 
     if (PlaitDrawElement.isElementByTable(element)) {
-        const firstTextCell = element.cells.find(item => item.text);
+        const firstTextCell = element.cells.find((item) => item.text);
         return firstTextCell?.text?.align || Alignment.center;
     }
     return Alignment.center;

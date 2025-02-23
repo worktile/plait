@@ -10,7 +10,7 @@ import {
 import { PlaitCommonGeometry, PlaitGeometry, PlaitMultipleTextGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { DrawTransforms } from './transforms';
-import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, hasResizeHandle } from '@plait/common';
+import { ActiveGenerator, CommonElementFlavour, TextManageChangeData, createActiveGenerator, hasResizeHandle } from '@plait/common';
 import { ArrowLineAutoCompleteGenerator } from './generators/arrow-line-auto-complete.generator';
 import { getTextRectangle, isGeometryIncludeText, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { DrawTextInfo, TextGenerator } from './generators/text.generator';
@@ -19,8 +19,10 @@ import { PlaitText } from './interfaces';
 import { GeometryThreshold } from './constants';
 import { getEngine } from './engines';
 
-export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry, PlaitBoard>
-    implements OnContextChanged<PlaitCommonGeometry, PlaitBoard> {
+export class GeometryComponent
+    extends CommonElementFlavour<PlaitCommonGeometry, PlaitBoard>
+    implements OnContextChanged<PlaitCommonGeometry, PlaitBoard>
+{
     activeGenerator!: ActiveGenerator<PlaitCommonGeometry>;
 
     lineAutoCompleteGenerator!: ArrowLineAutoCompleteGenerator;
@@ -34,7 +36,7 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
     }
 
     initializeGenerator() {
-        this.activeGenerator = new ActiveGenerator<PlaitCommonGeometry>(this.board, {
+        this.activeGenerator = createActiveGenerator(this.board, {
             getStrokeWidth: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
@@ -71,10 +73,10 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
         super.initialize();
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element as PlaitGeometry, this.getElementG());
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
             selected: this.selected
         });
-        this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getElementActiveHost(this.board), {
+        this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getElementTopHost(this.board), {
             selected: this.selected
         });
         this.textGenerator && this.textGenerator.draw(this.getElementG());
@@ -86,17 +88,19 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
     ) {
         if (value.element !== previous.element || value.hasThemeChanged) {
             this.shapeGenerator.processDrawing(this.element as PlaitGeometry, this.getElementG());
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-            this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getElementActiveHost(this.board), {
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), { selected: this.selected });
+            this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getActiveHost(this.board), {
                 selected: this.selected
             });
             this.textGenerator && this.updateText(previous.element, value.element);
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
-            if (!hasSameSelected || !hasSameHandleState) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-                this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getElementActiveHost(this.board), {
+            if (!hasSameSelected || !hasSameHandleState || value.selected) {
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
+                    selected: this.selected
+                });
+                this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getActiveHost(this.board), {
                     selected: this.selected
                 });
             }

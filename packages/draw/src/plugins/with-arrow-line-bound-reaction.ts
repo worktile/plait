@@ -29,7 +29,7 @@ export const withArrowLineBoundReaction = (board: PlaitBoard) => {
         const linePointers = Object.keys(ArrowLineShape);
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const isLineResizing = isResizingByCondition<PlaitElement, LineResizeHandle>(board, resizeRef => {
+        const isLineResizing = isResizingByCondition<PlaitElement, LineResizeHandle>(board, (resizeRef) => {
             const { element, handle } = resizeRef;
             const isSourceOrTarget = handle === LineResizeHandle.target || handle === LineResizeHandle.source;
             return PlaitDrawElement.isArrowLine(element) && isSourceOrTarget;
@@ -52,13 +52,13 @@ export const withArrowLineBoundReaction = (board: PlaitBoard) => {
                 if (hasValidAngle(hitElement)) {
                     setAngleForG(boundShapeG, RectangleClient.getCenterPointByPoints(hitElement.points), hitElement.angle!);
                 }
-                PlaitBoard.getElementActiveHost(board).append(boundShapeG);
+                PlaitBoard.getElementTopHost(board).append(boundShapeG);
             }
         }
         pointerMove(event);
     };
 
-    board.pointerUp = event => {
+    board.pointerUp = (event) => {
         boundShapeG?.remove();
         boundShapeG = null;
         pointerUp(event);

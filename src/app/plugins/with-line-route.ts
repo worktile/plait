@@ -34,7 +34,7 @@ export const withLineRoute = (board: PlaitBoard) => {
 
 export const fakeLineRouteProcess = (board: PlaitBoard) => {
     const g = createG();
-    PlaitBoard.getElementActiveHost(board).append(g);
+    PlaitBoard.getElementTopHost(board).append(g);
     const rough = PlaitBoard.getRoughSVG(board);
     const lineElement = getElementById(board, mockLineData[2].id);
     const handleRefPair = lineElement && PlaitDrawElement.isArrowLine(lineElement) && getArrowLineHandleRefPair(board, lineElement);

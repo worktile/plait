@@ -51,7 +51,7 @@ export const withSwimlaneCreateByDrag = (board: PlaitBoard) => {
             const points = getDefaultSwimlanePoints(pointer, movingPoint);
             temporaryElement = createDefaultSwimlane(pointer, points);
             tableGenerator.processDrawing(temporaryElement, swimlaneG);
-            PlaitBoard.getElementActiveHost(board).append(swimlaneG);
+            PlaitBoard.getElementTopHost(board).append(swimlaneG);
         }
 
         pointerMove(event);
@@ -127,11 +127,11 @@ export const withSwimlaneCreateByDrawing = (board: PlaitBoard) => {
                 isCreate: true
             });
             snapG = resizeSnapRef.snapG;
-            PlaitBoard.getElementActiveHost(board).append(snapG);
+            PlaitBoard.getElementTopHost(board).append(snapG);
             points = normalizeShapePoints(resizeSnapRef.activePoints as [Point, Point], isShift);
             temporaryElement = createDefaultSwimlane(pointer, points);
             tableGenerator.processDrawing(temporaryElement, swimlaneG);
-            PlaitBoard.getElementActiveHost(board).append(swimlaneG);
+            PlaitBoard.getElementTopHost(board).append(swimlaneG);
         }
         pointerMove(event);
     };

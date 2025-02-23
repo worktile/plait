@@ -1,4 +1,13 @@
-import { PlaitBoard, Point, SELECTION_RECTANGLE_CLASS_NAME, createG, drawRectangle, getSelectedElements } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    SELECTION_RECTANGLE_CLASS_NAME,
+    createG,
+    drawRectangle,
+    getSelectedElements,
+    toActivePointFromViewBoxPoint,
+    toActiveRectangleFromViewBoxRectangle
+} from '@plait/core';
 import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement } from '../interfaces';
 import { Generator, PRIMARY_COLOR, drawFillPrimaryHandle, drawPrimaryHandle } from '@plait/common';
 import { getMiddlePoints } from '../utils/line';
@@ -37,16 +46,18 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
                 updatePoints = points.slice(0, 1).concat(points.slice(-1));
                 elbowNextRenderPoints = getNextRenderPoints(this.board, element, data.linePoints);
             }
-            updatePoints.forEach(point => {
+            const activePoints = updatePoints.map((point) => toActivePointFromViewBoxPoint(this.board, point));
+            activePoints.forEach((point) => {
                 const updateHandle = drawPrimaryHandle(this.board, point);
                 activeG.appendChild(updateHandle);
             });
             const middlePoints = getMiddlePoints(this.board, element);
+            const activeMiddlePoints = middlePoints.map((point) => toActivePointFromViewBoxPoint(this.board, point));
             if (!PlaitBoard.hasBeenTextEditing(this.board)) {
-                for (let i = 0; i < middlePoints.length; i++) {
-                    const point = middlePoints[i];
+                for (let i = 0; i < activeMiddlePoints.length; i++) {
+                    const point = activeMiddlePoints[i];
                     if (element.shape === ArrowLineShape.elbow && elbowNextRenderPoints.length) {
-                        const handleIndex = getHitPointIndex(middlePoints, point);
+                        const handleIndex = getHitPointIndex(activeMiddlePoints, point);
                         const isUpdateHandleIndex = isUpdatedHandleIndex(
                             this.board,
                             element,
@@ -65,8 +76,9 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
                 }
             }
         } else {
-            const activeRectangle = this.board.getRectangle(element);
-            if (activeRectangle) {
+            const rectangle = this.board.getRectangle(element);
+            if (rectangle) {
+                const activeRectangle = toActiveRectangleFromViewBoxRectangle(this.board, rectangle);
                 let opacity = '0.5';
                 if (activeRectangle.height === 0 || activeRectangle.width === 0) {
                     opacity = '0.8';

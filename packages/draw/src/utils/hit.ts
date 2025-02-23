@@ -200,7 +200,7 @@ const shapes: GeometryShapes[] = [BasicShapes.cloud];
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point, isStrict: boolean = true) => {
     const rectangle = board.getRectangle(element);
-    point = rotateAntiPointsByElement(point, element) || point;
+    point = rotateAntiPointsByElement(board, point, element) || point;
     if (PlaitDrawElement.isGeometry(element) && rectangle) {
         if (debugGenerator.isDebug() && shapes.includes(element.shape)) {
             debugGenerator.clear();
@@ -265,7 +265,7 @@ export const isInsideOfShape = (board: PlaitBoard, element: PlaitShapeElement, p
 
 export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, point: Point) => {
     const rectangle = board.getRectangle(element);
-    point = rotateAntiPointsByElement(point, element) || point;
+    point = rotateAntiPointsByElement(board, point, element) || point;
     if (PlaitDrawElement.isGeometry(element) && !PlaitDrawElement.isGeometryByTable(element)) {
         const engine = getEngine(getElementShape(element));
         const isHitInside = engine.isInsidePoint(rectangle!, point);

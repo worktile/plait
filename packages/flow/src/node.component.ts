@@ -6,8 +6,10 @@ import { NodeGenerator } from './generators/node.generator';
 import { NodeActiveGenerator } from './generators/node-active.generator';
 import { CommonElementFlavour, TextManage } from '@plait/common';
 
-export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends CommonElementFlavour<FlowNode<T>>
-    implements OnContextChanged<FlowNode, PlaitBoard> {
+export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData>
+    extends CommonElementFlavour<FlowNode<T>>
+    implements OnContextChanged<FlowNode, PlaitBoard>
+{
     nodeGenerator!: NodeGenerator;
 
     nodeActiveGenerator!: NodeActiveGenerator;
@@ -45,14 +47,14 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             if (value.selected) {
-                this.nodeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board));
+                this.nodeGenerator.processDrawing(this.element, PlaitBoard.getElementTopHost(this.board));
                 this.nodeGenerator.g!.classList.add(ACTIVE_MOVING_CLASS_NAME);
             } else {
                 this.nodeGenerator.processDrawing(this.element, this.getElementG());
             }
             this.updateText();
             this.nodeActiveGenerator.destroy();
-            this.nodeActiveGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            this.nodeActiveGenerator.processDrawing(this.element, PlaitBoard.getElementTopHost(this.board), {
                 selected: value.selected,
                 hovered: false
             });
@@ -87,7 +89,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
             this.textManage.updateRectangle();
             if (this.selected) {
                 this.textManage.g.classList.add(ACTIVE_MOVING_CLASS_NAME);
-                PlaitBoard.getElementActiveHost(this.board).append(this.textManage.g);
+                PlaitBoard.getElementTopHost(this.board).append(this.textManage.g);
             } else {
                 this.textManage.g.classList.remove(ACTIVE_MOVING_CLASS_NAME);
                 this.getElementG().append(this.textManage.g);

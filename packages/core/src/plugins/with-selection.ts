@@ -30,15 +30,16 @@ import {
     getSelectionOptions,
     setSelectionOptions,
     distanceBetweenPointAndPoint,
-    isMobileDeviceEvent
+    isMobileDeviceEvent,
+    toActivePoint
 } from '../utils';
 import { Selection } from '../interfaces/selection';
 import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withSelection(board: PlaitBoard) {
     const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawSelectionRectangle } = board;
-    let start: Point | null = null;
-    let end: Point | null = null;
+    let screenStart: Point | null = null;
+    let screenEnd: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionRectangleG: SVGGElement | null;
     let previousSelectedElements: PlaitElement[];
@@ -62,14 +63,14 @@ export function withSelection(board: PlaitBoard) {
             !isHitTarget &&
             options.isMultipleSelection &&
             !options.isDisabledSelection
-        ) { 
+        ) {
             if (isMobileDeviceEvent(event)) {
                 timerId = setTimeout(() => {
-                    start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+                    screenStart = toActivePoint(board, event.x, event.y);
                     timerId = null;
                 }, 120);
             } else {
-                start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+                screenStart = toActivePoint(board, event.x, event.y);
             }
         }
         pointerDownEvent = event;
@@ -85,15 +86,20 @@ export function withSelection(board: PlaitBoard) {
             clearTimeout(timerId);
             timerId = null;
         }
-        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && start) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && screenStart) {
             event.preventDefault();
-            const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
+            screenEnd = toActivePoint(board, event.x, event.y);
+            const rectangle = RectangleClient.getRectangleByPoints([
+                toActivePoint(board, ...screenStart),
+                toActivePoint(board, ...screenEnd)
+            ]);
             selectionMovingG?.remove();
-            end = movedTarget;
             throttleRAF(board, 'with-selection', () => {
-                if (start && end) {
-                    Transforms.setSelection(board, { anchor: start, focus: end });
+                if (screenStart && screenEnd) {
+                    Transforms.setSelection(board, {
+                        anchor: toViewBoxPoint(board, toHostPoint(board, screenStart[0], screenStart[1])),
+                        focus: toViewBoxPoint(board, toHostPoint(board, screenEnd[0], screenEnd[1]))
+                    });
                 }
             });
             setSelectionMoving(board);
@@ -103,7 +109,7 @@ export function withSelection(board: PlaitBoard) {
                 fill: SELECTION_FILL_COLOR,
                 fillStyle: 'solid'
             });
-            PlaitBoard.getElementActiveHost(board).append(selectionMovingG);
+            PlaitBoard.getActiveHost(board).append(selectionMovingG);
         }
         pointerMove(event);
     };
@@ -124,10 +130,13 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.globalPointerUp = (event: PointerEvent) => {
-        if (start && end) {
+        if (screenStart && screenEnd) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
-            Transforms.setSelection(board, { anchor: start, focus: end });
+            Transforms.setSelection(board, {
+                anchor: toViewBoxPoint(board, toHostPoint(board, screenStart[0], screenStart[1])),
+                focus: toViewBoxPoint(board, toHostPoint(board, screenEnd[0], screenEnd[1]))
+            });
         }
         const options = getSelectionOptions(board);
         if (PlaitBoard.isFocus(board) && !options.isPreventClearSelection) {
@@ -136,12 +145,12 @@ export function withSelection(board: PlaitBoard) {
             const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
             // Clear selection when mouse board outside area
             // The framework needs to determine whether the board is focused through selection
-            if (!isInBoard && !start && !isAttachedElement && isInDocument) {
+            if (!isInBoard && !screenStart && !isAttachedElement && isInDocument) {
                 Transforms.setSelection(board, null);
             }
         }
-        start = null;
-        end = null;
+        screenStart = null;
+        screenEnd = null;
         if (timerId) {
             clearTimeout(timerId);
             timerId = null;
@@ -216,7 +225,7 @@ export function withSelection(board: PlaitBoard) {
                     selectionRectangleG?.remove();
                     if (newElements.length > 1) {
                         selectionRectangleG = board.drawSelectionRectangle();
-                        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
+                        PlaitBoard.getActiveHost(board).append(selectionRectangleG!);
                     }
                 }
             } catch (error) {
@@ -231,16 +240,10 @@ export function withSelection(board: PlaitBoard) {
             try {
                 const currentSelectedElements = getSelectedElements(board);
                 if (currentSelectedElements.length && currentSelectedElements.length > 1) {
-                    if (
-                        previousSelectedElements &&
-                        (currentSelectedElements.length !== previousSelectedElements.length ||
-                            currentSelectedElements.some((c, index) => c !== previousSelectedElements[index]))
-                    ) {
-                        selectionRectangleG?.remove();
-                        selectionRectangleG = board.drawSelectionRectangle();
-                        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
-                        previousSelectedElements = [...currentSelectedElements];
-                    }
+                    selectionRectangleG?.remove();
+                    selectionRectangleG = board.drawSelectionRectangle();
+                    PlaitBoard.getActiveHost(board).append(selectionRectangleG!);
+                    previousSelectedElements = [...currentSelectedElements];
                 } else {
                     selectionRectangleG?.remove();
                 }

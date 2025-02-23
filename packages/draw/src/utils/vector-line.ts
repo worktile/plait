@@ -60,7 +60,7 @@ export const vectorLineCreating = (
     const otherPoint = points[points.length - 1];
     temporaryLineElement.points[temporaryLineElement.points.length - 1] = alignPoints(otherPoint, movingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
-    PlaitBoard.getElementActiveHost(board).append(lineShapeG);
+    PlaitBoard.getElementTopHost(board).append(lineShapeG);
     return temporaryLineElement;
 };
 

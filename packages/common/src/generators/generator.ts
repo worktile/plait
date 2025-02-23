@@ -5,13 +5,15 @@ import {
     RectangleClient,
     getElementsInGroup,
     getSelectionAngle,
-    setAngleForG
+    setAngleForG,
+    toActiveRectangleFromViewBoxRectangle
 } from '@plait/core';
 
 export interface GeneratorExtraData {}
 
 export interface GeneratorOptions {
     prepend?: boolean;
+    active?: boolean;
 }
 
 export abstract class Generator<
@@ -45,17 +47,23 @@ export abstract class Generator<
                     }
                 }
                 this.g = g;
-                const rect = this.board.getRectangle(element);
-                if (rect) {
-                    let angle;
-                    if (PlaitGroupElement.isGroup(element)) {
-                        angle = getSelectionAngle(getElementsInGroup(this.board, element, true));
-                    } else {
-                        angle = element.angle;
-                    }
-                    if (angle) {
-                        setAngleForG(g, RectangleClient.getCenterPoint(rect), angle);
-                    }
+                const rectangle = this.board.getRectangle(element);
+                if (!rectangle) {
+                    return;
+                }
+                let centerPoint = RectangleClient.getCenterPoint(rectangle);
+                if (this.options?.active) {
+                    const activeRectangle = toActiveRectangleFromViewBoxRectangle(this.board, rectangle);
+                    centerPoint = RectangleClient.getCenterPoint(activeRectangle);
+                }
+                let angle;
+                if (PlaitGroupElement.isGroup(element)) {
+                    angle = getSelectionAngle(getElementsInGroup(this.board, element, true));
+                } else {
+                    angle = element.angle;
+                }
+                if (angle) {
+                    setAngleForG(g, centerPoint, angle);
                 }
             } else {
                 this.destroy();

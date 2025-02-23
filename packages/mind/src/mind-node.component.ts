@@ -115,7 +115,7 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
         this.nodeShapeGenerator.processDrawing(this.element, this.getElementG(), { node: this.node });
         this.drawLink();
         this.drawTopic();
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementTopHost(this.board), {
             selected: this.selected
         });
         this.drawEmojis();
@@ -134,7 +134,7 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
         if (!isEqualNode || value.element !== previous.element || value.hasThemeChanged) {
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementTopHost(this.board), {
                 selected: this.selected
             });
             this.nodeShapeGenerator.processDrawing(this.element, this.getElementG(), { node: this.node });
@@ -159,7 +159,7 @@ export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMi
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementTopHost(this.board), {
                     selected: this.selected
                 });
             }

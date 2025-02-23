@@ -14,7 +14,9 @@ import {
     rotateAntiPointsByElement,
     rotatePointsByElement,
     temporaryDisableSelection,
+    toActivePoint,
     toHostPoint,
+    toScreenPointFromActivePoint,
     toViewBoxPoint
 } from '@plait/core';
 import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
@@ -41,14 +43,18 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
-        const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+        const activePoint = toActivePoint(board, event.x, event.y);
         if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShapeElement(targetElement)) {
-            const points = getAutoCompletePoints(targetElement);
-            const index = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(clickPoint, targetElement) || clickPoint, points);
+            const points = getAutoCompletePoints(board, targetElement, true);
+            const index = getHitIndexOfAutoCompletePoint(
+                rotateAntiPointsByElement(board, activePoint, targetElement, true) || activePoint,
+                points
+            );
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
-                autoCompletePoint = hitPoint;
+                const screenPoint = toScreenPointFromActivePoint(board, hitPoint);
+                autoCompletePoint = toViewBoxPoint(board, toHostPoint(board, screenPoint[0], screenPoint[1]));
                 sourceElement = targetElement;
                 BoardTransforms.updatePointerType(board, ArrowLineShape.elbow);
             }
@@ -62,7 +68,7 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (autoCompletePoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(
-                ...(rotateAntiPointsByElement(movingPoint, sourceElement) || movingPoint),
+                ...(rotateAntiPointsByElement(board, movingPoint, sourceElement) || movingPoint),
                 ...autoCompletePoint
             );
             if (distance > PRESS_AND_MOVE_BUFFER) {
@@ -90,7 +96,7 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
         pointerMove(event);
     };
 
-    board.globalPointerUp = event => {
+    board.globalPointerUp = (event) => {
         if (temporaryElement) {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);

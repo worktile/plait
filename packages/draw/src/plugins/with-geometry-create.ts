@@ -100,7 +100,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                 const points = getDefaultGeometryPoints(pointer, movingPoint);
                 temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
                 geometryGenerator.processDrawing(temporaryElement as PlaitGeometry, geometryShapeG);
-                PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
+                PlaitBoard.getElementTopHost(board).append(geometryShapeG);
             }
         }
 
@@ -190,11 +190,11 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 isCreate: true
             });
             snapG = resizeSnapRef.snapG;
-            PlaitBoard.getElementActiveHost(board).append(snapG);
+            PlaitBoard.getElementTopHost(board).append(snapG);
             points = normalizeShapePoints(resizeSnapRef.activePoints as [Point, Point], isShift);
             temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
             geometryGenerator.processDrawing(temporaryElement as PlaitGeometry, geometryShapeG);
-            PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
+            PlaitBoard.getElementTopHost(board).append(geometryShapeG);
         }
         pointerMove(event);
     };

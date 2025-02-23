@@ -17,6 +17,7 @@ import {
     Output,
     QueryList,
     SimpleChanges,
+    viewChild,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
@@ -60,8 +61,10 @@ import {
     initializeViewBox,
     initializeViewportContainer,
     initializeViewportOffset,
+    isFromScrolling,
     isFromViewportChange,
     setFragment,
+    setIsFromScrolling,
     setIsFromViewportChange,
     toHostPoint,
     toViewBoxPoint,
@@ -74,8 +77,7 @@ import {
     withMoving,
     withOptions,
     withRelatedFragment,
-    withSelection,
-    withViewport
+    withSelection
 } from '@plait/core';
 import { PlaitIslandBaseComponent, hasOnBoardChange } from '../island/island-base.component';
 import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
@@ -86,7 +88,7 @@ import { OnChangeData } from '../plugins/angular-board';
 const ElementLowerHostClass = 'element-lower-host';
 const ElementHostClass = 'element-host';
 const ElementUpperHostClass = 'element-upper-host';
-const ElementActiveHostClass = 'element-active-host';
+const ElementTopHostClass = 'element-top-host';
 
 @Component({
     selector: 'plait-board',
@@ -96,7 +98,10 @@ const ElementActiveHostClass = 'element-active-host';
                 <g class="element-lower-host"></g>
                 <g class="element-host"></g>
                 <g class="element-upper-host"></g>
-                <g class="element-active-host"></g>
+                <g class="element-top-host"></g>
+            </svg>
+            <svg #activeHost width="100%" height="100%" class="board-active-svg">
+                <g #activeHostG class="active-host-g"></g>
             </svg>
         </div>
         <ng-content></ng-content>
@@ -173,6 +178,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
 
+    activeHostG = viewChild<ElementRef>('activeHostG');
+
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
@@ -192,7 +199,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         const elementLowerHost = this.host.querySelector(`.${ElementLowerHostClass}`) as SVGGElement;
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
         const elementUpperHost = this.host.querySelector(`.${ElementUpperHostClass}`) as SVGGElement;
-        const elementActiveHost = this.host.querySelector(`.${ElementActiveHostClass}`) as SVGGElement;
+        const elementTopHost = this.host.querySelector(`.${ElementTopHostClass}`) as SVGGElement;
         const roughSVG = rough.svg(this.host as SVGSVGElement, {
             options: { roughness: 0, strokeWidth: 1 }
         });
@@ -217,12 +224,26 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             lowerHost: elementLowerHost,
             host: elementHost,
             upperHost: elementUpperHost,
-            activeHost: elementActiveHost,
+            topHost: elementTopHost,
+            activeHost: this.activeHostG()?.nativeElement,
             container: this.elementRef.nativeElement,
             viewportContainer: this.viewportContainer.nativeElement
         });
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {
+                const isOnlySetSelection = this.board.operations.length && this.board.operations.every((op) => op.type === 'set_selection');
+                if (isOnlySetSelection) {
+                    this.updateListRender();
+                    return;
+                }
+                const isSetViewport = this.board.operations.length && this.board.operations.some((op) => op.type === 'set_viewport');
+                if (isSetViewport && isFromScrolling(this.board)) {
+                    setIsFromScrolling(this.board, false);
+                    this.updateListRender();
+                    return;
+                }
+                initializeViewBox(this.board);
+                updateViewportOffset(this.board);
                 this.updateListRender();
             });
         });
@@ -282,18 +303,14 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     withHistory(
                         withSelection(
                             withMoving(
-                                withBoard(
-                                    withViewport(
-                                        withOptions(withAngular(withImage(withText(createBoard(this.plaitValue, this.plaitOptions)))))
-                                    )
-                                )
+                                withBoard(withOptions(withAngular(withImage(withText(createBoard(this.plaitValue, this.plaitOptions))))))
                             )
                         )
                     )
                 )
             )
         );
-        this.plaitPlugins.forEach(plugin => {
+        this.plaitPlugins.forEach((plugin) => {
             board = plugin(board);
         });
         this.board = board;
@@ -400,10 +417,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
-                tap(event => {
+                tap((event) => {
                     this.board.globalKeyDown(event);
                 }),
-                filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
+                filter((event) => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board.keyDown(event);
@@ -505,13 +522,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializeIslands() {
-        this.islands?.forEach(island => {
+        this.islands?.forEach((island) => {
             island.initialize(this.board);
         });
     }
 
     private updateIslands() {
-        this.islands?.forEach(island => {
+        this.islands?.forEach((island) => {
             if (hasOnBoardChange(island)) {
                 island.onBoardChange();
             }

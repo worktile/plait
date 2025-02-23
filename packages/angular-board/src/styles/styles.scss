@@ -96,4 +96,11 @@
     }
 
     @include mixins.board-background-color();
+
+    .board-active-svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+    }
 }

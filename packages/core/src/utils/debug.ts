@@ -22,7 +22,7 @@ export class DebugGenerator {
         }
         const gArray = getTemporaryGArray(this.debugKey);
         setTemporaryGArray(this.debugKey, []);
-        gArray.forEach(g => g.remove());
+        gArray.forEach((g) => g.remove());
     }
     drawPolygon(board: PlaitBoard, points: Point[], options?: Options) {
         if (!isDebug(this.debugKey)) {
@@ -30,7 +30,7 @@ export class DebugGenerator {
         }
         const polygonG = PlaitBoard.getRoughSVG(board).polygon(points, options || { stroke: 'red' });
         polygonG.classList.add(this.debugKey);
-        PlaitBoard.getElementActiveHost(board).append(polygonG);
+        PlaitBoard.getElementTopHost(board).append(polygonG);
         const gArray = getTemporaryGArray(this.debugKey);
         gArray.push(polygonG);
         setTemporaryGArray(this.debugKey, gArray);
@@ -42,7 +42,7 @@ export class DebugGenerator {
         }
         const lineG = PlaitBoard.getRoughSVG(board).linearPath(points, options || { stroke: 'red' });
         lineG.classList.add(this.debugKey);
-        PlaitBoard.getElementActiveHost(board).append(lineG);
+        PlaitBoard.getElementTopHost(board).append(lineG);
         const gArray = getTemporaryGArray(this.debugKey);
         gArray.push(lineG);
         setTemporaryGArray(this.debugKey, gArray);
@@ -66,7 +66,7 @@ export class DebugGenerator {
             options || { stroke: 'red' }
         );
         rectangleG.classList.add(this.debugKey);
-        PlaitBoard.getElementActiveHost(board).append(rectangleG);
+        PlaitBoard.getElementTopHost(board).append(rectangleG);
         const gArray = getTemporaryGArray(this.debugKey);
         gArray.push(rectangleG);
         setTemporaryGArray(this.debugKey, gArray);
@@ -85,7 +85,7 @@ export class DebugGenerator {
                 Object.assign({}, { stroke: 'red', fill: 'red', fillStyle: 'solid' }, options || {})
             );
             circle.classList.add(this.debugKey);
-            PlaitBoard.getElementActiveHost(board).append(circle);
+            PlaitBoard.getElementTopHost(board).append(circle);
             const gArray = getTemporaryGArray(this.debugKey);
             gArray.push(circle);
             result.push(circle);
