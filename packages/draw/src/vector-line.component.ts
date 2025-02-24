@@ -40,14 +40,14 @@ export class VectorLineComponent
         const linePoints = getVectorLinePoints(this.board, this.element)!;
         if (value.element !== previous.element || value.hasThemeChanged) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementTopHost(this.board), {
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                 selected: this.selected,
                 linePoints
             });
         } else {
             const needUpdate = value.selected !== previous.selected || this.activeGenerator.needUpdate();
             if (needUpdate) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementTopHost(this.board), {
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                     selected: this.selected,
                     linePoints
                 });

@@ -25,6 +25,10 @@ export interface ActiveData {
 export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
     onlySelectedCurrentLine = false;
 
+    constructor(protected board: PlaitBoard, options: { active: boolean } = { active: true }) {
+        super(board, options);
+    }
+
     canDraw(element: PlaitLine, data: ActiveData): boolean {
         if (data.selected) {
             return true;
