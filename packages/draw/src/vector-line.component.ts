@@ -45,7 +45,7 @@ export class VectorLineComponent
                 linePoints
             });
         } else {
-            const needUpdate = value.selected !== previous.selected || this.activeGenerator.needUpdate();
+            const needUpdate = value.selected !== previous.selected || this.activeGenerator.needUpdate() || value.selected;
             if (needUpdate) {
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                     selected: this.selected,
