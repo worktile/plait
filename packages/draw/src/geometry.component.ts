@@ -67,6 +67,14 @@ export class GeometryComponent
         }
         this.getRef().addGenerator(ArrowLineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
         this.getRef().addGenerator(ActiveGenerator.key, this.activeGenerator);
+        this.getRef().updateActiveWidgets = () => {
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
+                selected: this.selected
+            });
+            this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getActiveHost(this.board), {
+                selected: this.selected
+            });
+        }
     }
 
     initialize(): void {

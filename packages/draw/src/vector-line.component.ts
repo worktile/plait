@@ -20,6 +20,13 @@ export class VectorLineComponent
     initializeGenerator() {
         this.shapeGenerator = new VectorLineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
+        this.getRef().updateActiveWidgets = () => {
+            const linePoints = getVectorLinePoints(this.board, this.element)!;
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
+                selected: this.selected,
+                linePoints
+            });
+        };
     }
 
     initialize(): void {

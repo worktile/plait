@@ -67,6 +67,14 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         this.initializeTextManage();
         this.lineAutoCompleteGenerator = new ArrowLineAutoCompleteGenerator(this.board);
         this.getRef().addGenerator(ArrowLineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
+        this.getRef().updateActiveWidgets = () => {
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
+                selected: this.selected
+            });
+            this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
+                selected: this.selected
+            });
+        };
     }
 
     initialize(): void {

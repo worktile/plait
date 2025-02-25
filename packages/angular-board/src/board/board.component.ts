@@ -57,6 +57,7 @@ import {
     createBoard,
     deleteFragment,
     getClipboardData,
+    getSelectedElements,
     hasInputOrTextareaTarget,
     initializeViewBox,
     initializeViewportContainer,
@@ -82,8 +83,9 @@ import {
 import { PlaitIslandBaseComponent, hasOnBoardChange } from '../island/island-base.component';
 import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { withAngular } from '../plugins/with-angular';
-import { withImage, withText } from '@plait/common';
+import { ActiveGenerator, PlaitCommonElementRef, withImage, withText } from '@plait/common';
 import { OnChangeData } from '../plugins/angular-board';
+import { ArrowLineAutoCompleteGenerator } from '@plait/draw';
 
 const ElementLowerHostClass = 'element-lower-host';
 const ElementHostClass = 'element-host';
@@ -242,9 +244,14 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     this.updateListRender();
                     return;
                 }
+                this.updateListRender();
                 initializeViewBox(this.board);
                 updateViewportOffset(this.board);
-                this.updateListRender();
+                const selectedElements = getSelectedElements(this.board);
+                selectedElements.forEach((element) => {
+                    const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
+                    elementRef.updateActiveWidgets();
+                });
             });
         });
         BOARD_TO_AFTER_CHANGE.set(this.board, () => {

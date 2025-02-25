@@ -7,6 +7,7 @@ import {
     Transforms,
     getSelectedElements,
     isMainPointer,
+    toActivePointFromViewBoxPoint,
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
@@ -35,10 +36,10 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
 
-        const activeAbstractElements = getSelectedElements(board).filter(element => AbstractNode.isAbstract(element)) as MindElement[];
+        const activeAbstractElements = getSelectedElements(board).filter((element) => AbstractNode.isAbstract(element)) as MindElement[];
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
 
-        activeAbstractElement = activeAbstractElements.find(element => {
+        activeAbstractElement = activeAbstractElements.find((element) => {
             abstractHandlePosition = getHitAbstractHandle(board, element as MindElement, point);
             return abstractHandlePosition;
         });
@@ -56,7 +57,6 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
 
     board.pointerMove = (event: PointerEvent) => {
         getSelectedElements(board);
-        const host = BOARD_TO_HOST.get(board);
         const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
 
         touchedAbstract = handleTouchedAbstract(board, touchedAbstract, endPoint);
@@ -85,10 +85,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             }
 
             const resizingLocation = isHorizontal ? endPoint[1] : endPoint[0];
-            const parent = (MindElement.getNode(parentElement) as unknown) as LayoutNode;
+            const parent = MindElement.getNode(parentElement) as unknown as LayoutNode;
             const scope = getLocationScope(board, abstractHandlePosition, children, activeAbstractElement, parent, isHorizontal);
             const location = Math.min(scope.max, Math.max(scope.min, resizingLocation));
-
             let locationIndex = findLocationLeftIndex(board, children, location, isHorizontal);
 
             const isPropertyUnchanged =
@@ -110,10 +109,14 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 newProperty =
                     abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
             }
-
             const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(activeAbstractElement);
             const activeGenerator = ref.getGenerator<NodeActiveGenerator>(NodeActiveGenerator.key);
-            activeGenerator.updateAbstractOutline(activeAbstractElement, abstractHandlePosition, location);
+            const activeLocation = toActivePointFromViewBoxPoint(board, [location, location]);
+            activeGenerator.updateAbstractOutline(
+                activeAbstractElement,
+                abstractHandlePosition,
+                isHorizontal ? activeLocation[1] : activeLocation[0]
+            );
         }
         pointerMove(event);
     };
@@ -135,6 +138,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 activeGenerator.updateAbstractOutline(activeAbstractElement);
             }
             activeAbstractElement = undefined;
+            return;
         }
         pointerUp(event);
     };

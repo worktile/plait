@@ -28,8 +28,10 @@ export class PlaitCommonElementRef implements PlaitElementRef {
         return this.textManages;
     }
 
+    updateActiveWidgets = () => {};
+
     destroyTextManage() {
-        this.textManages.forEach(textManage => {
+        this.textManages.forEach((textManage) => {
             textManage.destroy();
         });
         this.textManages = [];

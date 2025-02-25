@@ -1,4 +1,4 @@
-import { ACTIVE_STROKE_WIDTH, PlaitBoard, RectangleClient, SELECTION_RECTANGLE_CLASS_NAME, createG, drawRoundRectangle } from '@plait/core';
+import { ACTIVE_STROKE_WIDTH, PlaitBoard, RectangleClient, SELECTION_RECTANGLE_CLASS_NAME, createG, drawRoundRectangle, toActiveRectangleFromViewBoxRectangle } from '@plait/core';
 import { MindElement, BaseData } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { PRIMARY_COLOR } from '../constants/default';
@@ -30,15 +30,16 @@ export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
         const activeG = createG();
         const node = MindElement.getNode(element);
         const rectangle = getRectangleByNode(node);
+        const activeRectangle1 = toActiveRectangleFromViewBoxRectangle(this.board, rectangle)
         const strokeWidth = getStrokeWidthByElement(this.board, element);
         const activeStrokeWidth = ACTIVE_STROKE_WIDTH;
-        const activeRectangle = RectangleClient.inflate(rectangle, activeStrokeWidth);
+        const activeRectangleWithInflated = RectangleClient.inflate(activeRectangle1, activeStrokeWidth);
         const strokeG = drawRoundRectangle(
             PlaitBoard.getRoughSVG(this.board),
-            activeRectangle.x,
-            activeRectangle.y,
-            activeRectangle.x + activeRectangle.width,
-            activeRectangle.y + activeRectangle.height,
+            activeRectangleWithInflated.x,
+            activeRectangleWithInflated.y,
+            activeRectangleWithInflated.x + activeRectangleWithInflated.width,
+            activeRectangleWithInflated.y + activeRectangleWithInflated.height,
             { stroke: PRIMARY_COLOR, strokeWidth: activeStrokeWidth, fill: '' },
             true,
             DefaultNodeStyle.shape.rectangleRadius + (activeStrokeWidth + strokeWidth) / 2

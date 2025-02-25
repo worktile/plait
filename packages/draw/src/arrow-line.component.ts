@@ -48,7 +48,13 @@ export class ArrowLineComponent
         super.initialize();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
-
+        this.getRef().updateActiveWidgets = () => {
+            const linePoints = getArrowLinePoints(this.board, this.element);
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
+                selected: this.selected,
+                linePoints
+            });
+        };
         debugGenerator.isDebug() && debugGenerator.drawCircles(this.board, this.element.points.slice(1, -1), 4, true);
     }
 

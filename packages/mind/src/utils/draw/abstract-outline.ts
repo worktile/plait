@@ -1,4 +1,4 @@
-import { createG, getRectangleByElements, PlaitBoard, RectangleClient, setStrokeLinecap } from '@plait/core';
+import { createG, getRectangleByElements, PlaitBoard, RectangleClient, setStrokeLinecap, toActiveRectangleFromViewBoxRectangle } from '@plait/core';
 import { PRIMARY_COLOR } from '../../constants';
 import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants/abstract-node';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -25,19 +25,20 @@ export function drawAbstractIncludedOutline(
     const isHorizontal = isHorizontalLayout(nodeLayout);
 
     const includedElements = parentElement.children.slice(element.start!, element.end! + 1);
-    let abstractRectangle = getRectangleByElements(board, includedElements, true);
-    abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
+    const abstractRectangle = getRectangleByElements(board, includedElements, true);
+    const activeAbstractRectangle = toActiveRectangleFromViewBoxRectangle(board, abstractRectangle);
+    let activeAbstractOutlineRectangle = RectangleClient.getOutlineRectangle(activeAbstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
 
     if (resizingLocation) {
-        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, resizingLocation, activeHandlePosition!, isHorizontal);
+        activeAbstractOutlineRectangle = getRectangleByResizingLocation(activeAbstractOutlineRectangle, resizingLocation, activeHandlePosition!, isHorizontal);
     }
 
     const rectangle = drawAbstractRoundRectangle(
         roughSVG,
-        abstractRectangle.x,
-        abstractRectangle.y,
-        abstractRectangle.x + abstractRectangle.width,
-        abstractRectangle.y + abstractRectangle.height,
+        activeAbstractOutlineRectangle.x,
+        activeAbstractOutlineRectangle.y,
+        activeAbstractOutlineRectangle.x + activeAbstractOutlineRectangle.width,
+        activeAbstractOutlineRectangle.y + activeAbstractOutlineRectangle.height,
         isHorizontal,
         {
             stroke: PRIMARY_COLOR,
@@ -54,8 +55,8 @@ export function drawAbstractIncludedOutline(
     transformPlacement(startPlacement, linkDirection);
     transformPlacement(endPlacement, linkDirection);
 
-    let startCenterPoint = getPointByPlacement(abstractRectangle, startPlacement);
-    let endCenterPoint = getPointByPlacement(abstractRectangle, endPlacement);
+    let startCenterPoint = getPointByPlacement(activeAbstractOutlineRectangle, startPlacement);
+    let endCenterPoint = getPointByPlacement(activeAbstractOutlineRectangle, endPlacement);
 
     const startPoint1 = moveXOfPoint(startCenterPoint, -ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
     const startPoint2 = moveXOfPoint(startCenterPoint, ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
