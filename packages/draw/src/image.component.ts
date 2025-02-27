@@ -32,7 +32,7 @@ export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard>
         });
         this.lineAutoCompleteGenerator = new ArrowLineAutoCompleteGenerator(this.board);
         this.getRef().addGenerator(ArrowLineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
-        this.getRef().updateActiveWidgets = () => {
+        this.getRef().updateActiveSection = () => {
             this.imageGenerator.setFocus(this.element, this.selected);
             this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                 selected: this.selected

@@ -106,7 +106,7 @@ export class MindNodeComponent
         this.getRef().addGenerator(NodeEmojisGenerator.key, this.nodeEmojisGenerator);
         this.getRef().addGenerator(ImageGenerator.key, this.imageGenerator);
         this.getRef().initializeTextManage(textManage);
-        this.getRef().updateActiveWidgets = () => {
+        this.getRef().updateActiveSection = () => {
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                 selected: this.selected
             });

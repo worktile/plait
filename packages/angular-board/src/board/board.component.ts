@@ -250,7 +250,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 const selectedElements = getSelectedElements(this.board);
                 selectedElements.forEach((element) => {
                     const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
-                    elementRef.updateActiveWidgets();
+                    elementRef.updateActiveSection();
                 });
             });
         });

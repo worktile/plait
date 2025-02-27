@@ -25,11 +25,11 @@ import { ImageData } from '../interfaces/element-data';
 import { addImageFocus, removeImageFocus } from '../utils/node/image';
 import { isHitImage } from '../utils';
 import { MindTransforms } from '../transforms';
-import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
+import { acceptImageTypes, buildImage, getElementOfFocusedImage, ImageGenerator, PlaitCommonElementRef } from '@plait/common';
 import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keyDown, pointerUp, globalPointerUp, buildFragment, insertFragment, deleteFragment } = board;
+    const { keyDown, pointerUp, globalPointerUp, buildFragment, insertFragment, deleteFragment, afterChange } = board;
 
     board.pointerUp = (event: PointerEvent) => {
         const elementOfFocusedImage = getElementOfFocusedImage(board);
@@ -118,11 +118,11 @@ export const withNodeImage = (board: PlaitBoard) => {
         const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
         if (isSelectedImage || isSingleSelection) {
             if (clipboardData?.files?.length) {
-                const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
+                const acceptImageArray = acceptImageTypes.map((type) => 'image/' + type);
                 const selectedElement = (selectedElements[0] || getElementOfFocusedImage(board)) as MindElement;
                 if (acceptImageArray.includes(clipboardData.files[0].type)) {
                     const imageFile = clipboardData.files[0];
-                    buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, imageItem => {
+                    buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, (imageItem) => {
                         MindTransforms.setImage(board, selectedElement, imageItem);
                     });
                     return;
@@ -135,6 +135,16 @@ export const withNodeImage = (board: PlaitBoard) => {
             }
         }
         insertFragment(clipboardData, targetPoint, operationType);
+    };
+
+    board.afterChange = () => {
+        afterChange();
+        const selectedImageElement = getElementOfFocusedImage(board);
+        if (selectedImageElement && MindElement.isMindElement(board, selectedImageElement)) {
+            const commonElementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(selectedImageElement);
+            const imageGenerator = commonElementRef.getGenerator<ImageGenerator>(ImageGenerator.key);
+            imageGenerator.setFocus(selectedImageElement, true);
+        }
     };
 
     return board;
