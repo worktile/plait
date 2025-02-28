@@ -166,7 +166,6 @@ export const withDrawRotate = (board: PlaitBoard) => {
             if (rotateRef.angle) {
                 setAngleForG(rectangleG, RectangleClient.getCenterPoint(activeRectangle), rotateRef.angle);
             }
-            rectangleG.classList.add('1111');
             return rectangleG;
         }
         return drawSelectionRectangle();
