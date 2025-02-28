@@ -38,11 +38,10 @@ import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withSelection(board: PlaitBoard) {
     const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawSelectionRectangle } = board;
-    let screenStart: Point | null = null;
-    let screenEnd: Point | null = null;
+    let activeStart: Point | null = null;
+    let activeEnd: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionRectangleG: SVGGElement | null;
-    let previousSelectedElements: PlaitElement[];
     let isShift = false;
     let timerId: ReturnType<typeof setTimeout> | null = null;
     let pointerDownEvent: PointerEvent | null = null;
@@ -66,11 +65,11 @@ export function withSelection(board: PlaitBoard) {
         ) {
             if (isMobileDeviceEvent(event)) {
                 timerId = setTimeout(() => {
-                    screenStart = toActivePoint(board, event.x, event.y);
+                    activeStart = toActivePoint(board, event.x, event.y);
                     timerId = null;
                 }, 120);
             } else {
-                screenStart = toActivePoint(board, event.x, event.y);
+                activeStart = toActivePoint(board, event.x, event.y);
             }
         }
         pointerDownEvent = event;
@@ -86,19 +85,19 @@ export function withSelection(board: PlaitBoard) {
             clearTimeout(timerId);
             timerId = null;
         }
-        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && screenStart) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && activeStart) {
             event.preventDefault();
-            screenEnd = toActivePoint(board, event.x, event.y);
+            activeEnd = toActivePoint(board, event.x, event.y);
             const rectangle = RectangleClient.getRectangleByPoints([
-                toActivePoint(board, ...screenStart),
-                toActivePoint(board, ...screenEnd)
+                toActivePoint(board, ...activeStart),
+                toActivePoint(board, ...activeEnd)
             ]);
             selectionMovingG?.remove();
             throttleRAF(board, 'with-selection', () => {
-                if (screenStart && screenEnd) {
+                if (activeStart && activeEnd) {
                     Transforms.setSelection(board, {
-                        anchor: toViewBoxPoint(board, toHostPoint(board, screenStart[0], screenStart[1])),
-                        focus: toViewBoxPoint(board, toHostPoint(board, screenEnd[0], screenEnd[1]))
+                        anchor: toViewBoxPoint(board, toHostPoint(board, activeStart[0], activeStart[1])),
+                        focus: toViewBoxPoint(board, toHostPoint(board, activeEnd[0], activeEnd[1]))
                     });
                 }
             });
@@ -130,12 +129,12 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.globalPointerUp = (event: PointerEvent) => {
-        if (screenStart && screenEnd) {
+        if (activeStart && activeEnd) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
             Transforms.setSelection(board, {
-                anchor: toViewBoxPoint(board, toHostPoint(board, screenStart[0], screenStart[1])),
-                focus: toViewBoxPoint(board, toHostPoint(board, screenEnd[0], screenEnd[1]))
+                anchor: toViewBoxPoint(board, toHostPoint(board, activeStart[0], activeStart[1])),
+                focus: toViewBoxPoint(board, toHostPoint(board, activeEnd[0], activeEnd[1]))
             });
         }
         const options = getSelectionOptions(board);
@@ -145,12 +144,12 @@ export function withSelection(board: PlaitBoard) {
             const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
             // Clear selection when mouse board outside area
             // The framework needs to determine whether the board is focused through selection
-            if (!isInBoard && !screenStart && !isAttachedElement && isInDocument) {
+            if (!isInBoard && !activeStart && !isAttachedElement && isInDocument) {
                 Transforms.setSelection(board, null);
             }
         }
-        screenStart = null;
-        screenEnd = null;
+        activeStart = null;
+        activeEnd = null;
         if (timerId) {
             clearTimeout(timerId);
             timerId = null;
@@ -219,7 +218,6 @@ export function withSelection(board: PlaitBoard) {
                     }
                 }
                 const newElements = getSelectedElements(board);
-                previousSelectedElements = [...newElements];
                 deleteTemporaryElements(board);
                 if (!isSelectionMoving(board)) {
                     selectionRectangleG?.remove();
@@ -243,7 +241,6 @@ export function withSelection(board: PlaitBoard) {
                     selectionRectangleG?.remove();
                     selectionRectangleG = board.drawSelectionRectangle();
                     PlaitBoard.getActiveHost(board).append(selectionRectangleG!);
-                    previousSelectedElements = [...currentSelectedElements];
                 } else {
                     selectionRectangleG?.remove();
                 }
