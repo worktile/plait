@@ -29,7 +29,7 @@ export const withNodeResize = (board: PlaitBoard) => {
     const options: WithResizeOptions<MindElement, null> = {
         key: 'mind-node',
         canResize: () => {
-            return !isDragging(board);
+            return true;
         },
         hitTest: (point: Point) => {
             const newTargetElement = getSelectedTarget(board as PlaitMindBoard, point);
