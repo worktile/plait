@@ -83,9 +83,8 @@ import {
 import { PlaitIslandBaseComponent, hasOnBoardChange } from '../island/island-base.component';
 import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { withAngular } from '../plugins/with-angular';
-import { ActiveGenerator, PlaitCommonElementRef, withImage, withText } from '@plait/common';
+import { PlaitCommonElementRef, withImage, withText } from '@plait/common';
 import { OnChangeData } from '../plugins/angular-board';
-import { ArrowLineAutoCompleteGenerator } from '@plait/draw';
 
 const ElementLowerHostClass = 'element-lower-host';
 const ElementHostClass = 'element-host';
@@ -102,7 +101,7 @@ const ElementTopHostClass = 'element-top-host';
                 <g class="element-upper-host"></g>
                 <g class="element-top-host"></g>
             </svg>
-            <svg #activeHost width="100%" height="100%" class="board-active-svg">
+            <svg width="100%" height="100%" class="board-active-svg">
                 <g #activeHostG class="active-host-g"></g>
             </svg>
         </div>
