@@ -11,7 +11,7 @@ import {
     isHitElement,
     removeSelectedElement
 } from '../utils/selected-element';
-import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 import {
     clearSelectionMoving,
@@ -65,11 +65,11 @@ export function withSelection(board: PlaitBoard) {
         ) {
             if (isMobileDeviceEvent(event)) {
                 timerId = setTimeout(() => {
-                    screenStart = toActivePoint(board, event.x, event.y);
+                    screenStart = [event.x, event.y];
                     timerId = null;
                 }, 120);
             } else {
-                screenStart = toActivePoint(board, event.x, event.y);
+                screenStart = [event.x, event.y];
             }
         }
         pointerDownEvent = event;
@@ -87,7 +87,7 @@ export function withSelection(board: PlaitBoard) {
         }
         if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && screenStart) {
             event.preventDefault();
-            screenEnd = toActivePoint(board, event.x, event.y);
+            screenEnd = [event.x, event.y];
             const rectangle = RectangleClient.getRectangleByPoints([
                 toActivePoint(board, ...screenStart),
                 toActivePoint(board, ...screenEnd)
