@@ -38,8 +38,8 @@ import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withSelection(board: PlaitBoard) {
     const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawSelectionRectangle } = board;
-    let activeStart: Point | null = null;
-    let activeEnd: Point | null = null;
+    let screenStart: Point | null = null;
+    let screenEnd: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionRectangleG: SVGGElement | null;
     let isShift = false;
@@ -65,11 +65,11 @@ export function withSelection(board: PlaitBoard) {
         ) {
             if (isMobileDeviceEvent(event)) {
                 timerId = setTimeout(() => {
-                    activeStart = toActivePoint(board, event.x, event.y);
+                    screenStart = toActivePoint(board, event.x, event.y);
                     timerId = null;
                 }, 120);
             } else {
-                activeStart = toActivePoint(board, event.x, event.y);
+                screenStart = toActivePoint(board, event.x, event.y);
             }
         }
         pointerDownEvent = event;
@@ -85,19 +85,19 @@ export function withSelection(board: PlaitBoard) {
             clearTimeout(timerId);
             timerId = null;
         }
-        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && activeStart) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && screenStart) {
             event.preventDefault();
-            activeEnd = toActivePoint(board, event.x, event.y);
+            screenEnd = toActivePoint(board, event.x, event.y);
             const rectangle = RectangleClient.getRectangleByPoints([
-                toActivePoint(board, ...activeStart),
-                toActivePoint(board, ...activeEnd)
+                toActivePoint(board, ...screenStart),
+                toActivePoint(board, ...screenEnd)
             ]);
             selectionMovingG?.remove();
             throttleRAF(board, 'with-selection', () => {
-                if (activeStart && activeEnd) {
+                if (screenStart && screenEnd) {
                     Transforms.setSelection(board, {
-                        anchor: toViewBoxPoint(board, toHostPoint(board, activeStart[0], activeStart[1])),
-                        focus: toViewBoxPoint(board, toHostPoint(board, activeEnd[0], activeEnd[1]))
+                        anchor: toViewBoxPoint(board, toHostPoint(board, screenStart[0], screenStart[1])),
+                        focus: toViewBoxPoint(board, toHostPoint(board, screenEnd[0], screenEnd[1]))
                     });
                 }
             });
@@ -129,12 +129,12 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.globalPointerUp = (event: PointerEvent) => {
-        if (activeStart && activeEnd) {
+        if (screenStart && screenEnd) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
             Transforms.setSelection(board, {
-                anchor: toViewBoxPoint(board, toHostPoint(board, activeStart[0], activeStart[1])),
-                focus: toViewBoxPoint(board, toHostPoint(board, activeEnd[0], activeEnd[1]))
+                anchor: toViewBoxPoint(board, toHostPoint(board, screenStart[0], screenStart[1])),
+                focus: toViewBoxPoint(board, toHostPoint(board, screenEnd[0], screenEnd[1]))
             });
         }
         const options = getSelectionOptions(board);
@@ -144,12 +144,12 @@ export function withSelection(board: PlaitBoard) {
             const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
             // Clear selection when mouse board outside area
             // The framework needs to determine whether the board is focused through selection
-            if (!isInBoard && !activeStart && !isAttachedElement && isInDocument) {
+            if (!isInBoard && !screenStart && !isAttachedElement && isInDocument) {
                 Transforms.setSelection(board, null);
             }
         }
-        activeStart = null;
-        activeEnd = null;
+        screenStart = null;
+        screenEnd = null;
         if (timerId) {
             clearTimeout(timerId);
             timerId = null;
