@@ -105,7 +105,7 @@ export const rotateAntiPointsByElement = <T>(
     if (hasValidAngle(element)) {
         let rectangle = RectangleClient.getRectangleByPoints(element.points!);
         const activeRectangle = isToActive ? toActiveRectangleFromViewBoxRectangle(board, rectangle) : rectangle;
-        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        const centerPoint = RectangleClient.getCenterPoint(activeRectangle);
         return rotatePoints(points, centerPoint, element.angle ? -element.angle : 0);
     } else {
         return null;
