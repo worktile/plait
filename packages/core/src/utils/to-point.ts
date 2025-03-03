@@ -18,13 +18,14 @@ export function toHostPoint(board: PlaitBoard, x: number, y: number): Point {
 export function toActiveRectangleFromViewBoxRectangle(board: PlaitBoard, rectangle: RectangleClient) {
     const leftTop = [rectangle.x, rectangle.y] as Point;
     const rightBottom = [rectangle.x + rectangle.width, rectangle.y + rectangle.height] as Point;
-    const leftTopOfScreen = toActivePointFromViewBoxPoint(board, leftTop);
-    const rightBottomOfScreen = toActivePointFromViewBoxPoint(board, rightBottom);
-    return RectangleClient.getRectangleByPoints([leftTopOfScreen, rightBottomOfScreen]);
+    const leftTopOfActive = toActivePointFromViewBoxPoint(board, leftTop);
+    const rightBottomOfActive = toActivePointFromViewBoxPoint(board, rightBottom);
+    return RectangleClient.getRectangleByPoints([leftTopOfActive, rightBottomOfActive]);
 }
 
 export function toActivePointFromViewBoxPoint(board: PlaitBoard, point: Point) {
-    return toScreenPointFromHostPoint(board, toHostPointFromViewBoxPoint(board, point));
+    const screenPoint = toScreenPointFromHostPoint(board, toHostPointFromViewBoxPoint(board, point));
+    return toActivePoint(board, screenPoint[0], screenPoint[1]);
 }
 
 /**
