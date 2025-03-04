@@ -1,4 +1,12 @@
-import { getHitElementByPoint, PlaitBoard, Point, RectangleClient, Transforms, isSelectedElement } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    RectangleClient,
+    Transforms,
+    isSelectedElement,
+    getSelectedElements,
+    hasValidAngle,
+} from '@plait/core';
 import { PlaitBaseTable, PlaitTableBoard, PlaitTableCellWithPoints } from '../interfaces/table';
 import {
     getIndexByResizeHandle,
@@ -13,10 +21,17 @@ import {
 } from '@plait/common';
 import { getCellsWithPoints, updateColumns, updateRows } from '../utils/table';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
+import {
+    getResizeOriginPointAndHandlePoint,
+    getResizeZoom,
+    movePointByZoomAndOriginPoint
+} from './with-draw-resize';
 import { getSnapResizingRef, getSnapResizingRefOptions } from '../utils/snap-resizing';
 import { PlaitDrawElement } from '../interfaces';
-import { isSingleSelectElementByTable } from '../utils';
+import { isSingleSelectTable } from '../utils';
+
+// const debugKey = 'debug:plait:table:resize';
+// const debugGenerator = createDebugGenerator(debugKey);
 
 interface TableResizeOptions extends ResizeOptions {
     cell: PlaitTableCellWithPoints;
@@ -30,19 +45,21 @@ export function withTableResize(board: PlaitTableBoard) {
     const options: WithResizeOptions<PlaitBaseTable, ResizeHandle, TableResizeOptions> = {
         key: 'draw-table',
         canResize: () => {
-            return true;
+            const selectedElements = getSelectedElements(board);
+            return isSingleSelectTable(board) && !hasValidAngle(selectedElements[0]);
         },
         hitTest: (point: Point) => {
-            const hitElement = getHitElementByPoint(board, point);
+            const selectedElements = getSelectedElements(board);
+            const hitElement = selectedElements[0];
+            // debugGenerator.clear();
             if (hitElement && PlaitDrawElement.isElementByTable(hitElement)) {
                 let rectangle = board.getRectangle(hitElement) as RectangleClient;
+                // debugGenerator.drawRectangle(board, rectangle);
+                // debugGenerator.drawCircles(board, [point], 5);
                 let handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, hitElement.angle);
                 if (handleRef) {
                     const selectElement = isSelectedElement(board, hitElement);
-                    if (
-                        (selectElement && isSingleSelectElementByTable(board)) ||
-                        (!selectElement && !isCornerHandle(board, handleRef.handle))
-                    ) {
+                    if ((selectElement && isSingleSelectTable(board)) || (!selectElement && !isCornerHandle(board, handleRef.handle))) {
                         return {
                             element: hitElement,
                             handle: handleRef.handle,

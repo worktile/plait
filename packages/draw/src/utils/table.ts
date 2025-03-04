@@ -3,7 +3,7 @@ import { PlaitBaseTable, PlaitTable, PlaitTableBoard, PlaitTableCell, PlaitTable
 import { getTextManage } from '../generators/text.generator';
 import { Alignment } from '@plait/common';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text-plugins';
-import { getSelectedCells, getSelectedTableElements, isSingleSelectElementByTable } from './table-selected';
+import { getSelectedCells, getSelectedTableElements, isSingleSelectTable } from './table-selected';
 import { BaseEditor } from 'slate';
 
 export function getCellsWithPoints(board: PlaitBoard, element: PlaitBaseTable): PlaitTableCellWithPoints[] {
@@ -182,7 +182,7 @@ export const createCell = (rowId: string, columnId: string, text: string | null 
 };
 
 export const getSelectedTableCellsEditor = (board: PlaitBoard): BaseEditor[] | undefined => {
-    if (isSingleSelectElementByTable(board)) {
+    if (isSingleSelectTable(board)) {
         const elements = getSelectedTableElements(board);
         const selectedCells = getSelectedCells(elements[0]);
         const selectedCellsEditor = selectedCells?.map(cell => {

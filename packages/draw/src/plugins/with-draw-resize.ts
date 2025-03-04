@@ -244,23 +244,9 @@ export function withDrawResize(board: PlaitBoard) {
             handleG.remove();
             handleG = null;
         }
-        if (canResize() && !isSelectionMoving(board)) {
-            handleG = createG();
-            const elements = getSelectedElements(board) as PlaitDrawElement[];
-            const boundingRectangle = needCustomActiveRectangle
-                ? RectangleClient.getRectangleByPoints(resizeActivePoints!)
-                : getRectangleByElements(board, elements, false);
-            const boundingActiveRectangle = toActiveRectangleFromViewBoxRectangle(board, boundingRectangle);
-            let corners = RectangleClient.getCornerPoints(boundingActiveRectangle);
-            const angle = getSelectionAngle(elements);
-            if (angle) {
-                const centerPoint = RectangleClient.getCenterPoint(boundingActiveRectangle);
-                corners = rotatePoints(corners, centerPoint, angle) as [Point, Point, Point, Point];
-            }
-            corners.forEach((corner) => {
-                const g = drawHandle(board, corner);
-                handleG && handleG.append(g);
-            });
+        const selectedElements = getSelectedElements(board);
+        if (canResize() && !isSelectionMoving(board) && selectedElements.length > 1) {
+            handleG = generatorResizeHandles(board, resizeActivePoints!, needCustomActiveRectangle);
             PlaitBoard.getActiveHost(board).append(handleG);
         }
     };
@@ -359,4 +345,24 @@ export const getResizePointsByOtherwiseAxis = (
     debugGenerator.isDebug() && debugGenerator.drawRectangle(board, resultPoints);
     const newRectangle = RectangleClient.getRectangleByPoints(resultPoints);
     return rotatePoints(resultPoints, RectangleClient.getCenterPoint(newRectangle), -(1 / 2) * Math.PI);
+};
+
+export const generatorResizeHandles = (board: PlaitBoard, resizeActivePoints?: Point[], needCustomActiveRectangle?: boolean) => {
+    const handleG = createG();
+    const elements = getSelectedElements(board) as PlaitDrawElement[];
+    const boundingRectangle = needCustomActiveRectangle
+        ? RectangleClient.getRectangleByPoints(resizeActivePoints!)
+        : getRectangleByElements(board, elements, false);
+    const boundingActiveRectangle = toActiveRectangleFromViewBoxRectangle(board, boundingRectangle);
+    let corners = RectangleClient.getCornerPoints(boundingActiveRectangle);
+    const angle = getSelectionAngle(elements);
+    if (angle) {
+        const centerPoint = RectangleClient.getCenterPoint(boundingActiveRectangle);
+        corners = rotatePoints(corners, centerPoint, angle) as [Point, Point, Point, Point];
+    }
+    corners.forEach((corner) => {
+        const g = drawHandle(board, corner);
+        handleG.append(g);
+    });
+    return handleG;
 };

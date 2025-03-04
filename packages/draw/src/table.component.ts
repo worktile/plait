@@ -166,9 +166,8 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
             this.rotateVerticalText();
         } else {
             const hasSameSelected = value.selected === previous.selected;
-            const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             const currentSelectedCells = getSelectedCells(value.element);
-            if (!hasSameSelected || !hasSameHandleState || currentSelectedCells?.length || value.selected) {
+            if (!hasSameSelected || currentSelectedCells?.length || value.selected) {
                 this.activeGenerator.processDrawing(value.element, PlaitBoard.getActiveHost(this.board), {
                     selected: this.selected
                 });

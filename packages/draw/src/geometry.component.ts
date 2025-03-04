@@ -74,7 +74,7 @@ export class GeometryComponent
             this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getActiveHost(this.board), {
                 selected: this.selected
             });
-        }
+        };
     }
 
     initialize(): void {
@@ -103,8 +103,7 @@ export class GeometryComponent
             this.textGenerator && this.updateText(previous.element, value.element);
         } else {
             const hasSameSelected = value.selected === previous.selected;
-            const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
-            if (!hasSameSelected || !hasSameHandleState || value.selected) {
+            if (!hasSameSelected || value.selected) {
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                     selected: this.selected
                 });

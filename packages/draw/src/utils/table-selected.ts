@@ -7,11 +7,6 @@ export const isSingleSelectTable = (board: PlaitBoard) => {
     return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isElementByTable(selectedElements[0]);
 };
 
-export const isSingleSelectElementByTable = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board);
-    return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isElementByTable(selectedElements[0]);
-};
-
 export const getSelectedTableElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
     return selectedElements.filter(value => PlaitDrawElement.isElementByTable(value)) as PlaitTable[];

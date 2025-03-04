@@ -5,3 +5,4 @@ export * from './image';
 export * from './theme';
 export * from './swimlane';
 export * from './text';
+export * from './line';
