@@ -13,13 +13,16 @@ import {
     getSelectedElements,
     PlaitPointerType,
     isDragging,
-    isMainPointer
+    isMainPointer,
+    distanceBetweenPointAndPoint,
+    HIT_DISTANCE_BUFFER
 } from '@plait/core';
 import { editCell, getHitCell } from '../utils/table';
 import { withTableResize } from './with-table-resize';
 import { isVirtualKey, isDelete, isSpaceHotkey } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
-import { getSelectedCells, getSelectedTableElements, isSingleSelectTable, setSelectedCells } from '../utils';
+import { getSelectedCells, getSelectedTableElements, isHitEdgeOfShape, isSingleSelectTable, setSelectedCells } from '../utils';
+import { TableEngine } from '../engines/table/table';
 
 export const withTable = (board: PlaitBoard) => {
     const tableBoard = board as PlaitTableBoard;
@@ -36,7 +39,9 @@ export const withTable = (board: PlaitBoard) => {
     tableBoard.isHit = (element, point, isStrict?: boolean) => {
         if (PlaitDrawElement.isElementByTable(element)) {
             const client = RectangleClient.getRectangleByPoints(element.points);
-            return RectangleClient.isPointInRectangle(client, point);
+            const nearestPoint = TableEngine.getNearestPoint(client, point);
+            const distance = distanceBetweenPointAndPoint(nearestPoint[0], nearestPoint[1], point[0], point[1]);
+            return distance <= HIT_DISTANCE_BUFFER || RectangleClient.isPointInRectangle(client, point);
         }
         return isHit(element, point, isStrict);
     };
@@ -80,9 +85,9 @@ export const withTable = (board: PlaitBoard) => {
             event.preventDefault();
             if (PlaitDrawElement.isElementByTable(targetElement)) {
                 const cells = getSelectedCells(targetElement);
-                let cell = targetElement.cells.find(item => item.text && item.textHeight);
+                let cell = targetElement.cells.find((item) => item.text && item.textHeight);
                 if (cells?.length) {
-                    cell = cells.find(item => item.text && item.textHeight);
+                    cell = cells.find((item) => item.text && item.textHeight);
                 }
                 if (cell) {
                     editCell(board, cell);
