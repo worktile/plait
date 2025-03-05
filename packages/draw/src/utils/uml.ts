@@ -1,9 +1,10 @@
 import { PlaitBoard, Point, idCreator } from '@plait/core';
-import { DefaultTextProperty, DefaultBasicShapeProperty } from '../constants';
+import { DefaultBasicShapeProperty } from '../constants';
 import { GeometryShapes, UMLSymbols, PlaitCommonGeometry } from '../interfaces';
 import { getMemorizedLatestByPointer } from './memorize';
 import { GeometryStyleOptions, getDefaultGeometryProperty, getTextShapeProperty } from './geometry';
 import { PlaitTableCell } from '../interfaces/table';
+import { getDefaultGeometryText } from './common';
 
 export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shape: GeometryShapes, points: [Point, Point]) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
@@ -52,13 +53,13 @@ export const createUMLClassOrInterfaceGeometryElement = (board: PlaitBoard, shap
             }
         ];
     }
-    return ({
+    return {
         ...element,
         shape,
         rows,
         columns,
         cells: buildTableCellsForGeometry(board, rows, columns, shape)
-    } as unknown) as PlaitCommonGeometry;
+    } as unknown as PlaitCommonGeometry;
 };
 
 const buildTableCellsForGeometry = (
@@ -76,8 +77,9 @@ const buildTableCellsForGeometry = (
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const cellCount = rows.length * columns.length;
     const defaultTexts = (getDefaultGeometryProperty(shape) as any)?.texts || [];
-    const testHeights = defaultTexts.map((textItem: { text: string }) => {
-        return getTextShapeProperty(board, textItem.text || DefaultTextProperty.text, memorizedLatest.textProperties['font-size']).height;
+    const textHeights = defaultTexts.map((textItem: { text: string }) => {
+        return getTextShapeProperty(board, textItem.text || getDefaultGeometryText(board), memorizedLatest.textProperties['font-size'])
+            .height;
     });
     return new Array(cellCount).fill('').map((item, index) => {
         const rowIndex = Math.floor(index / columns.length);
@@ -86,7 +88,7 @@ const buildTableCellsForGeometry = (
             id: idCreator(),
             rowId: rows[rowIndex].id,
             columnId: columns[columnIndex].id,
-            textHeight: testHeights[index],
+            textHeight: textHeights[index],
             text: {
                 children: [
                     {

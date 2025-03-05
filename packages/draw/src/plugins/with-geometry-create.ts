@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient, createG, toHostPoint, toViewBoxPoint } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, createG, getI18nValue, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { BasicShapes, GeometryShapes, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import {
@@ -8,9 +8,10 @@ import {
     getTextShapeProperty,
     getMemorizedLatestByPointer,
     getTextRectangle,
-    insertElement
+    insertElement,
+    getDefaultGeometryText
 } from '../utils';
-import { DefaultTextProperty, DrawPointerType, getGeometryPointers } from '../constants';
+import { DrawPointerType, getGeometryPointers } from '../constants';
 import {
     normalizeShapePoints,
     isDndMode,
@@ -20,7 +21,6 @@ import {
     TextManage
 } from '@plait/common';
 import { isKeyHotkey } from 'is-hotkey';
-import { NgZone } from '@angular/core';
 import { getSnapResizingRef } from '../utils/snap-resizing';
 import { TableGenerator } from '../generators/table.generator';
 
@@ -73,11 +73,11 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         if (dragMode) {
             const memorizedLatest = getMemorizedLatestByPointer(pointer);
             if (pointer === BasicShapes.text) {
-                const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
+                const property = getTextShapeProperty(board, getDefaultGeometryText(board), memorizedLatest.textProperties['font-size']);
                 const points = RectangleClient.getPoints(
                     RectangleClient.getRectangleByCenterPoint(movingPoint, property.width, property.height)
                 );
-                temporaryElement = createTextElement(board, points);
+                temporaryElement = createTextElement(board, points, getDefaultGeometryText(board));
                 if (!fakeCreateTextRef) {
                     const textManage = new TextManage(board, {
                         getRectangle: () => {
@@ -159,9 +159,9 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             if (pointer === BasicShapes.text) {
                 const memorizedLatest = getMemorizedLatestByPointer(pointer);
-                const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
+                const property = getTextShapeProperty(board, getDefaultGeometryText(board), memorizedLatest.textProperties['font-size']);
                 const points = RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(point, property.width, property.height));
-                const textElement = createTextElement(board, points);
+                const textElement = createTextElement(board, points, getDefaultGeometryText(board));
                 insertElement(board, textElement);
                 start = null;
             }

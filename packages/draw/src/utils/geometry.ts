@@ -38,9 +38,7 @@ import {
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
-import { createArrowLineElement } from './arrow-line/arrow-line-basic';
-import { ArrowLineMarkerType, ArrowLineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
-import { DefaultLineStyle } from '../constants/line';
+import { PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { getMemorizedLatestByPointer } from './memorize';
 import { DrawTextInfo, getTextManage } from '../generators/text.generator';
 import { createUMLClassOrInterfaceGeometryElement } from './uml';
@@ -146,134 +144,6 @@ export const getDefaultUMLProperty = (shape: UMLSymbols) => {
     return DefaultUMLPropertyMap[shape];
 };
 
-export const createDefaultFlowchart = (point: Point) => {
-    const decisionProperty = getDefaultFlowchartProperty(FlowchartSymbols.decision);
-    const processProperty = getDefaultFlowchartProperty(FlowchartSymbols.process);
-    const terminalProperty = getDefaultFlowchartProperty(FlowchartSymbols.terminal);
-
-    const options = {
-        strokeWidth: DefaultBasicShapeProperty.strokeWidth
-    };
-
-    const lineOptions = {
-        strokeWidth: DefaultLineStyle.strokeWidth
-    };
-    const startElement = createGeometryElement(
-        FlowchartSymbols.terminal,
-        getDefaultGeometryPoints(FlowchartSymbols.terminal, point),
-        '开始',
-        options
-    );
-
-    const processPoint1: Point = [point[0], point[1] + terminalProperty.height / 2 + 55 + processProperty.height / 2];
-    const processElement1 = createGeometryElement(
-        FlowchartSymbols.process,
-        getDefaultGeometryPoints(FlowchartSymbols.process, processPoint1),
-        '过程',
-        options
-    );
-
-    const decisionPoint: Point = [processPoint1[0], processPoint1[1] + processProperty.height / 2 + 55 + decisionProperty.height / 2];
-    const decisionElement = createGeometryElement(
-        FlowchartSymbols.decision,
-        getDefaultGeometryPoints(FlowchartSymbols.decision, decisionPoint),
-        '判断',
-        options
-    );
-
-    const processPoint2: Point = [decisionPoint[0] + decisionProperty.width / 2 + 75 + processProperty.width / 2, decisionPoint[1]];
-    const processElement2 = createGeometryElement(
-        FlowchartSymbols.process,
-        getDefaultGeometryPoints(FlowchartSymbols.process, processPoint2),
-        '过程',
-        options
-    );
-
-    const endPoint: Point = [decisionPoint[0], decisionPoint[1] + decisionProperty.height / 2 + 95 + terminalProperty.height / 2];
-    const endElement = createGeometryElement(
-        FlowchartSymbols.terminal,
-        getDefaultGeometryPoints(FlowchartSymbols.terminal, endPoint),
-        '结束',
-        options
-    );
-
-    const line1 = createArrowLineElement(
-        ArrowLineShape.elbow,
-        [
-            [0, 0],
-            [0, 0]
-        ],
-        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: startElement.id },
-        { marker: ArrowLineMarkerType.arrow, connection: [0.5, 0], boundId: processElement1.id },
-        [],
-        lineOptions
-    );
-
-    const line2 = createArrowLineElement(
-        ArrowLineShape.elbow,
-        [
-            [0, 0],
-            [0, 0]
-        ],
-        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: processElement1.id },
-        { marker: ArrowLineMarkerType.arrow, connection: [0.5, 0], boundId: decisionElement.id },
-        [],
-        lineOptions
-    );
-
-    const line3 = createArrowLineElement(
-        ArrowLineShape.elbow,
-        [
-            [0, 0],
-            [0, 0]
-        ],
-        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: decisionElement.id },
-        { marker: ArrowLineMarkerType.arrow, connection: [0.5, 0], boundId: endElement.id },
-        [
-            {
-                text: buildText('是'),
-                position: 0.5,
-                width: 14,
-                height: 20
-            }
-        ],
-        lineOptions
-    );
-
-    const line4 = createArrowLineElement(
-        ArrowLineShape.elbow,
-        [
-            [0, 0],
-            [0, 0]
-        ],
-        { marker: ArrowLineMarkerType.none, connection: [1, 0.5], boundId: decisionElement.id },
-        { marker: ArrowLineMarkerType.arrow, connection: [0, 0.5], boundId: processElement2.id },
-        [
-            {
-                text: buildText('否'),
-                position: 0.5,
-                width: 14,
-                height: 20
-            }
-        ],
-        lineOptions
-    );
-
-    const line5 = createArrowLineElement(
-        ArrowLineShape.elbow,
-        [
-            [0, 0],
-            [0, 0]
-        ],
-        { marker: ArrowLineMarkerType.none, connection: [0.5, 1], boundId: processElement2.id },
-        { marker: ArrowLineMarkerType.arrow, connection: [1, 0.5], boundId: endElement.id },
-        [],
-        lineOptions
-    );
-
-    return [startElement, processElement1, decisionElement, processElement2, endElement, line1, line2, line3, line4, line5];
-};
-
 export const getAutoCompletePoints = (board: PlaitBoard, element: PlaitShapeElement, isToActive = false) => {
     const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
     const rectangle = RectangleClient.getRectangleByPoints(element.points);
@@ -299,7 +169,7 @@ export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
     return DrawThemeColors[theme].fill;
 };
 
-export const getTextShapeProperty = (board: PlaitBoard, text: string | Element = DefaultTextProperty.text, fontSize?: number | string) => {
+export const getTextShapeProperty = (board: PlaitBoard, text: string | Element, fontSize?: number | string) => {
     fontSize = fontSize ? Number(fontSize) : DEFAULT_FONT_SIZE;
     const textSize = measureElement(buildText(text), { fontSize, fontFamily: DEFAULT_FONT_FAMILY });
     return {
@@ -330,12 +200,7 @@ export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, font
     return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
 };
 
-export const createTextElement = (
-    board: PlaitBoard,
-    points: [Point, Point],
-    text: string | Element = DefaultTextProperty.text,
-    textHeight?: number
-) => {
+export const createTextElement = (board: PlaitBoard, points: [Point, Point], text: string | Element, textHeight?: number) => {
     const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
     textHeight = textHeight ? textHeight : RectangleClient.getRectangleByPoints(points).height;
     return createGeometryElement(BasicShapes.text, points, text, memorizedLatest.geometryProperties as GeometryStyleOptions, {

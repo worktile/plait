@@ -7,17 +7,11 @@ import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstract
 import { createMindElement } from './node/create-node';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
 import { Element } from 'slate';
-import {
-    BRANCH_FONT_FAMILY,
-    DEFAULT_FONT_FAMILY,
-    ROOT_TOPIC_FONT_SIZE,
-    TOPIC_DEFAULT_MAX_WORD_COUNT,
-    TOPIC_FONT_SIZE
-} from '../constants/node-topic-style';
 import { findNewChildNodePath } from './path';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { getFontSizeBySlateElement } from './space/node-space';
-import { buildText, measureElement, ParagraphElement } from '@plait/common';
+import { buildText } from '@plait/common';
+import { getTopicSize } from './common';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
     let result: MindElement[] = [];
@@ -28,17 +22,17 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
     const validAbstractRefs = getValidAbstractRefs(board, [...selectedElements, ...overallAbstracts]);
 
     // keep correct order
-    const newSelectedElements = selectedElements.filter(value => !validAbstractRefs.find(ref => ref.abstract === value));
-    newSelectedElements.push(...validAbstractRefs.map(value => value.abstract));
+    const newSelectedElements = selectedElements.filter((value) => !validAbstractRefs.find((ref) => ref.abstract === value));
+    newSelectedElements.push(...validAbstractRefs.map((value) => value.abstract));
 
-    const selectedMindNodes = newSelectedElements.map(value => MindElement.getNode(value));
+    const selectedMindNodes = newSelectedElements.map((value) => MindElement.getNode(value));
     newSelectedElements.forEach((element, index) => {
         // handle relative location
         const nodeRectangle = getRectangleByNode(selectedMindNodes[index]);
         const points = [[nodeRectangle.x - startPoint[0], nodeRectangle.y - startPoint[1]]] as Point[];
 
         // handle invalid abstract
-        const abstractRef = validAbstractRefs.find(ref => ref.abstract === element);
+        const abstractRef = validAbstractRefs.find((ref) => ref.abstract === element);
         if (AbstractNode.isAbstract(element) && abstractRef) {
             const { start, end } = getRelativeStartEndByAbstractRef(abstractRef, newSelectedElements);
             result.push({
@@ -128,22 +122,5 @@ export const getTopicSizeByElement = (element: MindElement, parentElement?: Mind
         (parentElement && PlaitMind.isMind(parentElement)) || false,
         element.data.topic,
         element.manualWidth
-    );
-};
-
-export const getTopicSize = (isRoot: boolean, isBranch: boolean, topic: ParagraphElement, manualWidth?: number) => {
-    let fontFamily = DEFAULT_FONT_FAMILY;
-    let fontSize = TOPIC_FONT_SIZE;
-    if (isRoot) {
-        fontFamily = BRANCH_FONT_FAMILY;
-        fontSize = ROOT_TOPIC_FONT_SIZE;
-    } else if (isBranch) {
-        fontFamily = BRANCH_FONT_FAMILY;
-    }
-    const maxWidth = fontSize * TOPIC_DEFAULT_MAX_WORD_COUNT;
-    return measureElement(
-        topic,
-        { fontSize, fontFamily },
-        manualWidth ? manualWidth : maxWidth
     );
 };

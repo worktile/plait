@@ -7,6 +7,7 @@ import {
     createG,
     depthFirstRecursion,
     drawCircle,
+    getI18nValue,
     getIsRecursionFunc,
     PlaitBoard,
     PlaitElement,
@@ -19,7 +20,14 @@ import {
     SNAPPING_STROKE_WIDTH,
     Transforms
 } from '@plait/core';
-import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, ShapeDefaultSpace } from '../constants';
+import {
+    DefaultDrawStyle,
+    DefaultTextProperty,
+    DrawI18nKey,
+    LINE_HIT_GEOMETRY_BUFFER,
+    LINE_SNAPPING_BUFFER,
+    ShapeDefaultSpace
+} from '../constants';
 import {
     DrawOptions,
     DrawShapes,
@@ -254,4 +262,8 @@ export const isClosedPoints = (points: Point[]) => {
     const startPoint = points[0];
     const endPoint = points[points.length - 1];
     return startPoint[0] === endPoint[0] && startPoint[1] === endPoint[1];
+};
+
+export const getDefaultGeometryText = (board: PlaitBoard) => {
+    return getI18nValue(board, DrawI18nKey.geometryText, DefaultTextProperty.text);
 };

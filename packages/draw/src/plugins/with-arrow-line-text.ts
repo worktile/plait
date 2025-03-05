@@ -2,18 +2,25 @@ import {
     PlaitBoard,
     PlaitNode,
     getHitElementByPoint,
+    getI18nValue,
     getNearestPointBetweenPointAndSegments,
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
 import { PlaitArrowLine, PlaitDrawElement } from '../interfaces';
 import { Node } from 'slate';
-import { buildText, getMemorizedLatest, getRatioByPoint, getTextManages } from '@plait/common';
+import { buildText, DEFAULT_FONT_FAMILY, getMemorizedLatest, getRatioByPoint, getTextManages, measureElement } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { getArrowLinePoints } from '../utils/arrow-line/arrow-line-basic';
 import { getHitArrowLineTextIndex } from '../utils/position/arrow-line';
 import { isHitArrowLineText } from '../utils/hit';
 import { LINE_TEXT } from '../constants/line';
+import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
+import { DrawI18nKey } from '../constants/default';
+
+export const getDefaultLineText = (board: PlaitBoard) => {
+    return getI18nValue(board, DrawI18nKey.lineText, LINE_TEXT);
+};
 
 export const withArrowLineText = (board: PlaitBoard) => {
     const { dblClick } = board;
@@ -32,13 +39,19 @@ export const withArrowLineText = (board: PlaitBoard) => {
                 if (isHitText) {
                     editHandle(board, hitTarget, textIndex);
                 } else {
-                    const ratio = getRatioByPoint(points, point);
+                    const defaultLineText = getDefaultLineText(board);
                     const textMemory = getMemorizedLatest('arrow-line')?.text || {};
+                    const textElement = buildText(defaultLineText, undefined, textMemory);
+                    const { width, height } = measureElement(textElement, {
+                        fontSize: DEFAULT_FONT_SIZE,
+                        fontFamily: DEFAULT_FONT_FAMILY
+                    });
+                    const ratio = getRatioByPoint(points, point);
                     texts.push({
-                        text: buildText(LINE_TEXT, undefined, textMemory),
+                        text: textElement,
                         position: ratio,
-                        width: 28,
-                        height: 20
+                        width,
+                        height
                     });
                     DrawTransforms.setArrowLineTexts(board, hitTarget, texts);
                     setTimeout(() => {
@@ -62,7 +75,8 @@ function editHandle(board: PlaitBoard, element: PlaitArrowLine, manageIndex: num
     const textManage = textManages[manageIndex];
     textManage.edit(() => {
         const text = Node.string(textManage.getText());
-        const shouldRemove = !text || (isFirstEdit && text === LINE_TEXT);
+        const defaultLineText = getDefaultLineText(board);
+        const shouldRemove = !text || (isFirstEdit && text === defaultLineText);
         if (shouldRemove) {
             DrawTransforms.removeArrowLineText(board, element, manageIndex);
         }

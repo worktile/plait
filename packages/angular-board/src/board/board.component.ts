@@ -75,6 +75,7 @@ import {
     withHandPointer,
     withHistory,
     withHotkey,
+    withI18n,
     withMoving,
     withOptions,
     withRelatedFragment,
@@ -309,7 +310,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     withHistory(
                         withSelection(
                             withMoving(
-                                withBoard(withOptions(withAngular(withImage(withText(createBoard(this.plaitValue, this.plaitOptions))))))
+                                withBoard(
+                                    withI18n(withOptions(withAngular(withImage(withText(createBoard(this.plaitValue, this.plaitOptions))))))
+                                )
                             )
                         )
                     )
