@@ -15,5 +15,6 @@ export const QUICK_INSERT_INNER_CROSS_COLOR = 'white';
 export const DEFAULT_MIND_IMAGE_WIDTH = 240;
 
 export enum MindI18nKey {
-    mindCentralText = 'mind-center-text'
+    mindCentralText = 'mind-center-text',
+    abstractNodeText = 'mind-center-text'
 }

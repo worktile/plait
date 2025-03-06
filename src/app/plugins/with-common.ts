@@ -36,6 +36,9 @@ export const withCommonPlugin = (board: PlaitBoard) => {
         if (key === MindI18nKey.mindCentralText) {
             return 'Central Topic';
         }
+        if (key === MindI18nKey.abstractNodeText) {
+            return 'Summary';
+        }
         return getI18nValue(key);
     };
 

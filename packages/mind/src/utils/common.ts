@@ -5,8 +5,14 @@ import { measureElement, ParagraphElement } from '@plait/common';
 
 export const MIND_CENTRAL_TEXT = '中心主题';
 
+export const ABSTRACT_NODE_TEXT = '概要';
+
 export const getDefaultMindNameText = (board: PlaitBoard) => {
     return getI18nValue(board, MindI18nKey.mindCentralText, MIND_CENTRAL_TEXT);
+};
+
+export const getAbstractNodeText = (board: PlaitBoard) => {
+    return getI18nValue(board, MindI18nKey.abstractNodeText, ABSTRACT_NODE_TEXT);
 };
 
 export const getTopicSize = (isRoot: boolean, isBranch: boolean, topic: ParagraphElement, manualWidth?: number) => {
