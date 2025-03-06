@@ -7,6 +7,15 @@ import { approximately } from './math';
 import { toHostPointFromViewBoxPoint, toViewBoxPoint } from './to-point';
 import { BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';
 
+export const VIEWPORT_PADDING_RATIO = 0.75;
+
+export interface ElementHostBBox {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+}
+
 const IS_FROM_SCROLLING = new WeakMap<PlaitBoard, boolean>();
 
 const IS_FROM_VIEWPORT_CHANGE = new WeakMap<PlaitBoard, boolean>();
@@ -22,34 +31,16 @@ export function getViewportContainerRect(board: PlaitBoard) {
     };
 }
 
-export function getElementHostBBox(board: PlaitBoard, zoom: number) {
+export function getElementHostBBox(board: PlaitBoard, zoom: number): ElementHostBBox {
     const childrenRect = getRectangleByElements(board, board.children, true);
-    const viewportContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
-    const containerWidth = viewportContainerRect.width / zoom;
-    const containerHeight = viewportContainerRect.height / zoom;
     let left: number;
     let right: number;
     let top: number;
     let bottom: number;
-
-    if (childrenRect.width < containerWidth) {
-        const centerX = childrenRect.x + childrenRect.width / 2;
-        const halfContainerWidth = containerWidth / 2;
-        left = centerX - halfContainerWidth;
-        right = centerX + halfContainerWidth;
-    } else {
-        left = childrenRect.x;
-        right = childrenRect.x + childrenRect.width;
-    }
-    if (childrenRect.height < containerHeight) {
-        const centerY = childrenRect.y + childrenRect.height / 2;
-        const halfContainerHeight = containerHeight / 2;
-        top = centerY - halfContainerHeight;
-        bottom = centerY + halfContainerHeight;
-    } else {
-        top = childrenRect.y;
-        bottom = childrenRect.y + childrenRect.height;
-    }
+    left = childrenRect.x;
+    right = childrenRect.x + childrenRect.width;
+    top = childrenRect.y;
+    bottom = childrenRect.y + childrenRect.height;
     return {
         left,
         right,
@@ -67,15 +58,46 @@ export function clampZoomLevel(zoom: number, minZoom = MIN_ZOOM, maxZoom = MAX_Z
 
 export function calcNewViewBox(board: PlaitBoard, zoom: number) {
     const boardContainerRectangle = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
-    const elementHostBBox = getElementHostBBox(board, zoom);
-    const horizontalPadding = boardContainerRectangle.width / 2;
-    const verticalPadding = boardContainerRectangle.height / 2;
+    const elementHostBBox: ElementHostBBox = getElementHostBBox(board, zoom);
+
+    const containerWidth = boardContainerRectangle.width;
+    const containerHeight = boardContainerRectangle.height;
+
+    // Calculate bounding box dimensions
+    let width = elementHostBBox.right - elementHostBBox.left;
+    let height = elementHostBBox.bottom - elementHostBBox.top;
+
+    // If elementHostBBox dimensions are smaller than container dimensions,
+    // use half of container dimensions as minimum size
+    const minWidth = containerWidth / 2;
+    const minHeight = containerHeight / 2;
+
+    if (width < minWidth) {
+        // Center the content horizontally if applying minimum width
+        const center = elementHostBBox.left + width / 2;
+        elementHostBBox.left = center - minWidth / 2 / zoom;
+        elementHostBBox.right = center + minWidth / 2 / zoom;
+        width = minWidth / zoom;
+    }
+
+    if (height < minHeight) {
+        // Center the content vertically if applying minimum height
+        const center = elementHostBBox.top + height / 2;
+        elementHostBBox.top = center - minHeight / 2 / zoom;
+        elementHostBBox.bottom = center + minHeight / 2 / zoom;
+        height = minHeight / zoom;
+    }
+
+    const horizontalPaddingInViewBox = (containerWidth * VIEWPORT_PADDING_RATIO) / zoom;
+    const verticalPaddingInViewBox = (containerHeight * VIEWPORT_PADDING_RATIO) / zoom;
+
     const viewBox = [
-        elementHostBBox.left - horizontalPadding / zoom,
-        elementHostBBox.top - verticalPadding / zoom,
-        elementHostBBox.right - elementHostBBox.left + (horizontalPadding * 2) / zoom,
-        elementHostBBox.bottom - elementHostBBox.top + (verticalPadding * 2) / zoom
+        elementHostBBox.left - horizontalPaddingInViewBox,
+        elementHostBBox.top - verticalPaddingInViewBox,
+        width + horizontalPaddingInViewBox * 2,
+        height + verticalPaddingInViewBox * 2
     ];
+
     return viewBox;
 }
 
