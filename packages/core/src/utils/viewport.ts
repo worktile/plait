@@ -56,22 +56,31 @@ export function clampZoomLevel(zoom: number, minZoom = MIN_ZOOM, maxZoom = MAX_Z
     return zoom < minZoom ? minZoom : zoom > maxZoom ? maxZoom : zoom;
 }
 
-export function calcNewViewBox(board: PlaitBoard, zoom: number) {
+/**
+ * Prepares element bounding box with minimum size constraints
+ */
+export function prepareElementBBox(board: PlaitBoard, zoom: number): {
+    elementHostBBox: ElementHostBBox;
+    containerWidth: number;
+    containerHeight: number;
+    width: number;
+    height: number;
+} {
     const boardContainerRectangle = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     const elementHostBBox: ElementHostBBox = getElementHostBBox(board, zoom);
-
+    
     const containerWidth = boardContainerRectangle.width;
     const containerHeight = boardContainerRectangle.height;
-
+    
     // Calculate bounding box dimensions
     let width = elementHostBBox.right - elementHostBBox.left;
     let height = elementHostBBox.bottom - elementHostBBox.top;
-
+    
     // If elementHostBBox dimensions are smaller than container dimensions,
     // use half of container dimensions as minimum size
     const minWidth = containerWidth / 2;
     const minHeight = containerHeight / 2;
-
+    
     if (width < minWidth / zoom) {
         // Center the content horizontally if applying minimum width
         const center = elementHostBBox.left + width / 2;
@@ -79,7 +88,7 @@ export function calcNewViewBox(board: PlaitBoard, zoom: number) {
         elementHostBBox.right = center + minWidth / 2 / zoom;
         width = minWidth / zoom;
     }
-
+    
     if (height < minHeight / zoom) {
         // Center the content vertically if applying minimum height
         const center = elementHostBBox.top + height / 2;
@@ -87,18 +96,50 @@ export function calcNewViewBox(board: PlaitBoard, zoom: number) {
         elementHostBBox.bottom = center + minHeight / 2 / zoom;
         height = minHeight / zoom;
     }
+    
+    return {
+        elementHostBBox,
+        containerWidth,
+        containerHeight,
+        width,
+        height
+    };
+}
 
-    const horizontalPaddingInViewBox = (containerWidth * VIEWPORT_PADDING_RATIO) / zoom;
-    const verticalPaddingInViewBox = (containerHeight * VIEWPORT_PADDING_RATIO) / zoom;
-
-    const viewBox = [
+/**
+ * Calculates viewBox based on element bounding box with padding
+ */
+export function calculateViewBox(
+    elementHostBBox: ElementHostBBox,
+    containerWidth: number,
+    containerHeight: number,
+    width: number,
+    height: number,
+    zoom: number,
+    paddingRatio: number = VIEWPORT_PADDING_RATIO
+): number[] {
+    const horizontalPaddingInViewBox = (containerWidth * paddingRatio) / zoom;
+    const verticalPaddingInViewBox = (containerHeight * paddingRatio) / zoom;
+    
+    return [
         elementHostBBox.left - horizontalPaddingInViewBox,
         elementHostBBox.top - verticalPaddingInViewBox,
         width + horizontalPaddingInViewBox * 2,
         height + verticalPaddingInViewBox * 2
     ];
+}
 
-    return viewBox;
+export function calcNewViewBox(board: PlaitBoard, zoom: number) {
+    const { elementHostBBox, containerWidth, containerHeight, width, height } = prepareElementBBox(board, zoom);
+    
+    return calculateViewBox(
+        elementHostBBox,
+        containerWidth,
+        containerHeight,
+        width,
+        height,
+        zoom
+    );
 }
 
 export function getViewBoxCenterPoint(board: PlaitBoard) {
@@ -180,67 +221,39 @@ export function initializeViewBox(board: PlaitBoard) {
 
 export function updateViewBox(board: PlaitBoard) {
     const zoom = board.viewport.zoom;
-    const elementHostBBox: ElementHostBBox = getElementHostBBox(board, zoom);
-    const boardContainerRectangle = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
-
-    const containerWidth = boardContainerRectangle.width;
-    const containerHeight = boardContainerRectangle.height;
-
-    // Calculate bounding box dimensions
-    let width = elementHostBBox.right - elementHostBBox.left;
-    let height = elementHostBBox.bottom - elementHostBBox.top;
-
-    // Apply minimum size constraints if needed
-    const minWidth = containerWidth / 2;
-    const minHeight = containerHeight / 2;
-
-    if (width < minWidth / zoom) {
-        const center = elementHostBBox.left + width / 2;
-        elementHostBBox.left = center - minWidth / 2 / zoom;
-        elementHostBBox.right = center + minWidth / 2 / zoom;
-        width = minWidth / zoom;
-    }
-
-    if (height < minHeight / zoom) {
-        const center = elementHostBBox.top + height / 2;
-        elementHostBBox.top = center - minHeight / 2 / zoom;
-        elementHostBBox.bottom = center + minHeight / 2 / zoom;
-        height = minHeight / zoom;
-    }
-
-    // Use 0.5 ratio instead of VIEWPORT_PADDING_RATIO (0.75)
-    const horizontalPaddingInViewBox = (containerWidth * 0.5) / zoom;
-    const verticalPaddingInViewBox = (containerHeight * 0.5) / zoom;
-
-    // Calculate new viewBox with 0.5 padding ratio
-    const newViewBox = [
-        elementHostBBox.left - horizontalPaddingInViewBox,
-        elementHostBBox.top - verticalPaddingInViewBox,
-        width + horizontalPaddingInViewBox * 2,
-        height + verticalPaddingInViewBox * 2
-    ];
-
+    const { elementHostBBox, containerWidth, containerHeight, width, height } = prepareElementBBox(board, zoom);
+    
+    // Use 0.5 ratio to check if contents are within current viewBox
+    const checkViewBox = calculateViewBox(
+        elementHostBBox,
+        containerWidth,
+        containerHeight,
+        width,
+        height,
+        zoom,
+        0.5 // Use smaller padding ratio for checking
+    );
+    
     // Get current viewBox
     const currentViewBox = getViewBox(board);
-
+    
     // Only update if new viewBox is NOT contained within current viewBox
     if (
-        newViewBox[0] < currentViewBox.x ||
-        newViewBox[1] < currentViewBox.y ||
-        newViewBox[0] + newViewBox[2] > currentViewBox.x + currentViewBox.width ||
-        newViewBox[1] + newViewBox[3] > currentViewBox.y + currentViewBox.height
+        checkViewBox[0] < currentViewBox.x ||
+        checkViewBox[1] < currentViewBox.y ||
+        checkViewBox[0] + checkViewBox[2] > currentViewBox.x + currentViewBox.width ||
+        checkViewBox[1] + checkViewBox[3] > currentViewBox.y + currentViewBox.height
     ) {
-        // Update with calculated viewBox
-        const horizontalPaddingInViewBox = (containerWidth * VIEWPORT_PADDING_RATIO) / zoom;
-        const verticalPaddingInViewBox = (containerHeight * VIEWPORT_PADDING_RATIO) / zoom;
-
-        // Calculate new viewBox with 0.5 padding ratio
-        const newViewBox = [
-            elementHostBBox.left - horizontalPaddingInViewBox,
-            elementHostBBox.top - verticalPaddingInViewBox,
-            width + horizontalPaddingInViewBox * 2,
-            height + verticalPaddingInViewBox * 2
-        ];
+        // Update with larger padding ratio
+        const newViewBox = calculateViewBox(
+            elementHostBBox,
+            containerWidth,
+            containerHeight,
+            width,
+            height,
+            zoom,
+            VIEWPORT_PADDING_RATIO
+        );
         setSVGViewBox(board, newViewBox);
     }
 }
