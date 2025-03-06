@@ -4,7 +4,7 @@ import { PlaitBoard, Point, RectangleClient } from '../interfaces';
 import { BoardTransforms } from '../transforms/board';
 import { getRectangleByElements } from './element';
 import { approximately } from './math';
-import { toHostPointFromViewBoxPoint, toViewBoxPoint } from './to-point';
+import { getViewBox, toHostPointFromViewBoxPoint, toViewBoxPoint } from './to-point';
 import { BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';
 
 export const VIEWPORT_PADDING_RATIO = 0.75;
@@ -72,7 +72,7 @@ export function calcNewViewBox(board: PlaitBoard, zoom: number) {
     const minWidth = containerWidth / 2;
     const minHeight = containerHeight / 2;
 
-    if (width < minWidth) {
+    if (width < minWidth / zoom) {
         // Center the content horizontally if applying minimum width
         const center = elementHostBBox.left + width / 2;
         elementHostBBox.left = center - minWidth / 2 / zoom;
@@ -80,7 +80,7 @@ export function calcNewViewBox(board: PlaitBoard, zoom: number) {
         width = minWidth / zoom;
     }
 
-    if (height < minHeight) {
+    if (height < minHeight / zoom) {
         // Center the content vertically if applying minimum height
         const center = elementHostBBox.top + height / 2;
         elementHostBBox.top = center - minHeight / 2 / zoom;
@@ -176,6 +176,73 @@ export function initializeViewBox(board: PlaitBoard) {
     const zoom = board.viewport.zoom;
     const viewBox = calcNewViewBox(board, zoom);
     setSVGViewBox(board, viewBox);
+}
+
+export function updateViewBox(board: PlaitBoard) {
+    const zoom = board.viewport.zoom;
+    const elementHostBBox: ElementHostBBox = getElementHostBBox(board, zoom);
+    const boardContainerRectangle = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
+
+    const containerWidth = boardContainerRectangle.width;
+    const containerHeight = boardContainerRectangle.height;
+
+    // Calculate bounding box dimensions
+    let width = elementHostBBox.right - elementHostBBox.left;
+    let height = elementHostBBox.bottom - elementHostBBox.top;
+
+    // Apply minimum size constraints if needed
+    const minWidth = containerWidth / 2;
+    const minHeight = containerHeight / 2;
+
+    if (width < minWidth / zoom) {
+        const center = elementHostBBox.left + width / 2;
+        elementHostBBox.left = center - minWidth / 2 / zoom;
+        elementHostBBox.right = center + minWidth / 2 / zoom;
+        width = minWidth / zoom;
+    }
+
+    if (height < minHeight / zoom) {
+        const center = elementHostBBox.top + height / 2;
+        elementHostBBox.top = center - minHeight / 2 / zoom;
+        elementHostBBox.bottom = center + minHeight / 2 / zoom;
+        height = minHeight / zoom;
+    }
+
+    // Use 0.5 ratio instead of VIEWPORT_PADDING_RATIO (0.75)
+    const horizontalPaddingInViewBox = (containerWidth * 0.5) / zoom;
+    const verticalPaddingInViewBox = (containerHeight * 0.5) / zoom;
+
+    // Calculate new viewBox with 0.5 padding ratio
+    const newViewBox = [
+        elementHostBBox.left - horizontalPaddingInViewBox,
+        elementHostBBox.top - verticalPaddingInViewBox,
+        width + horizontalPaddingInViewBox * 2,
+        height + verticalPaddingInViewBox * 2
+    ];
+
+    // Get current viewBox
+    const currentViewBox = getViewBox(board);
+
+    // Only update if new viewBox is NOT contained within current viewBox
+    if (
+        newViewBox[0] < currentViewBox.x ||
+        newViewBox[1] < currentViewBox.y ||
+        newViewBox[0] + newViewBox[2] > currentViewBox.x + currentViewBox.width ||
+        newViewBox[1] + newViewBox[3] > currentViewBox.y + currentViewBox.height
+    ) {
+        // Update with calculated viewBox
+        const horizontalPaddingInViewBox = (containerWidth * VIEWPORT_PADDING_RATIO) / zoom;
+        const verticalPaddingInViewBox = (containerHeight * VIEWPORT_PADDING_RATIO) / zoom;
+
+        // Calculate new viewBox with 0.5 padding ratio
+        const newViewBox = [
+            elementHostBBox.left - horizontalPaddingInViewBox,
+            elementHostBBox.top - verticalPaddingInViewBox,
+            width + horizontalPaddingInViewBox * 2,
+            height + verticalPaddingInViewBox * 2
+        ];
+        setSVGViewBox(board, newViewBox);
+    }
 }
 
 export function initializeViewportOffset(board: PlaitBoard) {
