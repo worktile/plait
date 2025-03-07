@@ -16,5 +16,5 @@ export const DEFAULT_MIND_IMAGE_WIDTH = 240;
 
 export enum MindI18nKey {
     mindCentralText = 'mind-center-text',
-    abstractNodeText = 'mind-center-text'
+    abstractNodeText = 'abstract-node-text'
 }
