@@ -62,7 +62,7 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
                 return this.options.getRectangle(element);
             }
         };
-        this.imageComponentRef = ((this.board as unknown) as PlaitImageBoard).renderImage(this.foreignObject, props);
+        this.imageComponentRef = (this.board as unknown as PlaitImageBoard).renderImage(this.foreignObject, props);
 
         this.activeGenerator = createActiveGenerator(this.board, {
             getStrokeWidth: () => {
@@ -113,7 +113,7 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
             currentForeignObject.x,
             currentForeignObject.y
         );
-        if (currentForeignObject && current.angle) {
+        if (currentForeignObject && current.angle !== undefined) {
             setAngleForG(this.g!, RectangleClient.getCenterPoint(currentForeignObject), current.angle);
         }
         const activeG = PlaitBoard.getActiveHost(this.board);
