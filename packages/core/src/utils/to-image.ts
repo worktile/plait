@@ -175,15 +175,16 @@ async function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: 
     cloneSvgElement.setAttribute('height', `${height}`);
     cloneSvgElement.setAttribute('viewBox', [x - padding, y - padding, width + 2 * padding, height + 2 * padding].join(','));
 
+    const promiseArray = new Array(selectedGElements.length);
     await Promise.all(
         selectedGElements.map(async (child, i) => {
             const cloneChild = child.cloneNode(true) as SVGGElement;
             batchCloneCSSStyle(child, cloneChild, inlineStyleClassNames as string);
-
             await batchConvertImage(child, cloneChild);
-            newHostElement.appendChild(cloneChild);
+            promiseArray[i] = cloneChild;
         })
     );
+    newHostElement.append(...promiseArray);
     cloneSvgElement.appendChild(newHostElement);
     return cloneSvgElement;
 }

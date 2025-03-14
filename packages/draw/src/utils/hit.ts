@@ -155,9 +155,9 @@ export const getHitDrawElement = (board: PlaitBoard, elements: (PlaitDrawElement
         endIndex = elements.indexOf(firstFilledElement) + 1;
     }
     const newElements = elements.slice(0, endIndex);
-    const element = getFirstTextOrLineElement(newElements);
-    if (element) {
-        return element;
+    const solidElements = getSolidElements(newElements);
+    if (solidElements) {
+        return solidElements[0];
     }
     const sortElements = sortElementsByArea(board, newElements, 'asc');
     return sortElements[0];
@@ -182,14 +182,13 @@ export const isFilledDrawElement = (board: PlaitBoard, element: PlaitDrawElement
     return getFirstFilledDrawElement(board, [element]) !== null;
 };
 
-export const getFirstTextOrLineElement = (elements: PlaitElement[]) => {
-    const texts = elements.filter((item) => PlaitDrawElement.isText(item));
-    if (texts.length) {
-        return texts[0];
-    }
-    const lines = elements.filter((item) => PlaitDrawElement.isArrowLine(item));
-    if (lines.length) {
-        return lines[0];
+export const getSolidElements = (elements: PlaitElement[]) => {
+    const solidElements = elements.filter(
+        (item) =>
+            PlaitDrawElement.isText(item) || PlaitDrawElement.isLine(item) || elements.filter((item) => PlaitDrawElement.isImage(item))
+    );
+    if (solidElements.length) {
+        return solidElements;
     }
     return null;
 };
