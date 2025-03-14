@@ -15,7 +15,7 @@ export const setNavigatorClipboard = async (type: WritableClipboardType, data: W
                 'text/html': new Blob([buildPlaitHtml(type, data)], {
                     type: 'text/html'
                 }),
-                'text/plain': new Blob([JSON.stringify(textClipboard ?? data)], { type: 'text/plain' })
+                'text/plain': new Blob([textClipboard ?? JSON.stringify(data)], { type: 'text/plain' })
             })
         ]);
     }
