@@ -7,7 +7,8 @@ import { BoardComponentInterface } from '../board/board.component.interface';
 @Directive({
     host: {
         class: 'plait-island-container'
-    }
+    },
+    standalone: false
 })
 export abstract class PlaitIslandBaseComponent {
     board!: PlaitBoard;
@@ -27,7 +28,8 @@ export abstract class PlaitIslandBaseComponent {
 @Directive({
     host: {
         class: 'plait-island-popover-container'
-    }
+    },
+    standalone: false
 })
 export abstract class PlaitIslandPopoverBaseComponent implements OnInit, OnDestroy {
     @Input() board!: PlaitBoard;

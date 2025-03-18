@@ -35,16 +35,15 @@ import { getData } from './mock-force-atlas-wiki';
 @Component({
     selector: 'app-basic-graph-viz',
     templateUrl: './graph-viz.component.html',
-    standalone: true,
     imports: [
-    PlaitBoardComponent,
-    FormsModule,
-    AppZoomToolbarComponent,
-    AppMainToolbarComponent,
-    AppSettingPanelComponent,
-    AppMenuComponent,
-    DebugPointDisplayComponent
-]
+        PlaitBoardComponent,
+        FormsModule,
+        AppZoomToolbarComponent,
+        AppMainToolbarComponent,
+        AppSettingPanelComponent,
+        AppMenuComponent,
+        DebugPointDisplayComponent
+    ]
 })
 export class BasicGraphVizComponent implements OnInit {
     @HostBinding('class') hostClass = 'app-graph-viz';

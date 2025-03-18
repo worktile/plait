@@ -70,7 +70,6 @@ import { OnBoardChange, PlaitIslandBaseComponent } from '@plait/angular-board';
     host: {
         class: 'app-setting-panel plait-board-attached'
     },
-    standalone: true,
     imports: [NgClass, FormsModule, AppColorPickerComponent]
 })
 export class AppSettingPanelComponent extends PlaitIslandBaseComponent implements OnBoardChange {

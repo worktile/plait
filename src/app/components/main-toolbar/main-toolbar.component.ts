@@ -28,7 +28,6 @@ type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | ArrowL
     host: {
         class: 'app-main-toolbar'
     },
-    standalone: true,
     imports: [NgClass, NgTemplateOutlet]
 })
 export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
