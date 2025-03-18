@@ -1,6 +1,6 @@
 {
   "name": "@plait/layouts",
-  "version": "0.77.3",
+  "version": "0.78.0-next.0",
   "peerDependencies": {},
   "dependencies": {
     "tslib": "^2.3.0"

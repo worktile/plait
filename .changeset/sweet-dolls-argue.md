@@ -1,14 +1,14 @@
 ---
-'@plait/angular-board': major
-'@plait/angular-text': major
-'@plait/common': major
-'@plait/core': major
-'@plait/draw': major
-'@plait/flow': major
-'@plait/graph-viz': major
-'@plait/layouts': major
-'@plait/mind': major
-'@plait/text-plugins': major
+'@plait/angular-board': minor
+'@plait/angular-text': minor
+'@plait/common': minor
+'@plait/core': minor
+'@plait/draw': minor
+'@plait/flow': minor
+'@plait/graph-viz': minor
+'@plait/layouts': minor
+'@plait/mind': minor
+'@plait/text-plugins': minor
 ---
 
 bump angular into v19.x

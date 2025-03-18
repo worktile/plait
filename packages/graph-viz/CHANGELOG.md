@@ -1,5 +1,11 @@
 # @plait/graph-viz
 
+## 0.78.0-next.0
+
+### Minor Changes
+
+-   [`af24487d0cb31303c8600aae655f5825e4c9e918`](https://github.com/worktile/plait/commit/af24487d0cb31303c8600aae655f5825e4c9e918) Thanks [@minlovehua](https://github.com/minlovehua)! - bump angular into v19.x
+
 ## 0.77.3
 
 ## 0.77.2

@@ -1,6 +1,6 @@
 {
     "name": "@plait/angular-text",
-    "version": "0.77.3",
+    "version": "0.78.0-next.0",
     "peerDependencies": {
         "@angular/common": "^19.2.2",
         "@angular/core": "^19.2.2",
