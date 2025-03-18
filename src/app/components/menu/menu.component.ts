@@ -12,7 +12,6 @@ import { PlaitIslandBaseComponent } from '@plait/angular-board';
     host: {
         class: 'app-menu'
     },
-    standalone: true,
     imports: [NgClass, NgTemplateOutlet]
 })
 export class AppMenuComponent extends PlaitIslandBaseComponent {

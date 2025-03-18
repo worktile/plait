@@ -11,7 +11,6 @@ import { OnBoardChange, PlaitIslandBaseComponent } from '@plait/angular-board';
     host: {
         class: 'app-zoom-toolbar'
     },
-    standalone: true,
     imports: [NgTemplateOutlet]
 })
 export class AppZoomToolbarComponent extends PlaitIslandBaseComponent implements OnBoardChange {

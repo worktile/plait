@@ -6,7 +6,6 @@ import { TextChangeData } from '@plait/common';
 @Component({
     selector: 'app-basic-richtext',
     templateUrl: './richtext.component.html',
-    standalone: true,
     imports: [PlaitTextComponent]
 })
 export class BasicRichtextComponent {

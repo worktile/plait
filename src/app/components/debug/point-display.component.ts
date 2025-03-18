@@ -6,8 +6,7 @@ import {
 } from '@plait/core';
 @Component({
     selector: 'debug-point-display',
-    template:``,
-    standalone: true,
+    template: ``,
     imports: [],
     host: {
         'style': 'position: absolute;top:0;left:0;'

@@ -8,7 +8,6 @@ import { NgClass, NgStyle } from '@angular/common';
     host: {
         class: 'app-color-picker'
     },
-    standalone: true,
     imports: [NgClass, NgStyle]
 })
 export class AppColorPickerComponent {

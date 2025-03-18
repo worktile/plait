@@ -44,15 +44,14 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
 @Component({
     selector: 'app-basic-editor',
     templateUrl: './editor.component.html',
-    standalone: true,
     imports: [
-    PlaitBoardComponent,
-    FormsModule,
-    AppZoomToolbarComponent,
-    AppMainToolbarComponent,
-    AppSettingPanelComponent,
-    AppMenuComponent
-]
+        PlaitBoardComponent,
+        FormsModule,
+        AppZoomToolbarComponent,
+        AppMainToolbarComponent,
+        AppSettingPanelComponent,
+        AppMenuComponent
+    ]
 })
 export class BasicEditorComponent implements OnInit {
     plugins: PlaitPlugin[] = [withCommonPlugin, withMind, withMindExtend, withDraw, withGroup];
