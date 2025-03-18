@@ -31,7 +31,6 @@ import { PlaitBoard } from '@plait/core';
 @Component({
     selector: 'plait-text',
     templateUrl: './text.component.html',
-    standalone: true,
     imports: [SlateEditable, FormsModule, CommonModule]
 })
 export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {

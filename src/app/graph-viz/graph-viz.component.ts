@@ -11,40 +11,21 @@ import {
     toViewBoxPoint,
     toHostPoint,
     getHitElementsByPoint,
-    temporaryDisableSelection,
-    PlaitOptionsBoard,
-    PlaitPluginKey,
-    WithSelectionPluginOptions,
     PlaitElement
 } from '@plait/core';
-import { mockForceAtlasData } from './mock-force-atlas';
-import { ForceAtlasElement, ForceAtlasNodeElement, withForceAtlas } from '@plait/graph-viz';
-import { AppSettingPanelComponent } from '../components/setting-panel/setting-panel.component';
-import { AppMainToolbarComponent } from '../components/main-toolbar/main-toolbar.component';
+import { ForceAtlasElement, withForceAtlas } from '@plait/graph-viz';
 import { AppZoomToolbarComponent } from '../components/zoom-toolbar/zoom-toolbar.component';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { withCommonPlugin } from '../plugins/with-common';
-import { AppMenuComponent } from '../components/menu/menu.component';
-
 import { OnChangeData, PlaitBoardComponent } from '@plait/angular-board';
 import { withForceAtlasExtend } from './with-force-atlas-extend';
-import { DebugPointDisplayComponent } from '../components/debug/point-display.component';
 import { getData } from './mock-force-atlas-wiki';
 
 @Component({
     selector: 'app-basic-graph-viz',
     templateUrl: './graph-viz.component.html',
-    standalone: true,
-    imports: [
-    PlaitBoardComponent,
-    FormsModule,
-    AppZoomToolbarComponent,
-    AppMainToolbarComponent,
-    AppSettingPanelComponent,
-    AppMenuComponent,
-    DebugPointDisplayComponent
-]
+    imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent]
 })
 export class BasicGraphVizComponent implements OnInit {
     @HostBinding('class') hostClass = 'app-graph-viz';
@@ -100,7 +81,7 @@ export class BasicGraphVizComponent implements OnInit {
     onChange(event: OnChangeData) {
         const selectedElements = getSelectedElements(this.board);
         const selectedElement = selectedElements[0];
-        const isSetViewport = event.operations.length && event.operations.every(op => PlaitOperation.isSetViewportOperation(op));
+        const isSetViewport = event.operations.length && event.operations.every((op) => PlaitOperation.isSetViewportOperation(op));
         if (isSetViewport) {
             this.hasViewportMoved = true;
         }
@@ -117,7 +98,7 @@ export class BasicGraphVizComponent implements OnInit {
         let clickCount: number = 0;
 
         // simulate db click event and prevent pointerUp event when trigger db click
-        board.pointerUp = e => {
+        board.pointerUp = (e) => {
             console.log('anyway up');
             // prevent set_selection in pointerUp when viewport is moving
             if (PlaitBoard.getBoardContainer(board).classList.contains('viewport-moving')) {

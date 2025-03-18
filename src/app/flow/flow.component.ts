@@ -15,7 +15,6 @@ const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 @Component({
     selector: 'app-basic-flow',
     templateUrl: './flow.component.html',
-    standalone: true,
     imports: [PlaitBoardComponent, NgClass]
 })
 export class BasicFlowComponent implements OnInit {
