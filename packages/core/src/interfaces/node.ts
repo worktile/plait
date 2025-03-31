@@ -53,7 +53,7 @@ export const PlaitNode = {
         if (!n.children || !board.isExpanded(n)) {
             return n;
         }
-        while (n) {
+        while (n && n.children && n.children.length > 0 && board.isExpanded(n)) {
             if (n.children!.length === 0) {
                 break;
             } else {
