@@ -104,7 +104,7 @@ export function setSelectedElementsWithGroup(board: PlaitBoard, elements: PlaitE
     if (Selection.isCollapsed(board.selection)) {
         const hitElement = elements[0];
         const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-        if (hitElementGroups.length) {
+        if (hitElementGroups.length > 0) {
             const elementsInHighestGroup = getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
             const isSelectGroupElement = selectedElements.some((element) =>
                 elementsInHighestGroup.map((item) => item.id).includes(element.id)
@@ -161,11 +161,21 @@ export function cacheSelectedElementsWithGroup(
     if (selectedGroups.length > 0) {
         if (selectedGroups.length > 1) {
             newElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+        } else {
+            const element = board.getOneHitElement(elements);
+            if (element) {
+                newElements = [element];
+            }
         }
     } else {
         const elementsInGroup = getAllElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true);
         if (!isSelectGroupElement) {
             newElements = elementsInGroup;
+        } else {
+            const element = board.getOneHitElement(elements);
+            if (element) {
+                newElements = [element];
+            }
         }
     }
     cacheSelectedElements(board, uniqueById(newElements));

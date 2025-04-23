@@ -148,9 +148,13 @@ export const drawArrowLine = (board: PlaitBoard, element: PlaitArrowLine) => {
 };
 
 export const getHitConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShapeElement): Point => {
-    let rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
     const ref = getSnappingRef(board, hitElement, point);
     const connectionPoint = ref.connectorPoint || ref.edgePoint;
+    return getHitConnectionFromConnectionPoint(connectionPoint, hitElement);
+};
+
+export const getHitConnectionFromConnectionPoint = (connectionPoint: Point, hitElement: PlaitShapeElement): Point => {
+    let rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
     return [(connectionPoint[0] - rectangle.x) / rectangle.width, (connectionPoint[1] - rectangle.y) / rectangle.height];
 };
 
