@@ -1,6 +1,14 @@
 import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove, WithHandPluginOptions, PlaitPluginKey } from '../interfaces';
-import { distanceBetweenPointAndPoint, isHitElement, isMovingElements, isSelectionMoving, toHostPoint, toViewBoxPoint } from '../utils';
+import {
+    distanceBetweenPointAndPoint,
+    isHitElement,
+    isMovingElements,
+    isSelectionMoving,
+    setSelectionOptions,
+    toHostPoint,
+    toViewBoxPoint
+} from '../utils';
 import { isMainPointer, isWheelPointer } from '../utils/dom/common';
 import { isSmartHand } from '../utils/mobile';
 import { updateViewportContainerScroll } from '../utils/viewport';
@@ -104,8 +112,9 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.keyDown = (event: KeyboardEvent) => {
         if (event.code === ShortcutKey) {
-            if (!PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
+            if (!board.options.readonly && !PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
                 beingPressedShortcutKey = true;
+                setSelectionOptions(board, { isDisabledSelection: true });
                 PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             }
             event.preventDefault();
@@ -115,7 +124,8 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.keyUp = (event: KeyboardEvent) => {
         if (!board.options.readonly && event.code === ShortcutKey) {
-            beingPressedShortcutKey = true;
+            beingPressedShortcutKey = false;
+            setSelectionOptions(board, { isDisabledSelection: false });
             PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
         }
         keyUp(event);
