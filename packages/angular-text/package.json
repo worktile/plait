@@ -4,9 +4,10 @@
     "peerDependencies": {
         "@angular/common": "^19.2.2",
         "@angular/core": "^19.2.2",
-        "slate": ">=0.101.0 <=0.104.0",
-        "slate-angular": "^19.0.0-next.0",
-        "slate-history": "^0.100.0"
+        "slate-angular": "^19.1.0-next.3",
+        "slate": "^0.117.2",
+        "slate-dom": "^0.116.0",
+        "slate-history": "^0.115.0"
     },
     "dependencies": {
         "tslib": "^2.3.0"
