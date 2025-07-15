@@ -1,9 +1,10 @@
 @forward '../plugins/link/link.component.scss';
 
+
 .plait-board-container {
     .text {
         foreignObject {
-            overflow-x: auto;
+            overflow-y: auto;
             &::-webkit-scrollbar {
                 display: none;
             }
@@ -17,14 +18,13 @@
     min-height: 20px;
     line-height: 20px;
     display: block;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Noto Sans', 'Noto Sans CJK SC', 'Microsoft Yahei',
-        'Hiragino Sans GB', Arial, sans-serif;
+    word-break: break-all;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Noto Sans', 'Noto Sans CJK SC', 'Microsoft Yahei', 'Hiragino Sans GB', Arial, sans-serif;
 
     .slate-editable-container {
         outline: none;
         padding: 0;
         cursor: default;
-        white-space: pre;
         .plait-text-paragraph {
             user-select: none;
         }
