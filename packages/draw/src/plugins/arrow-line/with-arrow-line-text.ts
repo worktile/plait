@@ -7,16 +7,16 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { PlaitArrowLine, PlaitDrawElement } from '../interfaces';
+import { PlaitArrowLine, PlaitDrawElement } from '../../interfaces';
 import { Node } from 'slate';
 import { buildText, DEFAULT_FONT_FAMILY, getMemorizedLatest, getRatioByPoint, getTextManages, measureElement } from '@plait/common';
-import { DrawTransforms } from '../transforms';
-import { getArrowLinePoints } from '../utils/arrow-line/arrow-line-basic';
-import { getHitArrowLineTextIndex } from '../utils/position/arrow-line';
-import { isHitArrowLineText } from '../utils/hit';
-import { LINE_TEXT } from '../constants/line';
+import { DrawTransforms } from '../../transforms';
+import { getArrowLinePoints } from '../../utils/arrow-line/arrow-line-basic';
+import { getHitArrowLineTextIndex } from '../../utils/position/arrow-line';
+import { isHitArrowLineText } from '../../utils/hit';
+import { LINE_TEXT } from '../../constants/line';
 import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
-import { DrawI18nKey } from '../constants/default';
+import { DrawI18nKey } from '../../constants/default';
 
 export const getDefaultLineText = (board: PlaitBoard) => {
     return getI18nValue(board, DrawI18nKey.lineText, LINE_TEXT);

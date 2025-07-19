@@ -1,20 +1,20 @@
 import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
-import { getSelectedArrowLineElements } from '../utils/selected';
-import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
-import { ArrowLineHandle, ArrowLineShape, PlaitArrowLine } from '../interfaces';
-import { DrawTransforms } from '../transforms';
-import { getElbowPoints, getNextRenderPoints, isUseDefaultOrthogonalRoute } from '../utils/arrow-line/elbow';
+import { getSelectedArrowLineElements } from '../../utils/selected';
+import { getHitLineResizeHandleRef, LineResizeHandle } from '../../utils/position/line';
+import { ArrowLineHandle, ArrowLineShape, PlaitArrowLine } from '../../interfaces';
+import { DrawTransforms } from '../../transforms';
+import { getElbowPoints, getNextRenderPoints, isUseDefaultOrthogonalRoute } from '../../utils/arrow-line/elbow';
 import {
     alignElbowSegment,
     alignPoints,
     getIndexAndDeleteCountByKeyPoint,
     getResizedPreviousAndNextPoint,
     hasIllegalElbowPoint
-} from '../utils/arrow-line/arrow-line-resize';
-import { getHitConnection, getArrowLinePoints } from '../utils/arrow-line/arrow-line-basic';
-import { getElbowLineRouteOptions } from '../utils/arrow-line';
-import { getSnappingShape } from '../utils';
+} from '../../utils/arrow-line/arrow-line-resize';
+import { getHitConnection, getArrowLinePoints } from '../../utils/arrow-line/arrow-line-basic';
+import { getElbowLineRouteOptions } from '../../utils/arrow-line';
+import { getSnappingShape } from '../../utils';
 
 export const withArrowLineResize = (board: PlaitBoard) => {
     let elbowLineIndex: number | null;
@@ -32,7 +32,7 @@ export const withArrowLineResize = (board: PlaitBoard) => {
             const selectedLineElements = getSelectedArrowLineElements(board);
             if (selectedLineElements.length > 0) {
                 let result = null;
-                selectedLineElements.forEach(value => {
+                selectedLineElements.forEach((value) => {
                     const handleRef = getHitLineResizeHandleRef(board, value, point);
                     if (handleRef) {
                         result = {

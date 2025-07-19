@@ -10,11 +10,11 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { ArrowLineShape, PlaitArrowLine, PlaitShapeElement } from '../interfaces';
-import { getArrowLinePointers } from '../constants';
+import { ArrowLineShape, PlaitArrowLine, PlaitShapeElement } from '../../interfaces';
+import { getArrowLinePointers } from '../../constants';
 import { isDrawingMode } from '@plait/common';
-import { handleArrowLineCreating } from '../utils/arrow-line/arrow-line-basic';
-import { getSnappingShape } from '../utils';
+import { handleArrowLineCreating } from '../../utils/arrow-line/arrow-line-basic';
+import { getSnappingShape } from '../../utils';
 
 export const withArrowLineCreateByDraw = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;

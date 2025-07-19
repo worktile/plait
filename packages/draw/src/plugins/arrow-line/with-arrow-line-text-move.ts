@@ -6,11 +6,11 @@ import {
     getHitElementByPoint,
     getNearestPointBetweenPointAndSegments
 } from '@plait/core';
-import { PlaitArrowLine, PlaitDrawElement } from '../interfaces';
+import { PlaitArrowLine, PlaitDrawElement } from '../../interfaces';
 import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, getRatioByPoint, getTextManages, withResize } from '@plait/common';
-import { DrawTransforms } from '../transforms';
-import { getArrowLinePoints } from '../utils/arrow-line/arrow-line-basic';
-import { getHitArrowLineTextIndex } from '../utils/position/arrow-line';
+import { DrawTransforms } from '../../transforms';
+import { getArrowLinePoints } from '../../utils/arrow-line/arrow-line-basic';
+import { getHitArrowLineTextIndex } from '../../utils/position/arrow-line';
 
 export const withArrowLineTextMove = (board: PlaitBoard) => {
     let textIndex = 0;

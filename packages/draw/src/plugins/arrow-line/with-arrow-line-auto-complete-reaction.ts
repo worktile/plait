@@ -2,7 +2,6 @@ import {
     CursorClass,
     PlaitBoard,
     PlaitElement,
-    Point,
     RectangleClient,
     RgbaToHEX,
     drawCircle,
@@ -13,11 +12,11 @@ import {
     toActivePoint,
     toActiveRectangleFromViewBoxRectangle
 } from '@plait/core';
-import { PlaitDrawElement } from '../interfaces';
-import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
+import { PlaitDrawElement } from '../../interfaces';
+import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../../utils';
 import { PRIMARY_COLOR, PlaitCommonElementRef } from '@plait/common';
-import { LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../constants/line';
-import { ArrowLineAutoCompleteGenerator } from '../generators/arrow-line-auto-complete.generator';
+import { LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../../constants/line';
+import { ArrowLineAutoCompleteGenerator } from '../../generators/arrow-line-auto-complete.generator';
 
 export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove } = board;

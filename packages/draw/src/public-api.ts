@@ -1,6 +1,6 @@
 export * from './interfaces';
 export * from './plugins/with-draw';
-export * from './plugins/with-arrow-line-auto-complete';
+export * from './plugins/arrow-line/with-arrow-line-auto-complete';
 export * from './constants';
 export * from './utils';
 export * from './geometry.component';

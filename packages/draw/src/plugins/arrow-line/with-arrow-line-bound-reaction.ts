@@ -10,10 +10,10 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { ArrowLineShape, PlaitDrawElement } from '../interfaces';
+import { ArrowLineShape, PlaitDrawElement } from '../../interfaces';
 import { isResizingByCondition } from '@plait/common';
-import { LineResizeHandle } from '../utils/position/line';
-import { drawBoundReaction, getHitShape, getSnappingRef } from '../utils';
+import { LineResizeHandle } from '../../utils/position/line';
+import { drawBoundReaction, getHitShape, getSnappingRef } from '../../utils';
 
 export const withArrowLineBoundReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;

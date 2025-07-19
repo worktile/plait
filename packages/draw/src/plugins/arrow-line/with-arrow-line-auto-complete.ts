@@ -19,12 +19,12 @@ import {
     toScreenPointFromActivePoint,
     toViewBoxPoint
 } from '@plait/core';
-import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
-import { getElementShape } from '../utils/shape';
-import { getEngine } from '../engines';
-import { handleArrowLineCreating } from '../utils/arrow-line/arrow-line-basic';
-import { getSelectedDrawElements } from '../utils/selected';
-import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint } from '../utils/geometry';
+import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitShapeElement } from '../../interfaces';
+import { getElementShape } from '../../utils/shape';
+import { getEngine } from '../../engines';
+import { handleArrowLineCreating } from '../../utils/arrow-line/arrow-line-basic';
+import { getSelectedDrawElements } from '../../utils/selected';
+import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint } from '../../utils/geometry';
 
 export const WithArrowLineAutoCompletePluginKey = 'plait-arrow-line-auto-complete-plugin-key';
 

@@ -6,14 +6,14 @@ import { PlaitDrawElement } from '../interfaces';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { withArrowLineCreateByDraw } from './with-arrow-line-create';
-import { withArrowLineResize } from './with-arrow-line-resize';
-import { withArrowLineBoundReaction } from './with-arrow-line-bound-reaction';
-import { withArrowLineText } from './with-arrow-line-text';
+import { withArrowLineCreateByDraw } from './arrow-line/with-arrow-line-create';
+import { withArrowLineResize } from './arrow-line/with-arrow-line-resize';
+import { withArrowLineBoundReaction } from './arrow-line/with-arrow-line-bound-reaction';
+import { withArrowLineText } from './arrow-line/with-arrow-line-text';
 import { ImageComponent } from '../image.component';
-import { withArrowLineAutoCompleteReaction } from './with-arrow-line-auto-complete-reaction';
-import { withArrowLineAutoComplete } from './with-arrow-line-auto-complete';
-import { withArrowLineTextMove } from './with-arrow-line-text-move';
+import { withArrowLineAutoCompleteReaction } from './arrow-line/with-arrow-line-auto-complete-reaction';
+import { withArrowLineAutoComplete } from './arrow-line/with-arrow-line-auto-complete';
+import { withArrowLineTextMove } from './arrow-line/with-arrow-line-text-move';
 import { withDrawResize } from './with-draw-resize';
 import { getHitDrawElement, isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getArrowLinePoints, getArrowLineTextRectangle } from '../utils/arrow-line/arrow-line-basic';
@@ -25,17 +25,8 @@ import { getVectorLinePoints } from '../utils/vector-line';
 import { withVectorLineResize } from './with-vector-line-resize';
 
 export const withDraw = (board: PlaitBoard) => {
-    const {
-        drawElement,
-        getRectangle,
-        isRectangleHit,
-        isHit,
-        isInsidePoint,
-        isMovable,
-        isAlign,
-        getRelatedFragment,
-        getOneHitElement
-    } = board;
+    const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment, getOneHitElement } =
+        board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -93,8 +84,8 @@ export const withDraw = (board: PlaitBoard) => {
         return isHit(element, point, isStrict);
     };
 
-    board.getOneHitElement = elements => {
-        const isAllDrawElements = elements.every(item => PlaitDrawElement.isDrawElement(item));
+    board.getOneHitElement = (elements) => {
+        const isAllDrawElements = elements.every((item) => PlaitDrawElement.isDrawElement(item));
         if (isAllDrawElements) {
             return getHitDrawElement(board, elements as PlaitDrawElement[]);
         }
@@ -122,7 +113,7 @@ export const withDraw = (board: PlaitBoard) => {
         if (PlaitDrawElement.isArrowLine(element)) {
             const selectedElements = getSelectedElements(board);
             const isSelected = (boundId: string) => {
-                return !!selectedElements.find(value => value.id === boundId);
+                return !!selectedElements.find((value) => value.id === boundId);
             };
             if (!element.source.boundId && !element.target.boundId) {
                 return true;
@@ -147,10 +138,10 @@ export const withDraw = (board: PlaitBoard) => {
 
     board.getRelatedFragment = (elements: PlaitElement[], originData?: PlaitElement[]) => {
         const selectedElements = originData?.length ? originData : getSelectedElements(board);
-        const lineElements = board.children.filter(element => PlaitDrawElement.isArrowLine(element));
-        const activeLines = lineElements.filter(line => {
-            const source = selectedElements.find(element => element.id === line.source.boundId);
-            const target = selectedElements.find(element => element.id === line.target.boundId);
+        const lineElements = board.children.filter((element) => PlaitDrawElement.isArrowLine(element));
+        const activeLines = lineElements.filter((line) => {
+            const source = selectedElements.find((element) => element.id === line.source.boundId);
+            const target = selectedElements.find((element) => element.id === line.target.boundId);
             const isSelected = selectedElements.includes(line);
             return source && target && !isSelected;
         });
