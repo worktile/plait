@@ -166,6 +166,7 @@ export class TextManage {
         const fontSize = parseFloat(computedStyle.fontSize);
         const target = element || (this.editor.children[0] as Element);
         return measureElement(
+            this.board,
             target,
             {
                 fontSize: fontSize,

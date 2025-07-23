@@ -9,7 +9,7 @@ import { getDefaultMindNameText, getTopicSize } from '../common';
 
 export const createEmptyMind = (board: PlaitBoard, point: Point) => {
     const text = getDefaultMindNameText(board);
-    const topicSize = getTopicSize(true, false, buildText(text));
+    const topicSize = getTopicSize(board, true, false, buildText(text));
     const element = createMindElement(text, topicSize.width, topicSize.height, { layout: MindLayoutType.right });
     element.isRoot = true;
     element.type = 'mindmap';

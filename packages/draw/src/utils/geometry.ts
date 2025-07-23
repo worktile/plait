@@ -171,7 +171,7 @@ export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
 
 export const getTextShapeProperty = (board: PlaitBoard, text: string | Element, fontSize?: number | string) => {
     fontSize = fontSize ? Number(fontSize) : DEFAULT_FONT_SIZE;
-    const textSize = measureElement(buildText(text), { fontSize, fontFamily: DEFAULT_FONT_FAMILY });
+    const textSize = measureElement(board, buildText(text), { fontSize, fontFamily: DEFAULT_FONT_FAMILY });
     return {
         width: textSize.width + ShapeDefaultSpace.rectangleAndText * 2,
         height: textSize.height

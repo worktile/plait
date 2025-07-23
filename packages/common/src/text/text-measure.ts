@@ -1,8 +1,24 @@
 import { Node } from 'slate';
 import { CustomText, ParagraphElement } from './types';
 import { getLineHeightByFontSize } from '../utils/text';
+import { PlaitBoard } from '@plait/core';
+
+const BOARD_TO_CANVAS_MAP = new WeakMap<PlaitBoard, HTMLCanvasElement>();
+
+const getCanvasForBoard = (board: PlaitBoard | null): HTMLCanvasElement => {
+    if (board) {
+        if (!BOARD_TO_CANVAS_MAP.get(board)) {
+            const canvas = document.createElement('canvas');
+            BOARD_TO_CANVAS_MAP.set(board, canvas);
+            return canvas;
+        }
+        return BOARD_TO_CANVAS_MAP.get(board) as HTMLCanvasElement;
+    }
+    return document.createElement('canvas');
+};
 
 export function measureElement(
+    board: PlaitBoard | null,
     element: ParagraphElement,
     options: {
         fontSize: number;
@@ -10,7 +26,7 @@ export function measureElement(
     },
     containerMaxWidth: number = 10000
 ) {
-    const canvas = document.createElement('canvas');
+    const canvas = getCanvasForBoard(board);
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const textEntries = Node.texts(element);
     const lines: CustomText[][] = [[]];

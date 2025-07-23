@@ -42,7 +42,7 @@ export const withArrowLineText = (board: PlaitBoard) => {
                     const defaultLineText = getDefaultLineText(board);
                     const textMemory = getMemorizedLatest('arrow-line')?.text || {};
                     const textElement = buildText(defaultLineText, undefined, textMemory);
-                    const { width, height } = measureElement(textElement, {
+                    const { width, height } = measureElement(board, textElement, {
                         fontSize: DEFAULT_FONT_SIZE,
                         fontFamily: DEFAULT_FONT_FAMILY
                     });

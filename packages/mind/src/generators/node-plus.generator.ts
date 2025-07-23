@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitOptionsBoard, createG, temporaryDisableSelection } from '@plait/core';
+import { PlaitBoard, createG } from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';

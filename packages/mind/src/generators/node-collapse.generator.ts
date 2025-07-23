@@ -22,6 +22,7 @@ export class CollapseGenerator extends Generator<MindElement> implements AfterDr
     }
 
     draw(element: MindElement<BaseData>): SVGGElement {
+        const childrenCount = getChildrenCount(element);
         const collapseG = createG();
         collapseG.classList.add('collapse');
         const node = MindElement.getNode(element);
@@ -76,10 +77,10 @@ export class CollapseGenerator extends Generator<MindElement> implements AfterDr
 
         if (element.isCollapsed) {
             let numberOffset = 0;
-            if (getChildrenCount(element) >= 10) numberOffset = -2;
-            if (getChildrenCount(element) === 1) numberOffset = 1;
+            if (childrenCount >= 10) numberOffset = -2;
+            if (childrenCount === 1) numberOffset = 1;
 
-            const badgeText = createText(circleCenter[0] - 4 + numberOffset, circleCenter[1] + 4, stroke, `${getChildrenCount(element)}`);
+            const badgeText = createText(circleCenter[0] - 4 + numberOffset, circleCenter[1] + 4, stroke, `${childrenCount}`);
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
             collapseG.appendChild(badge);

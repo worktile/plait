@@ -15,7 +15,7 @@ export const getAbstractNodeText = (board: PlaitBoard) => {
     return getI18nValue(board, MindI18nKey.abstractNodeText, ABSTRACT_NODE_TEXT);
 };
 
-export const getTopicSize = (isRoot: boolean, isBranch: boolean, topic: ParagraphElement, manualWidth?: number) => {
+export const getTopicSize = (board: PlaitBoard, isRoot: boolean, isBranch: boolean, topic: ParagraphElement, manualWidth?: number) => {
     let fontFamily = DEFAULT_FONT_FAMILY;
     let fontSize = TOPIC_FONT_SIZE;
     if (isRoot) {
@@ -25,5 +25,5 @@ export const getTopicSize = (isRoot: boolean, isBranch: boolean, topic: Paragrap
         fontFamily = DEFAULT_FONT_FAMILY;
     }
     const maxWidth = fontSize * TOPIC_DEFAULT_MAX_WORD_COUNT;
-    return measureElement(topic, { fontSize, fontFamily }, manualWidth ? manualWidth : maxWidth);
+    return measureElement(board, topic, { fontSize, fontFamily }, manualWidth ? manualWidth : maxWidth);
 };

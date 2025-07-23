@@ -71,7 +71,7 @@ const setAbstractByElements = (board: PlaitBoard, groupParent: MindElement, grou
 
 const insertAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
     const abstractNodeText = getAbstractNodeText(board);
-    const { width, height } = getTopicSize(false, false, buildText(abstractNodeText));
+    const { width, height } = getTopicSize(board, false, false, buildText(abstractNodeText));
     const mindElement = createMindElement(abstractNodeText, width, height, {
         strokeWidth: DefaultAbstractNodeStyle.branch.width,
         branchWidth: DefaultAbstractNodeStyle.branch.width

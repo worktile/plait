@@ -78,7 +78,7 @@ export const insertClipboardData = (
         if (hasTargetParent && operationType !== WritableClipboardOperationType.duplicate) {
             if (item.isRoot) {
                 newElement = adjustRootToNode(board, newElement);
-                const { width, height } = getTopicSizeByElement(newElement, targetParent as MindElement);
+                const { width, height } = getTopicSizeByElement(board, newElement, targetParent as MindElement);
                 newElement.width = width;
                 newElement.height = height;
             }
@@ -96,7 +96,7 @@ export const insertClipboardData = (
             }
             if (!item.isRoot) {
                 newElement = adjustNodeToRoot(board, newElement);
-                const { width, height } = getTopicSizeByElement(newElement);
+                const { width, height } = getTopicSizeByElement(board, newElement);
                 newElement.width = width;
                 newElement.height = height;
             }
@@ -110,14 +110,15 @@ export const insertClipboardData = (
 };
 
 export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitElement, text: string | Element) => {
-    const { width, height } = getTopicSize(false, PlaitMind.isMind(targetParent), buildText(text));
+    const { width, height } = getTopicSize(board, false, PlaitMind.isMind(targetParent), buildText(text));
     const newElement = createMindElement(text, Math.max(width, getFontSizeBySlateElement(text)), height, {});
     Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
     Transforms.addSelectionWithTemporaryElements(board, [newElement]);
 };
 
-export const getTopicSizeByElement = (element: MindElement, parentElement?: MindElement) => {
+export const getTopicSizeByElement = (board: PlaitBoard, element: MindElement, parentElement?: MindElement) => {
     return getTopicSize(
+        board,
         PlaitMind.isMind(element),
         (parentElement && PlaitMind.isMind(parentElement)) || false,
         element.data.topic,
