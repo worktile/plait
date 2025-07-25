@@ -43,7 +43,7 @@ const isGeometryDrawingMode = (board: PlaitBoard) => {
     return drawingMode;
 };
 
-const getGeometryGeneratorByShape = (board: PlaitBoard, shape: DrawPointerType) => {
+export const getGeometryGeneratorByShape = (board: PlaitBoard, shape: DrawPointerType) => {
     if (PlaitDrawElement.isUMLClassOrInterface({ shape: shape })) {
         return new TableGenerator<PlaitGeometry>(board);
     } else {

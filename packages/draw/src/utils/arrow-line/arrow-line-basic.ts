@@ -209,7 +209,8 @@ export const handleArrowLineCreating = (
     sourcePoint: Point,
     movingPoint: Point,
     sourceElement: PlaitShapeElement | null,
-    lineShapeG: SVGGElement
+    lineShapeG: SVGGElement,
+    options?: Pick<PlaitArrowLine, 'strokeColor' | 'strokeWidth'>
 ) => {
     const hitElement = getSnappingShape(board, movingPoint);
     const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
@@ -230,7 +231,8 @@ export const handleArrowLineCreating = (
         [],
         {
             strokeWidth: DefaultLineStyle.strokeWidth,
-            ...memorizedLatest
+            ...memorizedLatest,
+            ...options
         }
     );
     const linePoints = getArrowLinePoints(board, temporaryLineElement);

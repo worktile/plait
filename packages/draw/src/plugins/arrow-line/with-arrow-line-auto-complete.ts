@@ -31,6 +31,11 @@ export const WithArrowLineAutoCompletePluginKey = 'plait-arrow-line-auto-complet
 export interface ArrowLineAutoCompleteOptions {
     afterComplete: (element: PlaitArrowLine) => {};
 }
+export enum LineMode {
+    Drag = 'drag',
+    Click = 'click'
+}
+export let isDragOrClick: LineMode = LineMode.Click;
 
 export const withArrowLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
@@ -90,6 +95,7 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
                     sourceElement,
                     lineShapeG
                 );
+                isDragOrClick = LineMode.Drag;
                 Transforms.addSelectionWithTemporaryElements(board, []);
             }
         }
@@ -114,6 +120,7 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG = null;
         sourceElement = null;
         temporaryElement = null;
+        isDragOrClick = LineMode.Click;
         globalPointerUp(event);
     };
 
