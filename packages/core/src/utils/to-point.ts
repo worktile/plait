@@ -8,6 +8,7 @@ export const getViewBox = (board: PlaitBoard) => {
 
 /**
  * Get the screen point starting from the upper left corner of the svg element (based on the svg screen coordinate system)
+ * reference: https://github.com/worktile/plait/blob/develop/packages/core/src/utils/to-point.md
  */
 export function toHostPoint(board: PlaitBoard, x: number, y: number): Point {
     const host = PlaitBoard.getHost(board);
@@ -45,6 +46,7 @@ export function toScreenPointFromActivePoint(board: PlaitBoard, activePoint: Poi
 
 /**
  * Get the point in the coordinate system of the svg viewBox
+ * reference: https://github.com/worktile/plait/blob/develop/packages/core/src/utils/to-point.md
  */
 export function toViewBoxPoint(board: PlaitBoard, hostPoint: Point) {
     const viewBox = getViewBox(board);
