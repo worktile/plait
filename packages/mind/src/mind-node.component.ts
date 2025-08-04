@@ -141,7 +141,7 @@ export class MindNodeComponent
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getActiveHost(this.board), {
                 selected: this.selected
             });
-            this.nodeMoreGenerator.processDrawing(this.element, this.getElementG());
+            this.nodeMoreGenerator.processDrawing(this.element, this.getElementG(), { isSelected: this.selected });
             this.nodeShapeGenerator.processDrawing(this.element, this.getElementG(), { node: this.node });
             this.drawLink();
             this.drawEmojis();

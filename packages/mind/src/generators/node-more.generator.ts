@@ -14,6 +14,7 @@ export interface NodeMoreExtraData {
     isSelected: boolean;
     isHovered?: boolean;
     isHoveredCollapsedIcon?: boolean;
+    isAnimated?: boolean;
 }
 
 export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData> {
@@ -37,19 +38,23 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         const isDisplayCollapsedIcon =
             !element.isCollapsed &&
             (isSelectedElement(this.board, element) || !!extraData?.isHovered || !!extraData?.isHoveredCollapsedIcon);
-        this.toggleCollapsedIcon(collapsedIconCenter, stroke, moreGContainer, isDisplayCollapsedIcon);
+        this.toggleCollapsedIcon(collapsedIconCenter, stroke, moreGContainer, isDisplayCollapsedIcon, !!extraData?.isAnimated);
         // this.toggleExpandedBadge(collapsedIconCenter, stroke, moreGContainer, !!element.isCollapsed);
         return moreGContainer;
     }
 
     collapsedIcon: SVGGElement | undefined | null;
 
-    toggleCollapsedIcon(center: Point, stroke: string, parentG: SVGGElement, isDisplay: boolean) {
+    toggleCollapsedIcon(center: Point, stroke: string, parentG: SVGGElement, isDisplay: boolean, isAnimated: boolean) {
         this.collapsedIcon?.remove();
         if (!isDisplay) {
             return;
         }
         this.collapsedIcon = createG();
+        this.collapsedIcon.classList.add('collapsed-icon');
+        if (isAnimated) {
+            this.collapsedIcon.classList.add('animated');
+        }
         const collapsedIconCircle = PlaitBoard.getRoughSVG(this.board).circle(center[0], center[1], NODE_MORE_ICON_DIAMETER, {
             fill: '#fff',
             stroke,

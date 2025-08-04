@@ -101,12 +101,13 @@ export const withNodeMore = (board: PlaitBoard) => {
     const toggleHoveredNodeCallback = (element: MindElement, isHovered: boolean, isHoveredCollapsedIcon: boolean) => {
         const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
         const nodeMoreGenerator = elementRef?.getGenerator(NodeMoreGenerator.key);
-        if (nodeMoreGenerator) {
+        if (nodeMoreGenerator && !isSelectedElement(board, element)) {
             const g = PlaitElement.getElementG(element);
             nodeMoreGenerator.processDrawing(element, g, {
                 isHovered,
                 isHoveredCollapsedIcon,
-                isSelected: isSelectedElement(board, element)
+                isSelected: isSelectedElement(board, element),
+                isAnimated: isHovered || isHoveredCollapsedIcon
             });
         }
     };
