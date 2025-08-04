@@ -5,8 +5,13 @@ export const PRIMARY_COLOR = '#6698FF';
 export const GRAY_COLOR = '#AAAAAA';
 export const STROKE_WIDTH = 3;
 
-export const EXTEND_OFFSET = 8;
-export const EXTEND_DIAMETER = 16;
+export const RESIZE_HANDLE_BUFFER_DISTANCE = 8;
+
+export const NODE_MORE_LINE_DISTANCE = 8;
+
+export const NODE_MORE_STROKE_WIDTH = 2;
+
+export const NODE_MORE_ICON_DIAMETER = 18;
 
 export const QUICK_INSERT_CIRCLE_OFFSET = 9;
 export const QUICK_INSERT_CIRCLE_COLOR = '#6698FF';

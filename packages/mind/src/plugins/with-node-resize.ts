@@ -6,15 +6,14 @@ import {
     RectangleClient,
     ResizeCursorClass,
     distanceBetweenPointAndRectangle,
-    getSelectedElements,
-    isDragging
+    getSelectedElements
 } from '@plait/core';
 import { MindElement } from '../interfaces/element';
 import { getRectangleByNode } from '../utils/position/node';
 import { NodeSpace } from '../utils/space/node-space';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindTransforms } from '../transforms';
-import { EXTEND_OFFSET } from '../constants/default';
+import { RESIZE_HANDLE_BUFFER_DISTANCE } from '../constants/default';
 import { ResizeRef, ResizeState, TextManage, WithResizeOptions, getFirstTextManage, withResize } from '@plait/common';
 
 interface TargetElementRef {
@@ -71,9 +70,9 @@ export const withNodeResize = (board: PlaitBoard) => {
 };
 
 export const getSelectedTarget = (board: PlaitMindBoard, point: Point) => {
-    const selectedElements = getSelectedElements(board).filter(value => MindElement.isMindElement(board, value)) as MindElement[];
+    const selectedElements = getSelectedElements(board).filter((value) => MindElement.isMindElement(board, value)) as MindElement[];
     if (selectedElements.length > 0) {
-        const target = selectedElements.find(value => {
+        const target = selectedElements.find((value) => {
             const rectangle = getResizeActiveRectangle(board, value);
             return distanceBetweenPointAndRectangle(point[0], point[1], rectangle) <= 0;
         });
@@ -85,5 +84,10 @@ export const getSelectedTarget = (board: PlaitMindBoard, point: Point) => {
 export const getResizeActiveRectangle = (board: PlaitBoard, element: MindElement): RectangleClient => {
     const node = MindElement.getNode(element);
     const rectangle = getRectangleByNode(node);
-    return { x: rectangle.x + rectangle.width - EXTEND_OFFSET, y: rectangle.y, width: EXTEND_OFFSET * 2, height: rectangle.height };
+    return {
+        x: rectangle.x + rectangle.width - RESIZE_HANDLE_BUFFER_DISTANCE,
+        y: rectangle.y,
+        width: RESIZE_HANDLE_BUFFER_DISTANCE * 2,
+        height: rectangle.height
+    };
 };
