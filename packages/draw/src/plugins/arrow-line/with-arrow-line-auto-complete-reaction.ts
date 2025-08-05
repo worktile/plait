@@ -3,7 +3,7 @@ import {
     PlaitBoard,
     PlaitElement,
     RectangleClient,
-    RgbaToHEX,
+    rgbaToHEX,
     drawCircle,
     hasValidAngle,
     isSelectionMoving,
@@ -41,7 +41,7 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
                 lineAutoCompleteGenerator?.removeAutoCompleteG(hitIndex);
                 reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, {
                     stroke: 'none',
-                    fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_HOVERED_OPACITY),
+                    fill: rgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_HOVERED_OPACITY),
                     fillStyle: 'solid'
                 });
                 PlaitBoard.getActiveHost(board).append(reactionG);

@@ -13,7 +13,7 @@ import {
 import { MindElement } from '../interfaces';
 import { isHitMindElement } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
-import { getCollapseOrExpandCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
+import { getCollapseAndAddCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
 import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
 
 export interface NodeMoreRef {
@@ -21,6 +21,7 @@ export interface NodeMoreRef {
     isHovered: boolean;
     isHoveredCollapseArea: boolean;
     isHoveredExpandArea: boolean;
+    isHoveredAddArea: boolean;
 }
 
 export const withNodeMore = (board: PlaitBoard) => {
@@ -44,7 +45,8 @@ export const withNodeMore = (board: PlaitBoard) => {
                     target: nodeMoreRef.target,
                     isHovered: false,
                     isHoveredCollapseArea: false,
-                    isHoveredExpandArea: false
+                    isHoveredExpandArea: false,
+                    isHoveredAddArea: false
                 });
             }
 
@@ -92,7 +94,8 @@ export const withNodeMore = (board: PlaitBoard) => {
                 isHoveredCollapseArea: ref.isHoveredCollapseArea,
                 isHoveredExpandArea: ref.isHoveredExpandArea,
                 isSelected: isSelectedElement(board, ref.target),
-                isShowCollapseAnimation: ref.isHovered || ref.isHoveredCollapseArea
+                isHoveredAddArea: ref.isHoveredAddArea,
+                isShowCollapseAnimation: ref.isHovered || ref.isHoveredCollapseArea || ref.isHoveredAddArea
             });
         }
     };
@@ -103,7 +106,8 @@ export const withNodeMore = (board: PlaitBoard) => {
                 target: nodeMoreRef.target,
                 isHovered: false,
                 isHoveredCollapseArea: false,
-                isHoveredExpandArea: false
+                isHoveredExpandArea: false,
+                isHoveredAddArea: false
             });
         }
         nodeMoreRef = null;
@@ -118,6 +122,7 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
     let isHovered = false;
     let isHoveredCollapseArea = false;
     let isHoveredExpandArea = false;
+    let isHoveredAddArea = false;
     const point = toViewBoxPoint(board, toHostPoint(board, x, y));
     depthFirstRecursion(
         board as unknown as MindElement,
@@ -129,23 +134,35 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
                 return;
             }
             const isHitElement = isHitMindElement(board, point, element);
-            const collapseOrExpandCenter = getCollapseOrExpandCenterPoint(board, element);
+            let isHitCollapseOrExpand = false;
+            let isHitAdd = false;
+            const { collapseCenter, addCenter } = getCollapseAndAddCenterPoint(board, element);
             const collapseOrExpandIconRectangle = RectangleClient.getRectangleByCenterPoint(
-                collapseOrExpandCenter,
+                collapseCenter,
                 NODE_MORE_ICON_DIAMETER,
                 NODE_MORE_ICON_DIAMETER
             );
-            const isHitCollapseOrExpand = RectangleClient.isHit(
+            isHitCollapseOrExpand = RectangleClient.isHit(
                 RectangleClient.getRectangleByPoints([point, point]),
                 collapseOrExpandIconRectangle
             );
-            if (isHitElement || isHitCollapseOrExpand) {
+            const addIconRectangle = RectangleClient.getRectangleByCenterPoint(
+                addCenter,
+                NODE_MORE_ICON_DIAMETER,
+                NODE_MORE_ICON_DIAMETER
+            );
+            isHitAdd = RectangleClient.isHit(
+                RectangleClient.getRectangleByPoints([point, point]),
+                addIconRectangle
+            );
+            if (isHitElement || isHitCollapseOrExpand || isHitAdd) {
                 isHovered = isHitElement;
                 if (element.isCollapsed) {
                     isHoveredExpandArea = isHitCollapseOrExpand;
                 } else {
                     isHoveredCollapseArea = isHitCollapseOrExpand;
                 }
+                isHoveredAddArea = isHitAdd;
                 target = element;
             }
         },
@@ -159,6 +176,7 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
         target,
         isHovered,
         isHoveredCollapseArea,
-        isHoveredExpandArea
+        isHoveredExpandArea,
+        isHoveredAddArea
     } as NodeMoreRef;
 };

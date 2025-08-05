@@ -19,7 +19,7 @@ $primary: #4e8afa;
         .slate-editable-container {
             min-width: 5px;
         }
-        .collapsed-icon {
+        .collapse-button, .add-button {
             transform-origin: center center;
             transform-box: fill-box;
             cursor: pointer;
@@ -27,7 +27,7 @@ $primary: #4e8afa;
                 animation: scale-in 0.15s ease-out forwards;
             }
         }
-        .expanded-icon {
+        .expanded-button {
             cursor: pointer;
         }
         

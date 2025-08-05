@@ -26,9 +26,9 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
 
     function getSecondAxle(element: MindElement, parent?: LayoutNode) {
         if (element.isRoot) {
-            return BASE * 10;
+            return BASE * 12;
         }
-        return BASE * 6;
+        return BASE * 8.5;
     }
 
     return {

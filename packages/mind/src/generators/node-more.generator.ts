@@ -1,14 +1,22 @@
-import { PlaitBoard, Point, createG, createText, isSelectedElement, setStrokeLinecap } from '@plait/core';
+import { PlaitBoard, Point, createG, createText, isSelectedElement, rgbaToHEX, setStrokeLinecap } from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
-import { NODE_MORE_ICON_DIAMETER, NODE_MORE_LINE_DISTANCE, NODE_MORE_STROKE_WIDTH } from '../constants/default';
+import {
+    NODE_MORE_ICON_DIAMETER,
+    NODE_MORE_LINE_DISTANCE,
+    NODE_MORE_STROKE_WIDTH,
+    NODE_ADD_CIRCLE_COLOR,
+    NODE_ADD_INNER_CROSS_COLOR,
+    NODE_ADD_HOVER_COLOR,
+    NODE_MORE_BRIDGE_DISTANCE
+} from '../constants/default';
 import { MindLayoutType, isHorizontalLayout, isIndentedLayout, isTopLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { getBranchColorByMindElement } from '../utils/node-style/branch';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { buildText, DEFAULT_FONT_FAMILY, Generator, measureElement } from '@plait/common';
+import { buildText, DEFAULT_FONT_FAMILY, Generator, measureElement, TRANSPARENT } from '@plait/common';
 import { getChildrenCount } from '../utils/mind';
 import { FontSizes } from '@plait/text-plugins';
 
@@ -17,17 +25,25 @@ export interface NodeMoreExtraData {
     isHovered?: boolean;
     isHoveredCollapseArea?: boolean;
     isHoveredExpandArea?: boolean;
+    isHoveredAddArea?: boolean;
     isShowCollapseAnimation?: boolean;
 }
 
 export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData> {
     static key = 'mind-node-more';
 
+    collapseOrAddG: SVGGElement | undefined | null;
+
+    expandG: SVGGElement | undefined | null;
+
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
         if (
             !PlaitMind.isMind(element) &&
-            element.children.length &&
-            (extraData?.isSelected || extraData?.isHovered || extraData?.isHoveredCollapseArea || element.isCollapsed)
+            (extraData?.isSelected ||
+                extraData?.isHovered ||
+                extraData?.isHoveredCollapseArea ||
+                extraData?.isHoveredAddArea ||
+                element.isCollapsed)
         ) {
             return true;
         }
@@ -40,10 +56,27 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         const layoutDirection = getNodeMoreLayoutDirection(this.board, element);
         const moreStartAndEnd = getMoreStartAndEnd(this.board, element, layoutDirection);
         const collapseOrExpandCenter = moveXOfPoint(moreStartAndEnd[1], NODE_MORE_ICON_DIAMETER / 2, layoutDirection);
-        const isDisplayCollapse =
+        const hasChildren = element.children.length > 0;
+        const isShowCollapseOrAdd =
             !element.isCollapsed &&
-            (isSelectedElement(this.board, element) || !!extraData?.isHovered || !!extraData?.isHoveredCollapseArea);
-        this.toggleCollapse(collapseOrExpandCenter, stroke, moreGContainer, isDisplayCollapse, !!extraData?.isShowCollapseAnimation);
+            (isSelectedElement(this.board, element) ||
+                !!extraData?.isHovered ||
+                !!extraData?.isHoveredCollapseArea ||
+                !!extraData?.isHoveredAddArea);
+        const isShowCollapse = isShowCollapseOrAdd && hasChildren;
+        const isShowAdd = isShowCollapseOrAdd;
+        const addCenter =
+            (isShowCollapseOrAdd && getAddCenterByCollapseOrExpandCenter(hasChildren, collapseOrExpandCenter, layoutDirection)) || null;
+        this.toggleCollapseOrAdd(
+            collapseOrExpandCenter,
+            addCenter,
+            stroke,
+            moreGContainer,
+            isShowCollapse,
+            isShowAdd,
+            !!extraData?.isHoveredAddArea,
+            !!extraData?.isShowCollapseAnimation
+        );
         this.toggleExpandBadge(
             element,
             moreStartAndEnd,
@@ -56,40 +89,96 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         return moreGContainer;
     }
 
-    collapsedIcon: SVGGElement | undefined | null;
-    expandedIcon: SVGGElement | undefined | null;
-
-    toggleCollapse(center: Point, stroke: string, parentG: SVGGElement, isDisplay: boolean, isAnimated: boolean) {
-        this.collapsedIcon?.remove();
-        if (!isDisplay) {
+    toggleCollapseOrAdd(
+        center: Point,
+        addCenter: Point | null,
+        stroke: string,
+        parentG: SVGGElement,
+        isShowCollapse: boolean,
+        isShowAdd: boolean,
+        isHoveredAddArea: boolean,
+        isAnimated: boolean
+    ) {
+        this.collapseOrAddG?.remove();
+        if (!isShowCollapse && !isShowAdd) {
             return;
         }
-        this.collapsedIcon = createG();
-        this.collapsedIcon.classList.add('collapsed-icon');
-        if (isAnimated) {
-            this.collapsedIcon.classList.add('animated');
+        this.collapseOrAddG = createG();
+        if (isShowCollapse) {
+            const collapseG = createG();
+            this.collapseOrAddG.appendChild(collapseG);
+            collapseG.classList.add('collapse-button');
+            if (isAnimated) {
+                collapseG.classList.add('animated');
+            }
+            const collapseCircle = PlaitBoard.getRoughSVG(this.board).circle(center[0], center[1], NODE_MORE_ICON_DIAMETER, {
+                fill: '#fff',
+                stroke,
+                strokeWidth: NODE_MORE_STROKE_WIDTH,
+                fillStyle: 'solid'
+            });
+            const start = moveXOfPoint(center, -NODE_MORE_BRIDGE_DISTANCE / 2);
+            const end = moveXOfPoint(center, NODE_MORE_BRIDGE_DISTANCE / 2);
+            const collapseLine = PlaitBoard.getRoughSVG(this.board).line(start[0], start[1], end[0], end[1], {
+                fill: '#fff',
+                stroke,
+                strokeWidth: NODE_MORE_STROKE_WIDTH,
+                fillStyle: 'solid'
+            });
+            collapseG.appendChild(collapseCircle);
+            collapseG.appendChild(collapseLine);
+            setStrokeLinecap(collapseLine, 'round');
         }
-        const collapsedIconCircle = PlaitBoard.getRoughSVG(this.board).circle(center[0], center[1], NODE_MORE_ICON_DIAMETER, {
-            fill: '#fff',
-            stroke,
-            strokeWidth: NODE_MORE_STROKE_WIDTH,
-            fillStyle: 'solid'
-        });
-        const start = moveXOfPoint(center, -NODE_MORE_ICON_DIAMETER / 4);
-        const end = moveXOfPoint(center, NODE_MORE_ICON_DIAMETER / 4);
-        const collapsedIconLine = PlaitBoard.getRoughSVG(this.board).line(start[0], start[1], end[0], end[1], {
-            fill: '#fff',
-            stroke,
-            strokeWidth: NODE_MORE_STROKE_WIDTH,
-            fillStyle: 'solid'
-        });
-        this.collapsedIcon.appendChild(collapsedIconCircle);
-        this.collapsedIcon.appendChild(collapsedIconLine);
-        setStrokeLinecap(collapsedIconLine, 'round');
-        parentG.appendChild(this.collapsedIcon);
-    }
+        if (isShowAdd && addCenter) {
+            const addG = createG();
+            this.collapseOrAddG.appendChild(addG);
+            addG.classList.add('add-button');
+            if (isAnimated && !isShowCollapse) {
+                addG.classList.add('animated');
+            }
+            const circle = PlaitBoard.getRoughSVG(this.board).circle(
+                addCenter[0],
+                addCenter[1],
+                NODE_MORE_ICON_DIAMETER + NODE_MORE_STROKE_WIDTH,
+                {
+                    fill: isHoveredAddArea ? NODE_ADD_HOVER_COLOR : NODE_ADD_CIRCLE_COLOR,
+                    stroke: TRANSPARENT,
+                    fillStyle: 'solid'
+                }
+            );
+            const hLineBeginPoint = [addCenter[0] - NODE_MORE_BRIDGE_DISTANCE / 2, addCenter[1]];
+            const hLineEndPoint = [addCenter[0] + NODE_MORE_BRIDGE_DISTANCE / 2, addCenter[1]];
+            const vLineBeginPoint = [addCenter[0], addCenter[1] - NODE_MORE_BRIDGE_DISTANCE / 2];
+            const vLineEndPoint = [addCenter[0], addCenter[1] + NODE_MORE_BRIDGE_DISTANCE / 2];
 
-    collapsedIconBadge: SVGGElement | undefined | null;
+            const innerCrossHLine = PlaitBoard.getRoughSVG(this.board).line(
+                hLineBeginPoint[0],
+                hLineBeginPoint[1],
+                hLineEndPoint[0],
+                hLineEndPoint[1],
+                {
+                    stroke: NODE_ADD_INNER_CROSS_COLOR,
+                    strokeWidth: NODE_MORE_STROKE_WIDTH
+                }
+            );
+            setStrokeLinecap(innerCrossHLine, 'round');
+            const innerCrossVLine = PlaitBoard.getRoughSVG(this.board).line(
+                vLineBeginPoint[0],
+                vLineBeginPoint[1],
+                vLineEndPoint[0],
+                vLineEndPoint[1],
+                {
+                    stroke: NODE_ADD_INNER_CROSS_COLOR,
+                    strokeWidth: NODE_MORE_STROKE_WIDTH
+                }
+            );
+            setStrokeLinecap(innerCrossVLine, 'round');
+            addG.appendChild(circle);
+            addG.appendChild(innerCrossHLine);
+            addG.appendChild(innerCrossVLine);
+        }
+        parentG.appendChild(this.collapseOrAddG);
+    }
 
     toggleExpandBadge(
         element: MindElement,
@@ -100,12 +189,12 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         isCollapsed: boolean,
         isHoveredExpandIcon: boolean
     ) {
-        this.expandedIcon?.remove();
+        this.expandG?.remove();
         if (!isCollapsed) {
             return;
         }
-        this.expandedIcon = createG();
-        this.expandedIcon.classList.add('expanded-icon');
+        this.expandG = createG();
+        this.expandG.classList.add('expanded-button');
         const endWithWidth = moreStartAndEnd[1];
         const moreLine = PlaitBoard.getRoughSVG(this.board).line(
             moreStartAndEnd[0][0],
@@ -119,17 +208,17 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
                 strokeWidth: NODE_MORE_STROKE_WIDTH
             }
         );
-        const badgeBackground = PlaitBoard.getRoughSVG(this.board).circle(center[0], center[1], NODE_MORE_ICON_DIAMETER, {
-            fill: stroke,
-            stroke,
-            fillStyle: 'solid'
-        });
-        if (isHoveredExpandIcon) {
-            console.log('isHoveredExpandIcon', isHoveredExpandIcon);
-            badgeBackground.setAttribute('style', `opacity: 0.4`);
-        } else {
-            badgeBackground.setAttribute('style', `opacity: 0.2`);
-        }
+        const backgroundColor = isHoveredExpandIcon ? rgbaToHEX(stroke, 0.4) : rgbaToHEX(stroke, 0.2);
+        const badgeBackground = PlaitBoard.getRoughSVG(this.board).circle(
+            center[0],
+            center[1],
+            NODE_MORE_ICON_DIAMETER + NODE_MORE_STROKE_WIDTH,
+            {
+                fill: backgroundColor,
+                stroke: TRANSPARENT,
+                fillStyle: 'solid'
+            }
+        );
         const childrenCount = getChildrenCount(element);
         let text = `${childrenCount}`;
         if (childrenCount >= 99) {
@@ -145,17 +234,31 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         if (childrenCount > 99) {
             badgeText.setAttribute('style', 'dominant-baseline: ideographic');
         }
-        this.expandedIcon.appendChild(moreLine);
-        this.expandedIcon.appendChild(badgeBackground);
-        this.expandedIcon.appendChild(badgeText);
-        parentG.appendChild(this.expandedIcon);
+        this.expandG.appendChild(moreLine);
+        this.expandG.appendChild(badgeBackground);
+        this.expandG.appendChild(badgeText);
+        parentG.appendChild(this.expandG);
     }
 }
 
-export const getCollapseOrExpandCenterPoint = (board: PlaitBoard, element: MindElement) => {
-    const linkLineDirection = getNodeMoreLayoutDirection(board, element);
-    const [startPoint, endPoint] = getMoreStartAndEnd(board, element, linkLineDirection);
-    return moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, linkLineDirection);
+export const getCollapseAndAddCenterPoint = (board: PlaitBoard, element: MindElement) => {
+    const layoutDirection = getNodeMoreLayoutDirection(board, element);
+    const [startPoint, endPoint] = getMoreStartAndEnd(board, element, layoutDirection);
+    const collapseCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection);
+    const addCenter = getAddCenterByCollapseOrExpandCenter(element.children?.length > 0, collapseCenter, layoutDirection);
+    return { collapseCenter, addCenter };
+};
+
+export const getAddCenterByCollapseOrExpandCenter = (
+    hasChildren: boolean,
+    collapseOrExpandCenter: Point,
+    layoutDirection: LayoutDirection
+) => {
+    let addCenter = collapseOrExpandCenter;
+    if (hasChildren) {
+        addCenter = moveXOfPoint(addCenter, NODE_MORE_LINE_DISTANCE + NODE_MORE_ICON_DIAMETER, layoutDirection);
+    }
+    return addCenter;
 };
 
 export const getNodeMoreLayoutDirection = (board: PlaitBoard, element: MindElement) => {

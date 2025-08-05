@@ -1,5 +1,5 @@
 import { PlaitMindBoard } from '@plait/mind';
-import { PlaitBoard, Point, RectangleClient, RgbaToHEX, createG, getElementById } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, rgbaToHEX, createG, getElementById } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, getArrowLineHandleRefPair, getStrokeWidthByElement } from '@plait/draw';
 import {
     AStar,
@@ -181,7 +181,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
             // Figure edges effect diagram
             edges.forEach(edges => {
                 const connectionG = rough.line(edges[0][0], edges[0][1], edges[1][0], edges[1][1], {
-                    stroke: RgbaToHEX('#007500', 0.2),
+                    stroke: rgbaToHEX('#007500', 0.2),
                     strokeWidth: 1.5
                 });
                 g?.append(connectionG);
@@ -192,7 +192,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
             aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
             let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
             route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
-            const routeG = rough.linearPath(route, { stroke: RgbaToHEX('#e03130', 0.4), strokeWidth: 3 });
+            const routeG = rough.linearPath(route, { stroke: rgbaToHEX('#e03130', 0.4), strokeWidth: 3 });
             g.append(routeG);
             // 5、Correct the shortest path: get the midline xAxis, yAxis between figures (if they exist)
             const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);

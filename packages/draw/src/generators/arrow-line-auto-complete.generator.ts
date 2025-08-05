@@ -1,4 +1,4 @@
-import { PlaitBoard, RgbaToHEX, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
+import { PlaitBoard, rgbaToHEX, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
 import { PlaitGeometry, PlaitShapeElement } from '../interfaces';
 import { ActiveGeneratorExtraData, Generator, PRIMARY_COLOR } from '@plait/common';
 import { getAutoCompletePoints } from '../utils';
@@ -29,7 +29,7 @@ export class ArrowLineAutoCompleteGenerator<T extends PlaitShapeElement = PlaitG
         middlePoints.forEach((point, index) => {
             const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, LINE_AUTO_COMPLETE_DIAMETER, {
                 stroke: 'none',
-                fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_OPACITY),
+                fill: rgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_OPACITY),
                 fillStyle: 'solid'
             });
             circle.classList.add(`line-auto-complete-${index}`);
