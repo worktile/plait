@@ -38,12 +38,11 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
         if (
-            !PlaitMind.isMind(element) &&
-            (extraData?.isSelected ||
-                extraData?.isHovered ||
-                extraData?.isHoveredCollapseArea ||
-                extraData?.isHoveredAddArea ||
-                element.isCollapsed)
+            extraData?.isSelected ||
+            extraData?.isHovered ||
+            extraData?.isHoveredCollapseArea ||
+            extraData?.isHoveredAddArea ||
+            element.isCollapsed
         ) {
             return true;
         }
@@ -63,10 +62,10 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
                 !!extraData?.isHovered ||
                 !!extraData?.isHoveredCollapseArea ||
                 !!extraData?.isHoveredAddArea);
-        const isShowCollapse = isShowCollapseOrAdd && hasChildren;
+        const isShowCollapse = isShowCollapseOrAdd && hasChildren && !PlaitMind.isMind(element);
         const isShowAdd = isShowCollapseOrAdd;
         const addCenter =
-            (isShowCollapseOrAdd && getAddCenterByCollapseOrExpandCenter(hasChildren, collapseOrExpandCenter, layoutDirection)) || null;
+            (isShowCollapseOrAdd && getAddCenterByCollapseOrExpandCenter(element, collapseOrExpandCenter, layoutDirection)) || null;
         this.toggleCollapseOrAdd(
             collapseOrExpandCenter,
             addCenter,
@@ -245,17 +244,17 @@ export const getCollapseAndAddCenterPoint = (board: PlaitBoard, element: MindEle
     const layoutDirection = getNodeMoreLayoutDirection(board, element);
     const [startPoint, endPoint] = getMoreStartAndEnd(board, element, layoutDirection);
     const collapseCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection);
-    const addCenter = getAddCenterByCollapseOrExpandCenter(element.children?.length > 0, collapseCenter, layoutDirection);
+    const addCenter = getAddCenterByCollapseOrExpandCenter(element, collapseCenter, layoutDirection);
     return { collapseCenter, addCenter };
 };
 
 export const getAddCenterByCollapseOrExpandCenter = (
-    hasChildren: boolean,
+    target: MindElement,
     collapseOrExpandCenter: Point,
     layoutDirection: LayoutDirection
 ) => {
     let addCenter = collapseOrExpandCenter;
-    if (hasChildren) {
+    if (target.children?.length > 0 && !PlaitMind.isMind(target)) {
         addCenter = moveXOfPoint(addCenter, NODE_MORE_LINE_DISTANCE + NODE_MORE_ICON_DIAMETER, layoutDirection);
     }
     return addCenter;

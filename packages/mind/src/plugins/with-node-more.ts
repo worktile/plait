@@ -10,11 +10,12 @@ import {
     toViewBoxPoint,
     Transforms
 } from '@plait/core';
-import { MindElement } from '../interfaces';
-import { isHitMindElement } from '../utils';
+import { MindElement, PlaitMind } from '../interfaces';
+import { findNewChildNodePath, insertMindElement, isHitMindElement } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
 import { getCollapseAndAddCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
 import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
+import { PlaitMindBoard } from './with-mind.board';
 
 export interface NodeMoreRef {
     target: MindElement;
@@ -81,13 +82,20 @@ export const withNodeMore = (board: PlaitBoard) => {
             }, 0);
             return;
         }
+        if (nodeMoreRef && nodeMoreRef.isHoveredAddArea) {
+            if (nodeMoreRef) {
+                const path = findNewChildNodePath(board, nodeMoreRef.target);
+                insertMindElement(board as PlaitMindBoard, nodeMoreRef.target, path);
+            }
+            return;
+        }
         pointerUp(event);
     };
 
     const toggleHoveredNodeCallback = (ref: NodeMoreRef) => {
         const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(ref.target);
         const nodeMoreGenerator = elementRef?.getGenerator<NodeMoreGenerator>(NodeMoreGenerator.key);
-        if (nodeMoreGenerator && !isSelectedElement(board, ref.target)) {
+        if (nodeMoreGenerator) {
             const g = PlaitElement.getElementG(ref.target);
             nodeMoreGenerator.processDrawing(ref.target, g, {
                 isHovered: ref.isHovered,
@@ -95,7 +103,8 @@ export const withNodeMore = (board: PlaitBoard) => {
                 isHoveredExpandArea: ref.isHoveredExpandArea,
                 isSelected: isSelectedElement(board, ref.target),
                 isHoveredAddArea: ref.isHoveredAddArea,
-                isShowCollapseAnimation: ref.isHovered || ref.isHoveredCollapseArea || ref.isHoveredAddArea
+                isShowCollapseAnimation:
+                    (ref.isHovered || ref.isHoveredCollapseArea || ref.isHoveredAddArea) && !isSelectedElement(board, ref.target)
             });
         }
     };
@@ -133,34 +142,26 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
             if (!MindElement.isMindElement(board, element)) {
                 return;
             }
+            const isMind = PlaitMind.isMind(element);
             const isHitElement = isHitMindElement(board, point, element);
             let isHitCollapseOrExpand = false;
             let isHitAdd = false;
             const { collapseCenter, addCenter } = getCollapseAndAddCenterPoint(board, element);
-            const collapseOrExpandIconRectangle = RectangleClient.getRectangleByCenterPoint(
-                collapseCenter,
-                NODE_MORE_ICON_DIAMETER,
-                NODE_MORE_ICON_DIAMETER
-            );
-            isHitCollapseOrExpand = RectangleClient.isHit(
-                RectangleClient.getRectangleByPoints([point, point]),
-                collapseOrExpandIconRectangle
-            );
-            const addIconRectangle = RectangleClient.getRectangleByCenterPoint(
-                addCenter,
-                NODE_MORE_ICON_DIAMETER,
-                NODE_MORE_ICON_DIAMETER
-            );
-            isHitAdd = RectangleClient.isHit(
-                RectangleClient.getRectangleByPoints([point, point]),
-                addIconRectangle
-            );
+            const collapseOrExpandIconRectangle =
+                !isMind && RectangleClient.getRectangleByCenterPoint(collapseCenter, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER);
+            isHitCollapseOrExpand =
+                collapseOrExpandIconRectangle &&
+                RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), collapseOrExpandIconRectangle);
+            const addIconRectangle = RectangleClient.getRectangleByCenterPoint(addCenter, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER);
+            isHitAdd = RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), addIconRectangle);
             if (isHitElement || isHitCollapseOrExpand || isHitAdd) {
                 isHovered = isHitElement;
-                if (element.isCollapsed) {
-                    isHoveredExpandArea = isHitCollapseOrExpand;
-                } else {
-                    isHoveredCollapseArea = isHitCollapseOrExpand;
+                if (element.children.length > 0) {
+                    if (element.isCollapsed) {
+                        isHoveredExpandArea = isHitCollapseOrExpand;
+                    } else {
+                        isHoveredCollapseArea = isHitCollapseOrExpand;
+                    }
                 }
                 isHoveredAddArea = isHitAdd;
                 target = element;

@@ -17,7 +17,7 @@ export const NODE_MORE_ICON_DIAMETER = 20;
 
 export const NODE_MORE_BRIDGE_DISTANCE = 10;
 
-export const NODE_ADD_CIRCLE_COLOR = rgbaToHEX('#000000', 0.15);
+export const NODE_ADD_CIRCLE_COLOR = rgbaToHEX('#000000', 0.2);
 
 export const NODE_ADD_HOVER_COLOR = '#6698FF';
 
