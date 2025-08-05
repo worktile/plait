@@ -37,13 +37,16 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     draw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): SVGGElement {
         const moreGContainer = createG();
         const stroke = getBranchColorByMindElement(this.board, element);
-        const collapseOrExpandCenter = getCollapseOrExpandCenterPoint(this.board, element);
+        const layoutDirection = getNodeMoreLayoutDirection(this.board, element);
+        const moreStartAndEnd = getMoreStartAndEnd(this.board, element, layoutDirection);
+        const collapseOrExpandCenter = moveXOfPoint(moreStartAndEnd[1], NODE_MORE_ICON_DIAMETER / 2, layoutDirection);
         const isDisplayCollapse =
             !element.isCollapsed &&
             (isSelectedElement(this.board, element) || !!extraData?.isHovered || !!extraData?.isHoveredCollapseArea);
         this.toggleCollapse(collapseOrExpandCenter, stroke, moreGContainer, isDisplayCollapse, !!extraData?.isShowCollapseAnimation);
         this.toggleExpandBadge(
             element,
+            moreStartAndEnd,
             collapseOrExpandCenter,
             stroke,
             moreGContainer,
@@ -90,6 +93,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     toggleExpandBadge(
         element: MindElement,
+        moreStartAndEnd: [Point, Point],
         center: Point,
         stroke: string,
         parentG: SVGGElement,
@@ -102,6 +106,19 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         }
         this.expandedIcon = createG();
         this.expandedIcon.classList.add('expanded-icon');
+        const endWithWidth = moreStartAndEnd[1];
+        const moreLine = PlaitBoard.getRoughSVG(this.board).line(
+            moreStartAndEnd[0][0],
+            moreStartAndEnd[0][1],
+            endWithWidth[0],
+            endWithWidth[1],
+            {
+                fill: stroke,
+                stroke,
+                fillStyle: 'solid',
+                strokeWidth: NODE_MORE_STROKE_WIDTH
+            }
+        );
         const badgeBackground = PlaitBoard.getRoughSVG(this.board).circle(center[0], center[1], NODE_MORE_ICON_DIAMETER, {
             fill: stroke,
             stroke,
@@ -128,6 +145,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         if (childrenCount > 99) {
             badgeText.setAttribute('style', 'dominant-baseline: ideographic');
         }
+        this.expandedIcon.appendChild(moreLine);
         this.expandedIcon.appendChild(badgeBackground);
         this.expandedIcon.appendChild(badgeText);
         parentG.appendChild(this.expandedIcon);
@@ -135,22 +153,35 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 }
 
 export const getCollapseOrExpandCenterPoint = (board: PlaitBoard, element: MindElement) => {
+    const linkLineDirection = getNodeMoreLayoutDirection(board, element);
+    const [startPoint, endPoint] = getMoreStartAndEnd(board, element, linkLineDirection);
+    return moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, linkLineDirection);
+};
+
+export const getNodeMoreLayoutDirection = (board: PlaitBoard, element: MindElement) => {
     const node = MindElement.getNode(element);
     const layout = MindQueries.getLayoutByElement(element) as MindLayoutType;
-    const isUnderlineShape = getShapeByElement(board, element) === MindElementShape.underline;
     const isHorizontal = isHorizontalLayout(layout);
-    const nodeClient = getRectangleByNode(node);
-    let linkDirection = getLayoutDirection(node, isHorizontal);
+    let layoutDirection = getLayoutDirection(node, isHorizontal);
     if (isIndentedLayout(layout)) {
-        linkDirection = isTopLayout(layout) ? LayoutDirection.top : LayoutDirection.bottom;
+        layoutDirection = isTopLayout(layout) ? LayoutDirection.top : LayoutDirection.bottom;
     }
+    return layoutDirection;
+};
+
+export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, linkLineDirection: LayoutDirection) => {
+    const node = MindElement.getNode(element);
+    const isUnderlineShape = getShapeByElement(board, element) === MindElementShape.underline;
+    const nodeClient = getRectangleByNode(node);
     let placement: PointPlacement = [HorizontalPlacement.right, VerticalPlacement.middle];
-    transformPlacement(placement, linkDirection);
+    transformPlacement(placement, linkLineDirection);
     // underline shape and horizontal
+    const layout = MindQueries.getLayoutByElement(element) as MindLayoutType;
+    const isHorizontal = isHorizontalLayout(layout);
     if (isHorizontal && isUnderlineShape && !element.isRoot) {
         placement[1] = VerticalPlacement.bottom;
     }
     let startPoint = getPointByPlacement(nodeClient, placement);
-    const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, linkDirection);
-    return moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, linkDirection);
+    const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, linkLineDirection);
+    return [startPoint, endPoint] as [Point, Point];
 };

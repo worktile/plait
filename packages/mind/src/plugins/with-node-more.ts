@@ -24,7 +24,7 @@ export interface NodeMoreRef {
 }
 
 export const withNodeMore = (board: PlaitBoard) => {
-    const { pointerMove, pointerLeave, pointerDown } = board;
+    const { pointerMove, pointerLeave, pointerUp } = board;
     let nodeMoreRef: NodeMoreRef | null = null;
 
     board.pointerMove = (event: PointerEvent) => {
@@ -62,7 +62,7 @@ export const withNodeMore = (board: PlaitBoard) => {
         pointerMove(event);
     };
 
-    board.pointerDown = (event: PointerEvent) => {
+    board.pointerUp = (event: PointerEvent) => {
         if (nodeMoreRef && (nodeMoreRef.isHoveredCollapseArea || nodeMoreRef.isHoveredExpandArea)) {
             const isCollapsed = !nodeMoreRef.target.isCollapsed;
             const newElement: Partial<MindElement> = { isCollapsed };
@@ -77,10 +77,9 @@ export const withNodeMore = (board: PlaitBoard) => {
                     nodeMoreRef = null;
                 }
             }, 0);
-            // toggleHoveredNodeCallback(nodeMoreRef.element, false, false, false);
-            // nodeMoreRef = null;
+            return;
         }
-        pointerDown(event);
+        pointerUp(event);
     };
 
     const toggleHoveredNodeCallback = (ref: NodeMoreRef) => {
