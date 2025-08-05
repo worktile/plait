@@ -20,6 +20,7 @@ export interface NodeMoreRef {
     element: MindElement;
     isHovered: boolean;
     isHoveredCollapsedIcon: boolean;
+    isHoveredExpandedIcon: boolean;
 }
 
 export const withNodeMore = (board: PlaitBoard) => {
@@ -35,6 +36,7 @@ export const withNodeMore = (board: PlaitBoard) => {
             let target: MindElement | null = null;
             let isHovered = false;
             let isHoveredCollapsedIcon = false;
+            let isHoveredExpandedIcon = false;
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             depthFirstRecursion(
                 board as unknown as MindElement,
@@ -58,7 +60,11 @@ export const withNodeMore = (board: PlaitBoard) => {
                     );
                     if (isHitElement || isHitCollapsedIcon) {
                         isHovered = isHitElement;
-                        isHoveredCollapsedIcon = isHitCollapsedIcon;
+                        if (element.isCollapsed) {
+                            isHoveredExpandedIcon = isHitCollapsedIcon;
+                        } else {
+                            isHoveredCollapsedIcon = isHitCollapsedIcon;
+                        }
                         target = element;
                     }
                 },
@@ -71,15 +77,15 @@ export const withNodeMore = (board: PlaitBoard) => {
             }
 
             if (nodeMoreRef) {
-                toggleHoveredNodeCallback(nodeMoreRef.element, false, false);
+                toggleHoveredNodeCallback(nodeMoreRef.element, false, false, false);
             }
 
             if (target) {
-                toggleHoveredNodeCallback(target, isHovered, isHoveredCollapsedIcon);
+                toggleHoveredNodeCallback(target, isHovered, isHoveredCollapsedIcon, isHoveredExpandedIcon);
                 if (nodeMoreRef) {
                     nodeMoreRef.element = target;
                 } else {
-                    nodeMoreRef = { element: target, isHovered, isHoveredCollapsedIcon };
+                    nodeMoreRef = { element: target, isHovered, isHoveredCollapsedIcon, isHoveredExpandedIcon };
                 }
             } else {
                 nodeMoreRef = null;
@@ -89,23 +95,31 @@ export const withNodeMore = (board: PlaitBoard) => {
     };
 
     board.pointerDown = (event: PointerEvent) => {
-        if (nodeMoreRef && nodeMoreRef.isHoveredCollapsedIcon && !nodeMoreRef.element.isCollapsed) {
+        if (nodeMoreRef && (nodeMoreRef.isHoveredCollapsedIcon || nodeMoreRef.isHoveredExpandedIcon)) {
             const isCollapsed = !nodeMoreRef.element.isCollapsed;
             const newElement: Partial<MindElement> = { isCollapsed };
             const path = PlaitBoard.findPath(board, nodeMoreRef.element);
             Transforms.setNode(board, newElement, path);
+            // toggleHoveredNodeCallback(nodeMoreRef.element, false, false, false);
+            // nodeMoreRef = null;
         }
         pointerDown(event);
     };
 
-    const toggleHoveredNodeCallback = (element: MindElement, isHovered: boolean, isHoveredCollapsedIcon: boolean) => {
+    const toggleHoveredNodeCallback = (
+        element: MindElement,
+        isHovered: boolean,
+        isHoveredCollapsedIcon: boolean,
+        isHoveredExpandedIcon: boolean
+    ) => {
         const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
-        const nodeMoreGenerator = elementRef?.getGenerator(NodeMoreGenerator.key);
+        const nodeMoreGenerator = elementRef?.getGenerator<NodeMoreGenerator>(NodeMoreGenerator.key);
         if (nodeMoreGenerator && !isSelectedElement(board, element)) {
             const g = PlaitElement.getElementG(element);
             nodeMoreGenerator.processDrawing(element, g, {
                 isHovered,
                 isHoveredCollapsedIcon,
+                isHoveredExpandedIcon,
                 isSelected: isSelectedElement(board, element),
                 isAnimated: isHovered || isHoveredCollapsedIcon
             });
@@ -114,7 +128,7 @@ export const withNodeMore = (board: PlaitBoard) => {
 
     board.pointerLeave = (event: PointerEvent) => {
         if (nodeMoreRef) {
-            toggleHoveredNodeCallback(nodeMoreRef.element, false, false);
+            toggleHoveredNodeCallback(nodeMoreRef.element, false, false, false);
         }
         nodeMoreRef = null;
         pointerLeave(event);

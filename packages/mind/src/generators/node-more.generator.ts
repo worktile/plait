@@ -1,19 +1,22 @@
-import { PlaitBoard, Point, createG, isSelectedElement, setStrokeLinecap } from '@plait/core';
+import { PlaitBoard, Point, createG, createText, isSelectedElement, setStrokeLinecap } from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
 import { NODE_MORE_ICON_DIAMETER, NODE_MORE_LINE_DISTANCE, NODE_MORE_STROKE_WIDTH } from '../constants/default';
 import { MindLayoutType, isHorizontalLayout, isIndentedLayout, isTopLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
-import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../utils/node-style/branch';
-import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, transformPlacement } from '../utils/point-placement';
+import { getBranchColorByMindElement } from '../utils/node-style/branch';
+import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { Generator } from '@plait/common';
+import { buildText, DEFAULT_FONT_FAMILY, Generator, measureElement } from '@plait/common';
+import { getChildrenCount } from '../utils/mind';
+import { FontSizes } from '@plait/text-plugins';
 
 export interface NodeMoreExtraData {
     isSelected: boolean;
     isHovered?: boolean;
     isHoveredCollapsedIcon?: boolean;
+    isHoveredExpandedIcon?: boolean;
     isAnimated?: boolean;
 }
 
@@ -24,7 +27,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         if (
             !PlaitMind.isMind(element) &&
             element.children.length &&
-            (extraData?.isSelected || extraData?.isHovered || extraData?.isHoveredCollapsedIcon)
+            (extraData?.isSelected || extraData?.isHovered || extraData?.isHoveredCollapsedIcon || element.isCollapsed)
         ) {
             return true;
         }
@@ -39,11 +42,19 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             !element.isCollapsed &&
             (isSelectedElement(this.board, element) || !!extraData?.isHovered || !!extraData?.isHoveredCollapsedIcon);
         this.toggleCollapsedIcon(collapsedIconCenter, stroke, moreGContainer, isDisplayCollapsedIcon, !!extraData?.isAnimated);
-        // this.toggleExpandedBadge(collapsedIconCenter, stroke, moreGContainer, !!element.isCollapsed);
+        this.toggleExpandedBadge(
+            element,
+            collapsedIconCenter,
+            stroke,
+            moreGContainer,
+            !!element.isCollapsed,
+            !!extraData?.isHoveredExpandedIcon
+        );
         return moreGContainer;
     }
 
     collapsedIcon: SVGGElement | undefined | null;
+    expandedIcon: SVGGElement | undefined | null;
 
     toggleCollapsedIcon(center: Point, stroke: string, parentG: SVGGElement, isDisplay: boolean, isAnimated: boolean) {
         this.collapsedIcon?.remove();
@@ -77,19 +88,49 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     collapsedIconBadge: SVGGElement | undefined | null;
 
-    toggleExpandedBadge(center: Point, stroke: string, parentG: SVGGElement, isCollapsed: boolean) {
+    toggleExpandedBadge(
+        element: MindElement,
+        center: Point,
+        stroke: string,
+        parentG: SVGGElement,
+        isCollapsed: boolean,
+        isHoveredExpandIcon: boolean
+    ) {
+        this.expandedIcon?.remove();
         if (!isCollapsed) {
-            this.collapsedIconBadge?.remove();
             return;
         }
-        this.collapsedIconBadge = createG();
+        this.expandedIcon = createG();
+        this.expandedIcon.classList.add('expanded-icon');
         const badgeBackground = PlaitBoard.getRoughSVG(this.board).circle(center[0], center[1], NODE_MORE_ICON_DIAMETER, {
             fill: stroke,
             stroke,
             fillStyle: 'solid'
         });
-        this.collapsedIconBadge.appendChild(badgeBackground);
-        parentG.appendChild(this.collapsedIconBadge);
+        if (isHoveredExpandIcon) {
+            console.log('isHoveredExpandIcon', isHoveredExpandIcon);
+            badgeBackground.setAttribute('style', `opacity: 0.4`);
+        } else {
+            badgeBackground.setAttribute('style', `opacity: 0.2`);
+        }
+        const childrenCount = getChildrenCount(element);
+        let text = `${childrenCount}`;
+        if (childrenCount >= 99) {
+            text = '...';
+        }
+        const { width, height } = measureElement(this.board, buildText(text), {
+            fontSize: Number(FontSizes.fontSize12),
+            fontFamily: DEFAULT_FONT_FAMILY
+        });
+        const badgeText = createText(center[0] - width / 2 + 0.5, center[1] + 4.5, stroke, `${text}`);
+        badgeText.setAttribute('style', `font-size: ${Number(FontSizes.fontSize12)}px;`);
+        // handle vertical alignment for ...
+        if (childrenCount > 99) {
+            badgeText.setAttribute('style', 'dominant-baseline: ideographic');
+        }
+        this.expandedIcon.appendChild(badgeBackground);
+        this.expandedIcon.appendChild(badgeText);
+        parentG.appendChild(this.expandedIcon);
     }
 }
 

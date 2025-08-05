@@ -27,6 +27,9 @@ $primary: #4e8afa;
                 animation: scale-in 0.15s ease-out forwards;
             }
         }
+        .expanded-icon {
+            cursor: pointer;
+        }
         
         @keyframes scale-in {
             from {
