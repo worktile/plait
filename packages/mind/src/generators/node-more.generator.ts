@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, createG, createText, isSelectedElement, rgbaToHEX, setStrokeLinecap } from '@plait/core';
+import { PlaitBoard, Point, createG, createText, getSelectedElements, isSelectedElement, rgbaToHEX, setStrokeLinecap } from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
@@ -27,6 +27,7 @@ export interface NodeMoreExtraData {
     isHoveredExpandArea?: boolean;
     isHoveredAddArea?: boolean;
     isShowCollapseAnimation?: boolean;
+    isShowAddAnimation?: boolean;
 }
 
 export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData> {
@@ -38,11 +39,11 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
         if (
-            extraData?.isSelected ||
-            extraData?.isHovered ||
-            extraData?.isHoveredCollapseArea ||
-            extraData?.isHoveredAddArea ||
-            element.isCollapsed
+            (extraData?.isSelected ||
+                extraData?.isHovered ||
+                extraData?.isHoveredCollapseArea ||
+                extraData?.isHoveredAddArea ||
+                element.isCollapsed)
         ) {
             return true;
         }
@@ -74,7 +75,8 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             isShowCollapse,
             isShowAdd,
             !!extraData?.isHoveredAddArea,
-            !!extraData?.isShowCollapseAnimation
+            !!extraData?.isShowCollapseAnimation,
+            !!extraData?.isShowAddAnimation
         );
         this.toggleExpandBadge(
             element,
@@ -96,7 +98,8 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         isShowCollapse: boolean,
         isShowAdd: boolean,
         isHoveredAddArea: boolean,
-        isAnimated: boolean
+        isShowCollapseAnimation: boolean,
+        isShowAddAnimation: boolean
     ) {
         this.collapseOrAddG?.remove();
         if (!isShowCollapse && !isShowAdd) {
@@ -107,7 +110,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             const collapseG = createG();
             this.collapseOrAddG.appendChild(collapseG);
             collapseG.classList.add('collapse-button');
-            if (isAnimated) {
+            if (isShowCollapseAnimation) {
                 collapseG.classList.add('animated');
             }
             const collapseCircle = PlaitBoard.getRoughSVG(this.board).circle(center[0], center[1], NODE_MORE_ICON_DIAMETER, {
@@ -132,7 +135,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             const addG = createG();
             this.collapseOrAddG.appendChild(addG);
             addG.classList.add('add-button');
-            if (isAnimated && !isShowCollapse) {
+            if (isShowAddAnimation) {
                 addG.classList.add('animated');
             }
             const circle = PlaitBoard.getRoughSVG(this.board).circle(
@@ -286,4 +289,11 @@ export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, link
     let startPoint = getPointByPlacement(nodeClient, placement);
     const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, linkLineDirection);
     return [startPoint, endPoint] as [Point, Point];
+};
+
+export const canDrawNodeMore = (board: PlaitBoard, element: MindElement) => {
+    const selectedElements = getSelectedElements(board);
+    const selectedMindElements = selectedElements.filter((element) => MindElement.isMindElement(board, element)).reverse();
+    const isLastMindElement = selectedMindElements[selectedMindElements.length - 1] === element;
+    return selectedMindElements.length <= 1 || isLastMindElement;
 };

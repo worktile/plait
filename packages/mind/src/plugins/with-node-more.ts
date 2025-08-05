@@ -13,7 +13,7 @@ import {
 import { MindElement, PlaitMind } from '../interfaces';
 import { findNewChildNodePath, insertMindElement, isHitMindElement } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
-import { getCollapseAndAddCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
+import { canDrawNodeMore, getCollapseAndAddCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
 import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
 import { PlaitMindBoard } from './with-mind.board';
 
@@ -103,8 +103,8 @@ export const withNodeMore = (board: PlaitBoard) => {
                 isHoveredExpandArea: ref.isHoveredExpandArea,
                 isSelected: isSelectedElement(board, ref.target),
                 isHoveredAddArea: ref.isHoveredAddArea,
-                isShowCollapseAnimation:
-                    (ref.isHovered || ref.isHoveredCollapseArea || ref.isHoveredAddArea) && !isSelectedElement(board, ref.target)
+                isShowCollapseAnimation: (ref.isHovered || ref.isHoveredCollapseArea) && !isSelectedElement(board, ref.target),
+                isShowAddAnimation: (ref.isHovered || ref.isHoveredAddArea) && !isSelectedElement(board, ref.target)
             });
         }
     };
