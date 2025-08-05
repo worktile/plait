@@ -1,4 +1,15 @@
-import { PlaitBoard, Point, createG, createText, getSelectedElements, isSelectedElement, rgbaToHEX, setStrokeLinecap } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    createG,
+    createText,
+    getSelectedElements,
+    isDragging,
+    isSelectedElement,
+    isSelectionMoving,
+    rgbaToHEX,
+    setStrokeLinecap
+} from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
@@ -16,7 +27,7 @@ import { MindQueries } from '../queries';
 import { getBranchColorByMindElement } from '../utils/node-style/branch';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { buildText, DEFAULT_FONT_FAMILY, Generator, measureElement, TRANSPARENT } from '@plait/common';
+import { buildText, DEFAULT_FONT_FAMILY, Generator, isResizing, measureElement, TRANSPARENT } from '@plait/common';
 import { getChildrenCount } from '../utils/mind';
 import { FontSizes } from '@plait/text-plugins';
 
@@ -39,11 +50,9 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
         if (
-            (extraData?.isSelected ||
-                extraData?.isHovered ||
-                extraData?.isHoveredCollapseArea ||
-                extraData?.isHoveredAddArea ||
-                element.isCollapsed)
+            ((extraData?.isHovered || extraData?.isHoveredCollapseArea || extraData?.isHoveredAddArea) && canHandleNodeMore(this.board)) ||
+            (extraData?.isSelected && isLastSelectedMindElement(this.board, element) && canHandleNodeMore(this.board)) ||
+            element.isCollapsed
         ) {
             return true;
         }
@@ -291,9 +300,12 @@ export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, link
     return [startPoint, endPoint] as [Point, Point];
 };
 
-export const canDrawNodeMore = (board: PlaitBoard, element: MindElement) => {
+export const isLastSelectedMindElement = (board: PlaitBoard, element: MindElement) => {
     const selectedElements = getSelectedElements(board);
     const selectedMindElements = selectedElements.filter((element) => MindElement.isMindElement(board, element)).reverse();
-    const isLastMindElement = selectedMindElements[selectedMindElements.length - 1] === element;
-    return selectedMindElements.length <= 1 || isLastMindElement;
+    return selectedMindElements[selectedMindElements.length - 1] === element;
+};
+
+export const canHandleNodeMore = (board: PlaitBoard) => {
+    return !isResizing(board) && !isSelectionMoving(board) && !isDragging(board);
 };

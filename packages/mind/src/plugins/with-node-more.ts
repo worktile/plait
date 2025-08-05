@@ -13,7 +13,7 @@ import {
 import { MindElement, PlaitMind } from '../interfaces';
 import { findNewChildNodePath, insertMindElement, isHitMindElement } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
-import { canDrawNodeMore, getCollapseAndAddCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
+import { canHandleNodeMore, getCollapseAndAddCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
 import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
 import { PlaitMindBoard } from './with-mind.board';
 
@@ -30,38 +30,40 @@ export const withNodeMore = (board: PlaitBoard) => {
     let nodeMoreRef: NodeMoreRef | null = null;
 
     board.pointerMove = (event: PointerEvent) => {
-        throttleRAF(board, 'with-mind-node-hover-hit-test', () => {
-            // target has been deleted
-            if (nodeMoreRef && !PlaitElement.hasMounted(nodeMoreRef.target)) {
-                nodeMoreRef = null;
-            }
-            const newNodeMoreRef = getNodeMoreRef(board, event.x, event.y);
-
-            if (nodeMoreRef && newNodeMoreRef && nodeMoreRef.target === newNodeMoreRef.target) {
-                return;
-            }
-
-            if (nodeMoreRef) {
-                toggleHoveredNodeCallback({
-                    target: nodeMoreRef.target,
-                    isHovered: false,
-                    isHoveredCollapseArea: false,
-                    isHoveredExpandArea: false,
-                    isHoveredAddArea: false
-                });
-            }
-
-            if (newNodeMoreRef) {
-                toggleHoveredNodeCallback(newNodeMoreRef);
-                if (nodeMoreRef) {
-                    nodeMoreRef.target = newNodeMoreRef.target;
-                } else {
-                    nodeMoreRef = newNodeMoreRef;
+        if (canHandleNodeMore(board)) {
+            throttleRAF(board, 'with-mind-node-hover-hit-test', () => {
+                // target has been deleted
+                if (nodeMoreRef && !PlaitElement.hasMounted(nodeMoreRef.target)) {
+                    nodeMoreRef = null;
                 }
-            } else {
-                nodeMoreRef = null;
-            }
-        });
+                const newNodeMoreRef = getNodeMoreRef(board, event.x, event.y);
+
+                if (nodeMoreRef && newNodeMoreRef && nodeMoreRef.target === newNodeMoreRef.target) {
+                    return;
+                }
+
+                if (nodeMoreRef) {
+                    toggleHoveredNodeCallback({
+                        target: nodeMoreRef.target,
+                        isHovered: false,
+                        isHoveredCollapseArea: false,
+                        isHoveredExpandArea: false,
+                        isHoveredAddArea: false
+                    });
+                }
+
+                if (newNodeMoreRef) {
+                    toggleHoveredNodeCallback(newNodeMoreRef);
+                    if (nodeMoreRef) {
+                        nodeMoreRef.target = newNodeMoreRef.target;
+                    } else {
+                        nodeMoreRef = newNodeMoreRef;
+                    }
+                } else {
+                    nodeMoreRef = null;
+                }
+            });
+        }
         pointerMove(event);
     };
 
