@@ -15,9 +15,9 @@ import { FontSizes } from '@plait/text-plugins';
 export interface NodeMoreExtraData {
     isSelected: boolean;
     isHovered?: boolean;
-    isHoveredCollapsedIcon?: boolean;
-    isHoveredExpandedIcon?: boolean;
-    isAnimated?: boolean;
+    isHoveredCollapseArea?: boolean;
+    isHoveredExpandArea?: boolean;
+    isShowCollapseAnimation?: boolean;
 }
 
 export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData> {
@@ -27,7 +27,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         if (
             !PlaitMind.isMind(element) &&
             element.children.length &&
-            (extraData?.isSelected || extraData?.isHovered || extraData?.isHoveredCollapsedIcon || element.isCollapsed)
+            (extraData?.isSelected || extraData?.isHovered || extraData?.isHoveredCollapseArea || element.isCollapsed)
         ) {
             return true;
         }
@@ -37,18 +37,18 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     draw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): SVGGElement {
         const moreGContainer = createG();
         const stroke = getBranchColorByMindElement(this.board, element);
-        const collapsedIconCenter = getCollapsedCenterPoint(this.board, element);
-        const isDisplayCollapsedIcon =
+        const collapseOrExpandCenter = getCollapseOrExpandCenterPoint(this.board, element);
+        const isDisplayCollapse =
             !element.isCollapsed &&
-            (isSelectedElement(this.board, element) || !!extraData?.isHovered || !!extraData?.isHoveredCollapsedIcon);
-        this.toggleCollapsedIcon(collapsedIconCenter, stroke, moreGContainer, isDisplayCollapsedIcon, !!extraData?.isAnimated);
-        this.toggleExpandedBadge(
+            (isSelectedElement(this.board, element) || !!extraData?.isHovered || !!extraData?.isHoveredCollapseArea);
+        this.toggleCollapse(collapseOrExpandCenter, stroke, moreGContainer, isDisplayCollapse, !!extraData?.isShowCollapseAnimation);
+        this.toggleExpandBadge(
             element,
-            collapsedIconCenter,
+            collapseOrExpandCenter,
             stroke,
             moreGContainer,
             !!element.isCollapsed,
-            !!extraData?.isHoveredExpandedIcon
+            !!extraData?.isHoveredExpandArea
         );
         return moreGContainer;
     }
@@ -56,7 +56,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     collapsedIcon: SVGGElement | undefined | null;
     expandedIcon: SVGGElement | undefined | null;
 
-    toggleCollapsedIcon(center: Point, stroke: string, parentG: SVGGElement, isDisplay: boolean, isAnimated: boolean) {
+    toggleCollapse(center: Point, stroke: string, parentG: SVGGElement, isDisplay: boolean, isAnimated: boolean) {
         this.collapsedIcon?.remove();
         if (!isDisplay) {
             return;
@@ -88,7 +88,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     collapsedIconBadge: SVGGElement | undefined | null;
 
-    toggleExpandedBadge(
+    toggleExpandBadge(
         element: MindElement,
         center: Point,
         stroke: string,
@@ -134,7 +134,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     }
 }
 
-export const getCollapsedCenterPoint = (board: PlaitBoard, element: MindElement) => {
+export const getCollapseOrExpandCenterPoint = (board: PlaitBoard, element: MindElement) => {
     const node = MindElement.getNode(element);
     const layout = MindQueries.getLayoutByElement(element) as MindLayoutType;
     const isUnderlineShape = getShapeByElement(board, element) === MindElementShape.underline;

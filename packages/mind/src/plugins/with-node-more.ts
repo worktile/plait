@@ -13,14 +13,14 @@ import {
 import { MindElement } from '../interfaces';
 import { isHitMindElement } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
-import { getCollapsedCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
+import { getCollapseOrExpandCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
 import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
 
 export interface NodeMoreRef {
-    element: MindElement;
+    target: MindElement;
     isHovered: boolean;
-    isHoveredCollapsedIcon: boolean;
-    isHoveredExpandedIcon: boolean;
+    isHoveredCollapseArea: boolean;
+    isHoveredExpandArea: boolean;
 }
 
 export const withNodeMore = (board: PlaitBoard) => {
@@ -29,63 +29,31 @@ export const withNodeMore = (board: PlaitBoard) => {
 
     board.pointerMove = (event: PointerEvent) => {
         throttleRAF(board, 'with-mind-node-hover-hit-test', () => {
-            // element has been deleted
-            if (nodeMoreRef && !PlaitElement.hasMounted(nodeMoreRef.element)) {
+            // target has been deleted
+            if (nodeMoreRef && !PlaitElement.hasMounted(nodeMoreRef.target)) {
                 nodeMoreRef = null;
             }
-            let target: MindElement | null = null;
-            let isHovered = false;
-            let isHoveredCollapsedIcon = false;
-            let isHoveredExpandedIcon = false;
-            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            depthFirstRecursion(
-                board as unknown as MindElement,
-                (element) => {
-                    if (target) {
-                        return;
-                    }
-                    if (!MindElement.isMindElement(board, element)) {
-                        return;
-                    }
-                    const isHitElement = isHitMindElement(board, point, element);
-                    const collapsedCenterPoint = getCollapsedCenterPoint(board, element);
-                    const collapsedIconRectangle = RectangleClient.getRectangleByCenterPoint(
-                        collapsedCenterPoint,
-                        NODE_MORE_ICON_DIAMETER,
-                        NODE_MORE_ICON_DIAMETER
-                    );
-                    const isHitCollapsedIcon = RectangleClient.isHit(
-                        RectangleClient.getRectangleByPoints([point, point]),
-                        collapsedIconRectangle
-                    );
-                    if (isHitElement || isHitCollapsedIcon) {
-                        isHovered = isHitElement;
-                        if (element.isCollapsed) {
-                            isHoveredExpandedIcon = isHitCollapsedIcon;
-                        } else {
-                            isHoveredCollapsedIcon = isHitCollapsedIcon;
-                        }
-                        target = element;
-                    }
-                },
-                getIsRecursionFunc(board),
-                true
-            );
+            const newNodeMoreRef = getNodeMoreRef(board, event.x, event.y);
 
-            if (nodeMoreRef && target && nodeMoreRef.element === target) {
+            if (nodeMoreRef && newNodeMoreRef && nodeMoreRef.target === newNodeMoreRef.target) {
                 return;
             }
 
             if (nodeMoreRef) {
-                toggleHoveredNodeCallback(nodeMoreRef.element, false, false, false);
+                toggleHoveredNodeCallback({
+                    target: nodeMoreRef.target,
+                    isHovered: false,
+                    isHoveredCollapseArea: false,
+                    isHoveredExpandArea: false
+                });
             }
 
-            if (target) {
-                toggleHoveredNodeCallback(target, isHovered, isHoveredCollapsedIcon, isHoveredExpandedIcon);
+            if (newNodeMoreRef) {
+                toggleHoveredNodeCallback(newNodeMoreRef);
                 if (nodeMoreRef) {
-                    nodeMoreRef.element = target;
+                    nodeMoreRef.target = newNodeMoreRef.target;
                 } else {
-                    nodeMoreRef = { element: target, isHovered, isHoveredCollapsedIcon, isHoveredExpandedIcon };
+                    nodeMoreRef = newNodeMoreRef;
                 }
             } else {
                 nodeMoreRef = null;
@@ -95,44 +63,103 @@ export const withNodeMore = (board: PlaitBoard) => {
     };
 
     board.pointerDown = (event: PointerEvent) => {
-        if (nodeMoreRef && (nodeMoreRef.isHoveredCollapsedIcon || nodeMoreRef.isHoveredExpandedIcon)) {
-            const isCollapsed = !nodeMoreRef.element.isCollapsed;
+        if (nodeMoreRef && (nodeMoreRef.isHoveredCollapseArea || nodeMoreRef.isHoveredExpandArea)) {
+            const isCollapsed = !nodeMoreRef.target.isCollapsed;
             const newElement: Partial<MindElement> = { isCollapsed };
-            const path = PlaitBoard.findPath(board, nodeMoreRef.element);
+            const path = PlaitBoard.findPath(board, nodeMoreRef.target);
             Transforms.setNode(board, newElement, path);
+            setTimeout(() => {
+                const newNodeMoreRef = getNodeMoreRef(board, event.x, event.y);
+                if (newNodeMoreRef) {
+                    toggleHoveredNodeCallback(newNodeMoreRef);
+                    nodeMoreRef = newNodeMoreRef;
+                } else {
+                    nodeMoreRef = null;
+                }
+            }, 0);
             // toggleHoveredNodeCallback(nodeMoreRef.element, false, false, false);
             // nodeMoreRef = null;
         }
         pointerDown(event);
     };
 
-    const toggleHoveredNodeCallback = (
-        element: MindElement,
-        isHovered: boolean,
-        isHoveredCollapsedIcon: boolean,
-        isHoveredExpandedIcon: boolean
-    ) => {
-        const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
+    const toggleHoveredNodeCallback = (ref: NodeMoreRef) => {
+        const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(ref.target);
         const nodeMoreGenerator = elementRef?.getGenerator<NodeMoreGenerator>(NodeMoreGenerator.key);
-        if (nodeMoreGenerator && !isSelectedElement(board, element)) {
-            const g = PlaitElement.getElementG(element);
-            nodeMoreGenerator.processDrawing(element, g, {
-                isHovered,
-                isHoveredCollapsedIcon,
-                isHoveredExpandedIcon,
-                isSelected: isSelectedElement(board, element),
-                isAnimated: isHovered || isHoveredCollapsedIcon
+        if (nodeMoreGenerator && !isSelectedElement(board, ref.target)) {
+            const g = PlaitElement.getElementG(ref.target);
+            nodeMoreGenerator.processDrawing(ref.target, g, {
+                isHovered: ref.isHovered,
+                isHoveredCollapseArea: ref.isHoveredCollapseArea,
+                isHoveredExpandArea: ref.isHoveredExpandArea,
+                isSelected: isSelectedElement(board, ref.target),
+                isShowCollapseAnimation: ref.isHovered || ref.isHoveredCollapseArea
             });
         }
     };
 
     board.pointerLeave = (event: PointerEvent) => {
         if (nodeMoreRef) {
-            toggleHoveredNodeCallback(nodeMoreRef.element, false, false, false);
+            toggleHoveredNodeCallback({
+                target: nodeMoreRef.target,
+                isHovered: false,
+                isHoveredCollapseArea: false,
+                isHoveredExpandArea: false
+            });
         }
         nodeMoreRef = null;
         pointerLeave(event);
     };
 
     return board;
+};
+
+const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
+    let target: MindElement | null = null;
+    let isHovered = false;
+    let isHoveredCollapseArea = false;
+    let isHoveredExpandArea = false;
+    const point = toViewBoxPoint(board, toHostPoint(board, x, y));
+    depthFirstRecursion(
+        board as unknown as MindElement,
+        (element) => {
+            if (target) {
+                return;
+            }
+            if (!MindElement.isMindElement(board, element)) {
+                return;
+            }
+            const isHitElement = isHitMindElement(board, point, element);
+            const collapseOrExpandCenter = getCollapseOrExpandCenterPoint(board, element);
+            const collapseOrExpandIconRectangle = RectangleClient.getRectangleByCenterPoint(
+                collapseOrExpandCenter,
+                NODE_MORE_ICON_DIAMETER,
+                NODE_MORE_ICON_DIAMETER
+            );
+            const isHitCollapseOrExpand = RectangleClient.isHit(
+                RectangleClient.getRectangleByPoints([point, point]),
+                collapseOrExpandIconRectangle
+            );
+            if (isHitElement || isHitCollapseOrExpand) {
+                isHovered = isHitElement;
+                if (element.isCollapsed) {
+                    isHoveredExpandArea = isHitCollapseOrExpand;
+                } else {
+                    isHoveredCollapseArea = isHitCollapseOrExpand;
+                }
+                target = element;
+            }
+        },
+        getIsRecursionFunc(board),
+        true
+    );
+    if (!target) {
+        return null;
+    }
+    return {
+        target,
+        isHovered,
+        isHoveredCollapseArea,
+        isHoveredExpandArea
+    } as NodeMoreRef;
 };
