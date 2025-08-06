@@ -42,7 +42,7 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
             const _layout = (parent && parent.layout) || getRootLayout(element);
             const isHorizontal = isHorizontalLayout(_layout);
             if (isIndentedLayout(_layout)) {
-                return BASE * 4;
+                return BASE * 6;
             }
             if (!isHorizontal) {
                 return getMainAxle(element, parent);
@@ -53,7 +53,7 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
         getVerticalGap(element: MindElement, parent?: LayoutNode) {
             const _layout = (parent && parent.layout) || getRootLayout(element);
             if (isIndentedLayout(_layout)) {
-                return BASE;
+                return BASE * 3.5;
             }
             const isHorizontal = isHorizontalLayout(_layout);
             if (isHorizontal) {
@@ -69,10 +69,10 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
             return undefined;
         },
         getExtendHeight(node: OriginNode) {
-            return BASE * 6;
+            return 0;
         },
         getIndentedCrossLevelGap() {
-            return BASE * 2;
+            return BASE * 1;
         }
     } as LayoutOptions;
 };
