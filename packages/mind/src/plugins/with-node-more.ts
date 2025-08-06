@@ -84,7 +84,7 @@ export const withNodeMore = (board: PlaitBoard) => {
             }, 0);
             return;
         }
-        if (nodeMoreRef && nodeMoreRef.isHoveredAddArea) {
+        if (nodeMoreRef && nodeMoreRef.isHoveredAddArea && !PlaitBoard.isReadonly(board)) {
             if (nodeMoreRef) {
                 const path = findNewChildNodePath(board, nodeMoreRef.target);
                 insertMindElement(board as PlaitMindBoard, nodeMoreRef.target, path);
