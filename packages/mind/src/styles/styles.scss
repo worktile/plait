@@ -40,64 +40,15 @@ $primary: #4e8afa;
             }
         }
 
-        // .extend {
-        //     opacity: 0;
-        //     cursor: default;
-        // }
-
-        // .collapsed {
-        //     .extend {
-        //         opacity: 1;
-        //     }
-        // }
-
         .dragging-node {
             opacity: 0.6;
         }
     }
-    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind):not(.mind-node-dragging):not(.mind-node-resizing) {
-        // .extend {
-        //     cursor: pointer;
-        //     &:hover {
-        //         opacity: 1;
-        //     }
-        // }
-
-        // g[plait-mindmap='true'] {
-        //     .hovered {
-        //         .extend {
-        //             opacity: 1;
-        //         }
-        //     }
-        // }
-    }
-
-    // &[class*='-resizing'] {
-    //     :not(.collapsed) > .extend {
-    //         display: none;
-    //     }
-    // }
-
-    // &:not(.readonly) {
-    //     &[class*='pointer-']:not(.pointer-selection) {
-    //         :not(.collapsed) > .extend {
-    //             display: none;
-    //         }
-    //     }
-    // }
 
     &.pointer-hand {
         .board-host-svg {
             cursor: grab;
         }
-        // .collapsed {
-        //     .extend:hover {
-        //         cursor: grab;
-        //     }
-        // }
-        // :not(.collapsed) > .extend {
-        //     display: none;
-        // }
     }
 
     &.pointer-mind {
@@ -107,17 +58,6 @@ $primary: #4e8afa;
     }
 
     &.readonly {
-        // .collapsed {
-        //     .extend:hover {
-        //         cursor: pointer;
-        //     }
-        // }
-        // :not(.collapsed) > .extend {
-        //     display: block;
-        //     .plus {
-        //         display: none;
-        //     }
-        // }
         .mind-node-image {
             cursor: zoom-in;
         }

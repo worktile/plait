@@ -1,4 +1,4 @@
-import { createG, PlaitBoard, NODE_TO_INDEX, PlaitPluginElementContext, OnContextChanged, RectangleClient } from '@plait/core';
+import { PlaitBoard, NODE_TO_INDEX, PlaitPluginElementContext, OnContextChanged, RectangleClient } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindElement, PlaitMind } from './interfaces/element';
@@ -8,12 +8,10 @@ import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
 import { NodeEmojisGenerator } from './generators/node-emojis.generator';
 import { MindTransforms } from './transforms';
-// import { NodePlusGenerator } from './generators/node-plus.generator';
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
 import { NodeActiveGenerator } from './generators/node-active.generator';
-// import { CollapseGenerator } from './generators/node-collapse.generator';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
 import {

@@ -5,6 +5,7 @@ import {
     createText,
     getSelectedElements,
     isDragging,
+    isMovingElements,
     isSelectedElement,
     isSelectionMoving,
     rgbaToHEX,
@@ -305,5 +306,5 @@ export const isLastSelectedMindElement = (board: PlaitBoard, element: MindElemen
 };
 
 export const canHandleNodeMore = (board: PlaitBoard) => {
-    return !isResizing(board) && !isSelectionMoving(board) && !isDragging(board);
+    return !isResizing(board) && !isSelectionMoving(board) && !isDragging(board) && !isMovingElements(board);
 };
