@@ -232,19 +232,17 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         );
         const childrenCount = getChildrenCount(element);
         let text = `${childrenCount}`;
+        let y = center[1] + 4.5;
         if (childrenCount >= 99) {
             text = '...';
+            y = center[1] + 1;
         }
         const { width, height } = measureElement(this.board, buildText(text), {
             fontSize: Number(FontSizes.fontSize12),
             fontFamily: DEFAULT_FONT_FAMILY
         });
-        const badgeText = createText(center[0] - width / 2 + 0.5, center[1] + 4.5, stroke, `${text}`);
+        const badgeText = createText(center[0] - width / 2 + 0.5, y, stroke, `${text}`);
         badgeText.setAttribute('style', `font-size: ${Number(FontSizes.fontSize12)}px;`);
-        // handle vertical alignment for ...
-        if (childrenCount > 99) {
-            badgeText.setAttribute('style', 'dominant-baseline: ideographic');
-        }
         this.expandG.appendChild(moreLine);
         this.expandG.appendChild(badgeBackground);
         this.expandG.appendChild(badgeText);
