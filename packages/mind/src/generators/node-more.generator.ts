@@ -74,7 +74,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
                 !!extraData?.isHoveredCollapseArea ||
                 !!extraData?.isHoveredAddArea);
         const isShowCollapse = isShowCollapseOrAdd && hasChildren && !PlaitMind.isMind(element);
-        const isShowAdd = isShowCollapseOrAdd && !PlaitBoard.isBoard(this.board);
+        const isShowAdd = isShowCollapseOrAdd && !PlaitBoard.isReadonly(this.board);
         const addCenter =
             (isShowCollapseOrAdd && getAddCenterByCollapseOrExpandCenter(element, collapseOrExpandCenter, layoutDirection)) || null;
         this.toggleCollapseOrAdd(
