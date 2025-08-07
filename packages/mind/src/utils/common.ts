@@ -15,7 +15,7 @@ export const getAbstractNodeText = (board: PlaitBoard) => {
     return getI18nValue(board, MindI18nKey.abstractNodeText, ABSTRACT_NODE_TEXT);
 };
 
-export const getTopicSize = (board: PlaitBoard, isRoot: boolean, isBranch: boolean, topic: ParagraphElement, manualWidth?: number) => {
+export const getTopicSize = (board: PlaitBoard | null, isRoot: boolean, isBranch: boolean, topic: ParagraphElement, manualWidth?: number) => {
     let fontFamily = DEFAULT_FONT_FAMILY;
     let fontSize = TOPIC_FONT_SIZE;
     if (isRoot) {
