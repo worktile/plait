@@ -23,22 +23,22 @@ import {
     toViewBoxPoint
 } from '@plait/core';
 import {
-    createDefaultGeometry,
     createGeometryElement,
     getAutoCompletePoints,
     getHitIndexOfAutoCompletePoint,
-    getLineMemorizedLatest,
     getSelectedDrawElements,
-    handleArrowLineCreating,
-    insertElement
+    handleArrowLineCreating
 } from '../../utils';
 import { PRIMARY_COLOR, PlaitCommonElementRef } from '@plait/common';
-import { ArrowLineAutoCompleteOptions, isDragOrClick, LineMode, WithArrowLineAutoCompletePluginKey } from './with-arrow-line-auto-complete';
-import { RoughSVG } from 'roughjs/bin/svg';
+import {
+    ArrowLineAutoCompleteOptions,
+    BOARD_TO_PRELOADING_SHAPE,
+    WithArrowLineAutoCompletePluginKey
+} from './with-arrow-line-auto-complete';
 import { DrawPointerType, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../../constants';
 import { ArrowLineAutoCompleteGenerator } from '../../generators';
 import { getGeometryGeneratorByShape } from '../with-geometry-create';
-import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../../interfaces';
+import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitShapeElement, TextColor } from '../../interfaces';
 
 export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove, globalPointerUp } = board;
@@ -58,7 +58,6 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
         reactionG?.remove();
         PlaitBoard.getBoardContainer(board).classList.remove(CursorClass.crosshair);
         selectedElements = getSelectedDrawElements(board);
-        // console.log('selectedElements', selectedElements);
         lineShapeG?.remove();
         geometryShapeG?.remove();
         const targetElement = selectedElements.length === 1 && selectedElements[0];
@@ -75,8 +74,6 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
             const lineAutoCompleteGenerator = ref.getGenerator<ArrowLineAutoCompleteGenerator>(ArrowLineAutoCompleteGenerator.key);
             lineAutoCompleteGenerator.recoverAutoCompleteG();
             if (hitPoint) {
-                // hitPoint [x,y] lineAutoCompleteGenerator?.removeAutoCompleteG(hitIndex);
-                // hover节点图标
                 reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, {
                     stroke: 'none',
                     strokeWidth: 2,
@@ -107,8 +104,8 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
                 topLeftY += dy1;
                 bottomRightX += dx2;
                 bottomRightY += dy2;
-                const TopLeftCorner = [topLeftX, topLeftY];
-                const BottomLeftCorner = [bottomRightX, bottomRightY];
+                const topLeftCorner = [topLeftX, topLeftY];
+                const bottomLeftCorner = [bottomRightX, bottomRightY];
                 movingPoint = toViewBoxPoint(board, toHostPoint(board, hitPoint[0] + arrowDx, hitPoint[1] + arrowDy));
 
                 lineShapeG = createG();
@@ -122,13 +119,11 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
                     sourceElement,
                     lineShapeG,
                     {
-                        strokeColor: '#828282',
-                        strokeWidth: 1
+                        strokeColor: TextColor.gray
                     }
                 );
-                shapeEl = createGeometryElement(selectedElements[0].shape, [TopLeftCorner, BottomLeftCorner] as [Point, Point], '', {
-                    strokeWidth: 1,
-                    strokeColor: '#828282'
+                shapeEl = createGeometryElement(selectedElements[0].shape, [topLeftCorner, bottomLeftCorner] as [Point, Point], '', {
+                    strokeColor: TextColor.gray
                 });
                 // arrow bound geometry
                 const connectionMap: Record<number, [number, number]> = {
@@ -153,19 +148,22 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
         pointerMove(event);
     };
     board.globalPointerUp = (event: PointerEvent) => {
-        if (hitIndex >= 0 && temporaryElement && isDragOrClick === LineMode.Click) {
-            temporaryElement.strokeColor = '#333';
-            temporaryElement.strokeWidth = 2;
-            shapeEl.strokeColor = '#333';
-            shapeEl.strokeWidth = 2;
-            Transforms.insertNode(board, temporaryElement, [board.children.length]);
-            insertElement(board, shapeEl);
+        if (hitIndex >= 0 && temporaryElement) {
+            temporaryElement.strokeColor = TextColor.nomal;
+            // temporaryElement.strokeWidth = 2;
+            shapeEl.strokeColor = selectedElements[0]?.strokeColor;
+            shapeEl.fill = selectedElements[0]?.fill;
+
+            BOARD_TO_PRELOADING_SHAPE.set(board, { tempArrow: temporaryElement, drawElement: shapeEl });
+
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);
             const afterComplete = (board as PlaitOptionsBoard).getPluginOptions<ArrowLineAutoCompleteOptions>(
                 WithArrowLineAutoCompletePluginKey
             )?.afterComplete;
             afterComplete && afterComplete(temporaryElement);
+        } else {
+            BOARD_TO_PRELOADING_SHAPE.delete(board);
         }
         lineShapeG?.remove();
         lineShapeG = null;
