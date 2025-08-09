@@ -1,12 +1,12 @@
-import { PlaitBoard, createG, drawLinearPath, getRectangleByElements } from '@plait/core';
+import { Direction, PlaitBoard, createG, drawLinearPath, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../../interfaces/node';
 import { getRectangleByNode } from '../../position/node';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
-import { getLayoutDirection, getPointByPlacement, getXDistanceBetweenPoint, moveXOfPoint, transformPlacement } from '../../point-placement';
+import { getLayoutDirection, getPointByPlacement, transformPlacement } from '../../point-placement';
 import { getAbstractBranchColor, getAbstractBranchWidth, getBranchShapeByMindElement } from '../../node-style/branch';
 import { BranchShape } from '../../../interfaces/element';
 import { getStrokeStyleByElement } from '../../node-style';
-import { getStrokeLineDash } from '@plait/common';
+import { getStrokeLineDash, getXDistanceBetweenPoint, moveXOfPoint } from '@plait/common';
 
 export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal: boolean) {
     const linkPadding = 15;
@@ -34,11 +34,11 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
     let bezierEndPoint = getPointByPlacement(includedElementsRectangle, bezierEndPlacement);
     let abstractConnectorPoint = getPointByPlacement(abstractRectangle, abstractConnectorPlacement);
     let curveDistance = getXDistanceBetweenPoint(abstractConnectorPoint, bezierBeginPoint, isHorizontal) - linkPadding * 2;
-    bezierBeginPoint = moveXOfPoint(bezierBeginPoint, linkPadding, linkDirection);
-    let c1 = moveXOfPoint(bezierBeginPoint, curveDistance, linkDirection);
-    bezierEndPoint = moveXOfPoint(bezierEndPoint, linkPadding, linkDirection);
-    let c2 = moveXOfPoint(bezierEndPoint, curveDistance, linkDirection);
-    let bezierConnectorPoint = moveXOfPoint(abstractConnectorPoint, -linkPadding, linkDirection);
+    bezierBeginPoint = moveXOfPoint(bezierBeginPoint, linkPadding, linkDirection as unknown as Direction);
+    let c1 = moveXOfPoint(bezierBeginPoint, curveDistance, linkDirection as unknown as Direction);
+    bezierEndPoint = moveXOfPoint(bezierEndPoint, linkPadding, linkDirection as unknown as Direction);
+    let c2 = moveXOfPoint(bezierEndPoint, curveDistance, linkDirection as unknown as Direction);
+    let bezierConnectorPoint = moveXOfPoint(abstractConnectorPoint, -linkPadding, linkDirection as unknown as Direction);
     const strokeLineDash = getStrokeLineDash(strokeStyle, branchWidth);
     if (branchShape === BranchShape.polyline) {
         const g = createG();

@@ -2,18 +2,18 @@ import { drawRoundRectangleByNode } from './node-shape';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
 import { DetectResult, LayoutDirection, MindElement, MindNode, PlaitMind } from '../../interfaces';
 import { getRectangleByNode } from '../position/node';
-import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode, PlaitElement, updateForeignObject } from '@plait/core';
+import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode, PlaitElement, updateForeignObject, Direction } from '@plait/core';
 import { MindQueries } from '../../queries';
 import { isHorizontalLayout, isIndentedLayout, isStandardLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { getTopicRectangleByNode } from '../position/topic';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
-import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, transformPlacement } from '../point-placement';
+import { getLayoutDirection, getPointByPlacement, transformPlacement } from '../point-placement';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { hasPreviousOrNextOfDropPath } from '../dnd/common';
 import { drawLink } from './node-link/draw-link';
 import { getEmojiForeignRectangle } from '../position/emoji';
 import { getImageForeignRectangle } from '../position';
-import { ImageGenerator, PlaitCommonElementRef, getFirstTextManage } from '@plait/common';
+import { ImageGenerator, PlaitCommonElementRef, getFirstTextManage, moveXOfPoint, moveYOfPoint } from '@plait/common';
 import { NodeEmojisGenerator } from '../../generators/node-emojis.generator';
 
 export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offsetX: number, offsetY: number) => {
@@ -115,10 +115,10 @@ export const drawFakeDropNode = (
             ];
             const parentCenterPoint = getPointByPlacement(parentRect, placement);
 
-            centerPoint = moveXOfPoint(parentCenterPoint, height, linkDirection);
+            centerPoint = moveXOfPoint(parentCenterPoint, height, linkDirection as unknown as Direction);
             centerPoint[1] = isTopLayout(layout) ? centerPoint[1] - height : centerPoint[1] + height;
         } else {
-            centerPoint = moveXOfPoint(parentCenterPoint, width, linkDirection);
+            centerPoint = moveXOfPoint(parentCenterPoint, width, linkDirection as unknown as Direction);
         }
     } else if (!hasPreviousNode && hasNextNode) {
         const nextElement = PlaitNode.get(board, path) as MindElement;
@@ -136,7 +136,7 @@ export const drawFakeDropNode = (
         }
 
         centerPoint = getPointByPlacement(nextRect, placement);
-        centerPoint = moveYOfPoint(centerPoint, offset, linkDirection);
+        centerPoint = moveYOfPoint(centerPoint, offset, linkDirection as unknown as Direction);
     } else if (hasPreviousNode && !hasNextNode) {
         const previousElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
         basicNode = MindElement.getNode(previousElement);
@@ -152,7 +152,7 @@ export const drawFakeDropNode = (
             offset = isTopLayout(layout) ? -offset - (basicNode.height - basicNode.vGap) : offset;
         }
         centerPoint = getPointByPlacement(previousRect, placement);
-        centerPoint = moveYOfPoint(centerPoint, offset, linkDirection);
+        centerPoint = moveYOfPoint(centerPoint, offset, linkDirection as unknown as Direction);
     } else {
         const previousElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
         basicNode = MindElement.getNode(previousElement);
@@ -181,10 +181,10 @@ export const drawFakeDropNode = (
     const offsetY = isHorizontal ? height : width;
     const offsetX = isHorizontal ? width : height;
 
-    cornerPoint = moveYOfPoint(cornerPoint, -offsetY / 2, linkDirection!);
+    cornerPoint = moveYOfPoint(cornerPoint, -offsetY / 2, linkDirection! as unknown as Direction);
 
-    oppositePoint = moveYOfPoint(oppositePoint, offsetY / 2, linkDirection!);
-    oppositePoint = moveXOfPoint(oppositePoint, offsetX, linkDirection!);
+    oppositePoint = moveYOfPoint(oppositePoint, offsetY / 2, linkDirection! as unknown as Direction);
+    oppositePoint = moveXOfPoint(oppositePoint, offsetX, linkDirection! as unknown as Direction);
 
     const x = Math.min(cornerPoint[0], oppositePoint[0]);
     const y = Math.min(cornerPoint[1], oppositePoint[1]);

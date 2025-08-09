@@ -16,3 +16,4 @@ export * from './elements';
 export * from './animate';
 export * from './stroke';
 export * from './clipboard';
+export * from './point-placement';

@@ -33,9 +33,9 @@ export interface ArrowLineAutoCompleteOptions {
     afterComplete: (element: PlaitArrowLine) => {};
 }
 
-export type PreloadingShapeRef = { tempArrow: PlaitArrowLine; drawElement: PlaitGeometry };
-export const BOARD_TO_PRELOADING_SHAPE = new WeakMap<PlaitBoard, PreloadingShapeRef>();
-// 改为weakMap存出
+export type PreCommitRef = { temporaryArrowLineElement: PlaitArrowLine; temporaryShapeElement: PlaitGeometry };
+
+export const BOARD_TO_PRE_COMMIT = new WeakMap<PlaitBoard, PreCommitRef>();
 
 export const withArrowLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
@@ -76,7 +76,7 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
                 ...(rotateAntiPointsByElement(board, movingPoint, sourceElement) || movingPoint),
                 ...autoCompletePoint
             );
-            if (distance > PRESS_AND_MOVE_BUFFER) {
+            if (distance > PRESS_AND_MOVE_BUFFER * 2) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
                 const shape = getElementShape(sourceElement);
                 const engine = getEngine(shape);
@@ -111,11 +111,11 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
             )?.afterComplete;
             afterComplete && afterComplete(temporaryElement);
         } else {
-            const preloadingRef = BOARD_TO_PRELOADING_SHAPE.get(board);
-            if (preloadingRef) {
-                Transforms.insertNode(board, preloadingRef.tempArrow, [board.children.length]);
-                insertElement(board, preloadingRef.drawElement);
-                BOARD_TO_PRELOADING_SHAPE.delete(board);
+            const preCommitRef = BOARD_TO_PRE_COMMIT.get(board);
+            if (preCommitRef) {
+                Transforms.insertNode(board, preCommitRef.temporaryArrowLineElement, [board.children.length]);
+                insertElement(board, preCommitRef.temporaryShapeElement);
+                BOARD_TO_PRE_COMMIT.delete(board);
             }
         }
         if (autoCompletePoint) {

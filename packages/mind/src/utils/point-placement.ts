@@ -2,6 +2,7 @@ import { Point, RectangleClient } from '@plait/core';
 import { MindNode } from '../interfaces/node';
 import { LayoutDirection } from '../interfaces/layout';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
+import { getXDistanceBetweenPoint } from '@plait/common';
 
 export const getPointByPlacement = (client: RectangleClient, placement: PointPlacement): Point => {
     let x = client.x;
@@ -26,14 +27,6 @@ export interface PlacementRef {
     client: RectangleClient;
 }
 
-export const getXDistanceBetweenPoint = (point1: Point, point2: Point, isHorizontalLayout: boolean) => {
-    if (isHorizontalLayout) {
-        return Math.abs(point1[0] - point2[0]);
-    } else {
-        return Math.abs(point1[1] - point2[1]);
-    }
-};
-
 export const getYDistanceBetweenPoint = (point1: Point, point2: Point, isHorizontalLayout: boolean) => {
     getXDistanceBetweenPoint(point1, point2, !isHorizontalLayout);
 };
@@ -52,41 +45,6 @@ export const getLayoutDirection = (node: MindNode, isHorizontal: boolean) => {
             return LayoutDirection.bottom;
         }
     }
-};
-
-// Based on right
-// Right -> Left:
-// 1. End point -> starting point/start point -> end point
-// 2. Add -> Subtract
-
-// Horizontal -> Vertical:
-// 1. Starting point/end point -> vertical axis
-// 2. Addition and subtraction -> vertical axis
-
-// Bottom -> Top:
-// 1. End point -> starting point/end point -> starting point
-// 2. Add -> Subtract
-export const moveXOfPoint = (point: Point, distance: number, direction: LayoutDirection = LayoutDirection.right): Point => {
-    if (direction === LayoutDirection.left) {
-        return [point[0] - distance, point[1]];
-    }
-    if (direction === LayoutDirection.bottom) {
-        return [point[0], point[1] + distance];
-    }
-    if (direction === LayoutDirection.top) {
-        return [point[0], point[1] - distance];
-    }
-    return [point[0] + distance, point[1]];
-};
-
-export const moveYOfPoint = (point: Point, distance: number, direction: LayoutDirection = LayoutDirection.right): Point => {
-    if (direction === LayoutDirection.bottom) {
-        return [point[0] + distance, point[1]];
-    }
-    if (direction === LayoutDirection.top) {
-        return [point[0] + distance, point[1]];
-    }
-    return [point[0], point[1] + distance];
 };
 
 export const transformPlacement = (placement: PointPlacement, direction: LayoutDirection) => {

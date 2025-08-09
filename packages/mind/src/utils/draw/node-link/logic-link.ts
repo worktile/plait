@@ -1,12 +1,12 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { MindNode } from '../../../interfaces/node';
-import { PlaitBoard, Point, drawLinearPath, setStrokeLinecap } from '@plait/core';
+import { Direction, PlaitBoard, Point, drawLinearPath, setStrokeLinecap } from '@plait/core';
 import { getRectangleByNode, getShapeByElement, getStrokeStyleByElement } from '../..';
-import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../point-placement';
+import { getLayoutDirection, getPointByPlacement, transformPlacement } from '../../point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
 import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
 import { BranchShape, MindElementShape } from '../../../interfaces/element';
-import { getStrokeLineDash, StrokeStyle } from '@plait/common';
+import { getStrokeLineDash, moveXOfPoint, StrokeStyle } from '@plait/common';
 
 export function drawLogicLink(
     board: PlaitBoard,
@@ -51,7 +51,9 @@ export function drawLogicLink(
 
     // ② Determine the convex straight line
     const straightLineDistance = 8;
-    const beginPoint2 = hasStraightLine ? moveXOfPoint(beginPoint, straightLineDistance, linkDirection) : beginPoint;
+    const beginPoint2 = hasStraightLine
+        ? moveXOfPoint(beginPoint, straightLineDistance, linkDirection as unknown as Direction)
+        : beginPoint;
     let straightLine: Point[] = hasStraightLine ? [beginPoint, beginPoint2, beginPoint2] : [];
 
     // ③ Determine the curve
@@ -59,20 +61,20 @@ export function drawLogicLink(
     const endBufferDistance = -(parent.hGap + node.hGap) / 2.4;
     let curve: Point[] = [
         beginPoint2,
-        moveXOfPoint(beginPoint2, beginBufferDistance, linkDirection),
-        moveXOfPoint(endPoint, endBufferDistance, linkDirection),
+        moveXOfPoint(beginPoint2, beginBufferDistance, linkDirection as unknown as Direction),
+        moveXOfPoint(endPoint, endBufferDistance, linkDirection as unknown as Direction),
         endPoint
     ];
 
     // ④ underline shape and horizontal
-    const underlineEnd = moveXOfPoint(endPoint, nodeClient.width, linkDirection);
+    const underlineEnd = moveXOfPoint(endPoint, nodeClient.width, linkDirection as unknown as Direction);
     const underline: Point[] = hasUnderlineShape && isHorizontal ? [underlineEnd, underlineEnd, underlineEnd] : [];
     const points = pointsOnBezierCurves([...straightLine, ...curve, ...underline]);
     const strokeLineDash = getStrokeLineDash(strokeStyle, branchWidth);
     let linkG: SVGGElement;
     if (branchShape === BranchShape.polyline) {
         const buffer = 8;
-        const movePoint = moveXOfPoint(beginPoint2, buffer, linkDirection);
+        const movePoint = moveXOfPoint(beginPoint2, buffer, linkDirection as unknown as Direction);
         const polylinePoints = [
             ...straightLine,
             movePoint,

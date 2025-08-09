@@ -1,4 +1,5 @@
 import {
+    Direction,
     PlaitBoard,
     Point,
     createG,
@@ -26,9 +27,9 @@ import {
 import { MindLayoutType, isHorizontalLayout, isIndentedLayout, isTopLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { getBranchColorByMindElement } from '../utils/node-style/branch';
-import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
+import { getLayoutDirection, getPointByPlacement, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { buildText, DEFAULT_FONT_FAMILY, Generator, isResizing, measureElement, TRANSPARENT } from '@plait/common';
+import { buildText, DEFAULT_FONT_FAMILY, Generator, isResizing, measureElement, moveXOfPoint, TRANSPARENT } from '@plait/common';
 import { getChildrenCount } from '../utils/mind';
 import { FontSizes } from '@plait/text-plugins';
 
@@ -65,7 +66,11 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         const stroke = getBranchColorByMindElement(this.board, element);
         const layoutDirection = getNodeMoreLayoutDirection(this.board, element);
         const moreStartAndEnd = getMoreStartAndEnd(this.board, element, layoutDirection);
-        const collapseOrExpandCenter = moveXOfPoint(moreStartAndEnd[1], NODE_MORE_ICON_DIAMETER / 2, layoutDirection);
+        const collapseOrExpandCenter = moveXOfPoint(
+            moreStartAndEnd[1],
+            NODE_MORE_ICON_DIAMETER / 2,
+            layoutDirection as unknown as Direction
+        );
         const hasChildren = element.children.length > 0;
         const isShowCollapseOrAdd =
             !element.isCollapsed &&
@@ -254,7 +259,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 export const getCollapseAndAddCenterPoint = (board: PlaitBoard, element: MindElement) => {
     const layoutDirection = getNodeMoreLayoutDirection(board, element);
     const [startPoint, endPoint] = getMoreStartAndEnd(board, element, layoutDirection);
-    const collapseCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection);
+    const collapseCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction);
     const addCenter = getAddCenterByCollapseOrExpandCenter(element, collapseCenter, layoutDirection);
     return { collapseCenter, addCenter };
 };
@@ -266,7 +271,7 @@ export const getAddCenterByCollapseOrExpandCenter = (
 ) => {
     let addCenter = collapseOrExpandCenter;
     if (target.children?.length > 0 && !PlaitMind.isMind(target)) {
-        addCenter = moveXOfPoint(addCenter, NODE_MORE_LINE_DISTANCE + NODE_MORE_ICON_DIAMETER, layoutDirection);
+        addCenter = moveXOfPoint(addCenter, NODE_MORE_LINE_DISTANCE + NODE_MORE_ICON_DIAMETER, layoutDirection as unknown as Direction);
     }
     return addCenter;
 };
@@ -295,7 +300,7 @@ export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, link
         placement[1] = VerticalPlacement.bottom;
     }
     let startPoint = getPointByPlacement(nodeClient, placement);
-    const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, linkLineDirection);
+    const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, linkLineDirection as unknown as Direction);
     return [startPoint, endPoint] as [Point, Point];
 };
 
