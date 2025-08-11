@@ -5,7 +5,7 @@ export const WithMindPluginKey = 'plait-mind-plugin-key';
 export const BASE = 4;
 export const PRIMARY_COLOR = '#6698FF';
 export const GRAY_COLOR = '#AAAAAA';
-export const STROKE_WIDTH = 3;
+export const STROKE_WIDTH = 2;
 
 export const RESIZE_HANDLE_BUFFER_DISTANCE = 8;
 

@@ -10,11 +10,11 @@ export const DefaultAbstractNodeStyle = {
 
 export const DefaultNodeStyle = {
     branch: {
-        width: 3
+        width: 2
     },
     shape: {
         rectangleRadius: 4,
-        strokeWidth: 3,
+        strokeWidth: 2,
         fill: 'none'
     }
 };

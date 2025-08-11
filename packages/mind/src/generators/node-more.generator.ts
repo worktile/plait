@@ -247,7 +247,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             fontSize: Number(FontSizes.fontSize12),
             fontFamily: DEFAULT_FONT_FAMILY
         });
-        const badgeText = createText(center[0] - width / 2 + 0.5, y, stroke, `${text}`);
+        const badgeText = createText(center[0] - width / 2, y, stroke, `${text}`);
         badgeText.setAttribute('style', `font-size: ${Number(FontSizes.fontSize12)}px;`);
         this.expandG.appendChild(moreLine);
         this.expandG.appendChild(badgeBackground);
