@@ -19,7 +19,7 @@ import {
     toScreenPointFromActivePoint,
     toViewBoxPoint
 } from '@plait/core';
-import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../../interfaces';
+import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitShapeElement, PlaitSwimlane } from '../../interfaces';
 import { getElementShape } from '../../utils/shape';
 import { getEngine } from '../../engines';
 import { handleArrowLineCreating } from '../../utils/arrow-line/arrow-line-basic';
@@ -33,7 +33,7 @@ export interface ArrowLineAutoCompleteOptions {
     afterComplete: (element: PlaitArrowLine) => {};
 }
 
-export type PreCommitRef = { temporaryArrowLineElement: PlaitArrowLine; temporaryShapeElement: PlaitGeometry };
+export type PreCommitRef = { temporaryArrowLineElement: PlaitArrowLine; temporaryShapeElement: PlaitGeometry | PlaitSwimlane };
 
 export const BOARD_TO_PRE_COMMIT = new WeakMap<PlaitBoard, PreCommitRef>();
 

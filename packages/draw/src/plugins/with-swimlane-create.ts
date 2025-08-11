@@ -13,6 +13,8 @@ import { isKeyHotkey } from 'is-hotkey';
 import { getSnapResizingRef } from '../utils/snap-resizing';
 import { TableGenerator } from '../generators/table.generator';
 import { createDefaultSwimlane, getDefaultSwimlanePoints, isSwimlanePointers } from '../utils/swimlane';
+import { getGeometryGeneratorByShape } from '../utils/shape';
+import { DrawPointerType } from '../constants/pointer';
 
 export interface FakeCreateTextRef {
     g: SVGGElement;
@@ -41,11 +43,10 @@ export const withSwimlaneCreateByDrag = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         swimlaneG?.remove();
         swimlaneG = createG();
-
-        const tableGenerator = new TableGenerator(board);
+        const pointer = PlaitBoard.getPointer(board) as SwimlaneDrawSymbols;
+        const tableGenerator = getGeometryGeneratorByShape(board, pointer) as unknown as TableGenerator;
         const dragMode = isSwimlaneDndMode(board);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const pointer = PlaitBoard.getPointer(board) as SwimlaneDrawSymbols;
 
         if (dragMode) {
             const points = getDefaultSwimlanePoints(pointer, movingPoint);

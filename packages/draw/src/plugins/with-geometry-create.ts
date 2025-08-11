@@ -23,6 +23,7 @@ import {
 import { isKeyHotkey } from 'is-hotkey';
 import { getSnapResizingRef } from '../utils/snap-resizing';
 import { TableGenerator } from '../generators/table.generator';
+import { getGeometryGeneratorByShape } from '../utils/shape';
 
 export interface FakeCreateTextRef {
     g: SVGGElement;
@@ -41,14 +42,6 @@ const isGeometryDrawingMode = (board: PlaitBoard) => {
     const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
     const drawingMode = isGeometryPointer && isDrawingMode(board);
     return drawingMode;
-};
-
-export const getGeometryGeneratorByShape = (board: PlaitBoard, shape: DrawPointerType) => {
-    if (PlaitDrawElement.isUMLClassOrInterface({ shape: shape })) {
-        return new TableGenerator<PlaitGeometry>(board);
-    } else {
-        return new GeometryShapeGenerator(board);
-    }
 };
 
 export const withGeometryCreateByDrag = (board: PlaitBoard) => {

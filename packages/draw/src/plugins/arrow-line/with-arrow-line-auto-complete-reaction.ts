@@ -14,16 +14,23 @@ import {
     createG,
     rotatePointsByElement,
     isHorizontalDirection,
-    idCreator,
     Point
 } from '@plait/core';
-import { getAutoCompletePoints, getHitConnection, getHitIndexOfAutoCompletePoint, getSelectedDrawElements, handleArrowLineCreating } from '../../utils';
+import {
+    createDefaultGeometry,
+    createDefaultSwimlane,
+    getAutoCompletePoints,
+    getHitConnection,
+    getHitIndexOfAutoCompletePoint,
+    getSelectedDrawElements,
+    handleArrowLineCreating
+} from '../../utils';
 import { PRIMARY_COLOR, PlaitCommonElementRef, getDirectionByIndex, getXDistanceBetweenPoint, moveXOfPoint } from '@plait/common';
 import { BOARD_TO_PRE_COMMIT } from './with-arrow-line-auto-complete';
 import { DrawPointerType, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../../constants';
 import { ArrowLineAutoCompleteGenerator } from '../../generators';
-import { getGeometryGeneratorByShape } from '../with-geometry-create';
-import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitGeometry } from '../../interfaces';
+import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitSwimlane, SwimlaneDrawSymbols } from '../../interfaces';
+import { getGeometryGeneratorByShape } from '../../utils/shape';
 
 const PREVIEW_ARROW_LINE_DISTANCE = 100;
 
@@ -31,7 +38,7 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerLeave, globalPointerUp } = board;
     let reactionG: SVGGElement | null = null;
     let temporaryArrowLineElement: PlaitArrowLine | null = null;
-    let temporaryShapeElement: PlaitGeometry | null = null;
+    let temporaryShapeElement: PlaitGeometry | PlaitSwimlane | null = null;
     let temporaryArrowLineG: SVGGElement | null = null;
     let temporaryShapeG: SVGGElement | null = null;
 
@@ -81,11 +88,21 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
                 temporaryShapeG = createG();
                 temporaryArrowLineG.style.opacity = '0.6';
                 temporaryShapeG.style.opacity = '0.6';
-                temporaryShapeElement = {
-                    ...(originElement as PlaitGeometry),
-                    points: temporaryShapePoints as [Point, Point],
-                    id: idCreator()
-                };
+                if (PlaitDrawElement.isSwimlane(originElement)) {
+                    temporaryShapeElement = createDefaultSwimlane(
+                        originElement.shape as unknown as SwimlaneDrawSymbols,
+                        temporaryShapePoints as [Point, Point]
+                    );
+                } else {
+                    temporaryShapeElement = createDefaultGeometry(board, temporaryShapePoints as [Point, Point], originElement.shape);
+                }
+                temporaryShapeElement.angle = originElement.angle;
+                    temporaryShapeElement.fill = originElement.fill;
+                    temporaryShapeElement.strokeColor = originElement.strokeColor;
+                    temporaryShapeElement.strokeStyle = originElement.strokeStyle;
+                    temporaryShapeElement.strokeWidth = originElement.strokeWidth;
+                    temporaryShapeElement.groupId = originElement.groupId;
+
                 const rotatedArrowLineStartPoint = rotatePointsByElement(arrowLineStartPoint, originElement) || arrowLineStartPoint;
                 const rotatedArrowLineEndPoint = rotatePointsByElement(arrowLineEndPoint, temporaryShapeElement) || arrowLineEndPoint;
                 temporaryArrowLineElement = handleArrowLineCreating(
@@ -131,12 +148,12 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
         if (BOARD_TO_PRE_COMMIT.get(board)) {
             BOARD_TO_PRE_COMMIT.delete(board);
         }
-    }
+    };
 
     board.globalPointerUp = (event: PointerEvent) => {
         globalPointerUp(event);
         clearRef();
-    }
+    };
 
     return board;
 };

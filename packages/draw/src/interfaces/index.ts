@@ -95,7 +95,7 @@ export const PlaitDrawElement = {
         return Object.keys(UMLSymbols).includes(value.shape);
     },
     isSwimlane: (value: any): value is PlaitSwimlane => {
-        return value.type === 'swimlane';
+        return value.type === 'swimlane' || value.shape ;
     },
     isVerticalSwimlane: (value: any) => {
         return PlaitDrawElement.isSwimlane(value) && value.shape === SwimlaneSymbols.swimlaneVertical;
