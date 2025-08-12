@@ -33,7 +33,7 @@ export interface ArrowLineAutoCompleteOptions {
     afterComplete: (element: PlaitArrowLine) => {};
 }
 
-export type PreCommitRef = { temporaryArrowLineElement: PlaitArrowLine; temporaryShapeElement: PlaitGeometry | PlaitSwimlane };
+export type PreCommitRef = { temporaryArrowLineElement: PlaitArrowLine; temporaryShapeElement: PlaitGeometry };
 
 export const BOARD_TO_PRE_COMMIT = new WeakMap<PlaitBoard, PreCommitRef>();
 

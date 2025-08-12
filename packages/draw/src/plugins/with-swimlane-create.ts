@@ -43,8 +43,8 @@ export const withSwimlaneCreateByDrag = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         swimlaneG?.remove();
         swimlaneG = createG();
+        const tableGenerator = new TableGenerator(board);
         const pointer = PlaitBoard.getPointer(board) as SwimlaneDrawSymbols;
-        const tableGenerator = getGeometryGeneratorByShape(board, pointer) as unknown as TableGenerator;
         const dragMode = isSwimlaneDndMode(board);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
 
