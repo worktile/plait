@@ -1,11 +1,4 @@
-import {
-    BasicShapes,
-    FlowchartSymbols,
-    GeometryShapes,
-    PlaitCustomGeometry,
-    PlaitGeometry,
-    UMLSymbols
-} from './geometry';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitCustomGeometry, PlaitGeometry, UMLSymbols } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitArrowLine } from './arrow-line';
 import { PlaitSwimlane, SwimlaneSymbols } from './swimlane';
@@ -95,7 +88,7 @@ export const PlaitDrawElement = {
         return Object.keys(UMLSymbols).includes(value.shape);
     },
     isSwimlane: (value: any): value is PlaitSwimlane => {
-        return value.type === 'swimlane' || value.shape ;
+        return value.type === 'swimlane';
     },
     isVerticalSwimlane: (value: any) => {
         return PlaitDrawElement.isSwimlane(value) && value.shape === SwimlaneSymbols.swimlaneVertical;

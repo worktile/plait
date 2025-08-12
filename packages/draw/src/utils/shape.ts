@@ -14,7 +14,7 @@ export const getElementShape = (value: PlaitShapeElement) => {
 };
 
 export const getGeometryGeneratorByShape = (board: PlaitBoard, shape: DrawPointerType) => {
-    if (PlaitDrawElement.isUMLClassOrInterface({ shape: shape }) || PlaitDrawElement.isSwimlane({ shape: shape })) {
+    if (PlaitDrawElement.isUMLClassOrInterface({ shape: shape })) {
         return new TableGenerator<PlaitGeometry>(board);
     } else {
         return new GeometryShapeGenerator(board);

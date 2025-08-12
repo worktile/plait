@@ -5,7 +5,8 @@ import {
     SwimlaneDrawSymbols,
     TableSymbols,
     UMLSymbols,
-    VectorLinePointerType
+    VectorLinePointerType,
+    SwimlaneSymbols
 } from '../interfaces';
 
 export type DrawPointerType =
@@ -23,6 +24,10 @@ export const getGeometryPointers = () => {
 
 export const getSwimlanePointers = () => {
     return Object.keys(SwimlaneDrawSymbols);
+};
+
+export const getSwimlaneShapes = () => {
+    return Object.keys(SwimlaneSymbols);
 };
 
 export const getBasicPointers = () => {
