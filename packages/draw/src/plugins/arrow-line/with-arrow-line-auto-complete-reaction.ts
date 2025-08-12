@@ -75,7 +75,7 @@ export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
                     setAngleForG(reactionG, RectangleClient.getCenterPoint(activeRectangle), originElement.angle!);
                 }
                 // function 2: hover to preview and click to commit
-                if (PlaitDrawElement.isGeometry(originElement)) {
+                if (PlaitDrawElement.isGeometry(originElement) && !PlaitDrawElement.isText(originElement)) {
                     const originRect = RectangleClient.getRectangleByPoints(originElement.points);
                     let arrowLineStartPoint = RectangleClient.getEdgeCenterPoints(originRect)[hitIndex];
                     const arrowLineDirection = getDirectionByIndex(hitIndex);
