@@ -22,7 +22,6 @@ import {
 } from '@plait/common';
 import { isKeyHotkey } from 'is-hotkey';
 import { getSnapResizingRef } from '../utils/snap-resizing';
-import { TableGenerator } from '../generators/table.generator';
 import { getGeometryGeneratorByShape } from '../utils/shape';
 
 export interface FakeCreateTextRef {
