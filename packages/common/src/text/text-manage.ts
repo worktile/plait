@@ -15,8 +15,9 @@ import {
 import { fromEvent, timer } from 'rxjs';
 import { Editor, Element, NodeEntry, Range, Text, Node, Transforms, Operation } from 'slate';
 import { PlaitTextBoard, TextPlugin } from './with-text';
-import { measureElement } from './text-measure';
+import { clearElementSizeCache, measureElement, updateElementSizeCache } from './text-measure';
 import { TextChangeData, TextComponentRef, TextProps } from './with-text';
+import { ParagraphElement } from './types';
 
 export interface TextManageChangeData {
     newText?: Element;
@@ -75,11 +76,13 @@ export class TextManage {
             },
             onComposition: (event: CompositionEvent) => {
                 if (event.type === 'compositionend') {
+                    clearElementSizeCache(this.board, this.editor.children[0] as ParagraphElement);
                     return;
                 }
                 const fakeRoot = buildCompositionData(this.editor, event.data);
                 if (fakeRoot) {
                     const sizeData = this.getSize(fakeRoot.children[0]);
+                    updateElementSizeCache(this.board, this.editor.children[0] as ParagraphElement, sizeData);
                     // invoking onChange asap to avoid blinking on typing chinese
                     this.options.onChange && this.options.onChange({ ...sizeData });
                     MERGING.set(this.board, true);

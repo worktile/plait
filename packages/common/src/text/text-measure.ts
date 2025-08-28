@@ -1,9 +1,11 @@
 import { Node } from 'slate';
-import { CustomText, ParagraphElement } from './types';
+import { CustomText, ElementSize, ParagraphElement } from './types';
 import { getLineHeightByFontSize } from '../utils/text';
 import { PlaitBoard } from '@plait/core';
 
 const BOARD_TO_CANVAS_MAP = new WeakMap<PlaitBoard, HTMLCanvasElement>();
+
+const ELEMENT_TO_SIZE_MAP = new WeakMap<ParagraphElement, ElementSize>();
 
 const getCanvasForBoard = (board: PlaitBoard | null): HTMLCanvasElement => {
     if (board) {
@@ -15,6 +17,32 @@ const getCanvasForBoard = (board: PlaitBoard | null): HTMLCanvasElement => {
         return BOARD_TO_CANVAS_MAP.get(board) as HTMLCanvasElement;
     }
     return document.createElement('canvas');
+};
+
+export const getElementSize = (
+    board: PlaitBoard | null,
+    element: ParagraphElement,
+    options: {
+        fontSize: number;
+        fontFamily: string;
+    },
+    containerMaxWidth: number = 10000
+) => {
+    let size = ELEMENT_TO_SIZE_MAP.get(element);
+    if (size) {
+        return size;
+    }
+    size = measureElement(board, element, options, containerMaxWidth);
+    ELEMENT_TO_SIZE_MAP.set(element, size);
+    return size;
+};
+
+export const updateElementSizeCache = (board: PlaitBoard | null, element: ParagraphElement, size: ElementSize) => {
+    ELEMENT_TO_SIZE_MAP.set(element, size);
+};
+
+export const clearElementSizeCache = (board: PlaitBoard | null, element: ParagraphElement) => {
+    ELEMENT_TO_SIZE_MAP.delete(element);
 };
 
 export function measureElement(

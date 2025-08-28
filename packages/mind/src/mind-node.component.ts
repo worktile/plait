@@ -88,11 +88,7 @@ export class MindNodeComponent
                 }
             },
             getMaxWidth: () => {
-                if (this.element.manualWidth) {
-                    return NodeSpace.getNodeDynamicWidth(this.board, this.element);
-                } else {
-                    return Math.max(NodeSpace.getNodeDynamicWidth(this.board, this.element), NodeTopicThreshold.defaultTextMaxWidth);
-                }
+                return NodeSpace.getTopicMaxDynamicWidth(this.board, this.element);
             },
             textPlugins: plugins || []
         });

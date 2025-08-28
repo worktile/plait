@@ -7,6 +7,8 @@ import { getTopicRectangleByNode } from './topic';
 import { getRectangleByNode } from './node';
 import { NodeSpace } from '../space/node-space';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
+import { DEFAULT_FONT_FAMILY, getElementSize } from '@plait/common';
+import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
 
 describe('utils position topic', () => {
     let board: PlaitMindBoard;
@@ -36,7 +38,12 @@ describe('utils position topic', () => {
         const rectangle1 = getTopicRectangleByNode(board, mindNode);
         expect(rectangle1.x).toEqual(x);
         expect(rectangle1.y).toEqual(y);
-        expect(Math.ceil(rectangle1.width)).toEqual(Math.ceil(mindNode.origin.width));
-        expect(rectangle1.height).toEqual(mindNode.origin.height);
+        expect(rectangle1.width).not.toEqual(mindNode.origin.width);
+        const topicSize = getElementSize(null, mindNode.origin.data.topic, {
+            fontSize: DEFAULT_FONT_SIZE,
+            fontFamily: DEFAULT_FONT_FAMILY
+        });
+        expect(rectangle1.width).toEqual(topicSize.width);
+        expect(rectangle1.height).toEqual(topicSize.height);
     });
 });

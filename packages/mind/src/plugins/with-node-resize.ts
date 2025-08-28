@@ -44,7 +44,7 @@ export const withNodeResize = (board: PlaitBoard) => {
         beforeResize: (resizeRef: ResizeRef<MindElement, null>) => {
             targetElementRef = {
                 minWidth: NodeSpace.getNodeResizableMinWidth(board as PlaitMindBoard, resizeRef.element),
-                currentWidth: NodeSpace.getNodeDynamicWidth(board as PlaitMindBoard, resizeRef.element),
+                currentWidth: NodeSpace.getTopicDynamicWidth(board as PlaitMindBoard, resizeRef.element),
                 path: PlaitBoard.findPath(board, resizeRef.element),
                 textManage: getFirstTextManage(resizeRef.element)
             };
