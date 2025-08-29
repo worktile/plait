@@ -5,7 +5,7 @@ import { EmojiData } from '../../interfaces/element-data';
 import { WithMindOptions } from '../../interfaces/options';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { getEmojisWidthHeight } from './emoji';
-import { Element, Text } from 'slate';
+import { Element } from 'slate';
 import { getStrokeWidthByElement } from '../node-style/shape';
 import { getDefaultMindElementFontSize } from '../mind';
 import { DEFAULT_FONT_SIZE, getFirstTextMarks, MarkTypes, PlaitMarkEditor } from '@plait/text-plugins';
@@ -86,7 +86,7 @@ export const NodeSpace = {
         const topicSize = getElementSize(
             board,
             element.data.topic,
-            { fontSize: DEFAULT_FONT_SIZE, fontFamily: DEFAULT_FONT_FAMILY },
+            { fontSize: getDefaultMindElementFontSize(board, element), fontFamily: DEFAULT_FONT_FAMILY },
             NodeSpace.getTopicMaxDynamicWidth(board, element)
         );
         const normalizedSize = normalizeWidthAndHeight(board, element, topicSize.width, topicSize.width);
