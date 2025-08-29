@@ -13,7 +13,6 @@ import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
 import { NodeActiveGenerator } from './generators/node-active.generator';
 import { NodeSpace } from './utils/space/node-space';
-import { NodeTopicThreshold } from './constants/node-topic-style';
 import {
     CommonElementFlavour,
     ImageGenerator,
@@ -79,13 +78,7 @@ export class MindNodeComponent
                 return rect;
             },
             onChange: (data: TextManageChangeData) => {
-                const width = data.width;
-                const height = data.height;
-                if (data.newText) {
-                    MindTransforms.setTopic(this.board, this.element, data.newText as MindElement, width, height);
-                } else {
-                    MindTransforms.setTopicSize(this.board, this.element, width, height);
-                }
+                MindTransforms.setTopic(this.board, this.element, data.newText);
             },
             getMaxWidth: () => {
                 return NodeSpace.getTopicMaxDynamicWidth(this.board, this.element);

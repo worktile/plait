@@ -18,7 +18,7 @@ import {
     MindPointerType,
     MindTransforms,
     canSetAbstract,
-    getDefaultMindElementFontSize,
+    getDefaultFontSizeForMindElement,
     getSelectedMindElements
 } from '@plait/mind';
 import { BaseEditor, Node, Transforms as SlateTransforms } from 'slate';
@@ -351,7 +351,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.board,
             fontSize,
             (element: PlaitElement) => {
-                return MindElement.isMindElement(this.board, element) ? getDefaultMindElementFontSize(this.board, element) : undefined;
+                return MindElement.isMindElement(this.board, element) ? getDefaultFontSizeForMindElement(element) : undefined;
             },
             getSelectedTableCellsEditor(this.board)
         );

@@ -9,8 +9,6 @@ import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node
 import { Element } from 'slate';
 import { findNewChildNodePath } from './path';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
-import { getFontSizeBySlateElement } from './space/node-space';
-import { buildText } from '@plait/common';
 import { getTopicSize } from './common';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
@@ -110,8 +108,7 @@ export const insertClipboardData = (
 };
 
 export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitElement, text: string | Element) => {
-    const { width, height } = getTopicSize(board, false, PlaitMind.isMind(targetParent), buildText(text));
-    const newElement = createMindElement(text, Math.max(width, getFontSizeBySlateElement(text)), height, {});
+    const newElement = createMindElement(text, {});
     Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
     Transforms.addSelectionWithTemporaryElements(board, [newElement]);
 };

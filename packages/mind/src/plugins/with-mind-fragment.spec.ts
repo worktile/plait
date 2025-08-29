@@ -18,7 +18,7 @@ describe('with mind fragment plugin', () => {
     let board: PlaitBoard;
     const targetPath = [0, 0];
     beforeEach(() => {
-        const child1 = createMindElement('sub child', 40, 20, {});
+        const child1 = createMindElement('sub child', {});
         const children = getTestingChildren();
         board = createTestingBoard([withMindFragment], children);
         fakeNodeWeakMap(board);

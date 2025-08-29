@@ -1,7 +1,6 @@
 import { insertAbstract, setAbstractsByRefs, setAbstractByStandardLayout } from './abstract-node';
 import {
     setTopic,
-    setTopicSize,
     insertNodes,
     insertAbstractNodes,
     setRightNodeCountByRefs,
@@ -21,7 +20,6 @@ export const MindTransforms = {
     setBranchWidth,
     setBranchColor,
     setTopic,
-    setTopicSize,
     setNodeManualWidth,
     addEmoji,
     removeEmoji,

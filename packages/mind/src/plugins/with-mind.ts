@@ -28,7 +28,7 @@ import { withNodeResize } from './with-node-resize';
 import { withNodeImageResize } from './with-node-image-resize';
 import { withMindFragment } from './with-mind-fragment';
 import { withEmoji } from '../emoji/with-emoji';
-import { fixMindElementData, fixMindElementWidthAndHeight, isNormalizedData, isNormalizedWidthAndHeight } from '../utils/normalize';
+import { fixMindElementData, isNormalizedData } from '../utils/normalize';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -54,9 +54,6 @@ export const withMind = (baseBoard: PlaitBoard) => {
             depthFirstRecursion(context.element, (node) => {
                 if (!isNormalizedData(node)) {
                     fixMindElementData(node);
-                }
-                if (!isNormalizedWidthAndHeight(node)) {
-                    fixMindElementWidthAndHeight(node);
                 }
             });
         }

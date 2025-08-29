@@ -22,7 +22,7 @@ describe('with mind hotkey plugin', () => {
     let board: PlaitBoard;
     const targetPath = [0, 0];
     beforeEach(() => {
-        const child1 = createMindElement('sub child', 40, 20, {});
+        const child1 = createMindElement('sub child',{});
         const children = getTestingChildren();
         board = createTestingBoard([withMindHotkey], children);
         fakeNodeWeakMap(board);

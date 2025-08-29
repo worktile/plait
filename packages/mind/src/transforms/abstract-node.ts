@@ -1,13 +1,12 @@
 import { Path, PlaitBoard, PlaitElement, Transforms, addSelectedElement, clearSelectedElement } from '@plait/core';
 import { AbstractRefs } from '../plugins/with-abstract-resize.board';
-import { MindElement, PlaitMind } from '../interfaces/element';
+import { MindElement } from '../interfaces/element';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
 import { divideElementByParent, getFirstLevelElement } from '../utils/mind';
 import { MindQueries } from '../queries';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
 import { createMindElement } from '../utils/node/create-node';
-import { getAbstractNodeText, getTopicSize } from '../utils/common';
-import { buildText } from '@plait/common';
+import { getAbstractNodeText } from '../utils/common';
 
 export const setAbstractsByRefs = (board: PlaitBoard, abstractRefs: AbstractRefs) => {
     abstractRefs.forEach((newProperty, element) => {
@@ -71,8 +70,7 @@ const setAbstractByElements = (board: PlaitBoard, groupParent: MindElement, grou
 
 const insertAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
     const abstractNodeText = getAbstractNodeText(board);
-    const { width, height } = getTopicSize(board, false, false, buildText(abstractNodeText));
-    const mindElement = createMindElement(abstractNodeText, width, height, {
+    const mindElement = createMindElement(abstractNodeText, {
         strokeWidth: DefaultAbstractNodeStyle.branch.width,
         branchWidth: DefaultAbstractNodeStyle.branch.width
     });

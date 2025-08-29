@@ -5,12 +5,11 @@ import { Element } from 'slate';
 import { NodeSpace } from '../space';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { buildText } from '@plait/common';
-import { getDefaultMindNameText, getTopicSize } from '../common';
+import { getDefaultMindNameText } from '../common';
 
 export const createEmptyMind = (board: PlaitBoard, point: Point) => {
     const text = getDefaultMindNameText(board);
-    const topicSize = getTopicSize(board, true, false, buildText(text));
-    const element = createMindElement(text, topicSize.width, topicSize.height, { layout: MindLayoutType.right });
+    const element = createMindElement(text, { layout: MindLayoutType.right });
     element.isRoot = true;
     element.type = 'mindmap';
     const width = NodeSpace.getNodeWidth(board as PlaitMindBoard, element);
@@ -19,24 +18,20 @@ export const createEmptyMind = (board: PlaitBoard, point: Point) => {
     return element;
 };
 
-export const createMindElement = (text: string | Element, width: number, height: number, options: InheritAttribute) => {
+export const createMindElement = (text: string | Element, options: InheritAttribute) => {
     const newElement: MindElement = {
         id: idCreator(),
         data: {
             topic: buildText(text)
         },
-        children: [],
-        width,
-        height
+        children: []
     };
-
     let key: keyof typeof options;
     for (key in options) {
         if (!isNullOrUndefined(options[key])) {
             (newElement as any)[key] = options[key];
         }
     }
-
     return newElement;
 };
 

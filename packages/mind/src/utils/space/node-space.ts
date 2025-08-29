@@ -5,12 +5,12 @@ import { EmojiData } from '../../interfaces/element-data';
 import { WithMindOptions } from '../../interfaces/options';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { getEmojisWidthHeight } from './emoji';
-import { Element } from 'slate';
 import { getStrokeWidthByElement } from '../node-style/shape';
-import { getDefaultMindElementFontSize } from '../mind';
-import { DEFAULT_FONT_SIZE, getFirstTextMarks, MarkTypes, PlaitMarkEditor } from '@plait/text-plugins';
-import { DEFAULT_FONT_FAMILY, getElementSize, getFirstTextEditor } from '@plait/common';
+import { getDefaultFontSizeForMindElement } from '../mind';
+import { DEFAULT_FONT_SIZE, MarkTypes, PlaitMarkEditor } from '@plait/text-plugins';
+import { DEFAULT_FONT_FAMILY, getElementSize } from '@plait/common';
 import { NodeTopicThreshold } from '../../constants/node-topic-style';
+import { PlaitBoard } from '@plait/core';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -86,7 +86,7 @@ export const NodeSpace = {
         const topicSize = getElementSize(
             board,
             element.data.topic,
-            { fontSize: getDefaultMindElementFontSize(board, element), fontFamily: DEFAULT_FONT_FAMILY },
+            { fontSize: getDefaultFontSizeForMindElement(element), fontFamily: DEFAULT_FONT_FAMILY },
             NodeSpace.getTopicMaxDynamicWidth(board, element)
         );
         const normalizedSize = normalizeWidthAndHeight(board, element, topicSize.width, topicSize.width);
@@ -127,10 +127,7 @@ export const NodeSpace = {
         }
     },
     getNodeTopicMinWidth(board: PlaitMindBoard, element: MindElement) {
-        const defaultFontSize = getDefaultMindElementFontSize(board, element);
-        const firstText = getFirstTextMarks(element.data.topic);
-        const fontSize = (firstText[MarkTypes.fontSize] ? Number(firstText[MarkTypes.fontSize]) : null) || defaultFontSize;
-        return fontSize;
+        return getFontSizeByMindElement(board, element);
     },
     getTextLeftSpace(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
@@ -163,12 +160,9 @@ export const NodeSpace = {
     }
 };
 
-export const getFontSizeBySlateElement = (text: string | Element) => {
-    const defaultFontSize = DEFAULT_FONT_SIZE;
-    if (typeof text === 'string') {
-        return defaultFontSize;
-    }
-    const marks = PlaitMarkEditor.getMarksByElement(text);
+export const getFontSizeByMindElement = (board: PlaitBoard, element: MindElement) => {
+    const defaultFontSize = getDefaultFontSizeForMindElement(element);
+    const marks = PlaitMarkEditor.getMarksByElement(element.data.topic);
     const fontSize = (marks[MarkTypes.fontSize] as number) || defaultFontSize;
     return fontSize;
 };

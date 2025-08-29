@@ -9,13 +9,6 @@ export const isNormalizedData = (element: MindElement) => {
     return true;
 };
 
-export const isNormalizedWidthAndHeight = (element: MindElement) => {
-    if (isNullOrUndefined(element.width) || isNullOrUndefined(element.height)) {
-        return false;
-    }
-    return true;
-};
-
 export const fixMindElementData = (element: MindElement) => {
     const emptyTopic = {
         children: [
@@ -31,14 +24,5 @@ export const fixMindElementData = (element: MindElement) => {
         element.data = data;
     } else if (!element.data.topic) {
         element.data.topic = emptyTopic;
-    }
-};
-
-export const fixMindElementWidthAndHeight = (element: MindElement) => {
-    if (isNullOrUndefined(element.width)) {
-        element.width = 56;
-    }
-    if (isNullOrUndefined(element.height)) {
-        element.width = 20;
     }
 };

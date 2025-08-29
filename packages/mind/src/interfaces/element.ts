@@ -9,9 +9,7 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     data: T;
     children: MindElement[];
     rightNodeCount?: number;
-    width: number;
     manualWidth?: number;
-    height: number;
     isRoot?: boolean;
 
     // node style attributes
@@ -54,11 +52,8 @@ export const MindElement = {
         const _layout = MindQueries.getLayoutByElement(value) as MindLayoutType;
         return isIndentedLayout(_layout);
     },
-    isMindElement(board: PlaitBoard, element: PlaitElement): element is MindElement {
-        // Design error: The type of the element should be identified based on type.
-        // Now it is very awkward whether it is dynamically calculated(query root node) or using other characteristic attributes(current).
-        // Using dynamically calculated will cause more issue like pasting from clipboard, finding elements by id(isRecursion)
-        if (element.data && element.data.topic && !isNullOrUndefined(element.width) && !isNullOrUndefined(element.height)) {
+    isMindElement(board: PlaitBoard | null, element: PlaitElement): element is MindElement {
+        if (element.data && element.data.topic) {
             return true;
         } else {
             return false;

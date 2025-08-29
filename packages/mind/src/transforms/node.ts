@@ -9,35 +9,22 @@ import { findNewChildNodePath, findNewSiblingNodePath, insertMindElement } from 
 import { setAbstractsByRefs } from './abstract-node';
 import { AbstractNode } from '@plait/layouts';
 
-export const setTopic = (board: PlaitMindBoard, element: MindElement, topic: Element, width: number, height: number) => {
+export const setTopic = (board: PlaitMindBoard, element: MindElement, topic?: Element) => {
     const newElement = {
-        data: { ...element.data, topic },
-        ...normalizeWidthAndHeight(board, element, width, height)
+        data: { ...element.data }
     } as MindElement;
+    if (topic) {
+        newElement.data.topic = topic;
+    }
     const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, newElement, path);
 };
 
 export const setNodeManualWidth = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
     const path = PlaitBoard.findPath(board, element);
-    const { width: normalizedWidth, height: normalizedHeight } = normalizeWidthAndHeight(board, element, width, height);
-    const newElement = { manualWidth: normalizedWidth, height: normalizedHeight } as MindElement;
+    const { width: normalizedWidth } = normalizeWidthAndHeight(board, element, width, height);
+    const newElement = { manualWidth: normalizedWidth } as MindElement;
     Transforms.setNode(board, newElement, path);
-};
-
-export const setTopicSize = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
-    const newElement = {
-        ...normalizeWidthAndHeight(board, element, width, height)
-    };
-    let isEqualWidth = Math.ceil(element.width) === Math.ceil(newElement.width);
-    let isEqualHeight = Math.ceil(element.height) === Math.ceil(newElement.height);
-    if (element.manualWidth) {
-        isEqualWidth = true;
-    }
-    if (!isEqualWidth || !isEqualHeight) {
-        const path = PlaitBoard.findPath(board, element);
-        Transforms.setNode(board, newElement, path);
-    }
 };
 
 export const insertNodes = (board: PlaitBoard, elements: MindElement[], path: Path) => {
