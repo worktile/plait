@@ -5,7 +5,6 @@ import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './n
 import { MindNode } from '../interfaces/node';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants/node-topic-style';
-import { TEXT_DEFAULT_HEIGHT } from '@plait/text-plugins';
 
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {

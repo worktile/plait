@@ -20,13 +20,14 @@ import { PlaitDrawElement } from '@plait/draw';
 // 基础思维导图数据结构
 export const mockMindData: PlaitMind[] = [
     {
-        type: 'mindmap',
+        type: 'mind',
         id: '1',
         rightNodeCount: 3,
         data: { topic: { children: [{ text: '脑图调研' }] }, emojis: [{ name: '🏀' }, { name: '🌈' }] },
         children: [
             {
                 id: '1-1',
+                type: 'mind_child',
                 data: {
                     topic: { children: [{ text: '富文本' }] },
                     emojis: [{ name: '🤩' }, { name: '🤘' }],
@@ -42,10 +43,12 @@ export const mockMindData: PlaitMind[] = [
             },
             {
                 id: '1-4',
+                type: 'mind_child',
                 data: { topic: { children: [{ text: '知名脑图产品' }] } },
                 children: [
                     {
                         id: '1-4-1',
+                        type: 'mind_child',
                         data: { topic: { children: [{ text: '布局算法' }] } },
                         children: [],
                         width: 56,
@@ -53,10 +56,12 @@ export const mockMindData: PlaitMind[] = [
                     },
                     {
                         id: '1-4-2',
+                        type: 'mind_child',
                         data: { topic: { children: [{ text: 'non-layered-tidy-trees' }] } },
                         children: [
                             {
                                 id: '1-4-2-1',
+                                type: 'mind_child',
                                 data: { topic: { children: [{ text: '鱼骨图哦' }] } },
                                 children: [],
                                 width: 56,
@@ -64,6 +69,7 @@ export const mockMindData: PlaitMind[] = [
                             },
                             {
                                 id: '1-4-2-2',
+                                type: 'mind_child',
                                 data: { topic: { children: [{ text: '缩进布局' }] } },
                                 children: [],
                                 width: 56,
@@ -75,6 +81,7 @@ export const mockMindData: PlaitMind[] = [
                     },
                     {
                         id: '1-4-3',
+                        type: 'mind_child',
                         data: { topic: { children: [{ text: '知名脑图产品' }] } },
                         children: [],
                         width: 84,
@@ -86,10 +93,12 @@ export const mockMindData: PlaitMind[] = [
             },
             {
                 id: '1-5',
+                type: 'mind_child',
                 data: { topic: { children: [{ text: 'xxxxxxx' }] } },
                 children: [
                     {
                         id: '1-5-1',
+                        type: 'mind_child',
                         data: { topic: { children: [{ text: '鱼骨图哦' }] } },
                         children: [],
                         width: 56,
@@ -97,6 +106,7 @@ export const mockMindData: PlaitMind[] = [
                     },
                     {
                         id: '1-5-2',
+                        type: 'mind_child',
                         data: { topic: { children: [{ text: '缩进布局' }] } },
                         children: [],
                         width: 56,

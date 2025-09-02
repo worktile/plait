@@ -9,7 +9,6 @@ import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node
 import { Element } from 'slate';
 import { findNewChildNodePath } from './path';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
-import { getTopicSize } from './common';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
     let result: MindElement[] = [];
@@ -76,9 +75,6 @@ export const insertClipboardData = (
         if (hasTargetParent && operationType !== WritableClipboardOperationType.duplicate) {
             if (item.isRoot) {
                 newElement = adjustRootToNode(board, newElement);
-                const { width, height } = getTopicSizeByElement(board, newElement, targetParent as MindElement);
-                newElement.width = width;
-                newElement.height = height;
             }
             // handle abstract start and end
             if (AbstractNode.isAbstract(newElement)) {
@@ -94,9 +90,6 @@ export const insertClipboardData = (
             }
             if (!item.isRoot) {
                 newElement = adjustNodeToRoot(board, newElement);
-                const { width, height } = getTopicSizeByElement(board, newElement);
-                newElement.width = width;
-                newElement.height = height;
             }
             path = [board.children.length];
         }
@@ -111,14 +104,4 @@ export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitEl
     const newElement = createMindElement(text, {});
     Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
     Transforms.addSelectionWithTemporaryElements(board, [newElement]);
-};
-
-export const getTopicSizeByElement = (board: PlaitBoard, element: MindElement, parentElement?: MindElement) => {
-    return getTopicSize(
-        board,
-        PlaitMind.isMind(element),
-        (parentElement && PlaitMind.isMind(parentElement)) || false,
-        element.data.topic,
-        element.manualWidth
-    );
 };

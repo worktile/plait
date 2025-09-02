@@ -1,4 +1,3 @@
-import { isNullOrUndefined } from '@plait/core';
 import { MindElement } from '../interfaces/element';
 import { ParagraphElement } from '@plait/common';
 

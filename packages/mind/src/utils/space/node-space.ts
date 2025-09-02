@@ -9,8 +9,8 @@ import { getStrokeWidthByElement } from '../node-style/shape';
 import { getDefaultFontSizeForMindElement } from '../mind';
 import { DEFAULT_FONT_SIZE, MarkTypes, PlaitMarkEditor } from '@plait/text-plugins';
 import { DEFAULT_FONT_FAMILY, getElementSize } from '@plait/common';
-import { NodeTopicThreshold } from '../../constants/node-topic-style';
 import { PlaitBoard } from '@plait/core';
+import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../../constants';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -105,18 +105,11 @@ export const NodeSpace = {
         return normalizedSize.height;
     },
     getTopicMaxDynamicWidth(board: PlaitMindBoard, element: MindElement) {
-        return Math.max(
-            NodeTopicThreshold.defaultTextMaxWidth,
-            element.manualWidth || 0,
-            MindElement.hasImage(element) ? element.data.image?.width : 0
-        );
-    },
-    /**
-     * use it when upload image first or resize image
-     */
-    getNodeNewDynamicWidth(board: PlaitMindBoard, element: MindElement, imageWidth: number) {
-        const width = element.manualWidth || element.width;
-        return Math.max(width, imageWidth);
+        const fontSize = getDefaultFontSizeForMindElement(element);
+        if (element.manualWidth) {
+            return Math.max(element.manualWidth, MindElement.hasImage(element) ? element.data.image?.width : 0);
+        }
+        return Math.max(fontSize * TOPIC_DEFAULT_MAX_WORD_COUNT, MindElement.hasImage(element) ? element.data.image?.width : 0);
     },
     getNodeResizableMinWidth(board: PlaitMindBoard, element: MindElement) {
         const minTopicWidth = NodeSpace.getNodeTopicMinWidth(board, element);

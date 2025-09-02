@@ -11,7 +11,7 @@ export const createEmptyMind = (board: PlaitBoard, point: Point) => {
     const text = getDefaultMindNameText(board);
     const element = createMindElement(text, { layout: MindLayoutType.right });
     element.isRoot = true;
-    element.type = 'mindmap';
+    element.type = 'mind';
     const width = NodeSpace.getNodeWidth(board as PlaitMindBoard, element);
     const height = NodeSpace.getNodeHeight(board as PlaitMindBoard, element);
     element.points = [[point[0] - width / 2, point[1] - height / 2]];
@@ -21,6 +21,7 @@ export const createEmptyMind = (board: PlaitBoard, point: Point) => {
 export const createMindElement = (text: string | Element, options: InheritAttribute) => {
     const newElement: MindElement = {
         id: idCreator(),
+        type: 'mind_child',
         data: {
             topic: buildText(text)
         },

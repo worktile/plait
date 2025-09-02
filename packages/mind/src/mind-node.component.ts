@@ -4,7 +4,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
-import { ELEMENT_TO_NODE } from './utils/weak-maps';
+import { MIND_ELEMENT_TO_NODE } from './utils/weak-maps';
 import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
 import { NodeEmojisGenerator } from './generators/node-emojis.generator';
 import { MindTransforms } from './transforms';
@@ -210,8 +210,8 @@ export class MindNodeComponent
         this.nodeEmojisGenerator.destroy();
         this.imageGenerator.destroy();
         this.activeGenerator.destroy();
-        if (ELEMENT_TO_NODE.get(this.element) === this.node) {
-            ELEMENT_TO_NODE.delete(this.element);
+        if (MIND_ELEMENT_TO_NODE.get(this.element) === this.node) {
+            MIND_ELEMENT_TO_NODE.delete(this.element);
         }
         this.getRef().destroyTextManage();
     }

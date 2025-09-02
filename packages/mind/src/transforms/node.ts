@@ -20,10 +20,10 @@ export const setTopic = (board: PlaitMindBoard, element: MindElement, topic?: El
     Transforms.setNode(board, newElement, path);
 };
 
-export const setNodeManualWidth = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
+export const setNodeManualWidth = (board: PlaitMindBoard, element: MindElement, width: number) => {
     const path = PlaitBoard.findPath(board, element);
-    const { width: normalizedWidth } = normalizeWidthAndHeight(board, element, width, height);
-    const newElement = { manualWidth: normalizedWidth } as MindElement;
+    const { width: normalizedWidth } = normalizeWidthAndHeight(board, element, width, 0);
+    const newElement = { manualWidth: normalizedWidth, data: { ...element.data, topic: { ...element.data.topic } } } as MindElement;
     Transforms.setNode(board, newElement, path);
 };
 

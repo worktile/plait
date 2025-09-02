@@ -2,7 +2,7 @@ import { PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion, isDebug } from '@plait/core';
 import { GlobalLayout, OriginNode } from '@plait/layouts';
-import { ELEMENT_TO_NODE } from './utils/weak-maps';
+import { MIND_ELEMENT_TO_NODE } from './utils/weak-maps';
 import { MindNodeComponent } from './mind-node.component';
 import { getLayoutOptions } from './utils/space/layout-options';
 import { getDefaultLayout } from './utils/layout';
@@ -39,7 +39,7 @@ export class PlaitMindComponent extends MindNodeComponent implements BeforeConte
         depthFirstRecursion<MindNode>(this.root, (node) => {
             node.x = node.x - offsetX + element.points[0][0];
             node.y = node.y - offsetY + element.points[0][1];
-            ELEMENT_TO_NODE.set(node.origin, node);
+            MIND_ELEMENT_TO_NODE.set(node.origin, node);
         });
     }
 }

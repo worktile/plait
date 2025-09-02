@@ -9,7 +9,6 @@ import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs } from '@plait/com
 export function getImageForeignRectangle(board: PlaitMindBoard, element: MindElement<ImageData>): RectangleClient {
     let { x, y } = getRectangleByNode(MindElement.getNode(element));
     const elementWidth = element.manualWidth || element.width;
-
     x =
         elementWidth > element.data.image.width
             ? x + NodeSpace.getTextLeftSpace(board, element) + (elementWidth - element.data.image.width) / 2
