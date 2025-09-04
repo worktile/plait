@@ -83,13 +83,11 @@ export class BasicBoardComponent {
 
 const demoData = [
   {
-    type: 'mindmap',
+    type: 'mind',
     id: '2',
     rightNodeCount: 3,
     data: { topic: { children: [{ text: '思维导图' }] } },
     children: [],
-    width: 72,
-    height: 25,
     isRoot: true,
     points: [[560, 700]],
   },

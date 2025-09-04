@@ -18,6 +18,7 @@ const children: PlaitElement[] = [
         children: [
             {
                 id: 'PjhrX',
+                type: 'mind_child',
                 data: {
                     topic: {
                         children: [
@@ -27,16 +28,12 @@ const children: PlaitElement[] = [
                         ]
                     }
                 },
-                children: [],
-                width: 14,
-                height: 20
+                children: []
             }
         ],
-        width: 72,
-        height: 25,
         layout: 'right',
         isRoot: true,
-        type: 'mindmap',
+        type: 'mind',
         points: [[626, -306.5]]
     },
 

@@ -12,7 +12,7 @@ import { PlaitDrawElement } from '@plait/draw';
  * 3. 思维导图节点可能存在 children 属性代表子节点，流程图图形不存在节点嵌套永远在跟层
  * 4. 思维导图存在 data 属性：存储节点文本和Emoji，流程图存在 text 属性：存储元素文本（类型和思维导图中的 data.topic 相同）
  * 5. 思维导图和流程图图形 text 字段都支持基本的富文本格式，类型是 Slate 富文本编辑器的 Element 类型
- * 6. 思维导图 type 目前只有一个: 'mindmap', 流程图 type 目前有三种情况：'geometry'（几何图形）|'arrow-line'（连线）|'image'（图片）
+ * 6. 思维导图 type 目前只有一个: 'mind', 流程图 type 目前有三种情况：'geometry'（几何图形）|'arrow-line'（连线）|'image'（图片）
  * 7. 流程图 type type 是 geometry 的情况：通过 shape 区分不同的图形（GeometryShapes 枚举），基本图形和流程图图形不基于字段区分，只以 shape 字段区分
  * 8. 其它的属性
  */
@@ -37,9 +37,7 @@ export const mockMindData: PlaitMind[] = [
                         height: 160
                     }
                 },
-                children: [],
-                width: 42,
-                height: 20
+                children: []
             },
             {
                 id: '1-4',
@@ -50,9 +48,7 @@ export const mockMindData: PlaitMind[] = [
                         id: '1-4-1',
                         type: 'mind_child',
                         data: { topic: { children: [{ text: '布局算法' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
+                        children: []
                     },
                     {
                         id: '1-4-2',
@@ -75,21 +71,15 @@ export const mockMindData: PlaitMind[] = [
                                 width: 56,
                                 height: 20
                             }
-                        ],
-                        width: 144.8046875,
-                        height: 20
+                        ]
                     },
                     {
                         id: '1-4-3',
                         type: 'mind_child',
                         data: { topic: { children: [{ text: '知名脑图产品' }] } },
-                        children: [],
-                        width: 84,
-                        height: 20
+                        children: []
                     }
-                ],
-                width: 84,
-                height: 20
+                ]
             },
             {
                 id: '1-5',
@@ -108,17 +98,11 @@ export const mockMindData: PlaitMind[] = [
                         id: '1-5-2',
                         type: 'mind_child',
                         data: { topic: { children: [{ text: '缩进布局' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
+                        children: []
                     }
-                ],
-                width: 48,
-                height: 20
+                ]
             }
         ],
-        width: 72,
-        height: 25,
         isRoot: true,
         points: [[560, 360]]
     }
