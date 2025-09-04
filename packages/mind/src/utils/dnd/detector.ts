@@ -17,10 +17,10 @@ import { isBottomLayout, isRightLayout, isLeftLayout, AbstractNode } from '@plai
 import { isChildElement } from '../mind';
 
 export const directionCorrector = (board: PlaitBoard, node: MindNode, detectResults: DetectResult[]): DetectResult[] | null => {
-    if (!node.origin.isRoot && !AbstractNode.isAbstract(node.origin)) {
+    if (!PlaitMind.isMind(node.origin) && !AbstractNode.isAbstract(node.origin)) {
         const parentLayout = MindQueries.getCorrectLayoutByElement(board, node?.parent.origin as MindElement);
         if (isStandardLayout(parentLayout)) {
-            const idx = node.parent.children.findIndex(x => x === node);
+            const idx = node.parent.children.findIndex((x) => x === node);
             const isLeft = idx >= (node.parent.origin.rightNodeCount || 0);
             return getAllowedDirection(detectResults, [isLeft ? 'right' : 'left']);
         }
@@ -68,8 +68,8 @@ export const directionCorrector = (board: PlaitBoard, node: MindNode, detectResu
 
 export const getAllowedDirection = (detectResults: DetectResult[], illegalDirections: DetectResult[]): DetectResult[] | null => {
     const directions = detectResults;
-    illegalDirections.forEach(item => {
-        const bottomDirectionIndex = directions.findIndex(direction => direction === item);
+    illegalDirections.forEach((item) => {
+        const bottomDirectionIndex = directions.findIndex((direction) => direction === item);
         if (bottomDirectionIndex !== -1) {
             directions.splice(bottomDirectionIndex, 1);
         }
@@ -85,8 +85,8 @@ export const detectDropTarget = (
 ) => {
     let detectResult: DetectResult[] | null = null;
     depthFirstRecursion(
-        (board as unknown) as MindElement,
-        element => {
+        board as unknown as MindElement,
+        (element) => {
             if (!MindElement.isMindElement(board, element) || detectResult) {
                 return;
             }
@@ -96,7 +96,7 @@ export const detectDropTarget = (
                 detectResult = directionCorrector(board, node, directions);
             }
             dropTarget = null;
-            const isValid = activeElements.every(element => isValidTarget(element, node.origin));
+            const isValid = activeElements.every((element) => isValidTarget(element, node.origin));
             if (detectResult && isValid) {
                 dropTarget = { target: node.origin, detectResult: detectResult[0] };
             }

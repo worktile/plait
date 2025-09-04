@@ -103,7 +103,6 @@ export const mockMindData: PlaitMind[] = [
                 ]
             }
         ],
-        isRoot: true,
         points: [[560, 360]]
     }
 ];

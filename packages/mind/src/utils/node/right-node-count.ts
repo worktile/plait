@@ -1,14 +1,14 @@
 import { Path, PlaitBoard, PlaitNode } from '@plait/core';
-import { MindElement } from '../../interfaces/element';
+import { MindElement, PlaitMind } from '../../interfaces/element';
 import { getRootLayout } from '../layout';
 import { MindLayoutType } from '@plait/layouts';
 
 export const isInRightBranchOfStandardLayout = (selectedElement: MindElement) => {
     const parentElement = MindElement.findParent(selectedElement);
     if (parentElement) {
-        const nodeIndex: number = parentElement.children.findIndex(item => item.id === selectedElement.id);
+        const nodeIndex: number = parentElement.children.findIndex((item) => item.id === selectedElement.id);
         if (
-            parentElement.isRoot &&
+            PlaitMind.isMind(parentElement) &&
             getRootLayout(parentElement) === MindLayoutType.standard &&
             parentElement.rightNodeCount &&
             nodeIndex <= parentElement.rightNodeCount - 1
@@ -30,7 +30,7 @@ export const insertElementHandleRightNodeCount = (
     insertCount: number,
     effectedRightNodeCount: RightNodeCountRef[] = []
 ) => {
-    let index = effectedRightNodeCount.findIndex(ref => Path.equals(ref.path, path));
+    let index = effectedRightNodeCount.findIndex((ref) => Path.equals(ref.path, path));
     const mind = PlaitNode.get(board, path) as MindElement;
     if (index === -1) {
         effectedRightNodeCount.push({ path, rightNodeCount: mind.rightNodeCount! + insertCount });
@@ -45,11 +45,11 @@ export const deleteElementsHandleRightNodeCount = (
     deletableElements: MindElement[],
     effectedRightNodeCount: RightNodeCountRef[] = []
 ) => {
-    deletableElements.forEach(element => {
+    deletableElements.forEach((element) => {
         if (isInRightBranchOfStandardLayout(element)) {
             const mind = MindElement.getParent(element);
             const path = PlaitBoard.findPath(board, mind);
-            let index = effectedRightNodeCount.findIndex(ref => Path.equals(ref.path, path));
+            let index = effectedRightNodeCount.findIndex((ref) => Path.equals(ref.path, path));
             if (index === -1) {
                 effectedRightNodeCount.push({ path, rightNodeCount: mind.rightNodeCount! - 1 });
             } else {

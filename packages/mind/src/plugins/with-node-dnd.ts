@@ -68,7 +68,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             !AbstractNode.isAbstract(hitElement)
         ) {
             const targetElements = selectedElements.filter(
-                element => MindElement.isMindElement(board, element) && !element.isRoot && !AbstractNode.isAbstract(element)
+                (element) => MindElement.isMindElement(board, element) && !PlaitMind.isMind(element) && !AbstractNode.isAbstract(element)
             ) as MindElement[];
             const isMultipleSelection = selectedElements.length > 0 && selectedElements.includes(hitElement);
             if (isMultipleSelection) {
@@ -111,10 +111,10 @@ export const withNodeDnd = (board: PlaitBoard) => {
             const offsetY = endPoint[1] - startPoint[1];
             dragFakeNodeG?.remove();
             dragFakeNodeG = createG();
-            [...activeElements, ...correspondingElements].forEach(element => {
+            [...activeElements, ...correspondingElements].forEach((element) => {
                 addActiveOnDragOrigin(element);
             });
-            activeElements.forEach(element => {
+            activeElements.forEach((element) => {
                 const nodeG = drawFakeDragNode(board, element, offsetX, offsetY);
                 dragFakeNodeG?.appendChild(nodeG);
             });
@@ -131,7 +131,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
         if (!board.options.readonly && firstLevelElements.length) {
             firstLevelElements.push(...correspondingElements);
             if (isDragging(board)) {
-                firstLevelElements.forEach(element => {
+                firstLevelElements.forEach((element) => {
                     removeActiveOnDragOrigin(element);
                 });
             }
@@ -141,8 +141,8 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 const targetElementPathRef = board.pathRef(PlaitBoard.findPath(board, dropTarget.target));
                 let abstractRefs = getValidAbstractRefs(board, firstLevelElements);
                 const normalElements = firstLevelElements
-                    .filter(element => !abstractRefs.some(refs => refs.abstract === element))
-                    .map(element => {
+                    .filter((element) => !abstractRefs.some((refs) => refs.abstract === element))
+                    .map((element) => {
                         if (AbstractNode.isAbstract(element)) {
                             return adjustAbstractToNode(element);
                         }
@@ -156,7 +156,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
                     const targetHasCorrespondAbstract =
                         correspondingAbstract && correspondingAbstract.end !== targetPath[targetPath.length - 1] - 1;
                     if (targetHasCorrespondAbstract) {
-                        const adjustedNode = abstractRefs.map(ref => {
+                        const adjustedNode = abstractRefs.map((ref) => {
                             return adjustAbstractToNode(ref.abstract);
                         });
                         normalElements.push(...adjustedNode);
@@ -210,8 +210,8 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 targetPathRef.unref();
 
                 let setActiveElements: MindElement[] = [];
-                depthFirstRecursion((board as unknown) as MindElement, node => {
-                    const isSelected = activeElements.some(element => element.id === node.id);
+                depthFirstRecursion(board as unknown as MindElement, (node) => {
+                    const isSelected = activeElements.some((element) => element.id === node.id);
                     if (isSelected) {
                         setActiveElements.push(node);
                     }

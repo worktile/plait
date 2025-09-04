@@ -6,7 +6,6 @@ import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const adjustRootToNode = (board: PlaitBoard, node: MindElement) => {
     const newNode: MindElement = { ...node };
-    delete newNode.isRoot;
     delete newNode.rightNodeCount;
     newNode.type = 'mind_child';
     if (newNode.layout === MindLayoutType.standard) {
@@ -35,7 +34,6 @@ export const adjustNodeToRoot = (board: PlaitMindBoard, node: MindElement): Mind
     return {
         ...newElement,
         layout: newElement.layout ?? MindLayoutType.right,
-        isRoot: true,
         type: 'mind'
     };
 };

@@ -296,7 +296,7 @@ export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, link
     // underline shape and horizontal
     const layout = MindQueries.getLayoutByElement(element) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(layout);
-    if (isHorizontal && isUnderlineShape && !element.isRoot) {
+    if (isHorizontal && isUnderlineShape && !PlaitMind.isMind(element)) {
         placement[1] = VerticalPlacement.bottom;
     }
     let startPoint = getPointByPlacement(nodeClient, placement);

@@ -36,7 +36,7 @@ export const getFillByElement = (board: PlaitBoard, element: MindElement) => {
         return element.fill;
     }
     const defaultRootFill = getMindThemeColor(board).rootFill;
-    return element.isRoot ? defaultRootFill : DefaultNodeStyle.shape.fill;
+    return PlaitMind.isMind(element) ? defaultRootFill : DefaultNodeStyle.shape.fill;
 };
 
 export const getShapeByElement = (board: PlaitBoard, element: MindElement): MindElementShape => {

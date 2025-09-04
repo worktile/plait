@@ -59,7 +59,7 @@ export const copyNewNode = (node: MindElement) => {
 
 export const insertMindElement = (board: PlaitMindBoard, inheritNode: MindElement, path: Path) => {
     const newNode: InheritAttribute = {};
-    if (!inheritNode.isRoot) {
+    if (!PlaitMind.isMind(inheritNode)) {
         INHERIT_ATTRIBUTE_KEYS.forEach((attr) => {
             (newNode as any)[attr] = inheritNode[attr];
         });

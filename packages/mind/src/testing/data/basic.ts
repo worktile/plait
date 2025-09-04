@@ -24,7 +24,6 @@ export const getTestingChildren = (): MindElement[] => {
                     end: 1
                 }
             ],
-            isRoot: true,
             points: [[1117, 590]],
             isCollapsed: false
         }

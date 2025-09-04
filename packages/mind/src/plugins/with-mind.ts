@@ -90,14 +90,14 @@ export const withMind = (baseBoard: PlaitBoard) => {
     };
 
     board.canAddToGroup = (element: PlaitElement) => {
-        if (MindElement.isMindElement(board, element) && !element.isRoot) {
+        if (MindElement.isMindElement(board, element) && !PlaitMind.isMind(element)) {
             return false;
         }
         return canAddToGroup(element);
     };
 
     board.canSetZIndex = (element: PlaitElement) => {
-        if (MindElement.isMindElement(board, element) && !element.isRoot) {
+        if (MindElement.isMindElement(board, element) && !PlaitMind.isMind(element)) {
             return false;
         }
         return canSetZIndex(element);
@@ -137,7 +137,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
     };
 
     board.isMovable = (element) => {
-        if (PlaitMind.isMind(element) && element.isRoot) {
+        if (PlaitMind.isMind(element)) {
             return true;
         }
         return isMovable(element);
@@ -151,7 +151,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
     };
 
     board.isAlign = (element: PlaitElement) => {
-        if (PlaitMind.isMind(element) && element.isRoot) {
+        if (PlaitMind.isMind(element)) {
             return true;
         }
         return isAlign(element);

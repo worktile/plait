@@ -73,7 +73,7 @@ export const insertClipboardData = (
     elements.forEach((item: PlaitElement, index: number) => {
         newElement = copyNewNode(item as MindElement);
         if (hasTargetParent && operationType !== WritableClipboardOperationType.duplicate) {
-            if (item.isRoot) {
+            if (PlaitMind.isMind(item)) {
                 newElement = adjustRootToNode(board, newElement);
             }
             // handle abstract start and end
@@ -88,7 +88,7 @@ export const insertClipboardData = (
             if (AbstractNode.isAbstract(item)) {
                 newElement = adjustAbstractToNode(newElement);
             }
-            if (!item.isRoot) {
+            if (!PlaitMind.isMind(item)) {
                 newElement = adjustNodeToRoot(board, newElement);
             }
             path = [board.children.length];

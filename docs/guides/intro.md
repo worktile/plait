@@ -88,7 +88,6 @@ const demoData = [
     rightNodeCount: 3,
     data: { topic: { children: [{ text: '思维导图' }] } },
     children: [],
-    isRoot: true,
     points: [[560, 700]],
   },
 ] as PlaitElement[];

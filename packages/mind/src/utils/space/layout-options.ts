@@ -7,7 +7,7 @@ import {
     isHorizontalLogicLayout,
     isIndentedLayout
 } from '@plait/layouts';
-import { MindElement, MindElementShape } from '../../interfaces/element';
+import { MindElement, MindElementShape, PlaitMind } from '../../interfaces/element';
 import { BASE } from '../../constants/default';
 import { getRootLayout } from '../layout';
 import { NodeSpace } from './node-space';
@@ -15,7 +15,7 @@ import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const getLayoutOptions = (board: PlaitMindBoard) => {
     function getMainAxle(element: MindElement, parent?: LayoutNode) {
-        if (element.isRoot) {
+        if (PlaitMind.isMind(element)) {
             return BASE * 12;
         }
         if (parent && parent.isRoot()) {
@@ -25,7 +25,7 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
     }
 
     function getSecondAxle(element: MindElement, parent?: LayoutNode) {
-        if (element.isRoot) {
+        if (PlaitMind.isMind(element)) {
             return BASE * 12;
         }
         return BASE * 8.5;

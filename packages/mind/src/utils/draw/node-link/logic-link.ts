@@ -5,7 +5,7 @@ import { getRectangleByNode, getShapeByElement, getStrokeStyleByElement } from '
 import { getLayoutDirection, getPointByPlacement, transformPlacement } from '../../point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
 import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
-import { BranchShape, MindElementShape } from '../../../interfaces/element';
+import { BranchShape, MindElementShape, PlaitMind } from '../../../interfaces/element';
 import { getStrokeLineDash, moveXOfPoint, StrokeStyle } from '@plait/common';
 
 export function drawLogicLink(
@@ -21,7 +21,7 @@ export function drawLogicLink(
     const branchColor = defaultStrokeColor || getBranchColorByMindElement(board, node.origin);
     const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, node.origin);
     const strokeStyle = defaultStrokeStyle || getStrokeStyleByElement(board, node.origin);
-    const hasStraightLine = branchShape === BranchShape.polyline ? true : !parent.origin.isRoot;
+    const hasStraightLine = branchShape === BranchShape.polyline ? true : !PlaitMind.isMind(parent.origin);
     const parentShape = getShapeByElement(board, parent.origin);
     const shape = getShapeByElement(board, node.origin);
     const hasUnderlineShape = shape === MindElementShape.underline;
@@ -39,7 +39,7 @@ export function drawLogicLink(
     transformPlacement(endPlacement, linkDirection);
 
     // underline shape and horizontal
-    if (isHorizontal && hasUnderlineShapeOfParent && !parent.origin.isRoot) {
+    if (isHorizontal && hasUnderlineShapeOfParent && !PlaitMind.isMind(parent.origin)) {
         beginPlacement[1] = VerticalPlacement.bottom;
     }
     if (isHorizontal && hasUnderlineShape) {
