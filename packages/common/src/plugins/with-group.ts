@@ -23,11 +23,15 @@ import {
     PlaitPointerType,
     WritableClipboardOperationType,
     throttleRAF,
-    isMovingElements
+    isMovingElements,
+    getAllGroups,
+    isSelectedElementOrGroup
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 import { isKeyHotkey } from 'is-hotkey';
 import { isResizing } from '../utils';
+import { PlaitCommonElementRef } from '../core';
+import { GroupGenerator } from '../generators/group.generator';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
@@ -42,7 +46,8 @@ export function withGroup(board: PlaitBoard) {
         deleteFragment,
         getRelatedFragment,
         getRectangle,
-        keyDown
+        keyDown,
+        onChange
     } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
@@ -147,6 +152,22 @@ export function withGroup(board: PlaitBoard) {
             }
         }
         keyDown(event);
+    };
+
+    board.onChange = () => {
+        onChange();
+        const groups = getAllGroups(board);
+        groups.forEach((group) => {
+            const elementsInGroup = getElementsInGroup(board, group, false, true);
+            const isPartialSelectGroup =
+                elementsInGroup.some((item) => isSelectedElementOrGroup(board, item)) &&
+                !elementsInGroup.every((item) => isSelectedElementOrGroup(board, item));
+            const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(group);
+            const g = PlaitElement.getElementG(group);
+            ref.getGenerator(GroupGenerator.key).processDrawing(group, g, isPartialSelectGroup);
+            console.log(group, 'group');
+        });
+        console.log('onChange');
     };
 
     return board;

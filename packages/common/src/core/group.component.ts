@@ -1,21 +1,9 @@
-import {
-    OnContextChanged,
-    PlaitBoard,
-    PlaitGroup,
-    PlaitPluginElementContext,
-    getElementsInGroup,
-    getRectangleByGroup,
-    isSelectedElementOrGroup,
-    isSelectionMoving
-} from '@plait/core';
+import { OnContextChanged, PlaitBoard, PlaitGroup, PlaitPluginElementContext, getRectangleByGroup, isSelectionMoving } from '@plait/core';
 import { GroupGenerator } from '../generators/group.generator';
 import { ActiveGenerator, createActiveGenerator } from '../generators';
 import { CommonElementFlavour } from './element-flavour';
-import { Subscription } from 'rxjs';
 
 export class GroupComponent extends CommonElementFlavour<PlaitGroup, PlaitBoard> implements OnContextChanged<PlaitGroup, PlaitBoard> {
-    onStableSubscription?: Subscription;
-
     constructor() {
         super();
     }
@@ -36,28 +24,16 @@ export class GroupComponent extends CommonElementFlavour<PlaitGroup, PlaitBoard>
             }
         });
         this.groupGenerator = new GroupGenerator(this.board);
+        this.getRef().addGenerator(GroupGenerator.key, this.groupGenerator);
     }
 
     initialize(): void {
         super.initialize();
         this.initializeGenerator();
-        const contextService = PlaitBoard.getBoardContext(this.board);
-        this.onStableSubscription = contextService.onStable().subscribe(() => {
-            const elementsInGroup = getElementsInGroup(this.board, this.element, false, true);
-            const isPartialSelectGroup =
-                elementsInGroup.some(item => isSelectedElementOrGroup(this.board, item)) &&
-                !elementsInGroup.every(item => isSelectedElementOrGroup(this.board, item));
-            this.groupGenerator.processDrawing(this.element, this.getElementG(), isPartialSelectGroup);
-        });
     }
 
     onContextChanged(
         value: PlaitPluginElementContext<PlaitGroup, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGroup, PlaitBoard>
     ) {}
-
-    destroy(): void {
-        super.destroy();
-        this.onStableSubscription?.unsubscribe();
-    }
 }

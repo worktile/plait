@@ -3,6 +3,8 @@ import { Options } from 'roughjs/bin/core';
 import { Generator } from './generator';
 
 export class GroupGenerator extends Generator<PlaitGroup> {
+    static key = 'GroupGenerator';
+
     canDraw(element: PlaitGroup): boolean {
         return true;
     }

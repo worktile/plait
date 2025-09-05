@@ -3,8 +3,7 @@
     "version": "0.86.0",
     "peerDependencies": {
         "immer": "^10.0.3",
-        "is-hotkey": "^0.2.0",
-        "rxjs": "^7.8.0"
+        "is-hotkey": "^0.2.0"
     },
     "dependencies": {
         "roughjs": "^4.5.2",

@@ -13,9 +13,9 @@ import { sortElements } from './position';
 
 export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
     let result: PlaitElement[] = [];
-    const elements = board.children.filter(value => (value as PlaitElement).groupId === group.id) as PlaitElement[];
+    const elements = board.children.filter((value) => (value as PlaitElement).groupId === group.id) as PlaitElement[];
     if (recursion) {
-        elements.forEach(item => {
+        elements.forEach((item) => {
             if (PlaitGroupElement.isGroup(item)) {
                 if (includeGroup) {
                     result.push(item);
@@ -26,7 +26,7 @@ export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursi
             }
         });
     } else {
-        result = includeGroup ? elements : (elements.filter(item => !PlaitGroupElement.isGroup(item)) as PlaitElement[]);
+        result = includeGroup ? elements : (elements.filter((item) => !PlaitGroupElement.isGroup(item)) as PlaitElement[]);
     }
     return result;
 };
@@ -34,10 +34,10 @@ export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursi
 export const getAllElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
     const elementsInGroup = getElementsInGroup(board, group, recursion, includeGroup);
     const result: PlaitElement[] = [];
-    elementsInGroup.forEach(element => {
+    elementsInGroup.forEach((element) => {
         depthFirstRecursion(
             element,
-            node => {
+            (node) => {
                 result.push(node);
             },
             () => true
@@ -57,7 +57,7 @@ export const getGroupByElement = (
     recursion?: boolean,
     originElements?: PlaitElement[]
 ): PlaitGroup | PlaitGroup[] | null => {
-    const group = (originElements || board.children).find(item => item.id === element?.groupId);
+    const group = (originElements || board.children).find((item) => item.id === element?.groupId);
     if (!group) {
         return recursion ? [] : null;
     }
@@ -90,23 +90,28 @@ export const getElementsInGroupByElement = (board: PlaitBoard, element: PlaitEle
     }
 };
 
+export const getAllGroups = (board: PlaitBoard) => {
+    const elements = board.children;
+    return elements.filter((item) => PlaitGroupElement.isGroup(item));
+};
+
 export const isSelectedElementOrGroup = (board: PlaitBoard, element: PlaitElement, elements?: PlaitElement[]) => {
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
     if (PlaitGroupElement.isGroup(element)) {
         return isSelectedAllElementsInGroup(board, element, elements);
     }
-    return selectedElements.map(item => item.id).includes(element.id);
+    return selectedElements.map((item) => item.id).includes(element.id);
 };
 
 export const isSelectedAllElementsInGroup = (board: PlaitBoard, group: PlaitGroup, elements?: PlaitElement[]) => {
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
     const elementsInGroup = getElementsInGroup(board, group, true);
-    return elementsInGroup.every(item => selectedElements.map(element => element.id).includes(item.id));
+    return elementsInGroup.every((item) => selectedElements.map((element) => element.id).includes(item.id));
 };
 
 export const filterSelectedGroups = (board: PlaitBoard, groups: PlaitGroup[], elements?: PlaitElement[]): PlaitGroup[] => {
     const selectedGroups: PlaitGroup[] = [];
-    groups.forEach(item => {
+    groups.forEach((item) => {
         if (isSelectedElementOrGroup(board, item, elements)) {
             selectedGroups.push(item);
         }
@@ -117,10 +122,10 @@ export const filterSelectedGroups = (board: PlaitBoard, groups: PlaitGroup[], el
 export const getSelectedGroups = (board: PlaitBoard, elements?: PlaitElement[], originElements?: PlaitElement[]): PlaitGroup[] => {
     const highestSelectedGroups = getHighestSelectedGroups(board, elements, originElements);
     const groups: PlaitGroup[] = [];
-    highestSelectedGroups.forEach(item => {
+    highestSelectedGroups.forEach((item) => {
         groups.push(item);
         const elementsInGroup = getElementsInGroup(board, item, true, true);
-        groups.push(...(elementsInGroup.filter(item => PlaitGroupElement.isGroup(item)) as PlaitGroup[]));
+        groups.push(...(elementsInGroup.filter((item) => PlaitGroupElement.isGroup(item)) as PlaitGroup[]));
     });
     return groups;
 };
@@ -142,7 +147,7 @@ export const getHighestSelectedGroup = (
 export const getHighestSelectedGroups = (board: PlaitBoard, elements?: PlaitElement[], originElements?: PlaitElement[]): PlaitGroup[] => {
     let result: PlaitGroup[] = [];
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
-    selectedElements.forEach(item => {
+    selectedElements.forEach((item) => {
         if (item.groupId) {
             const group = getHighestSelectedGroup(board, item, elements, originElements);
             if (group && !result.includes(group)) {
@@ -157,8 +162,8 @@ export const getSelectedIsolatedElements = (board: PlaitBoard, elements?: PlaitE
     let result: PlaitElement[] = [];
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
     selectedElements
-        .filter(item => !PlaitGroupElement.isGroup(item))
-        .forEach(item => {
+        .filter((item) => !PlaitGroupElement.isGroup(item))
+        .forEach((item) => {
             if (!item.groupId) {
                 result.push(item);
             } else {
@@ -173,7 +178,7 @@ export const getSelectedIsolatedElements = (board: PlaitBoard, elements?: PlaitE
 
 export const getSelectedIsolatedElementsCanAddToGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedIsolatedElements = getSelectedIsolatedElements(board, elements);
-    return selectedIsolatedElements.filter(item => board.canAddToGroup(item));
+    return selectedIsolatedElements.filter((item) => board.canAddToGroup(item));
 };
 
 export const getHighestSelectedElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
@@ -181,11 +186,11 @@ export const getHighestSelectedElements = (board: PlaitBoard, elements?: PlaitEl
 };
 
 export const createGroupRectangleG = (board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null => {
-    const selectedElementIds = getSelectedElements(board).map(item => item.id);
+    const selectedElementIds = getSelectedElements(board).map((item) => item.id);
     let groupRectangleG: SVGGElement | null = null;
     const isMoving = isSelectionMoving(board);
 
-    elements.forEach(item => {
+    elements.forEach((item) => {
         const isRender = (!selectedElementIds.includes(item.id) && !isMoving) || isMoving;
         if (item.groupId && isRender) {
             if (!groupRectangleG) {
@@ -222,16 +227,16 @@ export const createGroup = (groupId?: string): PlaitGroup => {
 };
 
 export const nonGroupInHighestSelectedElements = (elements: PlaitElement[]) => {
-    return elements.every(item => !item.groupId);
+    return elements.every((item) => !item.groupId);
 };
 
 export const hasSelectedElementsInSameGroup = (elements: PlaitElement[]) => {
-    return elements.every(item => item.groupId && item.groupId === elements[0].groupId);
+    return elements.every((item) => item.groupId && item.groupId === elements[0].groupId);
 };
 
 export const canAddGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const highestSelectedElements = getHighestSelectedElements(board, elements);
-    const rootElements = highestSelectedElements.filter(item => board.canAddToGroup(item));
+    const rootElements = highestSelectedElements.filter((item) => board.canAddToGroup(item));
     if (rootElements.length > 1) {
         return nonGroupInHighestSelectedElements(rootElements) || hasSelectedElementsInSameGroup(rootElements);
     }
@@ -264,7 +269,7 @@ export const moveElementsToNewPathAfterAddGroup = (board: PlaitBoard, selectedEl
     moveElements.pop();
     moveElementsToNewPath(
         board,
-        moveElements.map(element => {
+        moveElements.map((element) => {
             return {
                 element,
                 newPath

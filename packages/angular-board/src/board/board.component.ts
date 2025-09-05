@@ -510,7 +510,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     private updateListRender() {
         this.listRender.update(this.board.children, this.initializeChildrenContext());
-        PlaitBoard.getBoardContext(this.board).nextStable();
     }
 
     private initializeChildrenContext(): PlaitChildrenContext {
