@@ -12,7 +12,6 @@ import {
     updateForeignObject,
     updateForeignObjectWidth
 } from '@plait/core';
-import { fromEvent, timer } from 'rxjs';
 import { Editor, Element, NodeEntry, Range, Text, Node, Transforms, Operation } from 'slate';
 import { PlaitTextBoard, TextPlugin } from './with-text';
 import { clearElementSizeCache, measureElement, updateElementSizeCache } from './text-measure';
@@ -120,19 +119,21 @@ export class TextManage {
         };
         this.textComponentRef.update(props);
         Transforms.select(this.editor, [0]);
-        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
+
+        // Pure JS event listeners replacing rxjs fromEvent/timer
+        const mouseDownHandler = (event: MouseEvent) => {
             const point = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
             const textRec = this.options.getRenderRectangle ? this.options.getRenderRectangle() : this.options.getRectangle();
             const clickInText = RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), textRec);
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
             if (!clickInText && !isAttached) {
                 // handle composition input state, like: Chinese IME Composition Input
-                timer(0).subscribe(() => {
+                setTimeout(() => {
                     exitCallback();
-                });
+                }, 0);
             }
-        });
-        const keydown$ = fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event: KeyboardEvent) => {
+        };
+        const keyDownHandler = (event: KeyboardEvent) => {
             if (event.isComposing) {
                 return;
             }
@@ -142,12 +143,12 @@ export class TextManage {
                 exitCallback();
                 return;
             }
-        });
+        };
         const exitCallback = () => {
             if (this.isEditing) {
                 this.updateRectangle();
-                mousedown$.unsubscribe();
-                keydown$.unsubscribe();
+                document.removeEventListener('mousedown', mouseDownHandler);
+                document.removeEventListener('keydown', keyDownHandler);
                 IS_TEXT_EDITABLE.set(this.board, false);
                 MERGING.set(this.board, false);
                 callback && callback();
@@ -159,8 +160,10 @@ export class TextManage {
                 this.exitCallback = undefined;
             }
         };
+        document.addEventListener('mousedown', mouseDownHandler);
+        document.addEventListener('keydown', keyDownHandler);
         this.exitCallback = exitCallback;
-        return exitCallback;
+         return exitCallback;
     }
 
     getSize = (element?: Element, maxWidth?: number) => {
