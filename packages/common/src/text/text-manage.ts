@@ -120,7 +120,6 @@ export class TextManage {
         this.textComponentRef.update(props);
         Transforms.select(this.editor, [0]);
 
-        // Pure JS event listeners replacing rxjs fromEvent/timer
         const mouseDownHandler = (event: MouseEvent) => {
             const point = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
             const textRec = this.options.getRenderRectangle ? this.options.getRenderRectangle() : this.options.getRectangle();
@@ -163,7 +162,7 @@ export class TextManage {
         document.addEventListener('mousedown', mouseDownHandler);
         document.addEventListener('keydown', keyDownHandler);
         this.exitCallback = exitCallback;
-         return exitCallback;
+        return exitCallback;
     }
 
     getSize = (element?: Element, maxWidth?: number) => {

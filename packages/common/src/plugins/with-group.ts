@@ -165,9 +165,7 @@ export function withGroup(board: PlaitBoard) {
             const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(group);
             const g = PlaitElement.getElementG(group);
             ref.getGenerator(GroupGenerator.key).processDrawing(group, g, isPartialSelectGroup);
-            console.log(group, 'group');
         });
-        console.log('onChange');
     };
 
     return board;
