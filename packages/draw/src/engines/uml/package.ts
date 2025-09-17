@@ -110,7 +110,7 @@ export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, DrawOptions, 
         }
         return getUnitVectorByPointAndPoint([rectangle.x + rectangle.width * 0.8, rectangle.y + 25], connectionPoint);
     },
-    getTextRectangle(element: PlaitMultipleTextGeometry, options?: DrawTextInfo) {
+    getTextRectangle(board: PlaitBoard, element: PlaitMultipleTextGeometry, options?: DrawTextInfo) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const textHeight = element.texts?.find(item => item.id === options?.id)?.textHeight!;

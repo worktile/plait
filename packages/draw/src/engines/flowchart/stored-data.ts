@@ -101,8 +101,8 @@ export const StoredDataEngine: ShapeEngine = {
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ];
     },
-    getTextRectangle(element: PlaitGeometry) {
-        const rectangle = getTextRectangle(element);
+    getTextRectangle(board: PlaitBoard, element: PlaitGeometry) {
+        const rectangle = getTextRectangle(board, element);
         const width = rectangle.width;
         rectangle.width = (rectangle.width * 3) / 4;
         rectangle.x += width / 8;

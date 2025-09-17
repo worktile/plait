@@ -1,4 +1,4 @@
-import { PlaitElement, Point, RectangleClient, idCreator } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, idCreator } from '@plait/core';
 import { GeometryShapes, UMLSymbols, PlaitMultipleTextGeometry } from '../interfaces/geometry';
 import { DefaultTextProperty, GEOMETRY_WITH_MULTIPLE_TEXT, MultipleTextGeometryTextKeys } from '../constants';
 import { getEngine } from '../engines';
@@ -58,13 +58,13 @@ export const buildDefaultTextsByShape = (shape: GeometryShapes): DrawTextInfo[] 
     });
 };
 
-export const getHitMultipleGeometryText = (element: PlaitMultipleTextGeometry, point: Point) => {
+export const getHitMultipleGeometryText = (board: PlaitBoard, element: PlaitMultipleTextGeometry, point: Point) => {
     const engine = getEngine<PlaitMultipleTextGeometry>(element.shape);
     const rectangle = RectangleClient.getRectangleByPoints([point, point]);
     let hitText;
     if (engine.getTextRectangle) {
         hitText = element.texts.find(text => {
-            const textRectangle = engine.getTextRectangle!(element, { id: text.id });
+            const textRectangle = engine.getTextRectangle!(board, element, { id: text.id });
             return RectangleClient.isHit(rectangle, textRectangle);
         });
     }

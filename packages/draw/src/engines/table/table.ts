@@ -56,10 +56,10 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, DrawTex
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-    getTextRectangle(element: PlaitTable, options?: DrawTextInfo) {
+    getTextRectangle(board: PlaitBoard, element: PlaitTable, options?: DrawTextInfo) {
         try {
             if (options && options.id) {
-                const cell = getCellWithPoints(options?.board!, element, options!.id);
+                const cell = getCellWithPoints(board, element, options!.id);
                 if (cell) {
                     if (PlaitTableElement.isVerticalText(cell)) {
                         return getVerticalTextRectangle(cell);

@@ -74,7 +74,7 @@ export const RoundCommentEngine: ShapeEngine = {
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ];
     },
-    getTextRectangle(element: PlaitGeometry) {
+    getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight!;

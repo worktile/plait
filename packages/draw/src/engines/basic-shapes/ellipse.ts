@@ -15,7 +15,7 @@ import { getTextRectangle } from '../../utils';
 
 export interface CreateEllipseOptions {
     draw?: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
-    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
+    getTextRectangle?: (board: PlaitBoard, element: PlaitGeometry) => RectangleClient;
 }
 
 export function createEllipseEngine(createOptions?: CreateEllipseOptions): ShapeEngine {
@@ -51,8 +51,8 @@ export function createEllipseEngine(createOptions?: CreateEllipseOptions): Shape
         getConnectorPoints(rectangle: RectangleClient) {
             return RectangleClient.getEdgeCenterPoints(rectangle);
         },
-        getTextRectangle(element: PlaitGeometry) {
-            const rectangle = getTextRectangle(element);
+        getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
+            const rectangle = getTextRectangle(board, element);
             const width = rectangle.width;
             rectangle.width = (rectangle.width * 3) / 4;
             rectangle.x += width / 8;

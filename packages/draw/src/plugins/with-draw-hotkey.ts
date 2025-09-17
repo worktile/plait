@@ -35,7 +35,7 @@ export const withDrawHotkey = (board: PlaitBoard) => {
             if (hitElement && PlaitDrawElement.isGeometry(hitElement) && isDrawElementIncludeText(hitElement)) {
                 if (isMultipleTextGeometry(hitElement)) {
                     const hitText =
-                        getHitMultipleGeometryText(hitElement, point) ||
+                        getHitMultipleGeometryText(board, hitElement, point) ||
                         hitElement.texts.find((item) => item.id.includes(GeometryCommonTextKeys.content)) ||
                         hitElement.texts[0];
                     editText(board, hitElement, hitText);

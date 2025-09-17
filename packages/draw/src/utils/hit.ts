@@ -71,30 +71,30 @@ export const isHitVectorLine = (board: PlaitBoard, element: PlaitVectorLine, poi
     }
 };
 
-export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangle: RectangleClient) => {
+export const isRectangleHitElementText = (board: PlaitBoard, element: PlaitCommonGeometry, rectangle: RectangleClient) => {
     const engine = getEngine<PlaitCommonGeometry>(element.shape);
     if (isMultipleTextGeometry(element)) {
         const texts = element.texts;
         return texts.some((item) => {
-            const textClient = engine.getTextRectangle!(element, { id: item.id });
+            const textClient = engine.getTextRectangle!(board, element, { id: item.id });
             return isRectangleHitRotatedPoints(rectangle, RectangleClient.getCornerPoints(textClient), element.angle);
         });
     } else {
-        const textClient = engine.getTextRectangle ? engine.getTextRectangle(element) : getTextRectangle(element);
+        const textClient = engine.getTextRectangle ? engine.getTextRectangle(board, element) : getTextRectangle(board, element);
         return isRectangleHitRotatedPoints(rectangle, RectangleClient.getCornerPoints(textClient), element.angle);
     }
 };
 
-export const isHitElementText = (element: PlaitCommonGeometry, point: Point) => {
+export const isHitElementText = (board: PlaitBoard, element: PlaitCommonGeometry, point: Point) => {
     const engine = getEngine<PlaitCommonGeometry>(element.shape);
     if (isMultipleTextGeometry(element)) {
         const texts = element.texts;
         return texts.some((item) => {
-            const textClient = engine.getTextRectangle!(element, { id: item.id });
+            const textClient = engine.getTextRectangle!(board, element, { id: item.id });
             return RectangleClient.isPointInRectangle(textClient, point);
         });
     } else {
-        const textClient = engine.getTextRectangle ? engine.getTextRectangle(element) : getTextRectangle(element);
+        const textClient = engine.getTextRectangle ? engine.getTextRectangle(board, element) : getTextRectangle(board, element);
         return RectangleClient.isPointInRectangle(textClient, point);
     }
 };
@@ -114,7 +114,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
         if (isHitElement) {
             return isHitElement;
         }
-        return !isEmptyTextElement(element) && isRectangleHitElementText(element, rangeRectangle);
+        return !isEmptyTextElement(element) && isRectangleHitElementText(board, element, rangeRectangle);
     }
 
     if (PlaitDrawElement.isImage(element)) {
@@ -227,13 +227,13 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         }
         const engine = getEngine(getElementShape(element));
         if (PlaitDrawElement.isText(element)) {
-            const textClient = getTextRectangle(element);
+            const textClient = getTextRectangle(board, element);
             return RectangleClient.isPointInRectangle(textClient, point);
         }
         if (!!isStrict && isEmptyTextElement(element) && !isFilledDrawElement(board, element)) {
             return false;
         }
-        const isHitText = isHitElementText(element, point);
+        const isHitText = isHitElementText(board, element, point);
         return isHitText || engine.isInsidePoint(rectangle!, point);
     }
     if (PlaitDrawElement.isImage(element)) {
@@ -271,7 +271,7 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
             return isHitInside;
         }
         if (engine.getTextRectangle) {
-            const isHitText = isHitElementText(element, point);
+            const isHitText = isHitElementText(board, element, point);
             if (isHitText) {
                 return isHitText;
             }

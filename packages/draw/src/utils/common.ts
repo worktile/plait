@@ -52,7 +52,7 @@ import { getNearestPoint, isGeometryClosed, isGeometryIncludeText, isSingleTextG
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { DrawTextInfo } from '../generators/text.generator';
 
-export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
+export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: PlaitBoard, element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);
     const height = element.textHeight!;

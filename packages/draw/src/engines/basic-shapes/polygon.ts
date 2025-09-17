@@ -15,7 +15,7 @@ import { getCrossingPointBetweenPointAndPolygon, getPolygonEdgeByConnectionPoint
 export interface CreateOptions {
     getPolygonPoints: (rectangle: RectangleClient) => Point[];
     getConnectorPoints?: (rectangle: RectangleClient) => Point[];
-    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
+    getTextRectangle?: (board: PlaitBoard, element: PlaitGeometry) => RectangleClient;
 }
 
 export function createPolygonEngine(options: CreateOptions): ShapeEngine {

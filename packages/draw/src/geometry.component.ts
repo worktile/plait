@@ -169,10 +169,10 @@ export class GeometryComponent
             this.textGenerator = new SingleTextGenerator(this.board, this.element as PlaitGeometry, this.element.text, {
                 onChange: onTextChange,
                 getMaxWidth: () => {
-                    let width = getTextRectangle(this.element).width;
+                    let width = getTextRectangle(this.board, this.element).width;
                     const getRectangle = getEngine(this.element.shape).getTextRectangle;
                     if (getRectangle) {
-                        width = getRectangle(this.element as PlaitGeometry).width;
+                        width = getRectangle(this.board, this.element as PlaitGeometry).width;
                     }
                     return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
                 }

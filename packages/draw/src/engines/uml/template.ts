@@ -51,7 +51,7 @@ export const TemplateEngine: ShapeEngine = {
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-    getTextRectangle(element: PlaitGeometry) {
+    getTextRectangle(board: PlaitBoard, element: PlaitGeometry) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight!;

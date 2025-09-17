@@ -53,7 +53,7 @@ export const CombinedFragmentEngine: ShapeEngine<PlaitMultipleTextGeometry, Draw
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-    getTextRectangle(element: PlaitMultipleTextGeometry, options?: DrawTextInfo) {
+    getTextRectangle(board: PlaitBoard, element: PlaitMultipleTextGeometry, options?: DrawTextInfo) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const textHeight = element.texts?.find(item => item.id === options?.id)?.textHeight!;

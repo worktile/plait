@@ -147,7 +147,7 @@ export const ComponentEngine: ShapeEngine = {
         ] as [Point, Point, Point, Point];
     },
 
-    getTextRectangle(element: PlaitGeometry) {
+    getTextRectangle(board: PlaitBoard, element: PlaitGeometry) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight!;

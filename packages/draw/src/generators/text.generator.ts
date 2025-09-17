@@ -153,9 +153,9 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
     getRectangle(text: DrawTextInfo) {
         const getRectangle = getEngine<T>(this.shape).getTextRectangle;
         if (getRectangle) {
-            return getRectangle(this.element, text);
+            return getRectangle(this.board, this.element, text);
         }
-        return getTextRectangle(this.element);
+        return getTextRectangle(this.board, this.element);
     }
 
     getMaxWidth(text: DrawTextInfo) {

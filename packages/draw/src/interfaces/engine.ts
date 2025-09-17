@@ -24,5 +24,5 @@ export interface ShapeEngine<
     getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
     getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
     draw: (board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: P) => SVGGElement;
-    getTextRectangle?: (element: T, options?: K) => RectangleClient;
+    getTextRectangle?: (board: PlaitBoard, element: T, options?: K) => RectangleClient;
 }

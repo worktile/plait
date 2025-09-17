@@ -1,4 +1,4 @@
-import { Point, RectangleClient } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getTextRectangle } from '../../utils';
@@ -19,9 +19,9 @@ export const PentagonArrowEngine: ShapeEngine = createPolygonEngine({
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-    getTextRectangle(element: PlaitGeometry) {
+    getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const rectangle = getTextRectangle(element);
+        const rectangle = getTextRectangle(board, element);
         const wider = elementRectangle.width > elementRectangle.height / 2 + 20;
         rectangle.width = wider ? elementRectangle.width - elementRectangle.height / 2 : rectangle.width;
         return rectangle;
