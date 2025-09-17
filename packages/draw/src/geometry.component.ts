@@ -138,8 +138,7 @@ export class GeometryComponent
                 if (isMultipleTextGeometry(element)) {
                     DrawTransforms.setDrawTexts(this.board, element, {
                         id: text.id,
-                        text: textManageChangeData.newText,
-                        textHeight: textManageChangeData.height
+                        text: textManageChangeData.newText
                     });
                 } else {
                     DrawTransforms.setText(

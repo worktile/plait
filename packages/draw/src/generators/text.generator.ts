@@ -14,7 +14,6 @@ import { getTextKey, getTextRectangle } from '../utils';
 
 export interface DrawTextInfo extends TextRectangleOptions {
     text: ParagraphElement;
-    textHeight: number;
 }
 
 export interface TextGeneratorOptions<T> {
@@ -106,7 +105,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
             removedTexts.forEach(item => {
                 const textManage = getTextManage(this.board, element, item);
                 const index = this.textManages.findIndex(value => value === textManage);
-                if (index > -1 && item.text && item.textHeight) {
+                if (index > -1 && item.text) {
                     this.textManages.splice(index, 1);
                 }
                 textManage?.destroy();

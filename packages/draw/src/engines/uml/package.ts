@@ -4,16 +4,15 @@ import {
     PointOfRectangle,
     RectangleClient,
     getNearestPointBetweenPointAndDiscreteSegments,
-    getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
 import { getUnitVectorByPointAndPoint } from '@plait/common';
 import { DrawOptions, GeometryCommonTextKeys, PlaitMultipleTextGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { DrawTextInfo } from '../../generators/text.generator';
+import { getTextSize } from '../../utils/text-size';
 
 interface PackagePathData {
     headerHeight: number;
@@ -34,7 +33,7 @@ function generatePackagePath(rectangle: RectangleClient): PackagePathData {
     const headerHeight = 25;
     const topWidth = rectangle.width * 0.7;
     const cornerX = rectangle.x + rectangle.width * 0.8;
-    
+
     return {
         headerHeight,
         points: {
@@ -55,7 +54,7 @@ export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, DrawOptions, 
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const { points } = generatePackagePath(rectangle);
-        
+
         const pathData = [
             `M${points.leftTop[0]} ${points.leftTop[1]}`,
             `V${points.topStart[1]}`,
@@ -81,7 +80,7 @@ export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, DrawOptions, 
     },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
         const { points } = generatePackagePath(rectangle);
-        
+
         const segments: [Point, Point][] = [
             // 左边竖线
             [points.topStart, points.leftTop],
@@ -113,23 +112,25 @@ export const PackageEngine: ShapeEngine<PlaitMultipleTextGeometry, DrawOptions, 
     getTextRectangle(board: PlaitBoard, element: PlaitMultipleTextGeometry, options?: DrawTextInfo) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const textHeight = element.texts?.find(item => item.id === options?.id)?.textHeight!;
-        if (options?.id === GeometryCommonTextKeys.name) {
+        const textInfo = element.texts?.find((item) => item.id === options?.id);
+        if (options?.id === GeometryCommonTextKeys.name && textInfo) {
             const width = elementRectangle.width * 0.7 - ShapeDefaultSpace.rectangleAndText - strokeWidth;
+            const textSize = getTextSize(board, textInfo!.text, width);
             return {
-                height: textHeight,
+                height: textSize.height,
                 width: width > 0 ? width : 0,
                 x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-                y: elementRectangle.y + (25 - textHeight) / 2
+                y: elementRectangle.y + (25 - textSize.height) / 2
             };
         }
-        if (options?.id === GeometryCommonTextKeys.content) {
+        if (options?.id === GeometryCommonTextKeys.content && textInfo) {
             const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+            const textSize = getTextSize(board, textInfo!.text, width);
             return {
-                height: textHeight,
+                height: textSize.height,
                 width: width > 0 ? width : 0,
                 x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-                y: elementRectangle.y + 25 + (elementRectangle.height - 25 - textHeight) / 2
+                y: elementRectangle.y + 25 + (elementRectangle.height - 25 - textSize.height) / 2
             };
         }
         return elementRectangle;

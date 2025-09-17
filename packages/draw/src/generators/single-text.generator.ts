@@ -10,7 +10,7 @@ export class SingleTextGenerator<T extends PlaitElement = PlaitGeometry> extends
     }
 
     constructor(board: PlaitBoard, element: T, text: ParagraphElement, options: TextGeneratorOptions<T>) {
-        super(board, element, [{ id: element.id, text: text, textHeight: element.textHeight }], options);
+        super(board, element, [{ id: element.id, text: text }], options);
     }
 
     update(element: T, previousDrawShapeTexts: DrawTextInfo[], currentDrawShapeTexts: DrawTextInfo[], elementG: SVGElement): void;
@@ -24,8 +24,8 @@ export class SingleTextGenerator<T extends PlaitElement = PlaitGeometry> extends
         if (!isMultipleTextGeometry((element as unknown) as PlaitCommonGeometry)) {
             super.update(
                 element,
-                [{ text: previousText as ParagraphElement, id: element.id, textHeight: element.textHeight }],
-                [{ text: currentText as ParagraphElement, id: element.id, textHeight: element.textHeight }],
+                [{ text: previousText as ParagraphElement, id: element.id }],
+                [{ text: currentText as ParagraphElement, id: element.id }],
                 elementG
             );
         }

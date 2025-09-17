@@ -113,7 +113,6 @@ export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
 
 export interface PlaitGeometry extends PlaitCommonGeometry {
     text?: ParagraphElement;
-    textHeight?: number;
 }
 
 export interface PlaitRectangle extends PlaitGeometry {
