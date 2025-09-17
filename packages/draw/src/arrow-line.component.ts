@@ -143,12 +143,10 @@ export class ArrowLineComponent
                 const path = PlaitBoard.findPath(this.board, this.element);
                 const node = PlaitNode.get(this.board, path) as PlaitArrowLine;
                 const texts = [...node.texts];
-                const newWidth = textManageChangeData.width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : textManageChangeData.width;
+                // const newWidth = textManageChangeData.width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : textManageChangeData.width;
                 texts.splice(index, 1, {
                     text: textManageChangeData.newText ? textManageChangeData.newText : this.element.texts[index].text,
-                    position: this.element.texts[index].position,
-                    width: newWidth,
-                    height: textManageChangeData.height
+                    position: this.element.texts[index].position
                 });
                 DrawTransforms.setArrowLineTexts(this.board, this.element as PlaitArrowLine, texts);
                 textManageChangeData.operations && memorizeLatestText(this.element, textManageChangeData.operations);

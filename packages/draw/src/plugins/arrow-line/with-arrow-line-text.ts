@@ -9,13 +9,12 @@ import {
 } from '@plait/core';
 import { PlaitArrowLine, PlaitDrawElement } from '../../interfaces';
 import { Node } from 'slate';
-import { buildText, DEFAULT_FONT_FAMILY, getMemorizedLatest, getRatioByPoint, getTextManages, measureElement } from '@plait/common';
+import { buildText, getMemorizedLatest, getRatioByPoint, getTextManages } from '@plait/common';
 import { DrawTransforms } from '../../transforms';
 import { getArrowLinePoints } from '../../utils/arrow-line/arrow-line-basic';
 import { getHitArrowLineTextIndex } from '../../utils/position/arrow-line';
 import { isHitArrowLineText } from '../../utils/hit';
 import { LINE_TEXT } from '../../constants/line';
-import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
 import { DrawI18nKey } from '../../constants/default';
 
 export const getDefaultLineText = (board: PlaitBoard) => {
@@ -42,16 +41,10 @@ export const withArrowLineText = (board: PlaitBoard) => {
                     const defaultLineText = getDefaultLineText(board);
                     const textMemory = getMemorizedLatest('arrow-line')?.text || {};
                     const textElement = buildText(defaultLineText, undefined, textMemory);
-                    const { width, height } = measureElement(board, textElement, {
-                        fontSize: DEFAULT_FONT_SIZE,
-                        fontFamily: DEFAULT_FONT_FAMILY
-                    });
                     const ratio = getRatioByPoint(points, point);
                     texts.push({
                         text: textElement,
-                        position: ratio,
-                        width,
-                        height
+                        position: ratio
                     });
                     DrawTransforms.setArrowLineTexts(board, hitTarget, texts);
                     setTimeout(() => {

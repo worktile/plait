@@ -43,6 +43,7 @@ import { getElbowPoints } from './elbow';
 import { drawArrowLineArrow } from './arrow-line-arrow';
 import { getSnappingRef, getSnappingShape, getStrokeWidthByElement } from '../common';
 import { ArrowLineShapeGenerator } from '../../generators/arrow-line.generator';
+import { getTextSize } from '../text-size';
 
 export const createArrowLineElement = (
     shape: ArrowLineShape,
@@ -171,11 +172,12 @@ export const getArrowLineTextRectangle = (board: PlaitBoard, element: PlaitArrow
     const text = element.texts[index];
     const elbowPoints = getArrowLinePoints(board, element);
     const point = getPointOnPolyline(elbowPoints, text.position);
+    const textSize = getTextSize(board, text.text);
     return {
-        x: point[0] - text.width! / 2,
-        y: point[1] - text.height! / 2,
-        width: text.width!,
-        height: text.height!
+        x: point[0] - textSize.width / 2,
+        y: point[1] - textSize.height / 2,
+        width: textSize.width,
+        height: textSize.height
     };
 };
 

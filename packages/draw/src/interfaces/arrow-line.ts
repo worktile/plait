@@ -31,8 +31,6 @@ export interface ArrowLineText {
     text: Element;
     // Percentage of positioning based on line length
     position: number;
-    width: number;
-    height: number;
 }
 
 export interface ArrowLineHandle {
