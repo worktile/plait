@@ -3,8 +3,8 @@ import { PlaitBoard } from '@plait/core';
 import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
 import { MIN_TEXT_WIDTH } from '../constants';
 
-export const getTextSize = (board: PlaitBoard, text: ParagraphElement): ElementSize => {
-    const textSize = getElementSize(board, text, { fontSize: DEFAULT_FONT_SIZE, fontFamily: DEFAULT_FONT_FAMILY });
+export const getTextSize = (board: PlaitBoard, text: ParagraphElement, maxWidth?: number): ElementSize => {
+    const textSize = getElementSize(board, text, { fontSize: DEFAULT_FONT_SIZE, fontFamily: DEFAULT_FONT_FAMILY }, maxWidth);
     const normalizedTextSize = normalizeWidthAndHeight(textSize);
     return normalizedTextSize;
 };

@@ -24,6 +24,7 @@ import {
     DefaultDrawStyle,
     DefaultTextProperty,
     DrawI18nKey,
+    GeometryThreshold,
     LINE_HIT_GEOMETRY_BUFFER,
     LINE_SNAPPING_BUFFER,
     ShapeDefaultSpace
@@ -37,7 +38,8 @@ import {
     PlaitCustomGeometry,
     PlaitDrawElement,
     PlaitGeometry,
-    PlaitShapeElement
+    PlaitShapeElement,
+    PlaitText
 } from '../interfaces';
 import { Alignment, getTextEditorsByElement } from '@plait/common';
 import { isCellIncludeText } from './table';
@@ -51,17 +53,27 @@ import { getHitConnectorPoint } from './arrow-line';
 import { getNearestPoint, isGeometryClosed, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
 import { isMultipleTextGeometry } from './multi-text-geometry';
 import { DrawTextInfo } from '../generators/text.generator';
+import { getTextSize } from './text-size';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: PlaitBoard, element: T) => {
+    const isAutoSize = (element as unknown as PlaitText).autoSize;
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);
-    const height = element.textHeight!;
     const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+    const textSize = getTextSize(board, element.text, isAutoSize ? GeometryThreshold.defaultTextMaxWidth : width);
+    if (isAutoSize) {
+        return {
+            height: textSize.height,
+            width: textSize.width,
+            x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
+            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
+        };
+    }
     return {
-        height,
+        height: textSize.height,
         width: width > 0 ? width : 0,
         x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-        y: elementRectangle.y + (elementRectangle.height - height) / 2
+        y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
     };
 };
 
