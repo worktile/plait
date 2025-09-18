@@ -9,7 +9,6 @@ const children: PlaitElement[] = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -30,7 +29,6 @@ const children: PlaitElement[] = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -58,7 +56,6 @@ const group1: PlaitElement[] = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -80,7 +77,6 @@ const group1: PlaitElement[] = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -102,7 +98,6 @@ const group1: PlaitElement[] = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -124,7 +119,6 @@ const group1: PlaitElement[] = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -153,7 +147,6 @@ const group2: PlaitElement[] = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -175,7 +168,6 @@ const group2: PlaitElement[] = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
