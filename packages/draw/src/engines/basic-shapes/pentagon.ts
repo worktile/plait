@@ -1,4 +1,5 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getStrokeWidthByElement } from '../../utils';
@@ -19,14 +20,15 @@ export const PentagonEngine: ShapeEngine = createPolygonEngine({
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight!;
         const originWidth = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
         const width = (originWidth * 3) / 5;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
-            height,
+            height: textSize.height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + originWidth / 5,
-            y: elementRectangle.y + elementRectangle.height / 5 + ((elementRectangle.height * 4) / 5 - height) / 2
+            y: elementRectangle.y + elementRectangle.height / 5 + ((elementRectangle.height * 4) / 5 - textSize.height) / 2
         };
     }
 });

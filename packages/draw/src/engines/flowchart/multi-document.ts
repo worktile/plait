@@ -9,6 +9,7 @@ import {
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { getDirectionByPointOfRectangle, getDirectionFactor, getUnitVectorByPointAndPoint } from '@plait/common';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
@@ -48,39 +49,30 @@ export const MultiDocumentEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x} ${rectangle.y + rectangle.height - rectangle.height / 9} V${rectangle.y + 10} H${rectangle.x +
-                5} V${rectangle.y + 5} H${rectangle.x + 10} V${rectangle.y} H${rectangle.x + rectangle.width} V${rectangle.y +
-                rectangle.height -
-                rectangle.height / 9 -
-                10 -
-                3} L${rectangle.x + rectangle.width - 5} ${rectangle.y +
-                rectangle.height -
-                rectangle.height / 9 -
-                10 -
-                3 -
-                4} V${rectangle.y + rectangle.height - rectangle.height / 9 - 5 - 3}
-                 L${rectangle.x + rectangle.width - 10} ${rectangle.y +
-                rectangle.height -
-                rectangle.height / 9 -
-                5 -
-                3 -
-                4} V${rectangle.y + rectangle.height - rectangle.height / 9}
+            `M${rectangle.x} ${rectangle.y + rectangle.height - rectangle.height / 9} V${rectangle.y + 10} H${rectangle.x + 5} V${
+                rectangle.y + 5
+            } H${rectangle.x + 10} V${rectangle.y} H${rectangle.x + rectangle.width} V${
+                rectangle.y + rectangle.height - rectangle.height / 9 - 10 - 3
+            } L${rectangle.x + rectangle.width - 5} ${rectangle.y + rectangle.height - rectangle.height / 9 - 10 - 3 - 4} V${
+                rectangle.y + rectangle.height - rectangle.height / 9 - 5 - 3
+            }
+                 L${rectangle.x + rectangle.width - 10} ${rectangle.y + rectangle.height - rectangle.height / 9 - 5 - 3 - 4} V${
+                rectangle.y + rectangle.height - rectangle.height / 9
+            }
                 
-             Q${rectangle.x + rectangle.width - 10 - (rectangle.width - 10) / 4} ${rectangle.y +
-                rectangle.height -
-                (rectangle.height / 9) * 3}, ${rectangle.x + (rectangle.width - 10) / 2} ${rectangle.y +
-                rectangle.height -
-                rectangle.height / 9} T${rectangle.x} ${rectangle.y + rectangle.height - rectangle.height / 9}
+             Q${rectangle.x + rectangle.width - 10 - (rectangle.width - 10) / 4} ${
+                rectangle.y + rectangle.height - (rectangle.height / 9) * 3
+            }, ${rectangle.x + (rectangle.width - 10) / 2} ${rectangle.y + rectangle.height - rectangle.height / 9} T${rectangle.x} ${
+                rectangle.y + rectangle.height - rectangle.height / 9
+            }
               
-                M${rectangle.x + 5} ${rectangle.y + 10} H${rectangle.x + rectangle.width - 10} V${rectangle.y +
-                rectangle.height -
-                rectangle.height / 9} 
+                M${rectangle.x + 5} ${rectangle.y + 10} H${rectangle.x + rectangle.width - 10} V${
+                rectangle.y + rectangle.height - rectangle.height / 9
+            } 
                     
-                M${rectangle.x + 10} ${rectangle.y + 5} H${rectangle.x + rectangle.width - 5} V${rectangle.y +
-                rectangle.height -
-                rectangle.height / 9 -
-                10 -
-                3}
+                M${rectangle.x + 10} ${rectangle.y + 5} H${rectangle.x + rectangle.width - 5} V${
+                rectangle.y + rectangle.height - rectangle.height / 9 - 10 - 3
+            }
             `,
             { ...options, fillStyle: 'solid' }
         );
@@ -125,7 +117,7 @@ export const MultiDocumentEngine: ShapeEngine = {
         let nearestDistance = distanceBetweenPointAndPoint(point[0], point[1], nearestPoint[0], nearestPoint[1]);
         crossingPoints
             .filter((v, index) => index > 0)
-            .forEach(crossingPoint => {
+            .forEach((crossingPoint) => {
                 let distance = distanceBetweenPointAndPoint(point[0], point[1], crossingPoint[0], crossingPoint[1]);
                 if (distance < nearestDistance) {
                     nearestDistance = distance;
@@ -171,13 +163,14 @@ export const MultiDocumentEngine: ShapeEngine = {
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight!;
         const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2 - elementRectangle.width * 0.06 * 2;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
-            height,
+            height: textSize.height,
             width: width > 0 ? width - 10 : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + elementRectangle.width * 0.06,
-            y: elementRectangle.y + (elementRectangle.height - height) / 2
+            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
         };
     }
 };

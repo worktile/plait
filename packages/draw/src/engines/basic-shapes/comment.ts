@@ -12,6 +12,7 @@ import { Options } from 'roughjs/bin/core';
 import { ShapeDefaultSpace } from '../../constants';
 import { getStrokeWidthByElement } from '../../utils';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
+import { getTextSize } from '../../utils/text-size';
 
 const heightRatio = 3 / 4;
 
@@ -44,13 +45,14 @@ export const CommentEngine: ShapeEngine = {
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight!;
         const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
-            height,
+            height: textSize.height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + (elementRectangle.height * heightRatio - height) / 2
+            y: elementRectangle.y + (elementRectangle.height * heightRatio - textSize.height) / 2
         };
     }
 };

@@ -4,9 +4,9 @@ import {
     PointOfRectangle,
     RectangleClient,
     distanceBetweenPointAndPoint,
-    getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { ShapeDefaultSpace } from '../../constants';
 import { Options } from 'roughjs/bin/core';
@@ -115,13 +115,14 @@ export const NoteCurlyLeftEngine: ShapeEngine = {
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight!;
         const width = elementRectangle.width - elementRectangle.width * 0.09 - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
-            height,
+            height: textSize.height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + (elementRectangle.height - height) / 2
+            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
         };
     }
 };

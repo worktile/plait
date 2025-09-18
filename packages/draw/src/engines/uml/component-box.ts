@@ -13,6 +13,7 @@ import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { ComponentEngine } from './component';
+import { getTextSize } from '../../utils/text-size';
 
 export const ComponentBoxEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -63,14 +64,15 @@ export const ComponentBoxEngine: ShapeEngine = {
     getTextRectangle(board: PlaitBoard, element: PlaitGeometry) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight!;
         const componentWidth = elementRectangle.width - 45 * 2 - 18 > 1 ? 45 : elementRectangle.width * 0.25;
         const width = elementRectangle.width - 18 - componentWidth - ShapeDefaultSpace.rectangleAndText - strokeWidth * 2;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
-            height,
+            height: textSize.height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + (elementRectangle.height - height) / 2
+            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
         };
     }
 };

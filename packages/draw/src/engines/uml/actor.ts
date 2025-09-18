@@ -4,20 +4,16 @@ import {
     PointOfRectangle,
     RectangleClient,
     SVGArcCommand,
-    W,
     distanceBetweenPointAndPoint,
     getEllipseTangentSlope,
     getNearestPointBetweenPointAndDiscreteSegments,
     getNearestPointBetweenPointAndEllipse,
-    getNearestPointBetweenPointAndSegment,
-    getNearestPointBetweenPointAndSegments,
     getVectorFromPointAndSlope,
     setStrokeLinecap
 } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getUnitVectorByPointAndPoint, rotateVector } from '@plait/common';
 
 interface ActorPathData {
@@ -152,10 +148,11 @@ export const ActorEngine: ShapeEngine = {
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const height = element.textHeight!;
         const width = elementRectangle.width + 40;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
-            height,
+            height: textSize.height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x - 20,
             y: elementRectangle.y + elementRectangle.height + 4

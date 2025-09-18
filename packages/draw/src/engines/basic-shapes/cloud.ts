@@ -1,11 +1,19 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, SVGArcCommand, distanceBetweenPointAndPoint, setPathStrokeLinecap } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    SVGArcCommand,
+    distanceBetweenPointAndPoint,
+    setPathStrokeLinecap
+} from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { getNearestPointBetweenPointAndArc } from '@plait/core';
-
+import { getTextSize } from '../../utils/text-size';
 
 export function generateCloudPath(rectangle: RectangleClient): { startPoint: Point; arcCommands: SVGArcCommand[] } {
     const divisionWidth = rectangle.width / 7;
@@ -101,7 +109,10 @@ export const CloudEngine: ShapeEngine = {
         const pathData =
             `M ${startPoint[0]} ${startPoint[1]} ` +
             arcCommands
-                .map((command) => `A ${command.rx} ${command.ry} ${command.xAxisRotation} ${command.largeArcFlag} ${command.sweepFlag} ${command.endX} ${command.endY}`)
+                .map(
+                    (command) =>
+                        `A ${command.rx} ${command.ry} ${command.xAxisRotation} ${command.largeArcFlag} ${command.sweepFlag} ${command.endX} ${command.endY}`
+                )
                 .join('\n') +
             ' Z';
 
@@ -147,14 +158,15 @@ export const CloudEngine: ShapeEngine = {
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight!;
         const originWidth = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
         const width = originWidth / 1.5;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
-            height,
+            height: textSize.height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + originWidth / 6,
-            y: elementRectangle.y + elementRectangle.height / 6 + ((elementRectangle.height * 4) / 6 - height) / 2
+            y: elementRectangle.y + elementRectangle.height / 6 + ((elementRectangle.height * 4) / 6 - textSize.height) / 2
         };
     }
 };

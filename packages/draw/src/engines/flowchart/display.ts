@@ -11,6 +11,7 @@ import {
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getStrokeWidthByElement } from '../../utils';
@@ -92,13 +93,14 @@ export const DisplayEngine: ShapeEngine = {
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight!;
         const width = elementRectangle.width - strokeWidth * 2 - elementRectangle.width * 0.25;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
         return {
             width: width > 0 ? width : 0,
-            height: height,
+            height: textSize.height,
             x: elementRectangle.x + strokeWidth + elementRectangle.width * 0.15,
-            y: elementRectangle.y + (elementRectangle.height - height) / 2
+            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
         };
     }
 };
