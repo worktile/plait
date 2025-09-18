@@ -115,7 +115,6 @@ export const mockDrawData: PlaitDrawElement[] = [
         shape: 'terminal',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -136,7 +135,6 @@ export const mockDrawData: PlaitDrawElement[] = [
         shape: 'process',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -157,7 +155,6 @@ export const mockDrawData: PlaitDrawElement[] = [
         shape: 'decision',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -178,7 +175,6 @@ export const mockDrawData: PlaitDrawElement[] = [
         shape: 'process',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -199,7 +195,6 @@ export const mockDrawData: PlaitDrawElement[] = [
         shape: 'terminal',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -393,7 +388,6 @@ export const mockTableData: PlaitDrawElement[] = [
                 rowId: 'row-1',
                 columnId: 'column-1',
                 colspan: 3,
-                textHeight: 20,
                 text: {
                     children: [
                         {
@@ -406,7 +400,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-2-1',
                 rowId: 'row-2',
-                textHeight: 20,
                 columnId: 'column-1',
                 text: {
                     children: [
@@ -420,7 +413,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-2-2',
                 rowId: 'row-2',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -434,7 +426,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-2-3',
                 rowId: 'row-2',
-                textHeight: 20,
                 columnId: 'column-3',
                 text: {
                     children: [
@@ -448,7 +439,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-3-1',
                 rowId: 'row-3',
-                textHeight: 20,
                 columnId: 'column-1',
                 text: {
                     children: [
@@ -462,7 +452,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-3-2',
                 rowId: 'row-3',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -476,7 +465,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-3-3',
                 rowId: 'row-3',
-                textHeight: 20,
                 columnId: 'column-3',
                 text: {
                     children: [
@@ -490,7 +478,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-4-1',
                 rowId: 'row-4',
-                textHeight: 20,
                 columnId: 'column-1',
                 text: {
                     children: [
@@ -504,7 +491,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-4-2',
                 rowId: 'row-4',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -518,7 +504,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-4-3',
                 rowId: 'row-4',
-                textHeight: 20,
                 columnId: 'column-3',
                 text: {
                     children: [
@@ -570,7 +555,6 @@ export const mockTableData: PlaitDrawElement[] = [
                 id: 'h-cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
-                textHeight: 20,
                 rowspan: 4,
                 text: {
                     children: [
@@ -585,7 +569,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-1-2',
                 rowId: 'row-1',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -600,7 +583,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-1-3',
                 rowId: 'row-1',
-                textHeight: 20,
                 columnId: 'column-3',
                 text: {
                     children: [
@@ -614,7 +596,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-2-2',
                 rowId: 'row-2',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -628,7 +609,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-2-3',
                 rowId: 'row-2',
-                textHeight: 20,
                 columnId: 'column-3',
                 text: {
                     children: [
@@ -642,7 +622,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-3-2',
                 rowId: 'row-3',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -656,7 +635,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-3-3',
                 rowId: 'row-3',
-                textHeight: 20,
                 columnId: 'column-3',
                 text: {
                     children: [
@@ -670,7 +648,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-4-2',
                 rowId: 'row-4',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -684,7 +661,6 @@ export const mockTableData: PlaitDrawElement[] = [
             {
                 id: 'h-cell-4-3',
                 rowId: 'row-4',
-                textHeight: 20,
                 columnId: 'column-3',
                 text: {
                     children: [
@@ -734,7 +710,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 id: 'v-cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
-                textHeight: 20,
                 text: {
                     children: [
                         {
@@ -747,7 +722,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-2-1',
                 rowId: 'row-2',
-                textHeight: 20,
                 columnId: 'column-1',
                 text: {
                     children: [
@@ -761,7 +735,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
             {
                 id: 'v-cell-2-2',
                 rowId: 'row-2',
-                textHeight: 20,
                 columnId: 'column-2',
                 text: {
                     children: [
@@ -818,7 +791,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 id: 'h-cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
-                textHeight: 20,
                 text: {
                     children: [
                         {
@@ -832,7 +804,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 id: 'h-cell-1-2',
                 rowId: 'row-1',
                 columnId: 'column-2',
-                textHeight: 20,
                 text: {
                     children: [
                         {
@@ -851,7 +822,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 id: 'h-cell-2-2',
                 rowId: 'row-2',
                 columnId: 'column-2',
-                textHeight: 20,
                 text: {
                     children: [
                         {
@@ -890,7 +860,6 @@ export const mockGroupData: PlaitDrawElement[] = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         groupId: 'group1',
         text: {
             children: [
@@ -913,7 +882,6 @@ export const mockGroupData: PlaitDrawElement[] = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         groupId: 'group1',
         text: {
             children: [
@@ -936,7 +904,6 @@ export const mockGroupData: PlaitDrawElement[] = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         groupId: 'group3',
         text: {
             children: [
@@ -959,7 +926,6 @@ export const mockGroupData: PlaitDrawElement[] = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -979,7 +945,6 @@ export const mockGroupData: PlaitDrawElement[] = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         groupId: 'group2',
         text: {
             children: [
@@ -1002,7 +967,6 @@ export const mockGroupData: PlaitDrawElement[] = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         groupId: 'group2',
         text: {
             children: [
@@ -1028,7 +992,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'rectangle',
         angle: 0.26179938779914913,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1049,7 +1012,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'ellipse',
         angle: 0.26179938779914913,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1070,7 +1032,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'triangle',
         angle: 0.26179938779914913,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1091,7 +1052,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'twoWayArrow',
         angle: 0.7853981633974483,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1112,7 +1072,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'cross',
         angle: 0.7853981633974483,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1133,7 +1092,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'roundComment',
         angle: 0.7853981633974483,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1154,7 +1112,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'text',
         angle: 0.26179938779914913,
         opacity: 1,
-        textHeight: 24,
         text: {
             children: [
                 {
@@ -1186,7 +1143,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 24,
         text: {
             children: [
                 {
@@ -1209,7 +1165,6 @@ export const mockRotateData: PlaitDrawElement[] = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 24,
         text: {
             children: [
                 {

@@ -408,7 +408,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -429,7 +428,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -487,7 +485,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -508,7 +505,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -564,7 +560,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -585,7 +580,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -654,7 +648,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -675,7 +668,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -730,7 +722,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -751,7 +742,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -805,7 +795,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -826,7 +815,6 @@ describe('getMirrorDataPoints', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -883,7 +871,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'rectangle',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {
@@ -904,7 +891,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'rectangle',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {
@@ -972,7 +958,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'rectangle',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {
@@ -993,7 +978,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'rectangle',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {
@@ -1056,7 +1040,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'terminal',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {
@@ -1077,7 +1060,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'terminal',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {
@@ -1129,7 +1111,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'process',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {
@@ -1150,7 +1131,6 @@ describe('getMirrorDataPoints', () => {
                         shape: 'terminal',
                         angle: 0,
                         opacity: 1,
-                        textHeight: 20,
                         text: {
                             children: [
                                 {

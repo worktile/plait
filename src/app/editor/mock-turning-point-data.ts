@@ -7,7 +7,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -28,7 +27,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -73,7 +71,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -94,7 +91,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -115,7 +111,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -136,7 +131,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -204,7 +198,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -225,7 +218,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 19.9998779296875,
         text: {
             children: [
                 {
@@ -293,7 +285,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 19.9998779296875,
         text: {
             children: [
                 {
@@ -314,7 +305,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -382,7 +372,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 19.9998779296875,
         text: {
             children: [
                 {
@@ -403,7 +392,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -471,7 +459,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 19.9998779296875,
         text: {
             children: [
                 {
@@ -492,7 +479,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -560,7 +546,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 19.9998779296875,
         text: {
             children: [
                 {
@@ -581,7 +566,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -696,7 +680,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -717,7 +700,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -785,7 +767,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -806,7 +787,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -897,7 +877,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -918,7 +897,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -987,7 +965,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1008,7 +985,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1076,7 +1052,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1097,7 +1072,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1166,7 +1140,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1187,7 +1160,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1232,7 +1204,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1253,7 +1224,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1298,7 +1268,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1319,7 +1288,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1364,7 +1332,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1385,7 +1352,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1522,7 +1488,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1543,7 +1508,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1613,7 +1577,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1634,7 +1597,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1704,7 +1666,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1725,7 +1686,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1795,7 +1755,6 @@ export const mockTurningPointData = [
         shape: 'process',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1816,7 +1775,6 @@ export const mockTurningPointData = [
         shape: 'terminal',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1887,7 +1845,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1908,7 +1865,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1976,7 +1932,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -1997,7 +1952,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2065,7 +2019,6 @@ export const mockTurningPointData = [
         shape: 'process',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2086,7 +2039,6 @@ export const mockTurningPointData = [
         shape: 'terminal',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2157,7 +2109,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2178,7 +2129,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2199,7 +2149,6 @@ export const mockTurningPointData = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2222,7 +2171,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2242,7 +2190,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2265,7 +2212,6 @@ export const mockTurningPointData = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2288,7 +2234,6 @@ export const mockTurningPointData = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2311,7 +2256,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2334,7 +2278,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2357,7 +2300,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2378,7 +2320,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2399,7 +2340,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2422,7 +2362,6 @@ export const mockTurningPointData = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2445,7 +2384,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2465,7 +2403,6 @@ export const mockTurningPointData = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2488,7 +2425,6 @@ export const mockTurningPointData = [
         shape: 'ellipse',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2511,7 +2447,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2534,7 +2469,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2605,7 +2539,6 @@ export const mockTurningPointData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 22.5,
         text: {
             children: [
                 {
@@ -2626,7 +2559,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -2647,7 +2579,6 @@ export const mockTurningPointData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {

@@ -36,7 +36,6 @@ describe('draw-clipboard', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -72,7 +71,6 @@ describe('draw-clipboard', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -117,7 +115,6 @@ describe('draw-clipboard', () => {
                     shape: 'rectangle',
                     angle: 0,
                     opacity: 1,
-                    textHeight: 20,
                     text: {
                         children: [
                             {
@@ -169,7 +166,6 @@ describe('draw-clipboard', () => {
                             id: 'sYCCy',
                             rowId: 'QxReG',
                             columnId: 'BPrih',
-                            textHeight: 20,
                             text: {
                                 children: [
                                     {
@@ -183,7 +179,6 @@ describe('draw-clipboard', () => {
                             id: 'YCMms',
                             rowId: 'QxReG',
                             columnId: 'aPBxp',
-                            textHeight: 20,
                             text: {
                                 children: [
                                     {
@@ -197,7 +192,6 @@ describe('draw-clipboard', () => {
                             id: 'czRtB',
                             rowId: 'QxReG',
                             columnId: 'CcmhC',
-                            textHeight: 20,
                             text: {
                                 children: [
                                     {

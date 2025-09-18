@@ -224,7 +224,6 @@ export const mockLineData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -245,7 +244,6 @@ export const mockLineData = [
         shape: 'rectangle',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
         text: {
             children: [
                 {
@@ -289,7 +287,6 @@ export const mockLineData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 45,
         text: {
             children: [
                 {
@@ -311,7 +308,6 @@ export const mockLineData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 45,
         text: {
             children: [
                 {
@@ -334,7 +330,6 @@ export const mockLineData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 22.5,
         text: {
             children: [
                 {
@@ -357,7 +352,6 @@ export const mockLineData = [
     //     shape: 'text',
     //     angle: 0,
     //     opacity: 1,
-    //     textHeight: 22.5,
     //     text: {
     //         children: [
     //             {
@@ -379,7 +373,6 @@ export const mockLineData = [
     //     shape: 'text',
     //     angle: 0,
     //     opacity: 1,
-    //     textHeight: 22.5,
     //     text: {
     //         children: [
     //             {
