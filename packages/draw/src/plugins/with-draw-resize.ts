@@ -188,13 +188,7 @@ export function withDrawResize(board: PlaitBoard) {
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
-                    if (PlaitDrawElement.isGeometry(target) && isGeometryIncludeText(target)) {
-                        const { height: textHeight } = getFirstTextManage(target).getSize();
-                        DrawTransforms.resizeGeometry(board, points as [Point, Point], textHeight, path);
-                    } else {
-                        points = normalizeShapePoints(points as [Point, Point]);
-                        Transforms.setNode(board, { points }, path);
-                    }
+                    DrawTransforms.resizeGeometry(board, points as [Point, Point], path);
                 } else if (
                     PlaitDrawElement.isLine(target) ||
                     PlaitDrawElement.isCustomGeometryElement(board, target) ||

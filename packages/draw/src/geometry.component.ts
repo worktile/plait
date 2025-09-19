@@ -15,7 +15,7 @@ import { ArrowLineAutoCompleteGenerator } from './generators/arrow-line-auto-com
 import { getTextRectangle, isGeometryIncludeText, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { DrawTextInfo, TextGenerator } from './generators/text.generator';
 import { SingleTextGenerator } from './generators/single-text.generator';
-import { PlaitText } from './interfaces';
+import { PlaitDrawElement, PlaitText } from './interfaces';
 import { GeometryThreshold } from './constants';
 import { getEngine } from './engines';
 
@@ -173,7 +173,7 @@ export class GeometryComponent
                     if (getRectangle) {
                         width = getRectangle(this.board, this.element as PlaitGeometry).width;
                     }
-                    return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+                    return PlaitDrawElement.isText(this.element) && this.element.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
                 }
             });
         }

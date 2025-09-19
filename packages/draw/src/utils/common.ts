@@ -56,7 +56,7 @@ import { DrawTextInfo } from '../generators/text.generator';
 import { getTextSize } from './text-size';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: PlaitBoard, element: T) => {
-    const isAutoSize = (element as unknown as PlaitText).autoSize;
+    const isAutoSize = PlaitDrawElement.isText(element) ? element.autoSize : false;
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);
     const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;

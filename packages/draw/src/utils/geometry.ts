@@ -47,7 +47,7 @@ import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
-export type TextProperties = Partial<CustomText> & { align?: Alignment; textHeight?: number };
+export type TextProperties = Partial<CustomText> & { align?: Alignment };
 
 export const createGeometryElement = (
     shape: GeometryShapes,
@@ -72,16 +72,13 @@ export const createGeometryElementWithText = (
 ): PlaitGeometry => {
     let textOptions = {};
     let alignment: undefined | Alignment = Alignment.center;
-    let textHeight = DefaultTextProperty.height;
     if (shape === BasicShapes.text) {
         textOptions = { autoSize: true };
         alignment = undefined;
     }
     textProperties = { ...textProperties };
     textProperties?.align && (alignment = textProperties?.align);
-    textProperties?.textHeight && (textHeight = textProperties?.textHeight);
     delete textProperties?.align;
-    delete textProperties?.textHeight;
 
     return {
         id: idCreator(),
@@ -89,7 +86,6 @@ export const createGeometryElementWithText = (
         shape,
         angle: 0,
         opacity: 1,
-        textHeight,
         text: buildText(text, alignment, textProperties),
         points,
         ...textOptions,
@@ -200,18 +196,15 @@ export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, font
     return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
 };
 
-export const createTextElement = (board: PlaitBoard, points: [Point, Point], text: string | Element, textHeight?: number) => {
+export const createTextElement = (board: PlaitBoard, points: [Point, Point], text: string | Element) => {
     const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
-    textHeight = textHeight ? textHeight : RectangleClient.getRectangleByPoints(points).height;
     return createGeometryElement(BasicShapes.text, points, text, memorizedLatest.geometryProperties as GeometryStyleOptions, {
-        ...memorizedLatest.textProperties,
-        textHeight
+        ...memorizedLatest.textProperties
     });
 };
 
 export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
-    const textHeight = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']).height;
     if (PlaitDrawElement.isUMLClassOrInterface({ shape })) {
         return createUMLClassOrInterfaceGeometryElement(board, shape, points);
     }
@@ -229,7 +222,7 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
                 strokeWidth: DefaultBasicShapeProperty.strokeWidth,
                 ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
             },
-            { ...memorizedLatest.textProperties, textHeight }
+            { ...memorizedLatest.textProperties }
         );
     }
 };

@@ -39,14 +39,6 @@ import { getVectorLinePoints } from './vector-line';
 import { Editor, Element } from 'slate';
 import { generateCloudPath } from '../engines/basic-shapes/cloud';
 
-export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
-    const client = RectangleClient.getRectangleByPoints(geometry.points);
-    if (geometry.textHeight && geometry.textHeight > client.height) {
-        return true;
-    }
-    return false;
-};
-
 export const isHitArrowLineText = (board: PlaitBoard, element: PlaitArrowLine, point: Point) => {
     return getHitArrowLineTextIndex(board, element, point) !== -1;
 };

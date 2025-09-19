@@ -35,7 +35,7 @@ export const getMemorizeKey = (element: PlaitElement) => {
 
 export const getLineMemorizedLatest = () => {
     const properties = getMemorizedLatest(MemorizeKey.arrowLine);
-    return { ...properties } || {};
+    return { ...properties };
 };
 
 export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
@@ -47,8 +47,8 @@ export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
     } else {
         memorizeKey = MemorizeKey.flowchart;
     }
-    const properties = { ...getMemorizedLatest(memorizeKey) } || {};
-    const textProperties = { ...properties.text } || {};
+    const properties = { ...getMemorizedLatest(memorizeKey) };
+    const textProperties = { ...properties.text };
     delete properties.text;
     return { textProperties, geometryProperties: properties };
 };
@@ -56,7 +56,7 @@ export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
 export const memorizeLatestText = <T extends PlaitElement = PlaitDrawElement>(element: T, operations: BaseOperation[]) => {
     const memorizeKey = getMemorizeKey(element);
     let textMemory = getMemorizedLatest(memorizeKey)?.text || {};
-    const setNodeOperation = operations.find(operation => operation.type === 'set_node');
+    const setNodeOperation = operations.find((operation) => operation.type === 'set_node');
     if (setNodeOperation) {
         const { properties, newProperties } = setNodeOperation as BaseSetNodeOperation;
         for (const key in newProperties) {

@@ -26,10 +26,10 @@ export const insertText = (board: PlaitBoard, point: Point, text: string | Eleme
     insertElement(board, newElement);
 };
 
-export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHeight: number, path: Path) => {
+export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], path: Path) => {
     const normalizePoints = normalizeShapePoints(points);
     const element = PlaitNode.get(board, path);
-    const newProperties = { points: normalizePoints, textHeight };
+    const newProperties = { points: normalizePoints, text: { ...element.text } };
     if (PlaitDrawElement.isText(element) && element.autoSize) {
         (newProperties as Partial<PlaitText>).autoSize = false;
     }
@@ -39,7 +39,7 @@ export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHe
 export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) => {
     const selectedElements = getSelectedElements(board);
     const refs: { property: Partial<PlaitArrowLine>; path: Path }[] = [];
-    selectedElements.forEach(item => {
+    selectedElements.forEach((item) => {
         if (PlaitDrawElement.isGeometry(item) && !PlaitDrawElement.isText(item)) {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { shape }, path);
@@ -47,7 +47,7 @@ export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) =>
         }
     });
     if (refs.length) {
-        refs.forEach(ref => {
+        refs.forEach((ref) => {
             DrawTransforms.resizeArrowLine(board, ref.property, ref.path);
         });
     }
