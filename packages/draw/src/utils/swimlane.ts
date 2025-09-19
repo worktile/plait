@@ -13,7 +13,7 @@ export function buildSwimlaneTable(element: PlaitSwimlane) {
                     rowspan: element.rows.length
                 };
             }
-            if (item.text && item.textHeight && !item.text.direction) {
+            if (item.text && !item.text.direction) {
                 item = {
                     ...item,
                     text: {

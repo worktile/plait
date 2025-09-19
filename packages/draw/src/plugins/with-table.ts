@@ -85,9 +85,9 @@ export const withTable = (board: PlaitBoard) => {
             event.preventDefault();
             if (PlaitDrawElement.isElementByTable(targetElement)) {
                 const cells = getSelectedCells(targetElement);
-                let cell = targetElement.cells.find((item) => item.text && item.textHeight);
+                let cell = targetElement.cells.find((item) => item.text);
                 if (cells?.length) {
-                    cell = cells.find((item) => item.text && item.textHeight);
+                    cell = cells.find((item) => item.text);
                 }
                 if (cell) {
                     editCell(board, cell);
@@ -105,7 +105,7 @@ export const withTable = (board: PlaitBoard) => {
             const hitElement = getHitElementByPoint(board, point);
             if (hitElement && PlaitDrawElement.isElementByTable(hitElement)) {
                 const hitCell = getHitCell(tableBoard, hitElement, point);
-                if (hitCell && hitCell.text && hitCell.textHeight) {
+                if (hitCell && hitCell.text) {
                     editCell(board, hitCell);
                     return;
                 }
@@ -126,7 +126,7 @@ export const withTable = (board: PlaitBoard) => {
             const point = toViewBoxPoint(tableBoard, toHostPoint(tableBoard, event.x, event.y));
             const element = getSelectedTableElements(tableBoard)[0];
             const hitCell = getHitCell(tableBoard, element, point);
-            if (hitCell && hitCell.text && hitCell.textHeight) {
+            if (hitCell && hitCell.text) {
                 setSelectedCells(element, [hitCell]);
             }
         }

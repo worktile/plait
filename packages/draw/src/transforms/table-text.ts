@@ -7,7 +7,7 @@ import { getCellWithPoints, updateColumns, updateRows } from '../utils/table';
 export const setTableText = (board: PlaitBoard, path: Path, cellId: string, text: Element, textHeight: number) => {
     const table = PlaitNode.get(board, path) as PlaitBaseTable;
     const cell = getCellWithPoints(board, table, cellId);
-    const cellIndex = table.cells.findIndex(item => item.id === cell.id);
+    const cellIndex = table.cells.findIndex((item) => item.id === cell.id);
     let rows = [...table.rows];
     let columns = [...table.columns];
     let cells = [...table.cells];
@@ -15,7 +15,7 @@ export const setTableText = (board: PlaitBoard, path: Path, cellId: string, text
     const { width: cellWidth, height: cellHeight } = RectangleClient.getRectangleByPoints(cell.points);
     const defaultSpace = ShapeDefaultSpace.rectangleAndText;
     if (PlaitTableElement.isVerticalText(cell as PlaitTableCell)) {
-        const columnIdx = table.columns.findIndex(column => column.id === cell.columnId);
+        const columnIdx = table.columns.findIndex((column) => column.id === cell.columnId);
         if (textHeight > cellWidth) {
             const newColumnWidth = textHeight + defaultSpace * 2;
             const offset = newColumnWidth - cellWidth;
@@ -24,9 +24,9 @@ export const setTableText = (board: PlaitBoard, path: Path, cellId: string, text
             columns = result.columns;
         }
     } else {
-        const rowIdx = table.rows.findIndex(row => row.id === cell.rowId);
+        const rowIdx = table.rows.findIndex((row) => row.id === cell.rowId);
         const tableRow = table.rows[rowIdx];
-        const compareHeight = tableRow.height ?? Math.max(cellHeight, cell.textHeight || 0);
+        const compareHeight = tableRow.height ?? Math.max(cellHeight, textHeight || 0);
         if (textHeight > compareHeight) {
             const newRowHeight = textHeight + defaultSpace * 2;
             const offset = newRowHeight - compareHeight;
@@ -37,7 +37,6 @@ export const setTableText = (board: PlaitBoard, path: Path, cellId: string, text
     }
     cells[cellIndex] = {
         ...cells[cellIndex],
-        textHeight: textHeight,
         text
     };
 

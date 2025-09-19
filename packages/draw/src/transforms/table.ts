@@ -14,7 +14,7 @@ export const setTableFill = (board: PlaitBoard, element: PlaitBaseTable, fill: s
         });
     } else {
         newCells = element.cells.map(cell => {
-            if (cell.text && cell.textHeight) {
+            if (cell.text) {
                 return getNewCell(cell, fill);
             }
             return cell;

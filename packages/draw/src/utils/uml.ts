@@ -74,13 +74,8 @@ const buildTableCellsForGeometry = (
     }[],
     shape: GeometryShapes
 ): PlaitTableCell[] => {
-    const memorizedLatest = getMemorizedLatestByPointer(shape);
     const cellCount = rows.length * columns.length;
     const defaultTexts = (getDefaultGeometryProperty(shape) as any)?.texts || [];
-    const textHeights = defaultTexts.map((textItem: { text: string }) => {
-        return getTextShapeProperty(board, textItem.text || getDefaultGeometryText(board), memorizedLatest.textProperties['font-size'])
-            .height;
-    });
     return new Array(cellCount).fill('').map((item, index) => {
         const rowIndex = Math.floor(index / columns.length);
         const columnIndex = index % columns.length;
@@ -88,7 +83,6 @@ const buildTableCellsForGeometry = (
             id: idCreator(),
             rowId: rows[rowIndex].id,
             columnId: columns[columnIndex].id,
-            textHeight: textHeights[index],
             text: {
                 children: [
                     {

@@ -153,7 +153,7 @@ export function updateCellIds(cells: PlaitTableCell[]) {
 }
 
 export function isCellIncludeText(cell: PlaitTableCell) {
-    return cell.text && cell.textHeight;
+    return cell.text;
 }
 
 export function getCellsRectangle(board: PlaitTableBoard, element: PlaitTable, cells: PlaitTableCell[]) {
@@ -172,7 +172,6 @@ export const createCell = (rowId: string, columnId: string, text: string | null 
         columnId
     };
     if (text !== null) {
-        cell['textHeight'] = TEXT_DEFAULT_HEIGHT;
         cell['text'] = {
             children: [{ text }],
             align: Alignment.center

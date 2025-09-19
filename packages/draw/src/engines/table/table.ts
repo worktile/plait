@@ -7,6 +7,7 @@ import { PlaitTable, PlaitTableCellWithPoints, PlaitTableDrawOptions, PlaitTable
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { getNearestPointBetweenPointAndRoundRectangle, getRoundRectangleRadius } from '../basic-shapes/round-rectangle';
+import { getTextSize } from '../../utils/text-size';
 
 export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, DrawTextInfo> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {
@@ -19,7 +20,7 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, DrawTex
                 const tableTopBorder = drawLine(rs, [x, y], [x + width, y], roughOptions);
                 const tableLeftBorder = drawLine(rs, [x, y], [x, y + height], roughOptions);
                 g.append(tableTopBorder, tableLeftBorder);
-                pointCells.forEach(cell => {
+                pointCells.forEach((cell) => {
                     const rectangle = RectangleClient.getRectangleByPoints(cell.points!);
                     const { x, y, width, height } = rectangle;
                     const cellRectangle = drawRectangle(
@@ -62,9 +63,9 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, DrawTex
                 const cell = getCellWithPoints(board, element, options!.id);
                 if (cell) {
                     if (PlaitTableElement.isVerticalText(cell)) {
-                        return getVerticalTextRectangle(cell);
+                        return getVerticalTextRectangle(board, cell);
                     } else {
-                        return getHorizontalTextRectangle(cell);
+                        return getHorizontalTextRectangle(board, cell);
                     }
                 }
             }
@@ -80,28 +81,49 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, DrawTex
     }
 };
 
-export function getVerticalTextRectangle(cell: PlaitTableCellWithPoints) {
+export function getVerticalTextRectangle(board: PlaitBoard, cell: PlaitTableCellWithPoints) {
     const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
     const strokeWidth = getStrokeWidthByElement(cell);
-    const height = cell.textHeight || 0;
     const width = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-    return {
-        width: width > 0 ? width : 0,
-        height,
-        x: cellRectangle.x - width / 2 + cellRectangle.width / 2,
-        y: cellRectangle.y + (cellRectangle.height - height) / 2
-    };
+    return getTextRectangle(board, cell, width, cellRectangle);
 }
 
-export function getHorizontalTextRectangle(cell: PlaitTableCellWithPoints) {
+export function getHorizontalTextRectangle(board: PlaitBoard, cell: PlaitTableCellWithPoints) {
     const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
     const strokeWidth = getStrokeWidthByElement(cell);
-    const height = cell.textHeight || 0;
     const width = cellRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-    return {
-        height,
-        width: width > 0 ? width : 0,
-        x: cellRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-        y: cellRectangle.y + (cellRectangle.height - height) / 2
-    };
+    return getTextRectangle(board, cell, width, cellRectangle);
 }
+
+export function getTextRectangle(board: PlaitBoard, cell: PlaitTableCellWithPoints, width: number, cellRectangle: RectangleClient) {
+    const text = cell.text;
+    if (text) {
+        const textSize = getTextSize(board, text, width);
+        return {
+            width: width > 0 ? width : 0,
+            height: textSize.height,
+            x: cellRectangle.x - width / 2 + cellRectangle.width / 2,
+            y: cellRectangle.y + (cellRectangle.height - textSize.height) / 2
+        };
+    } else {
+        return {
+            width: 0,
+            height: 0,
+            x: cellRectangle.x,
+            y: cellRectangle.y
+        };
+    }
+}
+
+export const getCellTextHeight = (board: PlaitBoard, cell: PlaitTableCellWithPoints, isVertical: boolean = false) => {
+    if (cell.text) {
+        const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
+        const strokeWidth = getStrokeWidthByElement(cell);
+        let width = cellRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+        if (isVertical) {
+            width = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+        }
+        return getTextSize(board, cell.text, width).height;
+    }
+    return 0;
+};

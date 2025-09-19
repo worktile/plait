@@ -36,7 +36,6 @@ export interface PlaitTableCell {
     colspan?: number;
     rowspan?: number;
     text?: PlaitTableCellParagraph;
-    textHeight?: number;
     fill?: string;
 }
 

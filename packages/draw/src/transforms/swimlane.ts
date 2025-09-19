@@ -149,8 +149,7 @@ const createNewSwimlaneCells = (swimlane: PlaitSwimlane, newId: string, type: 'r
             children: [{ text: swimlane.header ? 'Lane' : 'New Swimlane' }],
             align: Alignment.center,
             direction: type === 'row' ? undefined : 'vertical'
-        },
-        textHeight: 20
+        }
     };
     return cells;
 };
