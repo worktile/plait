@@ -290,29 +290,31 @@ export function drawPendingNodesG(board: PlaitBoard, activeElements: PlaitElemen
             () => true
         );
     });
-    elements.forEach(item => {
-        let rectangle = board.getRectangle(item);
-        if (rectangle) {
-            rectangle = {
-                x: rectangle.x + offsetX,
-                y: rectangle.y + offsetY,
-                width: rectangle.width,
-                height: rectangle.height
-            };
-            const movingG = drawRectangle(board, rectangle!, {
-                stroke: SELECTION_BORDER_COLOR,
-                strokeWidth: 1,
-                fill: SELECTION_FILL_COLOR,
-                fillStyle: 'solid'
-            });
-            if (!pendingNodesG) {
-                pendingNodesG = createG();
-                pendingNodesG.classList.add(ACTIVE_MOVING_CLASS_NAME);
+    elements
+        .filter((value) => PlaitElement.hasMounted(value))
+        .forEach((item) => {
+            let rectangle = board.getRectangle(item);
+            if (rectangle) {
+                rectangle = {
+                    x: rectangle.x + offsetX,
+                    y: rectangle.y + offsetY,
+                    width: rectangle.width,
+                    height: rectangle.height
+                };
+                const movingG = drawRectangle(board, rectangle!, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1,
+                    fill: SELECTION_FILL_COLOR,
+                    fillStyle: 'solid'
+                });
+                if (!pendingNodesG) {
+                    pendingNodesG = createG();
+                    pendingNodesG.classList.add(ACTIVE_MOVING_CLASS_NAME);
+                }
+                const angle = getAngleByElement(item);
+                angle && setAngleForG(movingG, RectangleClient.getCenterPoint(rectangle), angle);
+                pendingNodesG.append(movingG);
             }
-            const angle = getAngleByElement(item);
-            angle && setAngleForG(movingG, RectangleClient.getCenterPoint(rectangle), angle);
-            pendingNodesG.append(movingG);
-        }
-    });
+        });
     return pendingNodesG;
 }
