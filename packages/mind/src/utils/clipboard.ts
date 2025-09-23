@@ -70,6 +70,10 @@ export const insertClipboardData = (
     const targetParentPath = targetParent && PlaitBoard.findPath(board, targetParent);
     const nonAbstractChildrenLength = targetParent && getNonAbstractChildren(targetParent).length;
 
+    if (targetParent && targetParent.isCollapsed) {
+        Transforms.setNode(board, { isCollapsed: false }, targetParentPath);
+    }
+
     elements.forEach((item: PlaitElement, index: number) => {
         newElement = copyNewNode(item as MindElement);
         if (hasTargetParent && operationType !== WritableClipboardOperationType.duplicate) {
@@ -102,6 +106,10 @@ export const insertClipboardData = (
 
 export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitElement, text: string | Element) => {
     const newElement = createMindElement(text, {});
+    const path = PlaitBoard.findPath(board, targetParent);
     Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
+    if (targetParent.isCollapsed) {
+        Transforms.setNode(board, { isCollapsed: false }, path);
+    }
     Transforms.addSelectionWithTemporaryElements(board, [newElement]);
 };
