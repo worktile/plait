@@ -89,8 +89,6 @@ export const insertElement = (board: PlaitBoard, element: PlaitBaseGeometry | Pl
     memorizeLatestShape(board, element.shape);
     Transforms.insertNode(board, element, [board.children.length]);
     clearSelectedElement(board);
-    addSelectedElement(board, element);
-    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
 export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
