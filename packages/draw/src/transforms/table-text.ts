@@ -26,7 +26,7 @@ export const setTableText = (board: PlaitBoard, path: Path, cellId: string, text
     } else {
         const rowIdx = table.rows.findIndex((row) => row.id === cell.rowId);
         const tableRow = table.rows[rowIdx];
-        const compareHeight = tableRow.height ?? Math.max(cellHeight, textHeight || 0);
+        const compareHeight = tableRow.height ?? Math.max(cellHeight, 0);
         if (textHeight > compareHeight) {
             const newRowHeight = textHeight + defaultSpace * 2;
             const offset = newRowHeight - compareHeight;
