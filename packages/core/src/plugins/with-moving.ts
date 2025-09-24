@@ -51,6 +51,9 @@ export function withMoving(board: PlaitBoard) {
             if (isKeyHotkey('option', event)) {
                 event.preventDefault();
                 if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+                    if(pendingNodesG) {
+                        PlaitBoard.getElementTopHost(board).removeChild(pendingNodesG);
+                    }
                     pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
                     pendingNodesG && PlaitBoard.getElementTopHost(board).append(pendingNodesG);
                 }
