@@ -8,13 +8,11 @@ import {
     isPointInRoundRectangle,
     setStrokeLinecap
 } from '@plait/core';
-import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { ShapeDefaultSpace } from '../../constants';
 import { getRoundRectangleRadius } from './round-rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getStrokeWidthByElement } from '../../utils/common';
+import { getTextRectangle } from '../../utils/common';
 
 const heightRatio = 3 / 4;
 
@@ -77,16 +75,9 @@ export const RoundCommentEngine: ShapeEngine = {
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const strokeWidth = getStrokeWidthByElement(element);
-        const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-        const text = element.text!;
-        const textSize = getTextSize(board, text, width);
-        return {
-            height: textSize.height,
-            width: width > 0 ? width : 0,
-            x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + (elementRectangle.height * heightRatio - textSize.height) / 2
-        };
+        const textRectangle = getTextRectangle(board, element);
+        textRectangle.y = elementRectangle.y + (elementRectangle.height * heightRatio - textRectangle.height) / 2;
+        return textRectangle;
     }
 };
 

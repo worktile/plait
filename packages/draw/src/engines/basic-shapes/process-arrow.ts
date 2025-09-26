@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getTextRectangle } from '../../utils';
+import { getCustomTextRectangle } from '../../utils';
 
 export const getProcessArrowPoints = (rectangle: RectangleClient): Point[] => {
     const wider = rectangle.width > rectangle.height / 2;
@@ -19,10 +19,9 @@ export const ProcessArrowEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getProcessArrowPoints,
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const rectangle = getTextRectangle(board, element);
         const wider = elementRectangle.width > elementRectangle.height + 20;
-        rectangle.width = wider ? elementRectangle.width - elementRectangle.height : rectangle.width;
-        rectangle.x = wider ? elementRectangle.x + elementRectangle.height / 2:  rectangle.x;
-        return rectangle;
+        const widthRatio = wider ? (elementRectangle.width - elementRectangle.height) / elementRectangle.width : 3 / 4;
+        const customTextRectangle = getCustomTextRectangle(board, element, widthRatio);
+        return customTextRectangle;
     }
 });

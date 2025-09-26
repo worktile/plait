@@ -2,7 +2,7 @@ import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
-import { getTextRectangle } from '../../utils';
+import { getCustomTextRectangle } from '../../utils';
 
 export const getTrapezoidPoints = (rectangle: RectangleClient): Point[] => {
     return [
@@ -20,10 +20,6 @@ export const TrapezoidEngine: ShapeEngine = createPolygonEngine({
         return getCenterPointsOnPolygon(points);
     },
     getTextRectangle(board: PlaitBoard, element: PlaitGeometry) {
-        const rectangle = getTextRectangle(board, element);
-        const width = rectangle.width;
-        rectangle.width = (rectangle.width * 3) / 4;
-        rectangle.x += width / 8;
-        return rectangle;
+        return getCustomTextRectangle(board, element, 3 / 4);
     }
 });

@@ -9,10 +9,8 @@ import {
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { ShapeDefaultSpace } from '../../constants';
-import { getStrokeWidthByElement, getTextRectangle } from '../../utils';
+import { getTextRectangle } from '../../utils';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getTextSize } from '../../utils/text-size';
 
 const heightRatio = 3 / 4;
 
