@@ -10,7 +10,7 @@ import {
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getStrokeWidthByElement } from '../../utils';
+import { getCustomTextRectangle, getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { getNearestPointBetweenPointAndArc } from '@plait/core';
 import { getTextSize } from '../../utils/text-size';
@@ -156,17 +156,7 @@ export const CloudEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const strokeWidth = getStrokeWidthByElement(element);
-        const originWidth = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-        const width = originWidth / 1.5;
-        const text = element.text!;
-        const textSize = getTextSize(board, text, width);
-        return {
-            height: textSize.height,
-            width: width > 0 ? width : 0,
-            x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + originWidth / 6,
-            y: elementRectangle.y + elementRectangle.height / 6 + ((elementRectangle.height * 4) / 6 - textSize.height) / 2
-        };
+        const widthRatio = 1 / 1.5;
+        return getCustomTextRectangle(board, element, widthRatio);
     }
 };

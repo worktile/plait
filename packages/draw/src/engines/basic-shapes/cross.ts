@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getTextRectangle } from '../../utils';
+import { getCustomTextRectangle, getTextRectangle } from '../../utils';
 export const getCrossPoints = (rectangle: RectangleClient): Point[] => {
     return [
         [rectangle.x + rectangle.width / 4, rectangle.y],
@@ -25,10 +25,7 @@ export const CrossEngine: ShapeEngine = createPolygonEngine({
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        const rectangle = getTextRectangle(board, element);
-        const width = rectangle.width;
-        rectangle.width = rectangle.width / 2;
-        rectangle.x += width / 4;
-        return rectangle;
+        const widthRatio = 1 / 2;
+        return getCustomTextRectangle(board, element, widthRatio);
     }
 });

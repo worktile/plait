@@ -38,8 +38,7 @@ import {
     PlaitCustomGeometry,
     PlaitDrawElement,
     PlaitGeometry,
-    PlaitShapeElement,
-    PlaitText
+    PlaitShapeElement
 } from '../interfaces';
 import { Alignment, getTextEditorsByElement } from '@plait/common';
 import { isCellIncludeText } from './table';
@@ -73,6 +72,17 @@ export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: 
         height: textSize.height,
         width: width > 0 ? width : 0,
         x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
+        y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
+    };
+};
+
+export const getCustomTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: PlaitBoard, element: T, widthRatio: number) => {
+    const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
+    const textSize = getTextSize(board, element.text!, widthRatio * elementRectangle.width);
+    return {
+        height: textSize.height,
+        width: widthRatio * elementRectangle.width,
+        x: elementRectangle.x + (elementRectangle.width - widthRatio * elementRectangle.width) / 2,
         y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
     };
 };
