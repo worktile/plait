@@ -1,7 +1,8 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getTextRectangle } from '../../utils';
+import { getCustomTextRectangle } from '../../utils';
+import { ShapeDefaultSpace } from '../../constants';
 
 export const getLeftArrowPoints = (rectangle: RectangleClient): Point[] => {
     return [
@@ -24,10 +25,9 @@ export const LeftArrowEngine: ShapeEngine = createPolygonEngine({
         ];
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        const rectangle = getTextRectangle(board, element);
-        const width = rectangle.width;
-        rectangle.width = rectangle.width * (1 - 0.32);
-        rectangle.x += width * 0.32;
-        return rectangle;
+        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
+        const customTextRectangle = getCustomTextRectangle(board, element, 1 - 0.32);
+        customTextRectangle.x = elementRectangle.x + elementRectangle.width * 0.32 + ShapeDefaultSpace.rectangleAndText;
+        return customTextRectangle;
     }
 });

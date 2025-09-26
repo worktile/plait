@@ -78,11 +78,12 @@ export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: 
 
 export const getCustomTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: PlaitBoard, element: T, widthRatio: number) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-    const textSize = getTextSize(board, element.text!, widthRatio * elementRectangle.width);
+    const width = widthRatio * elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2;
+    const textSize = getTextSize(board, element.text!, width);
     return {
         height: textSize.height,
-        width: widthRatio * elementRectangle.width,
-        x: elementRectangle.x + (elementRectangle.width - widthRatio * elementRectangle.width) / 2,
+        width: width,
+        x: elementRectangle.x + (elementRectangle.width - width) / 2,
         y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
     };
 };

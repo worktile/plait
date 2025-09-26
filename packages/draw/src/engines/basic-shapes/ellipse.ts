@@ -11,7 +11,7 @@ import {
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getTextRectangle } from '../../utils';
+import { getCustomTextRectangle, getTextRectangle } from '../../utils';
 
 export interface CreateEllipseOptions {
     draw?: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
@@ -52,11 +52,7 @@ export function createEllipseEngine(createOptions?: CreateEllipseOptions): Shape
             return RectangleClient.getEdgeCenterPoints(rectangle);
         },
         getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-            const rectangle = getTextRectangle(board, element);
-            const width = rectangle.width;
-            rectangle.width = (rectangle.width * 3) / 4;
-            rectangle.x += width / 8;
-            return rectangle;
+            return getCustomTextRectangle(board, element, 3 / 4);
         }
     };
 
