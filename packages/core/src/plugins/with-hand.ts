@@ -9,7 +9,7 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '../utils';
-import { isMainPointer, isWheelPointer } from '../utils/dom/common';
+import { isMainPointer, isWheelPointer, isSecondaryPointer } from '../utils/dom/common';
 import { isSmartHand } from '../utils/mobile';
 import { updateViewportContainerScroll } from '../utils/viewport';
 import { PlaitOptionsBoard } from './with-options';
@@ -22,6 +22,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     let movingPoint: PlaitBoardMove | null = null;
     let pointerDownEvent: PointerEvent | null = null;
     let hasWheelPressed = false;
+    let hasSecondaryPressed = false;
     let beingPressedShortcutKey = false;
 
     board.pointerDown = (event: PointerEvent) => {
@@ -45,6 +46,15 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             hasWheelPressed = true;
             // Prevent the browser's default behavior of scrolling the page when the mouse wheel is pressed.
             event.preventDefault();
+            movingPoint = {
+                x: event.x,
+                y: event.y
+            };
+            isHandMoving = true;
+            PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
+        }
+        else if (isSecondaryPointer(event)) {
+            hasSecondaryPressed = true;
             movingPoint = {
                 x: event.x,
                 y: event.y
@@ -81,6 +91,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
             isSmartHand(board, event) ||
             hasWheelPressed ||
+            hasSecondaryPressed ||
             beingPressedShortcutKey;
         if (canEnterHandMode && isHandMoving && movingPoint && !isSelectionMoving(board) && !isMovingElements(board)) {
             const viewportContainer = PlaitBoard.getViewportContainer(board);
@@ -107,6 +118,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         isHandMoving = false;
         PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
         hasWheelPressed = false;
+        hasSecondaryPressed = false;
         globalPointerUp(event);
     };
 
