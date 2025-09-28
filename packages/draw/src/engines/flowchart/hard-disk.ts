@@ -10,27 +10,26 @@ import {
     isPointInEllipse,
     setStrokeLinecap
 } from '@plait/core';
-import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
-import { ShapeDefaultSpace } from '../../constants';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getStrokeWidthByElement } from '../../utils';
+import { getCustomTextRectangle, getXTextRectangleOffset } from '../../utils';
 
 export const HardDiskEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
             `M${rectangle.x + rectangle.width - rectangle.width * 0.15} ${rectangle.y}  
-            A${rectangle.width * 0.15} ${rectangle.height / 2}, 0, 0, 0,${rectangle.x +
-                rectangle.width -
-                rectangle.width * 0.15} ${rectangle.y + rectangle.height} 
+            A${rectangle.width * 0.15} ${rectangle.height / 2}, 0, 0, 0,${rectangle.x + rectangle.width - rectangle.width * 0.15} ${
+                rectangle.y + rectangle.height
+            } 
             A${rectangle.width * 0.15} ${rectangle.height / 2}, 0, 0, 0,${rectangle.x + rectangle.width - rectangle.width * 0.15} ${
                 rectangle.y
             } 
             H${rectangle.x + rectangle.width * 0.15}
-            A${rectangle.width * 0.15} ${rectangle.height / 2}, 0, 0, 0, ${rectangle.x + rectangle.width * 0.15} ${rectangle.y +
-                rectangle.height}
+            A${rectangle.width * 0.15} ${rectangle.height / 2}, 0, 0, 0, ${rectangle.x + rectangle.width * 0.15} ${
+                rectangle.y + rectangle.height
+            }
             H${rectangle.x + rectangle.width - rectangle.width * 0.15}`,
             { ...options, fillStyle: 'solid' }
         );
@@ -108,15 +107,9 @@ export const HardDiskEngine: ShapeEngine = {
 
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const strokeWidth = getStrokeWidthByElement(element);
-        const width = elementRectangle.width - elementRectangle.width * 0.45 - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-        const text = element.text!;
-        const textSize = getTextSize(board, text, width);
-        return {
-            height: textSize.height,
-            width: width > 0 ? width : 0,
-            x: elementRectangle.x + elementRectangle.width * 0.15 + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
-        };
+        const textRectangle = getCustomTextRectangle(board, element, 0.55);
+        const xStart = elementRectangle.x + elementRectangle.width * 0.15;
+        textRectangle.x = xStart;
+        return textRectangle;
     }
 };

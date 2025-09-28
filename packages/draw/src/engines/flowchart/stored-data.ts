@@ -14,7 +14,7 @@ import {
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getCustomTextRectangle, getTextRectangle } from '../../utils';
+import { getCustomTextRectangle } from '../../utils';
 
 export const StoredDataEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {

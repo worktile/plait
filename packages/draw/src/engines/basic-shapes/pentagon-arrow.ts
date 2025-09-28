@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getCustomTextRectangle, getTextRectangle } from '../../utils';
+import { getCustomTextRectangle } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 
 export const getPentagonArrowPoints = (rectangle: RectangleClient): Point[] => {

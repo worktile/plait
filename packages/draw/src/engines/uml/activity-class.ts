@@ -6,13 +6,11 @@ import {
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
-import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getStrokeWidthByElement } from '../../utils';
-import { ShapeDefaultSpace } from '../../constants';
+import { getCustomTextRectangle } from '../../utils';
 
 export const ActiveClassEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -50,17 +48,6 @@ export const ActiveClassEngine: ShapeEngine = {
     },
 
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const strokeWidth = getStrokeWidthByElement(element);
-        const width =
-            elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2 - elementRectangle.width * 0.125 * 2;
-        const text = element.text!;
-        const textSize = getTextSize(board, text, width);
-        return {
-            height: textSize.height,
-            width: width > 0 ? width : 0,
-            x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + elementRectangle.width * 0.125,
-            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
-        };
+        return getCustomTextRectangle(board, element, 0.75);
     }
 };

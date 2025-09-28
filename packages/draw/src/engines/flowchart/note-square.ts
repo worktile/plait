@@ -6,20 +6,19 @@ import {
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
-import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getStrokeWidthByElement } from '../../utils';
-import { ShapeDefaultSpace } from '../../constants';
+import { getTextRectangle } from '../../utils';
 
 export const NoteSquareEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x + rectangle.width * 0.075} ${rectangle.y + rectangle.height} H${rectangle.x} V${rectangle.y} H${rectangle.x +
-                rectangle.width * 0.075}
+            `M${rectangle.x + rectangle.width * 0.075} ${rectangle.y + rectangle.height} H${rectangle.x} V${rectangle.y} H${
+                rectangle.x + rectangle.width * 0.075
+            }
            `,
             { ...options, fillStyle: 'solid', fill: 'transparent' }
         );
@@ -45,16 +44,6 @@ export const NoteSquareEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const strokeWidth = getStrokeWidthByElement(element);
-        const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-        const text = element.text!;
-        const textSize = getTextSize(board, text, width);
-        return {
-            height: textSize.height,
-            width: width > 0 ? width : 0,
-            x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
-        };
+        return getTextRectangle(board, element);
     }
 };

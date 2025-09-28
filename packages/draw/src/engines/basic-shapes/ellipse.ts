@@ -11,7 +11,7 @@ import {
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getCustomTextRectangle, getTextRectangle } from '../../utils';
+import { getCustomTextRectangle } from '../../utils';
 
 export interface CreateEllipseOptions {
     draw?: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
