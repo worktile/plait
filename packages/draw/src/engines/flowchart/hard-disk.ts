@@ -13,7 +13,7 @@ import {
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getCustomTextRectangle, getXTextRectangleOffset } from '../../utils';
+import { getCustomTextRectangle } from '../../utils';
 
 export const HardDiskEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
