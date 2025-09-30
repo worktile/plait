@@ -54,6 +54,18 @@ import { isMultipleTextGeometry } from './multi-text-geometry';
 import { DrawTextInfo } from '../generators/text.generator';
 import { getTextSize } from './text-size';
 
+export const getCustomTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: PlaitBoard, element: T, widthRatio: number) => {
+    const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
+    const width = widthRatio * elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2;
+    const textSize = getTextSize(board, element.text!, width);
+    return {
+        height: textSize.height,
+        width: width,
+        x: elementRectangle.x + (elementRectangle.width - width) / 2,
+        y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
+    };
+};
+
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: PlaitBoard, element: T) => {
     const isAutoSize = PlaitDrawElement.isText(element) ? element.autoSize : false;
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
