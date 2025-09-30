@@ -10,8 +10,10 @@ import {
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getCustomTextRectangle } from '../../utils';
+import { getCustomTextRectangle, getStrokeWidthByElement } from '../../utils';
+import { ShapeDefaultSpace } from '../../constants';
 import { getNearestPointBetweenPointAndArc } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 
 export function generateCloudPath(rectangle: RectangleClient): { startPoint: Point; arcCommands: SVGArcCommand[] } {
     const divisionWidth = rectangle.width / 7;

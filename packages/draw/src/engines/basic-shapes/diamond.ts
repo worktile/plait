@@ -1,7 +1,9 @@
 import { PlaitBoard, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getCustomTextRectangle } from '../../utils';
+import { getCustomTextRectangle, getStrokeWidthByElement, getTextRectangle } from '../../utils';
+import { ShapeDefaultSpace } from '../../constants/geometry';
+import { getTextSize } from '../../utils/text-size';
 
 export const DiamondEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: RectangleClient.getEdgeCenterPoints,

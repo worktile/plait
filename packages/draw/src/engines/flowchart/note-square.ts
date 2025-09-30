@@ -6,19 +6,20 @@ import {
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getTextRectangle } from '../../utils';
+import { getStrokeWidthByElement, getCustomTextRectangle } from '../../utils';
+import { ShapeDefaultSpace } from '../../constants';
 
 export const NoteSquareEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x + rectangle.width * 0.075} ${rectangle.y + rectangle.height} H${rectangle.x} V${rectangle.y} H${
-                rectangle.x + rectangle.width * 0.075
-            }
+            `M${rectangle.x + rectangle.width * 0.075} ${rectangle.y + rectangle.height} H${rectangle.x} V${rectangle.y} H${rectangle.x +
+                rectangle.width * 0.075}
            `,
             { ...options, fillStyle: 'solid', fill: 'transparent' }
         );
@@ -44,6 +45,6 @@ export const NoteSquareEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        return getTextRectangle(board, element);
+        return getCustomTextRectangle(board, element, 0.88);
     }
 };

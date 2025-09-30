@@ -1,9 +1,18 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, distanceBetweenPointAndPoint, setStrokeLinecap } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    distanceBetweenPointAndPoint,
+    setStrokeLinecap
+} from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeDefaultSpace } from '../../constants';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
-import { getCustomTextRectangle } from '../../utils';
+import { getStrokeWidthByElement, getCustomTextRectangle } from '../../utils';
 import { pointsOnBezierCurves } from 'points-on-curve';
 
 interface NoteCurlyLeftPathData {
@@ -104,11 +113,6 @@ export const NoteCurlyLeftEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const textRectangle = getCustomTextRectangle(board, element, 0.88);
-        const xStart = elementRectangle.x;
-        const xEnd = elementRectangle.x + elementRectangle.width - elementRectangle.width * 0.12;
-        textRectangle.x = xStart + (xEnd - xStart - textRectangle.width) / 2;
-        return textRectangle;
+        return getCustomTextRectangle(board, element, 0.88);
     }
 };

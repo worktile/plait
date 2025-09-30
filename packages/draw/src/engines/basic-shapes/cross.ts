@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getCustomTextRectangle } from '../../utils';
+import { getCustomTextRectangle, getTextRectangle } from '../../utils';
 export const getCrossPoints = (rectangle: RectangleClient): Point[] => {
     return [
         [rectangle.x + rectangle.width / 4, rectangle.y],

@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
-import { getCustomTextRectangle } from '../../utils';
+import { getTextRectangle } from '../../utils';
 
 export const getPreparationPoints = (rectangle: RectangleClient): Point[] => {
     return [
@@ -20,6 +20,10 @@ export const PreparationEngine: ShapeEngine = createPolygonEngine({
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle(board: PlaitBoard, element: PlaitGeometry) {
-        return getCustomTextRectangle(board, element, 2/3);
+        const rectangle = getTextRectangle(board, element);
+        const width = rectangle.width;
+        rectangle.width = (rectangle.width * 2) / 3;
+        rectangle.x += width / 6;
+        return rectangle;
     }
 });

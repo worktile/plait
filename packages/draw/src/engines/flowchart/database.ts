@@ -10,24 +10,25 @@ import {
     isPointInEllipse,
     setStrokeLinecap
 } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeDefaultSpace } from '../../constants';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getCustomTextRectangle, getTextRectangle } from '../../utils';
+import { getStrokeWidthByElement, getCustomTextRectangle } from '../../utils';
 
 export const DatabaseEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
             `M${rectangle.x} ${rectangle.y + rectangle.height * 0.15}  
-            A${rectangle.width / 2} ${rectangle.height * 0.15}, 0, 0, 0,${rectangle.x + rectangle.width} ${
-                rectangle.y + rectangle.height * 0.15
-            } 
+            A${rectangle.width / 2} ${rectangle.height * 0.15}, 0, 0, 0,${rectangle.x + rectangle.width} ${rectangle.y +
+                rectangle.height * 0.15} 
             A${rectangle.width / 2} ${rectangle.height * 0.15}, 0, 0, 0,${rectangle.x} ${rectangle.y + rectangle.height * 0.15} 
             V${rectangle.y + rectangle.height - rectangle.height * 0.15}
-            A${rectangle.width / 2} ${rectangle.height * 0.15}, 0, 0, 0, ${rectangle.x + rectangle.width} ${
-                rectangle.y + rectangle.height - rectangle.height * 0.15
-            }
+            A${rectangle.width / 2} ${rectangle.height * 0.15}, 0, 0, 0, ${rectangle.x + rectangle.width} ${rectangle.y +
+                rectangle.height -
+                rectangle.height * 0.15}
             V${rectangle.y + rectangle.height * 0.15}`,
             { ...options, fillStyle: 'solid' }
         );
@@ -105,12 +106,6 @@ export const DatabaseEngine: ShapeEngine = {
     },
 
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const textRectangle = getTextRectangle(board, element);
-        textRectangle.y =
-            elementRectangle.y +
-            elementRectangle.height * 0.3 +
-            (elementRectangle.height - elementRectangle.height * 0.3 - textRectangle.height) / 2;
-        return textRectangle;
+        return getCustomTextRectangle(board, element, 0.7);
     }
 };

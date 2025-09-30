@@ -11,10 +11,10 @@ import {
     getVectorFromPointAndSlope,
     setStrokeLinecap
 } from '@plait/core';
+import { getTextSize } from '../../utils/text-size';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getUnitVectorByPointAndPoint, rotateVector } from '@plait/common';
-import { getCustomTextRectangle } from '../../utils';
 
 interface ActorPathData {
     headArcCommand: SVGArcCommand;
@@ -148,8 +148,14 @@ export const ActorEngine: ShapeEngine = {
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const textRectangle = getCustomTextRectangle(board, element, (elementRectangle.width + 40) / elementRectangle.width);
-        textRectangle.y = elementRectangle.y + elementRectangle.height + 16;
-        return textRectangle;
+        const width = elementRectangle.width + 40;
+        const text = element.text!;
+        const textSize = getTextSize(board, text, width);
+        return {
+            height: textSize.height,
+            width: width > 0 ? width : 0,
+            x: elementRectangle.x - 20,
+            y: elementRectangle.y + elementRectangle.height + 4
+        };
     }
 };
