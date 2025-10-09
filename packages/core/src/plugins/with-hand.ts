@@ -71,7 +71,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.pointerMove = (event: PointerEvent) => {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
-        const triggerDistance = Math.max(DRAG_SELECTION_PRESS_AND_MOVE_BUFFER + 4, SECONDARY_POINTER_MOVE_THRESHOLD);
+        const triggerDistance = DRAG_SELECTION_PRESS_AND_MOVE_BUFFER + 4;
 
         if (hasSecondaryPressed && movingPoint && !isHandMoving && pointerDownEvent) {
             const distance = distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y);
