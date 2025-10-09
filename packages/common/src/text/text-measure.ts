@@ -1,7 +1,7 @@
 import { Node } from 'slate';
 import { CustomText, ElementSize, ParagraphElement } from './types';
 import { getLineHeightByFontSize } from '../utils/text';
-import { PlaitBoard } from '@plait/core';
+import { ceilToDecimal, PlaitBoard } from '@plait/core';
 
 const BOARD_TO_CANVAS_MAP = new WeakMap<PlaitBoard, HTMLCanvasElement>();
 
@@ -54,6 +54,7 @@ export function measureElement(
     },
     containerMaxWidth: number = 10000
 ) {
+    containerMaxWidth = ceilToDecimal(containerMaxWidth, 0);
     const canvas = getCanvasForBoard(board);
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const textEntries = Node.texts(element);
@@ -74,15 +75,16 @@ export function measureElement(
             }
         });
     }
-    let width = 0;
-    let height = 0;
+
+    let finalWidth = 0;
+    let finalHeight = 0;
     lines.forEach((lineTexts: CustomText[], index: number) => {
         let lineWidth = 0;
+        let lineHeight = 0;
         let maxLineHeight = getLineHeightByFontSize(options.fontSize);
+        let hasBreakLine = false;
+        const lineText: string[][] = [[]];
         lineTexts.forEach((text: CustomText, index: number) => {
-            const font = getFont(text, { fontFamily: options.fontFamily, fontSize: options.fontSize });
-            ctx.font = font;
-            lineWidth += ctx.measureText(text.text).width;
             const isLast = index === lineTexts.length - 1;
             if (text['font-size'] && (isLast || text.text !== '')) {
                 const lineHeight = getLineHeightByFontSize(parseFloat(text['font-size']));
@@ -90,19 +92,32 @@ export function measureElement(
                     maxLineHeight = lineHeight;
                 }
             }
-        });
-        if (lineWidth <= containerMaxWidth) {
-            if (lineWidth > width) {
-                width = lineWidth;
+            const font = getFont(text, { fontFamily: options.fontFamily, fontSize: options.fontSize });
+            ctx.font = font;
+            const textString = text.text;
+            for (let i = 0; i < textString.length; i++) {
+                const char = textString[i];
+                const width = ctx.measureText(char).width;
+                if (lineWidth + width > containerMaxWidth) {
+                    finalWidth = Math.max(finalWidth, lineWidth);
+                    lineWidth = width;
+                    lineHeight += maxLineHeight;
+                    hasBreakLine = true;
+                    lineText.push([]);
+                    lineText[lineText.length - 1].push(char);
+                } else {
+                    lineText[lineText.length - 1].push(char);
+                    lineWidth += width;
+                }
             }
-            height += maxLineHeight;
-        } else {
-            width = containerMaxWidth;
-            const lineWrapNumber = Math.ceil(lineWidth / containerMaxWidth);
-            height += maxLineHeight * lineWrapNumber;
+        });
+        lineHeight += maxLineHeight;
+        finalHeight += lineHeight;
+        if (!hasBreakLine) {
+            finalWidth = Math.max(finalWidth, lineWidth);
         }
     });
-    return { width, height };
+    return { width: finalWidth, height: finalHeight };
 }
 
 const getFont = (
