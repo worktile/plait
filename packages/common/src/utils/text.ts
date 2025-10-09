@@ -117,8 +117,5 @@ export const getLineHeightByFontSize = (fontSize: number) => {
     if (fontSize === 14) {
         return 20;
     }
-    if (fontSize === 18) {
-        return 25;
-    }
     return fontSize * 1.5;
 };
