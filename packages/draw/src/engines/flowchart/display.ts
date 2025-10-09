@@ -91,6 +91,6 @@ export const DisplayEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        return getCustomTextRectangle(board, element, 0.88);
+        return getCustomTextRectangle(board, element, 0.75);
     }
 };

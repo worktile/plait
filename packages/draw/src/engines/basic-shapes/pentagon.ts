@@ -19,10 +19,9 @@ export const PentagonEngine: ShapeEngine = createPolygonEngine({
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const customTextRectangle = getCustomTextRectangle(board, element, 3 / 5);
-        customTextRectangle.y =
-            elementRectangle.y +
-            elementRectangle.height / 5 +
-            (elementRectangle.height - elementRectangle.height / 5 - customTextRectangle.height) / 2;
+        const startY = elementRectangle.y + elementRectangle.height / 5;
+        const endY = elementRectangle.y + elementRectangle.height;
+        customTextRectangle.y = startY + (endY - startY - customTextRectangle.height) / 2;
         return customTextRectangle;
     }
 });

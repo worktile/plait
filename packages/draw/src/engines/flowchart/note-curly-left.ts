@@ -1,12 +1,4 @@
-import {
-    PlaitBoard,
-    Point,
-    PointOfRectangle,
-    RectangleClient,
-    distanceBetweenPointAndPoint,
-    setStrokeLinecap
-} from '@plait/core';
-import { getTextSize } from '../../utils/text-size';
+import { PlaitBoard, Point, PointOfRectangle, RectangleClient, distanceBetweenPointAndPoint, setStrokeLinecap } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { ShapeDefaultSpace } from '../../constants';
 import { Options } from 'roughjs/bin/core';
@@ -113,6 +105,9 @@ export const NoteCurlyLeftEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle: (board: PlaitBoard, element: PlaitGeometry) => {
-        return getCustomTextRectangle(board, element, 0.88);
+        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
+        const textRectangle = getCustomTextRectangle(board, element, 0.9);
+        textRectangle.x = elementRectangle.x + getStrokeWidthByElement(element) + ShapeDefaultSpace.rectangleAndText;
+        return textRectangle;
     }
 };
