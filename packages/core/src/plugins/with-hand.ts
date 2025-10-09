@@ -17,6 +17,12 @@ import { PlaitOptionsBoard } from './with-options';
 const ShortcutKey = 'Space';
 const SECONDARY_POINTER_MOVE_THRESHOLD = 5;
 
+export const IS_HAND_MODE = new WeakMap<PlaitBoard, boolean>();
+
+export const isHandMode = (board: PlaitBoard) => {
+    return IS_HAND_MODE.get(board) || false;
+};
+
 export function withHandPointer<T extends PlaitBoard>(board: T) {
     const { pointerDown, pointerMove, globalPointerUp, keyDown, keyUp, pointerUp } = board;
     let isHandMoving: boolean = false;
@@ -50,10 +56,8 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
                 x: event.x,
                 y: event.y
             };
-            isHandMoving = true;
-            PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
-        }
-        else if (isSecondaryPointer(event)) {
+            enterHandMode();
+        } else if (isSecondaryPointer(event)) {
             hasSecondaryPressed = true;
             movingPoint = {
                 x: event.x,
@@ -68,20 +72,14 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.pointerMove = (event: PointerEvent) => {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
         const triggerDistance = Math.max(DRAG_SELECTION_PRESS_AND_MOVE_BUFFER + 4, SECONDARY_POINTER_MOVE_THRESHOLD);
-        
+
         if (hasSecondaryPressed && movingPoint && !isHandMoving && pointerDownEvent) {
-            const distance = distanceBetweenPointAndPoint(
-                pointerDownEvent.x, 
-                pointerDownEvent.y, 
-                event.x, 
-                event.y
-            );
+            const distance = distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y);
             if (distance > SECONDARY_POINTER_MOVE_THRESHOLD) {
-                isHandMoving = true;
-                PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
+                enterHandMode();
             }
         }
-        
+
         if (
             movingPoint &&
             !isHandMoving &&
@@ -90,10 +88,9 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y) > triggerDistance &&
             !isMovingElements(board)
         ) {
-            isHandMoving = true;
-            PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
+            enterHandMode();
         }
-        
+
         const canEnterHandMode =
             options?.isHandMode(board, event) ||
             PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
@@ -101,7 +98,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             hasWheelPressed ||
             hasSecondaryPressed ||
             beingPressedShortcutKey;
-            
+
         if (canEnterHandMode && isHandMoving && movingPoint && !isSelectionMoving(board) && !isMovingElements(board)) {
             const viewportContainer = PlaitBoard.getViewportContainer(board);
             const left = viewportContainer.scrollLeft - (event.x - movingPoint.x);
@@ -124,8 +121,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         if (movingPoint) {
             movingPoint = null;
         }
-        isHandMoving = false;
-        PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
+        exitHandMode();
         hasWheelPressed = false;
         hasSecondaryPressed = false;
         globalPointerUp(event);
@@ -150,6 +146,20 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
         }
         keyUp(event);
+    };
+
+    const enterHandMode = () => {
+        isHandMoving = true;
+        PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
+        IS_HAND_MODE.set(board, true);
+    };
+
+    const exitHandMode = () => {
+        isHandMoving = false;
+        PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
+        setTimeout(() => {
+            IS_HAND_MODE.set(board, false);
+        }, 0);
     };
 
     return board;

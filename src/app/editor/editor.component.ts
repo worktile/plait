@@ -19,7 +19,8 @@ import {
     duplicateElements,
     setFragment,
     WritableClipboardOperationType,
-    PlaitPlugin
+    PlaitPlugin,
+    isHandMode
 } from '@plait/core';
 import { mockDrawData, mockTableData, mockMindData, mockRotateData, mockGroupData, mockSwimlaneData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -93,7 +94,7 @@ export class BasicEditorComponent implements OnInit {
     @HostListener('mouseup', ['$event'])
     onMouseup(event: MouseEvent): void {
         this.contextMenu.nativeElement.style.display = 'none';
-        if (event.button === 2 && !this.board.options.readonly) {
+        if (event.button === 2 && !this.board.options.readonly && !isHandMode(this.board)) {
             this.contextMenu.nativeElement.style.display = 'block';
             this.contextMenu.nativeElement.style.left = `${event.clientX}px`;
             this.contextMenu.nativeElement.style.top = `${event.clientY}px`;
