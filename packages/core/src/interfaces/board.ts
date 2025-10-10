@@ -98,6 +98,9 @@ export interface PlaitBoard {
     globalPointerMove: (pointer: PointerEvent) => void;
     globalPointerUp: (pointer: PointerEvent) => void;
     drop: (event: DragEvent) => boolean;
+    touchStart: (event: TouchEvent) => void;
+    touchMove: (event: TouchEvent) => void;
+    touchEnd: (event: TouchEvent) => void;
 }
 
 export interface PlaitBoardOptions {

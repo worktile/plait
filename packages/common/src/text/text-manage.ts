@@ -6,6 +6,9 @@ import {
     RectangleClient,
     createForeignObject,
     createG,
+    isInVisibleViewport,
+    isTouchDevice,
+    scrollToVisibleWhenKeyboardOpening,
     setAngleForG,
     toHostPoint,
     toViewBoxPoint,
@@ -17,6 +20,8 @@ import { PlaitTextBoard, TextPlugin } from './with-text';
 import { clearElementSizeCache, measureElement, updateElementSizeCache } from './text-measure';
 import { TextChangeData, TextComponentRef, TextProps } from './with-text';
 import { ParagraphElement } from './types';
+import scrollIntoView from 'scroll-into-view-if-needed';
+import { DOMEditor } from 'slate-dom';
 
 export interface TextManageChangeData {
     newText?: Element;
@@ -64,7 +69,7 @@ export class TextManage {
             text,
             textPlugins: this.options.textPlugins,
             onChange: (data: TextChangeData) => {
-                if (data.operations.some(op => !Operation.isSelectionOperation(op))) {
+                if (data.operations.some((op) => !Operation.isSelectionOperation(op))) {
                     const { width: newWidth, height: newHeight } = this.getSize();
                     this.options.onChange && this.options.onChange({ ...data, width: newWidth, height: newHeight });
                     MERGING.set(this.board, true);
@@ -88,7 +93,7 @@ export class TextManage {
                 }
             }
         };
-        this.textComponentRef = ((this.board as unknown) as PlaitTextBoard).renderText(this.foreignObject, props);
+        this.textComponentRef = (this.board as unknown as PlaitTextBoard).renderText(this.foreignObject, props);
     }
 
     updateRectangleWidth(width: number) {
@@ -120,7 +125,7 @@ export class TextManage {
         this.textComponentRef.update(props);
         Transforms.select(this.editor, [0]);
 
-        const mouseDownHandler = (event: MouseEvent) => {
+        const pointerDownHandler = (event: PointerEvent) => {
             const point = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
             const textRec = this.options.getRenderRectangle ? this.options.getRenderRectangle() : this.options.getRectangle();
             const clickInText = RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), textRec);
@@ -146,7 +151,7 @@ export class TextManage {
         const exitCallback = () => {
             if (this.isEditing) {
                 this.updateRectangle();
-                document.removeEventListener('mousedown', mouseDownHandler);
+                document.removeEventListener('pointerdown', pointerDownHandler);
                 document.removeEventListener('keydown', keyDownHandler);
                 IS_TEXT_EDITABLE.set(this.board, false);
                 MERGING.set(this.board, false);
@@ -159,9 +164,16 @@ export class TextManage {
                 this.exitCallback = undefined;
             }
         };
-        document.addEventListener('mousedown', mouseDownHandler);
+        document.addEventListener('pointerdown', pointerDownHandler);
         document.addEventListener('keydown', keyDownHandler);
         this.exitCallback = exitCallback;
+        if (isTouchDevice()) {
+            setTimeout(() => {
+                if (!isInVisibleViewport(this.board, this.options.getRenderRectangle!(), true)) {
+                    scrollToVisibleWhenKeyboardOpening(this.board, this.options.getRenderRectangle!());
+                }
+            }, 0);
+        }
         return exitCallback;
     }
 

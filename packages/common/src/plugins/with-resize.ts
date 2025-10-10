@@ -25,11 +25,19 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
     board: PlaitBoard,
     options: WithResizeOptions<T, K, P>
 ) => {
-    const { pointerDown, pointerMove, globalPointerUp } = board;
+    const { pointerDown, pointerMove, globalPointerUp, touchStart } = board;
     let resizeHitTestRef: ResizeHitTestRef<T, K, P> | null = null;
     let resizeRef: ResizeRef<T, K, P> | null = null;
     let startPoint: Point | null = null;
     let hoverHitTestRef: ResizeHitTestRef<T, K, P> | null = null;
+
+    board.touchStart = (event: TouchEvent) => {
+        if (resizeRef) {
+            event.preventDefault();
+            return;
+        }
+        touchStart(event);
+    };
 
     board.pointerDown = (event: PointerEvent) => {
         if (!options.canResize() || !generalCanResize(board, event) || !isMainPointer(event)) {

@@ -37,7 +37,7 @@ import { Selection } from '../interfaces/selection';
 import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawSelectionRectangle } = board;
+    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, touchStart, touchMove, touchEnd } = board;
     let screenStart: Point | null = null;
     let screenEnd: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -74,6 +74,14 @@ export function withSelection(board: PlaitBoard) {
         }
         pointerDownEvent = event;
         pointerDown(event);
+    };
+
+    board.touchMove = (event: TouchEvent) => {
+        if (screenStart) {
+            event.preventDefault();
+            return;
+        }
+        touchMove(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {

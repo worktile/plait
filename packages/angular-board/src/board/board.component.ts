@@ -407,6 +407,24 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.board.pointerUp(event);
             });
 
+        fromEvent<TouchEvent>(this.host, 'touchstart')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: TouchEvent) => {
+                this.board.touchStart(event);
+            });
+
+        fromEvent<TouchEvent>(this.host, 'touchmove')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: TouchEvent) => {
+                this.board.touchMove(event);
+            });
+
+        fromEvent<TouchEvent>(this.host, 'touchend')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: TouchEvent) => {
+                this.board.touchEnd(event);
+            });
+
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
@@ -535,11 +553,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((event: Event) => {
                 const { scrollLeft, scrollTop } = event.target as HTMLElement;
                 updateViewportByScrolling(this.board, scrollLeft, scrollTop);
-            });
-        fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'touchstart', { passive: false })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((event: Event) => {
-                event.preventDefault();
             });
     }
 

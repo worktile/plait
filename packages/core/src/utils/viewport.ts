@@ -59,7 +59,10 @@ export function clampZoomLevel(zoom: number, minZoom = MIN_ZOOM, maxZoom = MAX_Z
 /**
  * Prepares element bounding box with minimum size constraints
  */
-export function prepareElementBBox(board: PlaitBoard, zoom: number): {
+export function prepareElementBBox(
+    board: PlaitBoard,
+    zoom: number
+): {
     elementHostBBox: ElementHostBBox;
     containerWidth: number;
     containerHeight: number;
@@ -68,19 +71,19 @@ export function prepareElementBBox(board: PlaitBoard, zoom: number): {
 } {
     const boardContainerRectangle = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     const elementHostBBox: ElementHostBBox = getElementHostBBox(board, zoom);
-    
+
     const containerWidth = boardContainerRectangle.width;
     const containerHeight = boardContainerRectangle.height;
-    
+
     // Calculate bounding box dimensions
     let width = elementHostBBox.right - elementHostBBox.left;
     let height = elementHostBBox.bottom - elementHostBBox.top;
-    
+
     // If elementHostBBox dimensions are smaller than container dimensions,
     // use half of container dimensions as minimum size
     const minWidth = containerWidth / 2;
     const minHeight = containerHeight / 2;
-    
+
     if (width < minWidth / zoom) {
         // Center the content horizontally if applying minimum width
         const center = elementHostBBox.left + width / 2;
@@ -88,7 +91,7 @@ export function prepareElementBBox(board: PlaitBoard, zoom: number): {
         elementHostBBox.right = center + minWidth / 2 / zoom;
         width = minWidth / zoom;
     }
-    
+
     if (height < minHeight / zoom) {
         // Center the content vertically if applying minimum height
         const center = elementHostBBox.top + height / 2;
@@ -96,7 +99,7 @@ export function prepareElementBBox(board: PlaitBoard, zoom: number): {
         elementHostBBox.bottom = center + minHeight / 2 / zoom;
         height = minHeight / zoom;
     }
-    
+
     return {
         elementHostBBox,
         containerWidth,
@@ -120,7 +123,7 @@ export function calculateViewBox(
 ): number[] {
     const horizontalPaddingInViewBox = (containerWidth * paddingRatio) / zoom;
     const verticalPaddingInViewBox = (containerHeight * paddingRatio) / zoom;
-    
+
     return [
         elementHostBBox.left - horizontalPaddingInViewBox,
         elementHostBBox.top - verticalPaddingInViewBox,
@@ -131,15 +134,8 @@ export function calculateViewBox(
 
 export function calcNewViewBox(board: PlaitBoard, zoom: number) {
     const { elementHostBBox, containerWidth, containerHeight, width, height } = prepareElementBBox(board, zoom);
-    
-    return calculateViewBox(
-        elementHostBBox,
-        containerWidth,
-        containerHeight,
-        width,
-        height,
-        zoom
-    );
+
+    return calculateViewBox(elementHostBBox, containerWidth, containerHeight, width, height, zoom);
 }
 
 export function getViewBoxCenterPoint(board: PlaitBoard) {
@@ -222,7 +218,7 @@ export function initializeViewBox(board: PlaitBoard) {
 export function updateViewBox(board: PlaitBoard) {
     const zoom = board.viewport.zoom;
     const { elementHostBBox, containerWidth, containerHeight, width, height } = prepareElementBBox(board, zoom);
-    
+
     // Use 0.5 ratio to check if contents are within current viewBox
     const checkViewBox = calculateViewBox(
         elementHostBBox,
@@ -233,10 +229,10 @@ export function updateViewBox(board: PlaitBoard) {
         zoom,
         0.5 // Use smaller padding ratio for checking
     );
-    
+
     // Get current viewBox
     const currentViewBox = getViewBox(board);
-    
+
     // Only update if new viewBox is NOT contained within current viewBox
     if (
         checkViewBox[0] < currentViewBox.x ||
@@ -245,15 +241,7 @@ export function updateViewBox(board: PlaitBoard) {
         checkViewBox[1] + checkViewBox[3] > currentViewBox.y + currentViewBox.height
     ) {
         // Update with larger padding ratio
-        const newViewBox = calculateViewBox(
-            elementHostBBox,
-            containerWidth,
-            containerHeight,
-            width,
-            height,
-            zoom,
-            VIEWPORT_PADDING_RATIO
-        );
+        const newViewBox = calculateViewBox(elementHostBBox, containerWidth, containerHeight, width, height, zoom, VIEWPORT_PADDING_RATIO);
         setSVGViewBox(board, newViewBox);
     }
 }
@@ -306,4 +294,34 @@ export const setIsFromViewportChange = (board: PlaitBoard, state: boolean) => {
     IS_FROM_VIEWPORT_CHANGE.set(board, state);
 };
 
-export function scrollToRectangle(board: PlaitBoard, client: RectangleClient) {}
+// I do not know how to confirm if the keyboard is open and the height of keyboard
+// So I just divide the height of viewport by 2 when the keyboard is open
+export const isInVisibleViewport = (board: PlaitBoard, client: RectangleClient, isOpenKeyboard?: boolean) => {
+    const viewportContainerRect = PlaitBoard.getViewportContainer(board).getBoundingClientRect();
+    const origination = getViewportOrigination(board);
+    if (!origination) {
+        return true;
+    }
+    const viewport = board.viewport;
+    const visibleRectangle = {
+        x: origination[0],
+        y: origination[1],
+        width: viewportContainerRect.width / viewport.zoom,
+        height: viewportContainerRect.height / viewport.zoom / (isOpenKeyboard ? 2 : 1)
+    };
+    const isFirstPointIn = RectangleClient.isPointInRectangle(visibleRectangle, [client.x, client.y]);
+    const isSecondPointIn = RectangleClient.isPointInRectangle(visibleRectangle, [client.x + client.width, client.y + client.height]);
+    return isFirstPointIn && isSecondPointIn;
+};
+
+export function scrollToVisibleWhenKeyboardOpening(board: PlaitBoard, client: RectangleClient) {
+    const center = RectangleClient.getCenterPoint(client);
+    const viewportContainerRect = PlaitBoard.getViewportContainer(board).getBoundingClientRect();
+    const viewport = board.viewport;
+    const startY = center[1] - viewportContainerRect.height / 4 / viewport.zoom;
+    const origination = getViewportOrigination(board);
+    if (!origination) {
+        return;
+    }
+    BoardTransforms.updateViewport(board, [origination[0], startY]);
+}

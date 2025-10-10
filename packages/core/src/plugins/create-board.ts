@@ -128,6 +128,9 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         pointerCancel: (pointer) => {},
         pointerOut: (pointer) => {},
         pointerLeave: (pointer) => {},
+        touchStart: (event: TouchEvent) => {},
+        touchMove: (event: TouchEvent) => {},
+        touchEnd: (event: TouchEvent) => {},
         globalPointerMove: (pointer) => {},
         globalPointerUp: (pointer) => {},
         drop: (event: DragEvent) => {

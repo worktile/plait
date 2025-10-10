@@ -13,3 +13,5 @@ export const isTouchEvent = (event: PointerEvent) => {
 export const isMouseEvent = (event: PointerEvent) => {
     return event.pointerType === 'mouse';
 };
+
+export const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints;

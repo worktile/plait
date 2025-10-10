@@ -32,7 +32,7 @@ import { addSelectionWithTemporaryElements } from '../transforms/selection';
 import { isKeyHotkey } from 'is-hotkey';
 
 export function withMoving(board: PlaitBoard) {
-    const { pointerDown, pointerMove, globalPointerUp, globalPointerMove, globalKeyDown, keyUp } = board;
+    const { pointerDown, pointerMove, globalPointerUp, globalPointerMove, globalKeyDown, keyUp, touchStart, touchMove, touchEnd } = board;
 
     let offsetX = 0;
     let offsetY = 0;
@@ -51,7 +51,7 @@ export function withMoving(board: PlaitBoard) {
             if (isKeyHotkey('option', event)) {
                 event.preventDefault();
                 if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
-                    if(pendingNodesG) {
+                    if (pendingNodesG) {
                         PlaitBoard.getElementTopHost(board).removeChild(pendingNodesG);
                     }
                     pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
@@ -81,7 +81,7 @@ export function withMoving(board: PlaitBoard) {
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        hitTargetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
+        hitTargetElement = getHitElementByPoint(board, point, (el) => board.isMovable(el));
         selectedTargetElements = getSelectedTargetElements(board);
         isHitSelectedTarget = hitTargetElement && selectedTargetElements.includes(hitTargetElement);
         if (hitTargetElement && isHitSelectedTarget) {
@@ -105,6 +105,14 @@ export function withMoving(board: PlaitBoard) {
             }
         }
         pointerDown(event);
+    };
+
+    board.touchMove = (event: TouchEvent) => {
+        if (startPoint && activeElements.length) {
+            event.preventDefault();
+            return;
+        }
+        touchMove(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {
@@ -169,7 +177,7 @@ export function withMoving(board: PlaitBoard) {
         globalPointerMove(event);
     };
 
-    board.globalPointerUp = event => {
+    board.globalPointerUp = (event) => {
         if (event.altKey && activeElements.length) {
             const validElements = getValidElements(board, activeElements);
             const rectangle = getRectangleByElements(board, validElements, false);
@@ -247,8 +255,8 @@ export function withArrowMoving(board: PlaitBoard) {
 
 export function getSelectedTargetElements(board: PlaitBoard) {
     const selectedElements = getSelectedElements(board);
-    const movableElements = board.children.filter(item => board.isMovable(item));
-    const targetElements = selectedElements.filter(element => {
+    const movableElements = board.children.filter((item) => board.isMovable(item));
+    const targetElements = selectedElements.filter((element) => {
         return movableElements.includes(element);
     });
     const relatedElements = board.getRelatedFragment([]);
@@ -257,15 +265,17 @@ export function getSelectedTargetElements(board: PlaitBoard) {
 }
 
 export function getValidElements(board: PlaitBoard, activeElements: PlaitElement[]) {
-    const validElements = [...activeElements].filter(element => !PlaitGroupElement.isGroup(element) && PlaitElement.isRootElement(element));
+    const validElements = [...activeElements].filter(
+        (element) => !PlaitGroupElement.isGroup(element) && PlaitElement.isRootElement(element)
+    );
     return validElements;
 }
 
 export function updatePoints(board: PlaitBoard, activeElements: PlaitElement[], offsetX: number, offsetY: number) {
     const validElements = getValidElements(board, activeElements);
-    const currentElements = validElements.map(element => {
+    const currentElements = validElements.map((element) => {
         const points = element.points || [];
-        const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
+        const newPoints = points.map((p) => [p[0] + offsetX, p[1] + offsetY]) as Point[];
         const index = NODE_TO_INDEX.get(element as PlaitElement) as number;
         Transforms.setNode(
             board,
@@ -284,10 +294,10 @@ export function drawPendingNodesG(board: PlaitBoard, activeElements: PlaitElemen
     let pendingNodesG: SVGElement | null = null;
     const elements: PlaitElement[] = [];
     const validElements = getValidElements(board, activeElements);
-    validElements.forEach(element => {
+    validElements.forEach((element) => {
         depthFirstRecursion(
             element,
-            node => {
+            (node) => {
                 elements.push(node);
             },
             () => true
