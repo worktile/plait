@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {
     BoardTransforms,
     PlaitBoard,
@@ -54,7 +54,7 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
         AppMenuComponent
     ]
 })
-export class BasicEditorComponent implements OnInit {
+export class BasicEditorComponent implements OnInit, OnDestroy {
     plugins: PlaitPlugin[] = [withCommonPlugin, withMind, withMindExtend, withDraw, withGroup];
 
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
@@ -82,6 +82,8 @@ export class BasicEditorComponent implements OnInit {
 
     CONTROL_KEY = typeof window != 'undefined' && /Mac|iPod|iPhone|iPad/.test(window.navigator.platform) ? '⌘' : 'Ctrl';
 
+    private websocket: WebSocket | null = null;
+
     @ViewChild('contextMenu', { static: true, read: ElementRef })
     contextMenu!: ElementRef<any>;
 
@@ -104,50 +106,52 @@ export class BasicEditorComponent implements OnInit {
     constructor(private activeRoute: ActivatedRoute) {}
 
     ngOnInit(): void {
-        this.activeRoute.queryParams.subscribe((params: Params) => {
-            const init = params['init'];
-            switch (init) {
-                case 'mind':
-                    this.value = [...mockMindData];
-                    break;
-                case 'draw':
-                    this.value = [...mockDrawData];
-                    break;
-                case 'local-storage':
-                    const data = this.getLocalStorage();
-                    if (data) {
-                        this.value = data.children;
-                        this.viewport = data.viewport;
-                        this.theme = data.theme;
-                    }
-                    break;
-                case 'empty':
-                    this.value = [];
-                    break;
-                case 'route':
-                    this.value = [...mockLineData];
-                    this.plugins.push(withLineRoute);
-                    break;
-                case 'turning-point':
-                    this.value = [...mockTurningPointData];
-                    break;
-                case 'group':
-                    this.value = [...mockGroupData];
-                    break;
-                case 'table':
-                    this.value = [...mockTableData];
-                    break;
-                case 'swimlane':
-                    this.value = [...mockSwimlaneData];
-                    break;
-                case 'rotate':
-                    this.value = [...mockRotateData];
-                    break;
-                default:
-                    this.value = [...mockDrawData];
-                    break;
-            }
-        });
+        // this.activeRoute.queryParams.subscribe((params: Params) => {
+        //     const init = params['init'];
+        //     switch (init) {
+        //         case 'mind':
+        //             this.value = [...mockMindData];
+        //             break;
+        //         case 'draw':
+        //             this.value = [...mockDrawData];
+        //             break;
+        //         case 'local-storage':
+        //             const data = this.getLocalStorage();
+        //             if (data) {
+        //                 this.value = data.children;
+        //                 this.viewport = data.viewport;
+        //                 this.theme = data.theme;
+        //             }
+        //             break;
+        //         case 'empty':
+        //             this.value = [];
+        //             break;
+        //         case 'route':
+        //             this.value = [...mockLineData];
+        //             this.plugins.push(withLineRoute);
+        //             break;
+        //         case 'turning-point':
+        //             this.value = [...mockTurningPointData];
+        //             break;
+        //         case 'group':
+        //             this.value = [...mockGroupData];
+        //             break;
+        //         case 'table':
+        //             this.value = [...mockTableData];
+        //             break;
+        //         case 'swimlane':
+        //             this.value = [...mockSwimlaneData];
+        //             break;
+        //         case 'rotate':
+        //             this.value = [...mockRotateData];
+        //             break;
+        //         default:
+        //             this.value = [...mockDrawData];
+        //             break;
+        //     }
+        // });
+
+        this.connectWebSocket();
     }
 
     change(event: OnChangeData) {
@@ -214,5 +218,59 @@ export class BasicEditorComponent implements OnInit {
         const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
         const clipboardData = await getClipboardData(null);
         this.board.insertFragment(clipboardData, targetPoint, WritableClipboardOperationType.paste);
+    }
+
+    private connectWebSocket(): void {
+        try {
+            const url = 'ws://localhost:3000';
+            this.websocket = new WebSocket(url);
+
+            this.websocket.onopen = (event) => {};
+
+            this.websocket.onmessage = (event) => {
+                this.handleWebSocketMessage(event.data);
+            };
+
+            this.websocket.onerror = (error) => {};
+
+            this.websocket.onclose = (event) => {};
+        } catch (error) {}
+    }
+
+    private handleWebSocketMessage(data: string): void {
+        try {
+            const parsedData = JSON.parse(data);
+
+            switch (parsedData.type) {
+                case 'initial_elements':
+                    this.value = parsedData.elements;
+                    break;
+                case 'element_created': {
+                    this.value.push(parsedData.element);
+                    break;
+                }
+                case 'element_updated': {
+                    this.value = this.value.map((element) => (element.id === parsedData.id ? parsedData.element : element));
+                    break;
+                }
+                case 'element_deleted': {
+                    this.value = this.value.filter((element) => element.id !== parsedData.elementId);
+                    break;
+                }
+                default:
+                    break;
+            }
+        } catch (error) {}
+    }
+
+    private disconnectWebSocket(): void {
+        if (this.websocket) {
+            this.websocket.close();
+            this.websocket = null;
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.disconnectWebSocket();
     }
 }
