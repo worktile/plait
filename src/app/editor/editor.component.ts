@@ -249,6 +249,10 @@ export class BasicEditorComponent implements OnInit, OnDestroy {
                     this.value.push(parsedData.element);
                     break;
                 }
+                case 'elements_batch_created': {
+                    this.value = [...this.value, ...parsedData.elements];
+                    break;
+                }
                 case 'element_updated': {
                     this.value = this.value.map((element) => (element.id === parsedData.id ? parsedData.element : element));
                     break;

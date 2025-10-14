@@ -5,9 +5,8 @@ export const PlaitDefaultSchema = {
             // PlaitGroup
             'group',
 
-            // FlowElementType
-            'node',
-            'edge',
+            // Text
+            'paragraph',
 
             // Geometry
             'geometry',
@@ -23,12 +22,7 @@ export const PlaitDefaultSchema = {
             'swimlane',
 
             // PlaitVectorLine
-            'vector-line',
-
-            // MindElement
-            'mind_child',
-            'mind',
-            'mindmap'
+            'vector-line'
         ],
         description: 'Plait 支持的类型'
     },
@@ -47,6 +41,37 @@ export const PlaitDefaultSchema = {
     angle: {
         type: 'number',
         description: '元素角度，0-360度（可选）'
+    },
+    groupId: { type: 'string', description: '组ID（可选）' },
+    children: {
+        type: 'array',
+        description: '子元素数组，数组中每个子元素都是一个完整的 PlaitElement（可选）'
+    }
+};
+
+export const PlaitTextSchema = {
+    text: {
+        type: 'object',
+        properties: {
+            children: {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties: {
+                        text: {
+                            type: 'string',
+                            description: '文本内容（可选）'
+                        }
+                    }
+                },
+                description: '文本数组（可选）。'
+            },
+            align: {
+                type: 'string',
+                enum: ['left', 'center', 'right'],
+                description: '对齐方式（可选）'
+            }
+        }
     }
 };
 
@@ -167,35 +192,6 @@ export const PlaitGeometrySchema = {
     }
 };
 
-export const PlaitFlowElementSchema = {
-    data: {
-        type: 'object',
-        properties: {
-            text: { type: 'string', description: '元素文本内容（可选）' },
-            icon: { type: 'string', description: '元素图标（可选）' }
-        },
-        description: 'Flow element data（可选）。当 type 为 node、edge 时可设置该属性。'
-    },
-    undeletable: {
-        type: 'boolean',
-        description: '是否不可删除，默认 false（可选）。当 type 为 node、edge 时可设置该属性。'
-    },
-    styles: {
-        type: 'object',
-        properties: {
-            stroke: { type: 'string', description: '边框颜色，十六进制格式如 #1976D2（可选）' },
-            strokeWidth: { type: 'number', description: '边框宽度，默认 2（可选）' },
-            fill: { type: 'string', description: '填充颜色，十六进制格式如 #E3F2FD（可选）' },
-            fillStyle: { type: 'string', description: '填充样式，默认 solid（可选）' },
-            activeStroke: { type: 'string', description: '激活边框颜色，十六进制格式如 #1976D2（可选）' },
-            activeFill: { type: 'string', description: '激活填充颜色，十六进制格式如 #E3F2FD（可选）' },
-            borderRadius: { type: 'number', description: '边框圆角，默认 0（可选）' },
-            hoverStroke: { type: 'string', description: '悬停边框颜色，十六进制格式如 #1976D2（可选）' }
-        },
-        description: 'Flow element styles（可选）。当 type 为 node、edge 时可设置该属性。'
-    }
-};
-
 // PlaitArrowLine、ForceAtlasEdgeElement;
 export const PlaitArrowLineSchema = {
     source: {
@@ -261,7 +257,7 @@ export const PlaitArrowLineSchema = {
         items: {
             type: 'object',
             properties: {
-                text: { type: 'string', description: '文本内容（可选）' },
+                ...PlaitTextSchema,
                 position: { type: 'number', description: 'Percentage of positioning based on line length.（可选）' }
             }
         },
@@ -296,31 +292,13 @@ export const PlaitTableSchema = {
                 columnId: { type: 'string', description: '列ID（可选）' },
                 colspan: { type: 'number', description: '列跨度（可选）' },
                 rowspan: { type: 'number', description: '行跨度（可选）' },
-                text: {
-                    type: 'object',
-                    properties: {
-                        children: {
-                            type: 'array',
-                            items: { type: 'object', properties: { text: { type: 'string', description: '文本内容（可选）' } } },
-                            description: '文本（可选）。'
-                        },
-                        align: { type: 'string', enum: ['left', 'center', 'right'], description: '对齐方式，默认 center（可选）' }
-                    }
-                },
+                ...PlaitTextSchema,
                 fill: { type: 'string', description: '填充颜色，十六进制格式如 #E3F2FD（可选）' }
             },
             description: '单元格（可选）。当 type 为 table 时可设置该属性。'
         }
     },
-    groupId: { type: 'string', description: '组ID（可选）' },
     header: { type: 'boolean', description: '是否显示表头，默认 false（可选）。当 type 为 swimlane 时可设置该属性。' }
-};
-
-export const PlaitForceAtlasNodeSchema = {
-    label: { type: 'string', description: '节点标签（可选）' },
-    icon: { type: 'string', description: '节点图标（可选）' },
-    size: { type: 'number', description: '节点大小（可选）' },
-    isActive: { type: 'boolean', description: '是否激活，默认 false（可选）' }
 };
 
 export const PlaitMindSchema = {
@@ -358,10 +336,9 @@ export const PlaitMindSchema = {
 
 export const PlaitElementSchemas = {
     ...PlaitDefaultSchema,
+    ...PlaitTextSchema,
     ...PlaitGeometrySchema,
-    ...PlaitFlowElementSchema,
     ...PlaitArrowLineSchema,
     ...PlaitTableSchema,
-    ...PlaitForceAtlasNodeSchema,
     ...PlaitMindSchema
 };
