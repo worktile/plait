@@ -1,14 +1,14 @@
 import { Tool } from '@modelcontextprotocol/sdk/types';
-import { PlaitElementSchemas } from './schemas';
+import { PlaitElementSchemas, requiredProperties, toolAuxiliaryPrompt } from './schemas';
 
 export const tools: Tool[] = [
     {
         name: 'create_element',
-        description: 'Create a new element on the Plait board',
+        description: `Create a new element on the Plait board, Notice: ${toolAuxiliaryPrompt}`,
         inputSchema: {
             type: 'object',
             properties: PlaitElementSchemas,
-            required: ['type', 'points', 'source', 'target']
+            required: requiredProperties
         }
     },
     {
@@ -17,7 +17,7 @@ export const tools: Tool[] = [
         inputSchema: {
             type: 'object',
             properties: PlaitElementSchemas,
-            required: ['type', 'points']
+            required: requiredProperties
         }
     },
     {

@@ -284,13 +284,22 @@ export class BasicEditorComponent implements OnInit, OnDestroy {
                     break;
             }
 
-            // 文本的格式需要满足  element.type=geometry && element.shape=paragraph && element.text.type = paragraph，模型返回的数据经常满足不了，这里兼容转一下
             this.value = this.value.map((element: PlaitElement) => {
+                // 有时候模型会把element的属性套在了element.properties里，这里兼容处理一下
+                if (element.properties) {
+                    element = {
+                        id: element.id,
+                        ...element.properties
+                    };
+                }
+
+                // 文本的格式需要满足  element.type=geometry && element.shape=paragraph && element.text.type = paragraph，模型返回的数据经常满足不了，这里兼容转一下
                 if (element.type === 'paragraph' || (element.type === 'geometry' && element.text)) {
                     element.type = 'geometry';
                     element.shape = 'text';
                     element.text && (element.text.type = 'paragraph');
                 }
+
                 return element;
             });
 
