@@ -21,9 +21,13 @@ export interface ActiveGeneratorOptions<T> extends GeneratorOptions {
     getStrokeWidth: () => number;
     getStrokeOpacity: () => number;
     hasResizeHandle: () => boolean;
+    active: true;
 }
 
-export const createActiveGenerator = <T extends PlaitElement = PlaitElement>(board: PlaitBoard, options: ActiveGeneratorOptions<T>) => {
+export const createActiveGenerator = <T extends PlaitElement = PlaitElement>(
+    board: PlaitBoard,
+    options: Omit<ActiveGeneratorOptions<T>, 'active'>
+) => {
     return new ActiveGenerator<T>(board, { ...options, active: true });
 };
 
@@ -37,7 +41,7 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
     hasResizeHandle = false;
 
     constructor(public board: PlaitBoard, public options: ActiveGeneratorOptions<T>) {
-        super(board, { ...options, active: true });
+        super(board, { ...options });
     }
 
     canDraw(element: T, data: ActiveGeneratorExtraData): boolean {
