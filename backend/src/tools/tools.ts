@@ -8,7 +8,7 @@ export const tools: Tool[] = [
         inputSchema: {
             type: 'object',
             properties: PlaitElementSchemas,
-            required: ['type', 'points']
+            required: ['type', 'points', 'source', 'target']
         }
     },
     {
@@ -51,4 +51,4 @@ export const tools: Tool[] = [
     }
 ];
 
-export const toolNames = tools.map(tool => tool.name);
+export const toolNames = tools.map((tool) => tool.name);

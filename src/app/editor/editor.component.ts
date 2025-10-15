@@ -1,4 +1,13 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    CUSTOM_ELEMENTS_SCHEMA,
+    ElementRef,
+    HostListener,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ChangeDetectorRef
+} from '@angular/core';
 import {
     BoardTransforms,
     PlaitBoard,
@@ -110,7 +119,7 @@ export class BasicEditorComponent implements OnInit, OnDestroy {
         { role: 'ai', text: 'I am doing very well!' }
     ];
 
-    constructor(private activeRoute: ActivatedRoute) {}
+    constructor(private activeRoute: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
         // this.activeRoute.queryParams.subscribe((params: Params) => {
@@ -247,6 +256,8 @@ export class BasicEditorComponent implements OnInit, OnDestroy {
     private handleWebSocketMessage(data: string): void {
         try {
             const parsedData = JSON.parse(data);
+            console.log('------------------------------');
+            console.log('ws parsedData：', parsedData);
 
             switch (parsedData.type) {
                 case 'initial_elements':
@@ -261,7 +272,8 @@ export class BasicEditorComponent implements OnInit, OnDestroy {
                     break;
                 }
                 case 'element_updated': {
-                    this.value = this.value.map((element) => (element.id === parsedData.id ? parsedData.element : element));
+                    const updatedElement = parsedData.element;
+                    this.value = this.value.map((element) => (element.id === updatedElement.id ? updatedElement : element));
                     break;
                 }
                 case 'element_deleted': {
@@ -271,6 +283,19 @@ export class BasicEditorComponent implements OnInit, OnDestroy {
                 default:
                     break;
             }
+
+            // 文本的格式需要满足  element.type=geometry && element.shape=paragraph && element.text.type = paragraph，模型返回的数据经常满足不了，这里兼容转一下
+            this.value = this.value.map((element: PlaitElement) => {
+                if (element.type === 'paragraph' || (element.type === 'geometry' && element.text)) {
+                    element.type = 'geometry';
+                    element.shape = 'text';
+                    element.text && (element.text.type = 'paragraph');
+                }
+                return element;
+            });
+
+            console.log('value：', this.value);
+            this.cdr.detectChanges();
         } catch (error) {}
     }
 

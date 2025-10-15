@@ -3,10 +3,7 @@ export const PlaitDefaultSchema = {
         type: 'string',
         enum: [
             // PlaitGroup
-            'group',
-
-            // Text
-            'paragraph',
+            // 'group',
 
             // Geometry
             'geometry',
@@ -23,8 +20,13 @@ export const PlaitDefaultSchema = {
 
             // PlaitVectorLine
             'vector-line'
+
+            // MindElement
+            // 'mind_child',
+            // 'mind',
+            // 'mindmap'
         ],
-        description: 'Plait 支持的类型'
+        description: 'Plait 支持的类型，默认值 geometry'
     },
     points: {
         type: 'array',
@@ -42,7 +44,7 @@ export const PlaitDefaultSchema = {
         type: 'number',
         description: '元素角度，0-360度（可选）'
     },
-    groupId: { type: 'string', description: '组ID（可选）' },
+    // groupId: { type: 'string', description: '组ID（可选）' },
     children: {
         type: 'array',
         description: '子元素数组，数组中每个子元素都是一个完整的 PlaitElement（可选）'
@@ -53,6 +55,11 @@ export const PlaitTextSchema = {
     text: {
         type: 'object',
         properties: {
+            type: {
+                type: 'string',
+                enum: ['paragraph'],
+                description: '文本类型'
+            },
             children: {
                 type: 'array',
                 items: {
@@ -60,18 +67,19 @@ export const PlaitTextSchema = {
                     properties: {
                         text: {
                             type: 'string',
-                            description: '文本内容（可选）'
+                            description: '文本内容'
                         }
                     }
                 },
-                description: '文本数组（可选）。'
+                description: '文本数组'
             },
             align: {
                 type: 'string',
                 enum: ['left', 'center', 'right'],
-                description: '对齐方式（可选）'
+                description: '对齐方式'
             }
-        }
+        },
+        description: '文本。需要满足 type 为 geometry 且 shape 为 text。'
     }
 };
 
@@ -154,14 +162,15 @@ export const PlaitGeometrySchema = {
             // PlaitArrowLine、PlaitVectorLine
             'straight',
             'curve',
-            'elbow',
+            'elbow'
 
             // Mind
-            'round-rectangle',
-            'underline'
+            // 'round-rectangle',
+            // 'underline'
         ],
         description:
-            "只有当 type 为 'geometry' 时，shape 值可以是以下值： 'rectangle', 'ellipse', 'diamond', 'roundRectangle', 'parallelogram', 'text', 'triangle', 'leftArrow', 'trapezoid', 'rightArrow', 'cross', 'star', 'pentagon', 'hexagon', 'octagon', 'pentagonArrow', 'processArrow', 'twoWayArrow', 'comment', 'roundComment', 'cloud', 'process', 'decision', 'data', 'connector', 'terminal', 'database', 'hardDisk', 'internalStorage', 'manualInput', 'preparation', 'manualLoop', 'merge', 'delay', 'storedData', 'or', 'summingJunction', 'predefinedProcess', 'offPage', 'document', 'multiDocument', 'noteCurlyLeft', 'noteCurlyRight', 'noteSquare', 'display', 'actor', 'useCase', 'container', 'note', 'package', 'combinedFragment', 'class', 'interface', 'activation', 'object', 'deletion', 'activityClass', 'simpleClass', 'component', 'componentBox', 'template', 'port', 'branchMerge', 'assembly', 'requiredInterface', 'providedInterface'。只有当 type 为 'arrow-line' 时，shape 值可以是以下值： 'straight', 'curve', 'elbow'。只有当 type 为 'vector-line' 时，shape 值可以是以下值： 'straight', 'curve'。只有当 type 为 'mind_child'、'mind'、'mindmap' 时，shape 值可以是以下值： 'round-rectangle', 'underline'。（可选）"
+            "只有当 type 为 'geometry' 时，shape 值可以是以下值： 'rectangle', 'ellipse', 'diamond', 'roundRectangle', 'parallelogram', 'text', 'triangle', 'leftArrow', 'trapezoid', 'rightArrow', 'cross', 'star', 'pentagon', 'hexagon', 'octagon', 'pentagonArrow', 'processArrow', 'twoWayArrow', 'comment', 'roundComment', 'cloud', 'process', 'decision', 'data', 'connector', 'terminal', 'database', 'hardDisk', 'internalStorage', 'manualInput', 'preparation', 'manualLoop', 'merge', 'delay', 'storedData', 'or', 'summingJunction', 'predefinedProcess', 'offPage', 'document', 'multiDocument', 'noteCurlyLeft', 'noteCurlyRight', 'noteSquare', 'display', 'actor', 'useCase', 'container', 'note', 'package', 'combinedFragment', 'class', 'interface', 'activation', 'object', 'deletion', 'activityClass', 'simpleClass', 'component', 'componentBox', 'template', 'port', 'branchMerge', 'assembly', 'requiredInterface', 'providedInterface'。只有当 type 为 'arrow-line' 时，shape 值可以是以下值： 'straight', 'curve', 'elbow'。只有当 type 为 'vector-line' 时，shape 值可以是以下值： 'straight', 'curve'。（可选）"
+        // 只有当 type 为 'mind_child'、'mind'、'mindmap' 时，shape 值可以是以下值： 'round-rectangle', 'underline'。
     },
     fill: {
         type: 'string',
@@ -197,7 +206,7 @@ export const PlaitArrowLineSchema = {
     source: {
         type: 'object',
         properties: {
-            boundId: { type: 'string', description: '绑定元素ID（可选）' },
+            boundId: { type: 'string', description: '绑定元素ID' },
             connection: {
                 type: 'array',
                 items: { type: 'number' },
@@ -218,15 +227,16 @@ export const PlaitArrowLineSchema = {
                     'hollow-triangle',
                     'single-slash'
                 ],
-                description: '箭头类型，默认 arrow（可选）'
-            }
+                description: '箭头类型，默认 arrow'
+            },
+            required: ['boundId']
         },
-        description: '箭头线源点（可选）。当 type 为 arrow-line 时可设置该属性。'
+        description: '箭头线源点（必填）。当 type 为 arrow-line 时可设置该属性。'
     },
     target: {
         type: 'object',
         properties: {
-            boundId: { type: 'string', description: '绑定元素ID（可选）' },
+            boundId: { type: 'string', description: '绑定元素ID（必填）' },
             connection: {
                 type: 'array',
                 items: { type: 'number' },
@@ -250,7 +260,7 @@ export const PlaitArrowLineSchema = {
                 description: '箭头类型，默认 arrow（可选）'
             }
         },
-        description: '箭头线目标点（可选）。当 type 为 arrow-line 时可设置该属性。'
+        description: '箭头线目标点（必填）。当 type 为 arrow-line 时可设置该属性。'
     },
     texts: {
         type: 'array',
@@ -338,7 +348,7 @@ export const PlaitElementSchemas = {
     ...PlaitDefaultSchema,
     ...PlaitTextSchema,
     ...PlaitGeometrySchema,
-    ...PlaitArrowLineSchema,
-    ...PlaitTableSchema,
-    ...PlaitMindSchema
+    ...PlaitArrowLineSchema
+    // ...PlaitTableSchema,
+    // ...PlaitMindSchema
 };
