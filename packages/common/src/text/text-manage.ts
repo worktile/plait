@@ -123,7 +123,15 @@ export class TextManage {
             readonly: false
         };
         this.textComponentRef.update(props);
-        Transforms.select(this.editor, [0]);
+
+        if (isTouchDevice()) {
+            setTimeout(() => {
+                const end = Editor.end(this.editor, [0]);
+                Transforms.select(this.editor, end);
+            }, 0);
+        } else {
+            Transforms.select(this.editor, [0]);
+        }
 
         const pointerDownHandler = (event: PointerEvent) => {
             const point = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
@@ -167,13 +175,13 @@ export class TextManage {
         document.addEventListener('pointerdown', pointerDownHandler);
         document.addEventListener('keydown', keyDownHandler);
         this.exitCallback = exitCallback;
-        if (isTouchDevice()) {
-            setTimeout(() => {
-                if (!isInVisibleViewport(this.board, this.options.getRenderRectangle!(), true)) {
-                    scrollToVisibleWhenKeyboardOpening(this.board, this.options.getRenderRectangle!());
-                }
-            }, 0);
-        }
+        // if (isTouchDevice()) {
+        //     setTimeout(() => {
+        //         if (!isInVisibleViewport(this.board, this.options.getRenderRectangle!(), true)) {
+        //             scrollToVisibleWhenKeyboardOpening(this.board, this.options.getRenderRectangle!());
+        //         }
+        //     }, 0);
+        // }
         return exitCallback;
     }
 

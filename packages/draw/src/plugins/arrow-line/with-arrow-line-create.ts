@@ -17,7 +17,7 @@ import { handleArrowLineCreating } from '../../utils/arrow-line/arrow-line-basic
 import { getSnappingShape } from '../../utils';
 
 export const withArrowLineCreateByDraw = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, globalPointerUp } = board;
+    const { pointerDown, pointerMove, globalPointerUp, touchStart } = board;
 
     let start: Point | null = null;
 
@@ -26,6 +26,15 @@ export const withArrowLineCreateByDraw = (board: PlaitBoard) => {
     let lineShapeG: SVGGElement | null = null;
 
     let temporaryElement: PlaitArrowLine | null = null;
+
+    board.touchStart = (event: TouchEvent) => {
+        const linePointers = getArrowLinePointers();
+        const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
+        if (!PlaitBoard.isReadonly(board) && isLinePointer && isDrawingMode(board)) {
+            return event.preventDefault();
+        }
+        touchStart(event);
+    };
 
     board.pointerDown = (event: PointerEvent) => {
         const linePointers = getArrowLinePointers();

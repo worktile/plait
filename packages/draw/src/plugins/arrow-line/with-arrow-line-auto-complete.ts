@@ -38,7 +38,7 @@ export type PreCommitRef = { temporaryArrowLineElement: PlaitArrowLine; temporar
 export const BOARD_TO_PRE_COMMIT = new WeakMap<PlaitBoard, PreCommitRef>();
 
 export const withArrowLineAutoComplete = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, globalPointerUp } = board;
+    const { pointerDown, pointerMove, globalPointerUp, touchMove } = board;
 
     let autoCompletePoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
@@ -65,6 +65,13 @@ export const withArrowLineAutoComplete = (board: PlaitBoard) => {
             }
         }
         pointerDown(event);
+    };
+
+    board.touchMove = (event: TouchEvent) => {
+        if (autoCompletePoint && sourceElement) {
+            return event.preventDefault();
+        }
+        touchMove(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {

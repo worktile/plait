@@ -1,6 +1,5 @@
-import { PlaitBoard, Point, RectangleClient, createG, getI18nValue, toHostPoint, toViewBoxPoint } from '@plait/core';
-import { BasicShapes, GeometryShapes, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry } from '../interfaces';
-import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
+import { PlaitBoard, Point, RectangleClient, createG, toHostPoint, toViewBoxPoint } from '@plait/core';
+import { BasicShapes, GeometryShapes, PlaitCommonGeometry, PlaitGeometry } from '../interfaces';
 import {
     createDefaultGeometry,
     createTextElement,
@@ -123,7 +122,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 };
 
 export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, pointerUp, keyDown, keyUp } = board;
+    const { pointerDown, pointerMove, pointerUp, keyDown, keyUp, touchMove } = board;
     let start: Point | null = null;
 
     let geometryShapeG: SVGGElement | null = null;
@@ -159,6 +158,13 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             }
         }
         pointerDown(event);
+    };
+
+    board.touchMove = (event: TouchEvent) => {
+        if (start && isGeometryDrawingMode(board)) {
+            event.preventDefault();
+        }
+        touchMove(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {
