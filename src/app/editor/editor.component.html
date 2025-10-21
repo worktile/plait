@@ -1,23 +1,34 @@
-<plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" [plaitTheme]="theme"
-  [plaitOptions]="options" (plaitBoardInitialized)="plaitBoardInitialized($event)" (onChange)="change($event)">
-  <div class="plait-toolbar island plait-board-attached theme-setting-toolbar">
-    <select (change)="themeChange($event)">
-      <option value="default">默认</option>
-      <option value="colorful">缤纷</option>
-      <option value="soft">柔和</option>
-      <option value="retro">复古</option>
-      <option value="dark">暗夜</option>
-      <option value="starry">星空</option>
-    </select>
-  </div>
-  <app-zoom-toolbar></app-zoom-toolbar>
-  <app-main-toolbar></app-main-toolbar>
-  <app-setting-panel></app-setting-panel>
-  <app-menu></app-menu>
+<plait-board
+    [plaitPlugins]="plugins"
+    [plaitValue]="value"
+    [plaitViewport]="viewport"
+    [plaitTheme]="theme"
+    [plaitOptions]="options"
+    (plaitBoardInitialized)="plaitBoardInitialized($event)"
+    (onChange)="change($event)"
+>
+    <div
+        class="d-flex align-items-center justify-content-end plait-toolbar island plait-board-attached theme-setting-toolbar"
+        style="width: 250px"
+    >
+        <button style="margin-right: 10px; height: 24px; width: 120px" (click)="clearElements()">清空画板</button>
+        <select (change)="themeChange($event)" style="display: inline-block; width: 120px">
+            <option value="default">默认</option>
+            <option value="colorful">缤纷</option>
+            <option value="soft">柔和</option>
+            <option value="retro">复古</option>
+            <option value="dark">暗夜</option>
+            <option value="starry">星空</option>
+        </select>
+    </div>
+    <app-zoom-toolbar></app-zoom-toolbar>
+    <app-main-toolbar></app-main-toolbar>
+    <app-setting-panel></app-setting-panel>
+    <app-menu></app-menu>
 </plait-board>
 
 <deep-chat
-    style="border-radius: 10px; position: fixed; bottom: 7%; right: 7%; z-index: 1"
+    style="border-radius: 10px; position: fixed; bottom: 9%; right: 34px; z-index: 1"
     connect='{
       "url": "http://localhost:3000/api/chat",
       "method": "POST",
@@ -26,41 +37,39 @@
       }
     }'
     textInput='{"placeholder":{"text": "Welcome to the demo!"}}'
-  ></deep-chat>
+></deep-chat>
 
 <div #contextMenu class="context-menu">
-  <div class="context-menu-item" (pointerup)="cut($event)">
-    <span>剪切</span>
-    <span class="shortcut">{{ CONTROL_KEY + ' + X' }}</span>
-  </div>
-  <div class="context-menu-item" (pointerup)="copy($event)">
-    <span>拷贝</span>
-    <span class="shortcut">{{ CONTROL_KEY + ' + C' }}</span>
-  </div>
-  @if (showPaste) {
+    <div class="context-menu-item" (pointerup)="cut($event)">
+        <span>剪切</span>
+        <span class="shortcut">{{ CONTROL_KEY + ' + X' }}</span>
+    </div>
+    <div class="context-menu-item" (pointerup)="copy($event)">
+        <span>拷贝</span>
+        <span class="shortcut">{{ CONTROL_KEY + ' + C' }}</span>
+    </div>
+    @if (showPaste) {
     <div class="context-menu-item" (pointerup)="paste($event)">
-      <span>粘贴</span>
-      <span class="shortcut">{{ CONTROL_KEY + ' + V' }}</span>
+        <span>粘贴</span>
+        <span class="shortcut">{{ CONTROL_KEY + ' + V' }}</span>
     </div>
-  }
-  <hr />
-  @if (showAddGroup) {
-    <div class="context-menu-item" (pointerup)="addGroup($event)">
-      <span>成组</span>
-      <span class="shortcut">{{ CONTROL_KEY + ' + G' }}</span>
-    </div>
-  }
-  @if (showRemoveGroup) {
-    <div class="context-menu-item" (pointerup)="removeGroup($event)">
-      <span>取消成组</span>
-      <span class="shortcut">{{ CONTROL_KEY + '+ Shift + G' }}</span>
-    </div>
-  }
-  @if (showAddGroup || showRemoveGroup) {
+    }
     <hr />
-  }
-  <div class="context-menu-item" (pointerup)="duplicate($event)">
-    <span>复制</span>
-    <span class="shortcut">{{ CONTROL_KEY + ' + D' }}</span>
-  </div>
+    @if (showAddGroup) {
+    <div class="context-menu-item" (pointerup)="addGroup($event)">
+        <span>成组</span>
+        <span class="shortcut">{{ CONTROL_KEY + ' + G' }}</span>
+    </div>
+    } @if (showRemoveGroup) {
+    <div class="context-menu-item" (pointerup)="removeGroup($event)">
+        <span>取消成组</span>
+        <span class="shortcut">{{ CONTROL_KEY + '+ Shift + G' }}</span>
+    </div>
+    } @if (showAddGroup || showRemoveGroup) {
+    <hr />
+    }
+    <div class="context-menu-item" (pointerup)="duplicate($event)">
+        <span>复制</span>
+        <span class="shortcut">{{ CONTROL_KEY + ' + D' }}</span>
+    </div>
 </div>
