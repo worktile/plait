@@ -175,13 +175,6 @@ export class TextManage {
         document.addEventListener('pointerdown', pointerDownHandler);
         document.addEventListener('keydown', keyDownHandler);
         this.exitCallback = exitCallback;
-        // if (isTouchDevice()) {
-        //     setTimeout(() => {
-        //         if (!isInVisibleViewport(this.board, this.options.getRenderRectangle!(), true)) {
-        //             scrollToVisibleWhenKeyboardOpening(this.board, this.options.getRenderRectangle!());
-        //         }
-        //     }, 0);
-        // }
         return exitCallback;
     }
 
