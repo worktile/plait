@@ -45,6 +45,7 @@ export function withMoving(board: PlaitBoard) {
     let hitTargetElement: PlaitElement | undefined = undefined;
     let isHitSelectedTarget: boolean | undefined = undefined;
     let pendingNodesG: SVGGElement | null = null;
+    let pointerId: null | number = null;
 
     board.globalKeyDown = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
@@ -86,10 +87,12 @@ export function withMoving(board: PlaitBoard) {
         isHitSelectedTarget = hitTargetElement && selectedTargetElements.includes(hitTargetElement);
         if (hitTargetElement && isHitSelectedTarget) {
             startPoint = point;
+            pointerId = event.pointerId;
             activeElements = selectedTargetElements;
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
         } else if (hitTargetElement) {
             startPoint = point;
+            pointerId = event.pointerId;
             const relatedElements = board.getRelatedFragment([], [hitTargetElement]);
             activeElements = [...getElementsInGroupByElement(board, hitTargetElement), ...relatedElements];
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
@@ -100,6 +103,7 @@ export function withMoving(board: PlaitBoard) {
             const isHitInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
             if (isHitInTargetRectangle) {
                 startPoint = point;
+                pointerId = event.pointerId;
                 activeElements = selectedTargetElements;
                 activeElementsRectangle = targetRectangle;
             }
@@ -116,7 +120,7 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.pointerMove = (event: PointerEvent) => {
-        if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+        if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board) && pointerId === event.pointerId) {
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
@@ -197,6 +201,7 @@ export function withMoving(board: PlaitBoard) {
         snapG?.remove();
         pendingNodesG?.remove();
         startPoint = null;
+        pointerId = null;
         activeElementsRectangle = null;
         offsetX = 0;
         offsetY = 0;

@@ -64,10 +64,14 @@ export function withSelection(board: PlaitBoard) {
             !options.isDisabledSelection
         ) {
             if (isMobileDeviceEvent(event)) {
+                if (timerId) {
+                    clearTimeout(timerId);
+                    timerId = null;
+                }
                 timerId = setTimeout(() => {
                     screenStart = [event.x, event.y];
                     timerId = null;
-                }, 120);
+                }, 400);
             } else {
                 screenStart = [event.x, event.y];
             }
@@ -77,6 +81,10 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.touchMove = (event: TouchEvent) => {
+        if (screenStart && event.touches.length > 1) {
+            screenStart = null;
+            selectionMovingG?.remove();
+        }
         if (screenStart) {
             event.preventDefault();
             return;

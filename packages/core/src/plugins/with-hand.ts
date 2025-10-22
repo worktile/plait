@@ -2,7 +2,6 @@ import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove, WithHandPluginOptions, PlaitPluginKey } from '../interfaces';
 import {
     distanceBetweenPointAndPoint,
-    isHitElement,
     isMovingElements,
     isSelectionMoving,
     setSelectionOptions,
@@ -10,7 +9,6 @@ import {
     toViewBoxPoint
 } from '../utils';
 import { isMainPointer, isWheelPointer, isSecondaryPointer } from '../utils/dom/common';
-import { isSmartHand } from '../utils/mobile';
 import { updateViewportContainerScroll } from '../utils/viewport';
 import { PlaitOptionsBoard } from './with-options';
 
@@ -34,13 +32,8 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.pointerDown = (event: PointerEvent) => {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
-        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const isHitTarget = isHitElement(board, point);
         const canEnterHandMode =
-            options?.isHandMode(board, event) ||
-            PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
-            (isSmartHand(board, event) && !isHitTarget) ||
-            beingPressedShortcutKey;
+            options?.isHandMode(board, event) || PlaitBoard.isPointer(board, PlaitPointerType.hand) || beingPressedShortcutKey;
         if (canEnterHandMode && isMainPointer(event)) {
             movingPoint = {
                 x: event.x,
@@ -94,7 +87,6 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         const canEnterHandMode =
             options?.isHandMode(board, event) ||
             PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
-            isSmartHand(board, event) ||
             hasWheelPressed ||
             hasSecondaryPressed ||
             beingPressedShortcutKey;

@@ -381,6 +381,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.board.pointerLeave(event);
             });
 
+        fromEvent<PointerEvent>(this.host, 'pointercancel')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: PointerEvent) => {
+                BOARD_TO_MOVING_POINT_IN_BOARD.delete(this.board);
+                this.board.pointerCancel(event);
+            });
+
         fromEvent<MouseEvent>(document, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
