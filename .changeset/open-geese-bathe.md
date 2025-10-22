@@ -3,4 +3,4 @@
 '@plait/draw': patch
 ---
 
-compatible intersection with touch device, select end when start text editing on touch device
+compatible interaction with touch device, select end when start text editing on touch device
