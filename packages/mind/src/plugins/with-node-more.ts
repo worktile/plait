@@ -1,5 +1,6 @@
 import {
     depthFirstRecursion,
+    getElementById,
     getIsRecursionFunc,
     isSelectedElement,
     PlaitBoard,
@@ -43,15 +44,18 @@ export const withNodeMore = (board: PlaitBoard) => {
                 }
 
                 if (nodeMoreRef) {
-                    toggleHoveredNodeCallback({
-                        target: nodeMoreRef.target,
-                        isHovered: false,
-                        isHoveredCollapseArea: false,
-                        isHoveredExpandArea: false,
-                        isHoveredAddArea: false
-                    });
+                    const element = getElementById<MindElement>(board, nodeMoreRef.target.id);
+                    // maybe element has been changed
+                    if (element && element === nodeMoreRef.target) {
+                        toggleHoveredNodeCallback({
+                            target: nodeMoreRef.target,
+                            isHovered: false,
+                            isHoveredCollapseArea: false,
+                            isHoveredExpandArea: false,
+                            isHoveredAddArea: false
+                        });
+                    }
                 }
-
                 if (newNodeMoreRef) {
                     toggleHoveredNodeCallback(newNodeMoreRef);
                     if (nodeMoreRef) {
