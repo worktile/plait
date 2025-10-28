@@ -2,12 +2,12 @@ import {
     Direction,
     PlaitBoard,
     Point,
+    RectangleClient,
     createG,
     createText,
     getSelectedElements,
     isDragging,
     isMovingElements,
-    isSelectedElement,
     isSelectionMoving,
     rgbaToHEX,
     setStrokeLinecap
@@ -29,13 +29,23 @@ import { MindQueries } from '../queries';
 import { getBranchColorByMindElement } from '../utils/node-style/branch';
 import { getLayoutDirection, getPointByPlacement, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { buildText, DEFAULT_FONT_FAMILY, Generator, isResizing, measureElement, moveXOfPoint, TRANSPARENT } from '@plait/common';
+import {
+    buildText,
+    DEFAULT_FONT_FAMILY,
+    Generator,
+    isResizing,
+    measureElement,
+    moveXOfPoint,
+    moveYOfPoint,
+    TRANSPARENT
+} from '@plait/common';
 import { getChildrenCount } from '../utils/mind';
 import { FontSizes } from '@plait/text-plugins';
 
 export interface NodeMoreExtraData {
     isSelected: boolean;
     isHovered?: boolean;
+    isHoveredAwarenessRectangle?: boolean | null;
     isHoveredCollapseArea?: boolean;
     isHoveredExpandArea?: boolean;
     isHoveredAddArea?: boolean;
@@ -52,7 +62,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
         if (
-            ((extraData?.isHovered || extraData?.isHoveredCollapseArea || extraData?.isHoveredAddArea) && canHandleNodeMore(this.board)) ||
+            ((extraData?.isHovered || extraData?.isHoveredAwarenessRectangle) && canHandleNodeMore(this.board)) ||
             (extraData?.isSelected && isLastSelectedMindElement(this.board, element) && canHandleNodeMore(this.board)) ||
             element.isCollapsed
         ) {
@@ -64,48 +74,32 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     draw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): SVGGElement {
         const moreGContainer = createG();
         const stroke = getBranchColorByMindElement(this.board, element);
-        const layoutDirection = getNodeMoreLayoutDirection(this.board, element);
-        const moreStartAndEnd = getMoreStartAndEnd(this.board, element, layoutDirection);
-        const collapseOrExpandCenter = moveXOfPoint(
-            moreStartAndEnd[1],
-            NODE_MORE_ICON_DIAMETER / 2,
-            layoutDirection as unknown as Direction
-        );
-        const hasChildren = element.children.length > 0;
-        const isShowCollapseOrAdd =
-            !element.isCollapsed &&
-            (isSelectedElement(this.board, element) ||
-                !!extraData?.isHovered ||
-                !!extraData?.isHoveredCollapseArea ||
-                !!extraData?.isHoveredAddArea);
-        const isShowCollapse = isShowCollapseOrAdd && hasChildren && !PlaitMind.isMind(element);
-        const isShowAdd = isShowCollapseOrAdd && !PlaitBoard.isReadonly(this.board);
-        const addCenter =
-            (isShowCollapseOrAdd && getAddCenterByCollapseOrExpandCenter(element, collapseOrExpandCenter, layoutDirection)) || null;
-        this.toggleCollapseOrAdd(
-            collapseOrExpandCenter,
+        const { startPoint, endPoint, hasCollapsedIcon, hasExpandedIcon, hasAddIcon, collapsedIconCenter, expandedIconCenter, addCenter } =
+            getNodeMoreKeyPosition(this.board, element);
+        this.toggleCollapseAddAdd(
+            collapsedIconCenter!,
             addCenter,
             stroke,
             moreGContainer,
-            isShowCollapse,
-            isShowAdd,
+            hasCollapsedIcon,
+            hasAddIcon,
             !!extraData?.isHoveredAddArea,
             !!extraData?.isShowCollapseAnimation,
             !!extraData?.isShowAddAnimation
         );
         this.toggleExpandBadge(
             element,
-            moreStartAndEnd,
-            collapseOrExpandCenter,
+            [startPoint, endPoint],
+            expandedIconCenter!,
             stroke,
             moreGContainer,
-            !!element.isCollapsed,
+            !!hasExpandedIcon,
             !!extraData?.isHoveredExpandArea
         );
         return moreGContainer;
     }
 
-    toggleCollapseOrAdd(
+    toggleCollapseAddAdd(
         center: Point,
         addCenter: Point | null,
         stroke: string,
@@ -262,6 +256,52 @@ export const getCollapseAndAddCenterPoint = (board: PlaitBoard, element: MindEle
     const collapseCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction);
     const addCenter = getAddCenterByCollapseOrExpandCenter(element, collapseCenter, layoutDirection);
     return { collapseCenter, addCenter };
+};
+
+export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) => {
+    const layoutDirection = getNodeMoreLayoutDirection(board, element);
+    const [startPoint, endPoint] = getMoreStartAndEnd(board, element, layoutDirection);
+    const hasCollapsedIcon = element.children?.length > 0 && !PlaitMind.isMind(element) && !element.isCollapsed;
+    const hasExpandedIcon = element.children?.length > 0 && !PlaitMind.isMind(element) && element.isCollapsed;
+    const hasAddIcon = !hasExpandedIcon;
+    const firstIconCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction);
+    const collapsedIconCenter = hasCollapsedIcon ? firstIconCenter : null;
+    const expandedIconCenter = hasExpandedIcon ? firstIconCenter : null;
+    let addCenter = null;
+    if (hasAddIcon) {
+        addCenter = hasCollapsedIcon
+            ? moveXOfPoint(firstIconCenter, NODE_MORE_LINE_DISTANCE + NODE_MORE_ICON_DIAMETER, layoutDirection as unknown as Direction)
+            : firstIconCenter;
+    }
+    let awarenessRectangle = null;
+    if (hasAddIcon) {
+        const addIconEndPoint = moveXOfPoint(addCenter!, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction);
+        awarenessRectangle = RectangleClient.getRectangleByPoints([
+            moveYOfPoint(startPoint, -NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction),
+            moveYOfPoint(addIconEndPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction)
+        ]);
+    } else if (hasExpandedIcon) {
+        const expandedIconEndPoint = moveXOfPoint(
+            expandedIconCenter!,
+            NODE_MORE_ICON_DIAMETER / 2,
+            layoutDirection as unknown as Direction
+        );
+        awarenessRectangle = RectangleClient.getRectangleByPoints([
+            moveYOfPoint(startPoint, -NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction),
+            moveYOfPoint(expandedIconEndPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction)
+        ]);
+    }
+    return {
+        startPoint,
+        endPoint,
+        hasCollapsedIcon,
+        hasExpandedIcon,
+        hasAddIcon,
+        collapsedIconCenter,
+        expandedIconCenter,
+        addCenter,
+        awarenessRectangle
+    };
 };
 
 export const getAddCenterByCollapseOrExpandCenter = (

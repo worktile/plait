@@ -11,20 +11,35 @@ import {
     toViewBoxPoint,
     Transforms
 } from '@plait/core';
-import { MindElement, PlaitMind } from '../interfaces';
+import { MindElement } from '../interfaces';
 import { findNewChildNodePath, insertMindElement, isHitMindElement } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
-import { canHandleNodeMore, getCollapseAndAddCenterPoint, NodeMoreGenerator } from '../generators/node-more.generator';
+import { canHandleNodeMore, getNodeMoreKeyPosition, NodeMoreGenerator } from '../generators/node-more.generator';
 import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
 import { PlaitMindBoard } from './with-mind.board';
 
 export interface NodeMoreRef {
     target: MindElement;
     isHovered: boolean;
+    isHoveredAwarenessRectangle: boolean;
     isHoveredCollapseArea: boolean;
     isHoveredExpandArea: boolean;
     isHoveredAddArea: boolean;
 }
+
+export const isSameNodeMoreRef = (ref1: NodeMoreRef | null, ref2: NodeMoreRef | null) => {
+    if (!ref1 || !ref2) {
+        return false;
+    }
+    const result =
+        ref1.target === ref2.target &&
+        ref1.isHovered === ref2.isHovered &&
+        ref1.isHoveredAwarenessRectangle === ref2.isHoveredAwarenessRectangle &&
+        ref1.isHoveredCollapseArea === ref2.isHoveredCollapseArea &&
+        ref1.isHoveredExpandArea === ref2.isHoveredExpandArea &&
+        ref1.isHoveredAddArea === ref2.isHoveredAddArea;
+    return result;
+};
 
 export const withNodeMore = (board: PlaitBoard) => {
     const { pointerMove, pointerLeave, pointerUp } = board;
@@ -38,18 +53,17 @@ export const withNodeMore = (board: PlaitBoard) => {
                     nodeMoreRef = null;
                 }
                 const newNodeMoreRef = getNodeMoreRef(board, event.x, event.y);
-
-                if (nodeMoreRef && newNodeMoreRef && nodeMoreRef.target === newNodeMoreRef.target) {
+                if (nodeMoreRef && newNodeMoreRef && isSameNodeMoreRef(nodeMoreRef, newNodeMoreRef)) {
                     return;
                 }
-
-                if (nodeMoreRef) {
+                if (nodeMoreRef && (!newNodeMoreRef || newNodeMoreRef.target !== nodeMoreRef.target)) {
                     const element = getElementById<MindElement>(board, nodeMoreRef.target.id);
                     // maybe element has been changed
                     if (element && element === nodeMoreRef.target) {
                         toggleHoveredNodeCallback({
                             target: nodeMoreRef.target,
                             isHovered: false,
+                            isHoveredAwarenessRectangle: false,
                             isHoveredCollapseArea: false,
                             isHoveredExpandArea: false,
                             isHoveredAddArea: false
@@ -57,13 +71,9 @@ export const withNodeMore = (board: PlaitBoard) => {
                     }
                 }
                 if (newNodeMoreRef) {
-                    toggleHoveredNodeCallback(newNodeMoreRef);
-                    if (nodeMoreRef) {
-                        nodeMoreRef.target = newNodeMoreRef.target;
-                    } else {
-                        nodeMoreRef = newNodeMoreRef;
-                    }
-                } else {
+                    toggleHoveredNodeCallback(newNodeMoreRef, nodeMoreRef);
+                    nodeMoreRef = newNodeMoreRef;
+                } else if (nodeMoreRef) {
                     nodeMoreRef = null;
                 }
             });
@@ -98,19 +108,22 @@ export const withNodeMore = (board: PlaitBoard) => {
         pointerUp(event);
     };
 
-    const toggleHoveredNodeCallback = (ref: NodeMoreRef) => {
+    const toggleHoveredNodeCallback = (ref: NodeMoreRef, oldRef?: NodeMoreRef | null) => {
         const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(ref.target);
         const nodeMoreGenerator = elementRef?.getGenerator<NodeMoreGenerator>(NodeMoreGenerator.key);
         if (nodeMoreGenerator) {
+            const isSameTarget = oldRef?.target === ref.target;
             const g = PlaitElement.getElementG(ref.target);
             nodeMoreGenerator.processDrawing(ref.target, g, {
                 isHovered: ref.isHovered,
+                isHoveredAwarenessRectangle: ref.isHoveredAwarenessRectangle,
                 isHoveredCollapseArea: ref.isHoveredCollapseArea,
                 isHoveredExpandArea: ref.isHoveredExpandArea,
-                isSelected: isSelectedElement(board, ref.target),
                 isHoveredAddArea: ref.isHoveredAddArea,
-                isShowCollapseAnimation: (ref.isHovered || ref.isHoveredCollapseArea) && !isSelectedElement(board, ref.target),
-                isShowAddAnimation: (ref.isHovered || ref.isHoveredAddArea) && !isSelectedElement(board, ref.target)
+                isSelected: isSelectedElement(board, ref.target),
+                isShowCollapseAnimation:
+                    (ref.isHovered || ref.isHoveredCollapseArea) && !isSelectedElement(board, ref.target) && !isSameTarget,
+                isShowAddAnimation: (ref.isHovered || ref.isHoveredAddArea) && !isSelectedElement(board, ref.target) && !isSameTarget
             });
         }
     };
@@ -120,6 +133,7 @@ export const withNodeMore = (board: PlaitBoard) => {
             toggleHoveredNodeCallback({
                 target: nodeMoreRef.target,
                 isHovered: false,
+                isHoveredAwarenessRectangle: false,
                 isHoveredCollapseArea: false,
                 isHoveredExpandArea: false,
                 isHoveredAddArea: false
@@ -135,6 +149,7 @@ export const withNodeMore = (board: PlaitBoard) => {
 const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
     let target: MindElement | null = null;
     let isHovered = false;
+    let isHoveredAwarenessRectangle = false;
     let isHoveredCollapseArea = false;
     let isHoveredExpandArea = false;
     let isHoveredAddArea = false;
@@ -148,29 +163,43 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
             if (!MindElement.isMindElement(board, element)) {
                 return;
             }
-            const isMind = PlaitMind.isMind(element);
             const isHitElement = isHitMindElement(board, point, element);
-            let isHitCollapseOrExpand = false;
-            let isHitAdd = false;
-            const { collapseCenter, addCenter } = getCollapseAndAddCenterPoint(board, element);
-            const collapseOrExpandIconRectangle =
-                !isMind && RectangleClient.getRectangleByCenterPoint(collapseCenter, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER);
-            isHitCollapseOrExpand =
-                collapseOrExpandIconRectangle &&
-                RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), collapseOrExpandIconRectangle);
-            const addIconRectangle = RectangleClient.getRectangleByCenterPoint(addCenter, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER);
-            isHitAdd = RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), addIconRectangle);
-            if (isHitElement || isHitCollapseOrExpand || isHitAdd) {
+            const {
+                hasCollapsedIcon,
+                hasExpandedIcon,
+                hasAddIcon,
+                collapsedIconCenter,
+                expandedIconCenter,
+                addCenter,
+                awarenessRectangle
+            } = getNodeMoreKeyPosition(board, element);
+            const isHitAwarenessRectangle =
+                awarenessRectangle && RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), awarenessRectangle);
+            const isHitCollapsedIcon =
+                hasCollapsedIcon &&
+                RectangleClient.isHit(
+                    RectangleClient.getRectangleByPoints([point, point]),
+                    RectangleClient.getRectangleByCenterPoint(collapsedIconCenter!, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER)
+                );
+            const isHitExpandedIcon =
+                hasExpandedIcon &&
+                RectangleClient.isHit(
+                    RectangleClient.getRectangleByPoints([point, point]),
+                    RectangleClient.getRectangleByCenterPoint(expandedIconCenter!, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER)
+                );
+            const isHitAddIcon =
+                hasAddIcon &&
+                RectangleClient.isHit(
+                    RectangleClient.getRectangleByPoints([point, point]),
+                    RectangleClient.getRectangleByCenterPoint(addCenter!, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER)
+                );
+            if (isHitElement || isHitAwarenessRectangle) {
                 isHovered = isHitElement;
-                if (element.children.length > 0) {
-                    if (element.isCollapsed) {
-                        isHoveredExpandArea = isHitCollapseOrExpand;
-                    } else {
-                        isHoveredCollapseArea = isHitCollapseOrExpand;
-                    }
-                }
-                isHoveredAddArea = isHitAdd;
+                isHoveredAwarenessRectangle = !!isHitAwarenessRectangle;
                 target = element;
+                isHoveredCollapseArea = isHitCollapsedIcon;
+                isHoveredExpandArea = !!isHitExpandedIcon;
+                isHoveredAddArea = isHitAddIcon;
             }
         },
         getIsRecursionFunc(board),
@@ -182,6 +211,7 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
     return {
         target,
         isHovered,
+        isHoveredAwarenessRectangle,
         isHoveredCollapseArea,
         isHoveredExpandArea,
         isHoveredAddArea
