@@ -61,9 +61,10 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     expandG: SVGGElement | undefined | null;
 
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
+        const selectedElements = getSelectedElements(this.board);
         if (
             ((extraData?.isHit || extraData?.isHitAwarenessRectangle) && canHandleNodeMore(this.board)) ||
-            (extraData?.isSelected && isLastSelectedMindElement(this.board, element) && canHandleNodeMore(this.board)) ||
+            (extraData?.isSelected && selectedElements.length === 1 && canHandleNodeMore(this.board)) ||
             element.isCollapsed
         ) {
             return true;
@@ -76,7 +77,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         const stroke = getBranchColorByMindElement(this.board, element);
         const { startPoint, endPoint, hasCollapsedIcon, hasExpandedIcon, hasAddIcon, collapsedIconCenter, expandedIconCenter, addCenter } =
             getNodeMoreKeyPosition(this.board, element);
-        this.toggleCollapseAddAdd(
+        this.toggleCollapseAndAdd(
             collapsedIconCenter!,
             addCenter,
             stroke,
@@ -99,7 +100,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
         return moreGContainer;
     }
 
-    toggleCollapseAddAdd(
+    toggleCollapseAndAdd(
         center: Point,
         addCenter: Point | null,
         stroke: string,
@@ -322,12 +323,6 @@ export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, link
     let startPoint = getPointByPlacement(nodeClient, placement);
     const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, linkLineDirection as unknown as Direction);
     return [startPoint, endPoint] as [Point, Point];
-};
-
-export const isLastSelectedMindElement = (board: PlaitBoard, element: MindElement) => {
-    const selectedElements = getSelectedElements(board);
-    const selectedMindElements = selectedElements.filter((element) => MindElement.isMindElement(board, element)).reverse();
-    return selectedMindElements[selectedMindElements.length - 1] === element;
 };
 
 export const canHandleNodeMore = (board: PlaitBoard) => {
