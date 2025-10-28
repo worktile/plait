@@ -44,11 +44,11 @@ import { FontSizes } from '@plait/text-plugins';
 
 export interface NodeMoreExtraData {
     isSelected: boolean;
-    isHovered?: boolean;
-    isHoveredAwarenessRectangle?: boolean | null;
-    isHoveredCollapseArea?: boolean;
-    isHoveredExpandArea?: boolean;
-    isHoveredAddArea?: boolean;
+    isHit?: boolean;
+    isHitAwarenessRectangle?: boolean | null;
+    isHitCollapseArea?: boolean;
+    isHitExpandArea?: boolean;
+    isHitAddArea?: boolean;
     isShowCollapseAnimation?: boolean;
     isShowAddAnimation?: boolean;
 }
@@ -62,7 +62,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
         if (
-            ((extraData?.isHovered || extraData?.isHoveredAwarenessRectangle) && canHandleNodeMore(this.board)) ||
+            ((extraData?.isHit || extraData?.isHitAwarenessRectangle) && canHandleNodeMore(this.board)) ||
             (extraData?.isSelected && isLastSelectedMindElement(this.board, element) && canHandleNodeMore(this.board)) ||
             element.isCollapsed
         ) {
@@ -83,7 +83,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             moreGContainer,
             hasCollapsedIcon,
             hasAddIcon,
-            !!extraData?.isHoveredAddArea,
+            !!extraData?.isHitAddArea,
             !!extraData?.isShowCollapseAnimation,
             !!extraData?.isShowAddAnimation
         );
@@ -94,7 +94,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             stroke,
             moreGContainer,
             !!hasExpandedIcon,
-            !!extraData?.isHoveredExpandArea
+            !!extraData?.isHitExpandArea
         );
         return moreGContainer;
     }

@@ -3,6 +3,7 @@ import {
     getElementById,
     getIsRecursionFunc,
     isSelectedElement,
+    isTouchDevice,
     PlaitBoard,
     PlaitElement,
     RectangleClient,
@@ -20,11 +21,11 @@ import { PlaitMindBoard } from './with-mind.board';
 
 export interface NodeMoreRef {
     target: MindElement;
-    isHovered: boolean;
-    isHoveredAwarenessRectangle: boolean;
-    isHoveredCollapseArea: boolean;
-    isHoveredExpandArea: boolean;
-    isHoveredAddArea: boolean;
+    isHit: boolean;
+    isHitAwarenessRectangle: boolean;
+    isHitCollapseArea: boolean;
+    isHitExpandArea: boolean;
+    isHitAddArea: boolean;
 }
 
 export const isSameNodeMoreRef = (ref1: NodeMoreRef | null, ref2: NodeMoreRef | null) => {
@@ -33,11 +34,11 @@ export const isSameNodeMoreRef = (ref1: NodeMoreRef | null, ref2: NodeMoreRef | 
     }
     const result =
         ref1.target === ref2.target &&
-        ref1.isHovered === ref2.isHovered &&
-        ref1.isHoveredAwarenessRectangle === ref2.isHoveredAwarenessRectangle &&
-        ref1.isHoveredCollapseArea === ref2.isHoveredCollapseArea &&
-        ref1.isHoveredExpandArea === ref2.isHoveredExpandArea &&
-        ref1.isHoveredAddArea === ref2.isHoveredAddArea;
+        ref1.isHit === ref2.isHit &&
+        ref1.isHitAwarenessRectangle === ref2.isHitAwarenessRectangle &&
+        ref1.isHitCollapseArea === ref2.isHitCollapseArea &&
+        ref1.isHitExpandArea === ref2.isHitExpandArea &&
+        ref1.isHitAddArea === ref2.isHitAddArea;
     return result;
 };
 
@@ -62,11 +63,11 @@ export const withNodeMore = (board: PlaitBoard) => {
                     if (element && element === nodeMoreRef.target) {
                         toggleHoveredNodeCallback({
                             target: nodeMoreRef.target,
-                            isHovered: false,
-                            isHoveredAwarenessRectangle: false,
-                            isHoveredCollapseArea: false,
-                            isHoveredExpandArea: false,
-                            isHoveredAddArea: false
+                            isHit: false,
+                            isHitAwarenessRectangle: false,
+                            isHitCollapseArea: false,
+                            isHitExpandArea: false,
+                            isHitAddArea: false
                         });
                     }
                 }
@@ -82,7 +83,7 @@ export const withNodeMore = (board: PlaitBoard) => {
     };
 
     board.pointerUp = (event: PointerEvent) => {
-        if (nodeMoreRef && (nodeMoreRef.isHoveredCollapseArea || nodeMoreRef.isHoveredExpandArea)) {
+        if (nodeMoreRef && (nodeMoreRef.isHitCollapseArea || nodeMoreRef.isHitExpandArea)) {
             const isCollapsed = !nodeMoreRef.target.isCollapsed;
             const newElement: Partial<MindElement> = { isCollapsed };
             const path = PlaitBoard.findPath(board, nodeMoreRef.target);
@@ -98,12 +99,27 @@ export const withNodeMore = (board: PlaitBoard) => {
             }, 0);
             return;
         }
-        if (nodeMoreRef && nodeMoreRef.isHoveredAddArea && !PlaitBoard.isReadonly(board)) {
+        if (nodeMoreRef && nodeMoreRef.isHitAddArea && !PlaitBoard.isReadonly(board)) {
             if (nodeMoreRef) {
                 const path = findNewChildNodePath(board, nodeMoreRef.target);
                 insertMindElement(board as PlaitMindBoard, nodeMoreRef.target, path);
             }
             return;
+        }
+        if (isTouchDevice()) {
+            const nodeMoreRef = getNodeMoreRef(board, event.x, event.y);
+            if (nodeMoreRef && nodeMoreRef.isHitAddArea) {
+                const path = findNewChildNodePath(board, nodeMoreRef.target);
+                insertMindElement(board as PlaitMindBoard, nodeMoreRef.target, path);
+                return;
+            }
+            if (nodeMoreRef && (nodeMoreRef.isHitExpandArea || nodeMoreRef.isHitCollapseArea)) {
+                const isCollapsed = !nodeMoreRef.target.isCollapsed;
+                const newElement: Partial<MindElement> = { isCollapsed };
+                const path = PlaitBoard.findPath(board, nodeMoreRef.target);
+                Transforms.setNode(board, newElement, path);
+                return;
+            }
         }
         pointerUp(event);
     };
@@ -115,15 +131,14 @@ export const withNodeMore = (board: PlaitBoard) => {
             const isSameTarget = oldRef?.target === ref.target;
             const g = PlaitElement.getElementG(ref.target);
             nodeMoreGenerator.processDrawing(ref.target, g, {
-                isHovered: ref.isHovered,
-                isHoveredAwarenessRectangle: ref.isHoveredAwarenessRectangle,
-                isHoveredCollapseArea: ref.isHoveredCollapseArea,
-                isHoveredExpandArea: ref.isHoveredExpandArea,
-                isHoveredAddArea: ref.isHoveredAddArea,
+                isHit: ref.isHit,
+                isHitAwarenessRectangle: ref.isHitAwarenessRectangle,
+                isHitCollapseArea: ref.isHitCollapseArea,
+                isHitExpandArea: ref.isHitExpandArea,
+                isHitAddArea: ref.isHitAddArea,
                 isSelected: isSelectedElement(board, ref.target),
-                isShowCollapseAnimation:
-                    (ref.isHovered || ref.isHoveredCollapseArea) && !isSelectedElement(board, ref.target) && !isSameTarget,
-                isShowAddAnimation: (ref.isHovered || ref.isHoveredAddArea) && !isSelectedElement(board, ref.target) && !isSameTarget
+                isShowCollapseAnimation: (ref.isHit || ref.isHitCollapseArea) && !isSelectedElement(board, ref.target) && !isSameTarget,
+                isShowAddAnimation: (ref.isHit || ref.isHitAddArea) && !isSelectedElement(board, ref.target) && !isSameTarget
             });
         }
     };
@@ -132,11 +147,11 @@ export const withNodeMore = (board: PlaitBoard) => {
         if (nodeMoreRef) {
             toggleHoveredNodeCallback({
                 target: nodeMoreRef.target,
-                isHovered: false,
-                isHoveredAwarenessRectangle: false,
-                isHoveredCollapseArea: false,
-                isHoveredExpandArea: false,
-                isHoveredAddArea: false
+                isHit: false,
+                isHitAwarenessRectangle: false,
+                isHitCollapseArea: false,
+                isHitExpandArea: false,
+                isHitAddArea: false
             });
         }
         nodeMoreRef = null;
@@ -148,11 +163,11 @@ export const withNodeMore = (board: PlaitBoard) => {
 
 const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
     let target: MindElement | null = null;
-    let isHovered = false;
-    let isHoveredAwarenessRectangle = false;
-    let isHoveredCollapseArea = false;
-    let isHoveredExpandArea = false;
-    let isHoveredAddArea = false;
+    let isHit = false;
+    let isHitAwarenessRectangle = false;
+    let isHitCollapseArea = false;
+    let isHitExpandArea = false;
+    let isHitAddArea = false;
     const point = toViewBoxPoint(board, toHostPoint(board, x, y));
     depthFirstRecursion(
         board as unknown as MindElement,
@@ -173,7 +188,7 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
                 addCenter,
                 awarenessRectangle
             } = getNodeMoreKeyPosition(board, element);
-            const isHitAwarenessRectangle =
+            const isHitAwarenessRectangleInternal =
                 awarenessRectangle && RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), awarenessRectangle);
             const isHitCollapsedIcon =
                 hasCollapsedIcon &&
@@ -193,13 +208,13 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
                     RectangleClient.getRectangleByPoints([point, point]),
                     RectangleClient.getRectangleByCenterPoint(addCenter!, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER)
                 );
-            if (isHitElement || isHitAwarenessRectangle) {
-                isHovered = isHitElement;
-                isHoveredAwarenessRectangle = !!isHitAwarenessRectangle;
+            if (isHitElement || isHitAwarenessRectangleInternal) {
+                isHit = isHitElement;
                 target = element;
-                isHoveredCollapseArea = isHitCollapsedIcon;
-                isHoveredExpandArea = !!isHitExpandedIcon;
-                isHoveredAddArea = isHitAddIcon;
+                isHitCollapseArea = isHitCollapsedIcon;
+                isHitExpandArea = !!isHitExpandedIcon;
+                isHitAddArea = isHitAddIcon;
+                isHitAwarenessRectangle = !!isHitAwarenessRectangleInternal;
             }
         },
         getIsRecursionFunc(board),
@@ -210,10 +225,10 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
     }
     return {
         target,
-        isHovered,
-        isHoveredAwarenessRectangle,
-        isHoveredCollapseArea,
-        isHoveredExpandArea,
-        isHoveredAddArea
+        isHit,
+        isHitAwarenessRectangle,
+        isHitCollapseArea,
+        isHitExpandArea,
+        isHitAddArea
     } as NodeMoreRef;
 };
