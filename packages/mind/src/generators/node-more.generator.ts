@@ -250,14 +250,6 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     }
 }
 
-export const getCollapseAndAddCenterPoint = (board: PlaitBoard, element: MindElement) => {
-    const layoutDirection = getNodeMoreLayoutDirection(board, element);
-    const [startPoint, endPoint] = getMoreStartAndEnd(board, element, layoutDirection);
-    const collapseCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction);
-    const addCenter = getAddCenterByCollapseOrExpandCenter(element, collapseCenter, layoutDirection);
-    return { collapseCenter, addCenter };
-};
-
 export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) => {
     const layoutDirection = getNodeMoreLayoutDirection(board, element);
     const [startPoint, endPoint] = getMoreStartAndEnd(board, element, layoutDirection);
@@ -302,18 +294,6 @@ export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) 
         addCenter,
         awarenessRectangle
     };
-};
-
-export const getAddCenterByCollapseOrExpandCenter = (
-    target: MindElement,
-    collapseOrExpandCenter: Point,
-    layoutDirection: LayoutDirection
-) => {
-    let addCenter = collapseOrExpandCenter;
-    if (target.children?.length > 0 && !PlaitMind.isMind(target)) {
-        addCenter = moveXOfPoint(addCenter, NODE_MORE_LINE_DISTANCE + NODE_MORE_ICON_DIAMETER, layoutDirection as unknown as Direction);
-    }
-    return addCenter;
 };
 
 export const getNodeMoreLayoutDirection = (board: PlaitBoard, element: MindElement) => {
