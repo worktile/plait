@@ -2,4 +2,4 @@
 '@plait/mind': patch
 ---
 
-Support both left and right to add mind element
+Support adding child nodes to both left and right sides in standard layout
