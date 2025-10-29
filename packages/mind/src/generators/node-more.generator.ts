@@ -51,6 +51,8 @@ export interface NodeMoreExtraData {
     isHitAddArea?: boolean;
     isShowCollapseAnimation?: boolean;
     isShowAddAnimation?: boolean;
+    isHitStandardLeftAddArea?: boolean;
+    isHitStandardLeftAwarenessRectangle?: boolean;
 }
 
 export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData> {
@@ -63,7 +65,8 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     canDraw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): boolean {
         const selectedElements = getSelectedElements(this.board);
         if (
-            ((extraData?.isHit || extraData?.isHitAwarenessRectangle) && canHandleNodeMore(this.board)) ||
+            ((extraData?.isHit || extraData?.isHitAwarenessRectangle || extraData?.isHitStandardLeftAwarenessRectangle) &&
+                canHandleNodeMore(this.board)) ||
             (extraData?.isSelected && selectedElements.length === 1 && canHandleNodeMore(this.board)) ||
             element.isCollapsed
         ) {
@@ -75,16 +78,29 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     draw(element: MindElement<BaseData>, extraData: NodeMoreExtraData): SVGGElement {
         const moreGContainer = createG();
         const stroke = getBranchColorByMindElement(this.board, element);
-        const { startPoint, endPoint, hasCollapsedIcon, hasExpandedIcon, hasAddIcon, collapsedIconCenter, expandedIconCenter, addCenter } =
-            getNodeMoreKeyPosition(this.board, element);
+        const {
+            startPoint,
+            endPoint,
+            hasCollapsedIcon,
+            hasExpandedIcon,
+            hasAddIcon,
+            collapsedIconCenter,
+            expandedIconCenter,
+            addCenter,
+            hasLeftAddIcon,
+            standardRef
+        } = getNodeMoreKeyPosition(this.board, element);
         this.toggleCollapseAndAdd(
             collapsedIconCenter!,
             addCenter,
+            standardRef?.addCenter,
             stroke,
             moreGContainer,
             hasCollapsedIcon,
             hasAddIcon,
+            hasLeftAddIcon,
             !!extraData?.isHitAddArea,
+            !!extraData?.isHitStandardLeftAddArea,
             !!extraData?.isShowCollapseAnimation,
             !!extraData?.isShowAddAnimation
         );
@@ -103,16 +119,19 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
     toggleCollapseAndAdd(
         center: Point,
         addCenter: Point | null,
+        standardLeftAddCenter: Point | null | undefined,
         stroke: string,
         parentG: SVGGElement,
         isShowCollapse: boolean,
         isShowAdd: boolean,
-        isHoveredAddArea: boolean,
+        isShowStandardLeftAdd: boolean,
+        isHitAddArea: boolean,
+        isHitStandardLeftAdd: boolean,
         isShowCollapseAnimation: boolean,
         isShowAddAnimation: boolean
     ) {
         this.collapseOrAddG?.remove();
-        if (!isShowCollapse && !isShowAdd) {
+        if (!isShowCollapse && !isShowAdd && !isShowStandardLeftAdd) {
             return;
         }
         this.collapseOrAddG = createG();
@@ -141,9 +160,9 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             collapseG.appendChild(collapseLine);
             setStrokeLinecap(collapseLine, 'round');
         }
-        if (isShowAdd && addCenter) {
+        const createAddIcon = (collapseOrAddG: SVGGElement, addCenter: Point, isHit: boolean) => {
             const addG = createG();
-            this.collapseOrAddG.appendChild(addG);
+            collapseOrAddG.appendChild(addG);
             addG.classList.add('add-button');
             if (isShowAddAnimation) {
                 addG.classList.add('animated');
@@ -153,7 +172,7 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
                 addCenter[1],
                 NODE_MORE_ICON_DIAMETER + NODE_MORE_STROKE_WIDTH,
                 {
-                    fill: isHoveredAddArea ? NODE_ADD_HOVER_COLOR : NODE_ADD_CIRCLE_COLOR,
+                    fill: isHit ? NODE_ADD_HOVER_COLOR : NODE_ADD_CIRCLE_COLOR,
                     stroke: TRANSPARENT,
                     fillStyle: 'solid'
                 }
@@ -188,6 +207,12 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
             addG.appendChild(circle);
             addG.appendChild(innerCrossHLine);
             addG.appendChild(innerCrossVLine);
+        };
+        if (isShowAdd && addCenter) {
+            createAddIcon(this.collapseOrAddG, addCenter, isHitAddArea);
+        }
+        if (isShowStandardLeftAdd && standardLeftAddCenter) {
+            createAddIcon(this.collapseOrAddG, standardLeftAddCenter, isHitStandardLeftAdd);
         }
         parentG.appendChild(this.collapseOrAddG);
     }
@@ -252,10 +277,13 @@ export class NodeMoreGenerator extends Generator<MindElement, NodeMoreExtraData>
 }
 
 export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) => {
+    const isMind = PlaitMind.isMind(element);
+    const hasLeftAddIcon = isMind && element.layout === MindLayoutType.standard;
     const layoutDirection = getNodeMoreLayoutDirection(board, element);
-    const [startPoint, endPoint] = getMoreStartAndEnd(board, element, layoutDirection);
-    const hasCollapsedIcon = element.children?.length > 0 && !PlaitMind.isMind(element) && !element.isCollapsed;
-    const hasExpandedIcon = element.children?.length > 0 && !PlaitMind.isMind(element) && element.isCollapsed;
+    const startPoint = getNodeMoreStartPoint(board, element, layoutDirection);
+    const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, layoutDirection as unknown as Direction);
+    const hasCollapsedIcon = element.children?.length > 0 && !isMind && !element.isCollapsed;
+    const hasExpandedIcon = element.children?.length > 0 && isMind && element.isCollapsed;
     const hasAddIcon = !hasExpandedIcon;
     const firstIconCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction);
     const collapsedIconCenter = hasCollapsedIcon ? firstIconCenter : null;
@@ -284,6 +312,20 @@ export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) 
             moveYOfPoint(expandedIconEndPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction)
         ]);
     }
+
+    let standardRef: { addCenter: Point; awarenessRectangle: RectangleClient } | null = null;
+    if (hasLeftAddIcon) {
+        const leftStartPoint = getNodeMoreStartPoint(board, element, layoutDirection, true);
+        const leftAddCenter = [leftStartPoint[0] - NODE_MORE_LINE_DISTANCE - NODE_MORE_ICON_DIAMETER / 2, leftStartPoint[1]] as Point;
+        const leftAwarenessRectangle = RectangleClient.getRectangleByPoints([
+            [leftStartPoint[0] - NODE_MORE_ICON_DIAMETER - NODE_MORE_LINE_DISTANCE, leftStartPoint[1] - NODE_MORE_ICON_DIAMETER / 2],
+            [leftStartPoint[0], leftStartPoint[1] + NODE_MORE_ICON_DIAMETER / 2]
+        ]);
+        standardRef = {
+            addCenter: leftAddCenter,
+            awarenessRectangle: leftAwarenessRectangle
+        };
+    }
     return {
         startPoint,
         endPoint,
@@ -293,7 +335,9 @@ export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) 
         collapsedIconCenter,
         expandedIconCenter,
         addCenter,
-        awarenessRectangle
+        awarenessRectangle,
+        hasLeftAddIcon,
+        standardRef
     };
 };
 
@@ -308,11 +352,14 @@ export const getNodeMoreLayoutDirection = (board: PlaitBoard, element: MindEleme
     return layoutDirection;
 };
 
-export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, linkLineDirection: LayoutDirection) => {
+export const getNodeMoreStartPoint = (board: PlaitBoard, element: MindElement, linkLineDirection: LayoutDirection, isLeft = false) => {
     const node = MindElement.getNode(element);
     const isUnderlineShape = getShapeByElement(board, element) === MindElementShape.underline;
     const nodeClient = getRectangleByNode(node);
     let placement: PointPlacement = [HorizontalPlacement.right, VerticalPlacement.middle];
+    if (isLeft) {
+        placement[0] = HorizontalPlacement.left;
+    }
     transformPlacement(placement, linkLineDirection);
     // underline shape and horizontal
     const layout = MindQueries.getLayoutByElement(element) as MindLayoutType;
@@ -321,8 +368,7 @@ export const getMoreStartAndEnd = (board: PlaitBoard, element: MindElement, link
         placement[1] = VerticalPlacement.bottom;
     }
     let startPoint = getPointByPlacement(nodeClient, placement);
-    const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, linkLineDirection as unknown as Direction);
-    return [startPoint, endPoint] as [Point, Point];
+    return startPoint as Point;
 };
 
 export const canHandleNodeMore = (board: PlaitBoard) => {

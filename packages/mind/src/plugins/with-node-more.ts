@@ -12,12 +12,20 @@ import {
     toViewBoxPoint,
     Transforms
 } from '@plait/core';
-import { MindElement } from '../interfaces';
-import { findNewChildNodePath, insertMindElement, isHitMindElement } from '../utils';
+import { MindElement, PlaitMind } from '../interfaces';
+import {
+    findNewChildNodePath,
+    findNewRightChildNodePath,
+    insertElementHandleRightNodeCount,
+    insertMindElement,
+    isHitMindElement
+} from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
 import { canHandleNodeMore, getNodeMoreKeyPosition, NodeMoreGenerator } from '../generators/node-more.generator';
 import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
 import { PlaitMindBoard } from './with-mind.board';
+import { MindLayoutType } from '@plait/layouts';
+import { setRightNodeCountByRefs } from '../transforms/node';
 
 export interface NodeMoreRef {
     target: MindElement;
@@ -26,6 +34,8 @@ export interface NodeMoreRef {
     isHitCollapseArea: boolean;
     isHitExpandArea: boolean;
     isHitAddArea: boolean;
+    isHitStandardLeftAddArea: boolean;
+    isHitStandardLeftAwarenessRectangle: boolean;
 }
 
 export const isSameNodeMoreRef = (ref1: NodeMoreRef | null, ref2: NodeMoreRef | null) => {
@@ -38,7 +48,9 @@ export const isSameNodeMoreRef = (ref1: NodeMoreRef | null, ref2: NodeMoreRef | 
         ref1.isHitAwarenessRectangle === ref2.isHitAwarenessRectangle &&
         ref1.isHitCollapseArea === ref2.isHitCollapseArea &&
         ref1.isHitExpandArea === ref2.isHitExpandArea &&
-        ref1.isHitAddArea === ref2.isHitAddArea;
+        ref1.isHitAddArea === ref2.isHitAddArea &&
+        ref1.isHitStandardLeftAddArea === ref2.isHitStandardLeftAddArea &&
+        ref1.isHitStandardLeftAwarenessRectangle === ref2.isHitStandardLeftAwarenessRectangle;
     return result;
 };
 
@@ -67,7 +79,9 @@ export const withNodeMore = (board: PlaitBoard) => {
                             isHitAwarenessRectangle: false,
                             isHitCollapseArea: false,
                             isHitExpandArea: false,
-                            isHitAddArea: false
+                            isHitAddArea: false,
+                            isHitStandardLeftAddArea: false,
+                            isHitStandardLeftAwarenessRectangle: false
                         });
                     }
                 }
@@ -99,18 +113,28 @@ export const withNodeMore = (board: PlaitBoard) => {
             }, 0);
             return;
         }
-        if (nodeMoreRef && nodeMoreRef.isHitAddArea && !PlaitBoard.isReadonly(board)) {
-            if (nodeMoreRef) {
+        const insertMindElementByAdd = (nodeMoreRef: NodeMoreRef) => {
+            if (nodeMoreRef.isHitAddArea && PlaitMind.isMind(nodeMoreRef.target) && nodeMoreRef.target.layout === MindLayoutType.standard) {
+                const path = PlaitBoard.findPath(board, nodeMoreRef.target);
+                const refs = insertElementHandleRightNodeCount(board, path, 1);
+                setRightNodeCountByRefs(board, refs);
+                const newPath = findNewRightChildNodePath(board, nodeMoreRef.target, refs[0].rightNodeCount);
+                insertMindElement(board as PlaitMindBoard, nodeMoreRef.target, newPath);
+            } else {
                 const path = findNewChildNodePath(board, nodeMoreRef.target);
                 insertMindElement(board as PlaitMindBoard, nodeMoreRef.target, path);
+            }
+        };
+        if (nodeMoreRef && (nodeMoreRef.isHitAddArea || nodeMoreRef.isHitStandardLeftAddArea) && !PlaitBoard.isReadonly(board)) {
+            if (nodeMoreRef) {
+                insertMindElementByAdd(nodeMoreRef);
             }
             return;
         }
         if (isTouchDevice()) {
             const nodeMoreRef = getNodeMoreRef(board, event.x, event.y);
-            if (nodeMoreRef && nodeMoreRef.isHitAddArea) {
-                const path = findNewChildNodePath(board, nodeMoreRef.target);
-                insertMindElement(board as PlaitMindBoard, nodeMoreRef.target, path);
+            if (nodeMoreRef && (nodeMoreRef.isHitAddArea || nodeMoreRef.isHitStandardLeftAddArea)) {
+                insertMindElementByAdd(nodeMoreRef);
                 return;
             }
             if (nodeMoreRef && (nodeMoreRef.isHitExpandArea || nodeMoreRef.isHitCollapseArea)) {
@@ -132,6 +156,8 @@ export const withNodeMore = (board: PlaitBoard) => {
             const g = PlaitElement.getElementG(ref.target);
             nodeMoreGenerator.processDrawing(ref.target, g, {
                 isHit: ref.isHit,
+                isHitStandardLeftAddArea: ref.isHitStandardLeftAddArea,
+                isHitStandardLeftAwarenessRectangle: ref.isHitStandardLeftAwarenessRectangle,
                 isHitAwarenessRectangle: ref.isHitAwarenessRectangle,
                 isHitCollapseArea: ref.isHitCollapseArea,
                 isHitExpandArea: ref.isHitExpandArea,
@@ -151,7 +177,9 @@ export const withNodeMore = (board: PlaitBoard) => {
                 isHitAwarenessRectangle: false,
                 isHitCollapseArea: false,
                 isHitExpandArea: false,
-                isHitAddArea: false
+                isHitAddArea: false,
+                isHitStandardLeftAddArea: false,
+                isHitStandardLeftAwarenessRectangle: false
             });
         }
         nodeMoreRef = null;
@@ -168,6 +196,8 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
     let isHitCollapseArea = false;
     let isHitExpandArea = false;
     let isHitAddArea = false;
+    let isHitStandardLeftAddArea = false;
+    let isHitStandardLeftAwarenessRectangle = false;
     const point = toViewBoxPoint(board, toHostPoint(board, x, y));
     depthFirstRecursion(
         board as unknown as MindElement,
@@ -186,7 +216,9 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
                 collapsedIconCenter,
                 expandedIconCenter,
                 addCenter,
-                awarenessRectangle
+                awarenessRectangle,
+                hasLeftAddIcon,
+                standardRef
             } = getNodeMoreKeyPosition(board, element);
             const isHitAwarenessRectangleInternal =
                 awarenessRectangle && RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), awarenessRectangle);
@@ -208,13 +240,27 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
                     RectangleClient.getRectangleByPoints([point, point]),
                     RectangleClient.getRectangleByCenterPoint(addCenter!, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER)
                 );
-            if (isHitElement || isHitAwarenessRectangleInternal) {
+            const isHitStandardLeftAwarenessRectangleInternal =
+                hasLeftAddIcon &&
+                standardRef &&
+                RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), standardRef.awarenessRectangle);
+            const isHitStandardLeftAddIcon =
+                hasLeftAddIcon &&
+                standardRef &&
+                RectangleClient.isHit(
+                    RectangleClient.getRectangleByPoints([point, point]),
+                    RectangleClient.getRectangleByCenterPoint(standardRef.addCenter, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER)
+                );
+
+            if (isHitElement || isHitAwarenessRectangleInternal || isHitStandardLeftAwarenessRectangleInternal) {
                 isHit = isHitElement;
                 target = element;
                 isHitCollapseArea = isHitCollapsedIcon;
                 isHitExpandArea = !!isHitExpandedIcon;
                 isHitAddArea = isHitAddIcon;
                 isHitAwarenessRectangle = !!isHitAwarenessRectangleInternal;
+                isHitStandardLeftAwarenessRectangle = !!isHitStandardLeftAwarenessRectangleInternal;
+                isHitStandardLeftAddArea = !!isHitStandardLeftAddIcon;
             }
         },
         getIsRecursionFunc(board),
@@ -229,6 +275,8 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
         isHitAwarenessRectangle,
         isHitCollapseArea,
         isHitExpandArea,
-        isHitAddArea
+        isHitAddArea,
+        isHitStandardLeftAddArea,
+        isHitStandardLeftAwarenessRectangle
     } as NodeMoreRef;
 };
