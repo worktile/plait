@@ -13,7 +13,15 @@ import {
 import { getNavigatorClipboard, setNavigatorClipboard } from './navigator-clipboard';
 import { ClipboardData, WritableClipboardContext } from './types';
 
-export const getClipboardData = async (dataTransfer: DataTransfer | null): Promise<ClipboardData> => {
+export const cacheClipboardData = (clipboardData: ClipboardData) => {
+    (window as any)['plait_fallback_clipboard_data'] = clipboardData;
+};
+
+export const getCachedClipboardData = () => {
+    return (window as any)['plait_fallback_clipboard_data'] || null;
+};
+
+export const getClipboardData = async (dataTransfer: DataTransfer | null): Promise<ClipboardData | null> => {
     let clipboardData = {};
     if (dataTransfer) {
         if (dataTransfer.files.length) {
@@ -28,7 +36,7 @@ export const getClipboardData = async (dataTransfer: DataTransfer | null): Promi
     if (getProbablySupportsClipboardRead()) {
         return await getNavigatorClipboard();
     }
-    return clipboardData;
+    return null;
 };
 
 export const setClipboardData = async (dataTransfer: DataTransfer | null, clipboardContext: WritableClipboardContext | null) => {
@@ -44,6 +52,7 @@ export const setClipboardData = async (dataTransfer: DataTransfer | null, clipbo
     if (dataTransfer) {
         setDataTransferClipboard(dataTransfer, type, elements);
         setDataTransferClipboardText(dataTransfer, text);
+        cacheClipboardData(clipboardContext);
         return;
     }
 
