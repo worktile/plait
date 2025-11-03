@@ -343,7 +343,7 @@ export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) 
 
 export const getNodeMoreLayoutDirection = (board: PlaitBoard, element: MindElement) => {
     const node = MindElement.getNode(element);
-    const layout = MindQueries.getLayoutByElement(element) as MindLayoutType;
+    const layout = MindQueries.getCorrectLayoutByElement(board, element) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(layout);
     let layoutDirection = getLayoutDirection(node, isHorizontal);
     if (isIndentedLayout(layout)) {
