@@ -62,7 +62,7 @@
         "points-on-curve": "^1.0.0",
         "roughjs": "^4.5.2",
         "rxjs": "~7.8.0",
-        "slate-angular": "^19.1.0-next.3",
+        "slate-angular": "^19.4.0-next.1",
         "slate": "^0.117.2",
         "slate-dom": "^0.116.0",
         "slate-history": "^0.115.0",

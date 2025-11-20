@@ -17,16 +17,16 @@ import { SlateEditable, withAngular } from 'slate-angular';
 import { withHistory } from 'slate-history';
 import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
 import { withMarkHotkey } from '../plugins/mark-hotkey/with-mark-hotkey';
-import { ParagraphElementComponent } from '../plugins/paragraph/paragraph.component';
 import { withInlineMove } from '../plugins/with-inline-move';
 import { withText } from '../plugins/with-text';
-import { PlaitTextNodeComponent } from '../text-node/text.component';
 import { FormsModule } from '@angular/forms';
 import { LinkElement, TextChangeData, TextPlugin } from '@plait/common';
 import { CLIPBOARD_FORMAT_KEY, MarkTypes } from '@plait/text-plugins';
 import { withPasteLink } from '../plugins/link/with-link-insert';
 import { CommonModule } from '@angular/common';
 import { PlaitBoard } from '@plait/core';
+import { ParagraphFlavour } from '../plugins/paragraph/paragraph.flavour';
+import { TextFlavour } from '../text-node/text.flavour';
 
 @Component({
     selector: 'plait-text',
@@ -78,7 +78,7 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
 
     ngOnInit(): void {
         if (this.textPlugins) {
-            this.textPlugins.forEach(plugin => {
+            this.textPlugins.forEach((plugin) => {
                 plugin(this.editor);
             });
         }
@@ -99,13 +99,13 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
             return PlaitLinkNodeComponent;
         }
 
-        return ParagraphElementComponent;
+        return ParagraphFlavour;
     };
 
-    renderText: any = (text: Text): PlaitTextNodeComponent | null => {
+    renderText: any = (text: Text) => {
         for (const key in MarkTypes) {
             if ((text as any)[(MarkTypes as any)[key]]) {
-                return PlaitTextNodeComponent as any;
+                return TextFlavour;
             }
         }
         return null;

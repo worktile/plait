@@ -36,23 +36,23 @@
         }
     }
 
-    [the-underlined][the-strike] {
+    [plait-underlined][plait-strike] {
         text-decoration: underline line-through;
     }
 
-    [the-strike] {
+    [plait-strike] {
         text-decoration: line-through;
     }
 
-    [the-underlined] {
+    [plait-underlined] {
         text-decoration: underline;
     }
 
-    [the-italic] {
+    [plait-italic] {
         font-style: italic;
     }
 
-    [the-bold] {
+    [plait-bold] {
         font-weight: bold;
     }
     @each $size, $liMl,
