@@ -19,6 +19,7 @@ export * from './swimlane';
 export * from './table';
 export * from './vector-line';
 export * from './options';
+export * from './image';
 
 export type PlaitDrawElement = PlaitGeometry | PlaitArrowLine | PlaitVectorLine | PlaitImage | PlaitBaseTable | PlaitSwimlane;
 
