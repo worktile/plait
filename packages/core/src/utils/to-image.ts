@@ -11,6 +11,7 @@ export interface ToImageOptions {
     fillStyle?: string;
     // List of class names. The list must be in the form class1,class2,...
     inlineStyleClassNames?: string;
+    styleNames?: string[];
 }
 
 /**
@@ -83,22 +84,20 @@ async function convertImageToBase64(url: string): Promise<string> {
  * @param nativeNode source node
  * @param clonedNode clone node
  */
-function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
+function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T, styleNames?: string[]) {
     const targetStyle = clonedNode?.style;
     if (!targetStyle) {
         return;
     }
-
     const sourceStyle = window.getComputedStyle(nativeNode);
-    if (sourceStyle.cssText) {
-        targetStyle.cssText = sourceStyle.cssText;
-        targetStyle.transformOrigin = sourceStyle.transformOrigin;
-    } else {
-        Array.from(sourceStyle).forEach(name => {
-            let value = sourceStyle.getPropertyValue(name);
-            targetStyle.setProperty(name, value, sourceStyle.getPropertyPriority(name));
-        });
-    }
+    // Only clone a subset of styles
+    (styleNames || []).forEach((prop) => {
+        const value = sourceStyle.getPropertyValue(prop);
+        const priority = sourceStyle.getPropertyPriority(prop);
+        if (value) {
+            targetStyle.setProperty(prop, value, priority);
+        }
+    });
 }
 
 /**
@@ -107,22 +106,22 @@ function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
  * @param cloneNode
  * @param inlineStyleClassNames
  */
-function batchCloneCSSStyle(sourceNode: SVGGElement, cloneNode: SVGGElement, inlineStyleClassNames: string) {
+function batchCloneCSSStyle(sourceNode: SVGGElement, cloneNode: SVGGElement, inlineStyleClassNames?: string, styleNames?: string[]) {
+    // handle text style, Hardcoded to slate editor framework
+    const textSelector = '[data-slate-node="text"]';
+    const textStyle = ['font-size', 'font-family', 'line-height', 'text-decoration', 'font-weight', 'font-style', 'word-break'];
+    const sourceTextNodes = Array.from(sourceNode.querySelectorAll(textSelector));
+    const cloneTextNodes = Array.from(cloneNode.querySelectorAll(textSelector));
+    sourceTextNodes.map((node, index) => {
+        cloneCSSStyle(node as HTMLElement, cloneTextNodes[index] as HTMLElement, textStyle);
+    });
+    // expand
     if (inlineStyleClassNames) {
-        const classNames = inlineStyleClassNames + `, ${FOREIGN_OBJECT_EXPRESSION}`;
+        const classNames = inlineStyleClassNames;
         const sourceNodes = Array.from(sourceNode.querySelectorAll(classNames));
         const cloneNodes = Array.from(cloneNode.querySelectorAll(classNames));
-
-        sourceNodes.forEach((node, index) => {
-            const childElements = Array.from(node.querySelectorAll('*')).filter(isElementNode) as HTMLElement[];
-            const cloneChildElements = Array.from(cloneNodes[index].querySelectorAll('*')).filter(isElementNode) as HTMLElement[];
-            sourceNodes.push(...childElements);
-            cloneNodes.push(...cloneChildElements);
-        });
-
-        // processing styles
         sourceNodes.map((node, index) => {
-            cloneCSSStyle(node as HTMLElement, cloneNodes[index] as HTMLElement);
+            cloneCSSStyle(node as HTMLElement, cloneNodes[index] as HTMLElement, styleNames);
         });
     }
 }
@@ -137,7 +136,7 @@ async function batchConvertImage(sourceNode: SVGGElement, cloneNode: SVGGElement
     const cloneImageNodes = Array.from(cloneNode.querySelectorAll(`${FOREIGN_OBJECT_EXPRESSION}`));
     await Promise.all(
         sourceImageNodes.map((_, index) => {
-            return new Promise(resolve => {
+            return new Promise((resolve) => {
                 const cloneImageNode = cloneImageNodes[index];
                 // processing image
                 const image = (cloneImageNode as HTMLElement).querySelector('img');
@@ -145,7 +144,7 @@ async function batchConvertImage(sourceNode: SVGGElement, cloneNode: SVGGElement
                 if (!url) {
                     return resolve(true);
                 }
-                convertImageToBase64(url).then(base64Image => {
+                convertImageToBase64(url).then((base64Image) => {
                     image?.setAttribute('src', base64Image);
                     resolve(true);
                 });
@@ -162,9 +161,9 @@ async function batchConvertImage(sourceNode: SVGGElement, cloneNode: SVGGElement
  */
 async function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: RectangleClient, options: ToImageOptions) {
     const { width, height, x, y } = rectangle;
-    const { padding = 4, inlineStyleClassNames } = options;
+    const { padding = 4, inlineStyleClassNames, styleNames } = options;
     const sourceSvg = PlaitBoard.getHost(board);
-    const selectedGElements = elements.map(value => PlaitElement.getElementG(value));
+    const selectedGElements = elements.map((value) => PlaitElement.getElementG(value));
     const cloneSvgElement = sourceSvg.cloneNode() as SVGElement;
     const newHostElement = PlaitBoard.getElementHost(board).cloneNode() as SVGGElement;
 
@@ -179,7 +178,7 @@ async function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: 
     await Promise.all(
         selectedGElements.map(async (child, i) => {
             const cloneChild = child.cloneNode(true) as SVGGElement;
-            batchCloneCSSStyle(child, cloneChild, inlineStyleClassNames as string);
+            batchCloneCSSStyle(child, cloneChild, inlineStyleClassNames, styleNames);
             await batchConvertImage(child, cloneChild);
             promiseArray[i] = cloneChild;
         })
@@ -187,6 +186,14 @@ async function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: 
     newHostElement.append(...promiseArray);
     cloneSvgElement.appendChild(newHostElement);
     return cloneSvgElement;
+}
+
+export async function toSvgData(board: PlaitBoard, options: ToImageOptions) {
+    const elements = options.elements || findElements(board, { match: () => true, recursion: () => true, isReverse: false });
+    const targetRectangle = getRectangleByElements(board, elements, false);
+    const cloneSvgElement = await cloneSvg(board, elements, targetRectangle, options);
+    const svgData = new XMLSerializer().serializeToString(cloneSvgElement);
+    return svgData;
 }
 
 /**
@@ -206,12 +213,9 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
     const ratioWidth = width * ratio;
     const ratioHeight = height * ratio;
 
-    const cloneSvgElement = await cloneSvg(board, elements, targetRectangle, options);
+    const svgData = await toSvgData(board, options);
     const { canvas, ctx } = createCanvas(ratioWidth, ratioHeight, fillStyle);
-
-    const svgStr = new XMLSerializer().serializeToString(cloneSvgElement);
-    const imgSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgStr)}`;
-
+    const imgSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgData)}`;
     try {
         const img = await loadImage(imgSrc);
         ctx.drawImage(img, 0, 0, ratioWidth, ratioHeight);
@@ -220,6 +224,11 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
         console.error('Error converting SVG to image:', error);
         return undefined;
     }
+}
+
+export async function toSvg(board: PlaitBoard, options: ToImageOptions) {
+    const svgData = await toSvgData(board, options);
+    return svgData;
 }
 
 /**

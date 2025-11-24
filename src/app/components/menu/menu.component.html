@@ -3,12 +3,18 @@
 </a>
 @if (isShowMenu) {
   <div class="popover dropdown-menu-container plait-island-container">
-    <div aria-label="导出图片..." class="dropdown-menu-item dropdown-menu-item-base" (click)="exportImage($event)" title="导出图片...">
+    <div aria-label="导出PNG" class="dropdown-menu-item dropdown-menu-item-base" (click)="exportPNG($event)" title="导出PNG...">
       <div class="dropdown-menu-item__icon">
         <ng-template [ngTemplateOutlet]="image"></ng-template>
       </div>
       <div class="dropdown-menu-item__text">导出图片...</div>
       <div class="dropdown-menu-item__shortcut">Cmd+Shift+E</div>
+    </div>
+    <div aria-label="导出SVG" class="dropdown-menu-item dropdown-menu-item-base" (click)="exportSVG($event)" title="导出SVG...">
+      <div class="dropdown-menu-item__icon">
+        <ng-template [ngTemplateOutlet]="image"></ng-template>
+      </div>
+      <div class="dropdown-menu-item__text">导出SVG...</div>
     </div>
     <a
       aria-label="GitHub"
