@@ -55,6 +55,7 @@ export const withArrowLineText = (board: PlaitBoard) => {
                         }
                     });
                 }
+                return;
             }
         }
         dblClick(event);

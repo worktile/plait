@@ -42,6 +42,7 @@ export const withDrawHotkey = (board: PlaitBoard) => {
                 } else {
                     editText(board, hitElement);
                 }
+                return;
             }
         }
         dblClick(event);
