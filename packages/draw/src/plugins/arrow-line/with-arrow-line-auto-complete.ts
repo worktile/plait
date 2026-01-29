@@ -37,6 +37,14 @@ export type PreCommitRef = { temporaryArrowLineElement: PlaitArrowLine; temporar
 
 export const BOARD_TO_PRE_COMMIT = new WeakMap<PlaitBoard, PreCommitRef>();
 
+/*
+Purpose: Create arrow line via auto-complete drag from a shape edge.
+- On pointerDown at an auto-complete point, set elbow mode and capture source.
+- On drag (beyond buffer), choose nearest crossing on the source edge if available.
+- Rotate source point; build temporary elbow arrow while moving.
+- On release, insert the arrow and select; otherwise commit preview pair if present.
+Lifecycle: pointerDown → pointerMove (create temp) → pointerUp insert/commit → reset.
+*/
 export const withArrowLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp, touchMove } = board;
 

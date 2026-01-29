@@ -76,9 +76,32 @@ export const withArrowLineResize = (board: PlaitBoard) => {
             const hitElement = getSnappingShape(board, resizeState.endPoint);
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
-                points[handleIndex] = resizeState.endPoint;
+                // axis alignment relative to adjacent point, even when snapping to a shape
+                const neighborPoint = handleIndex === 0 ? points[1] : points[points.length - 2];
+                // TODO: need handle the neighbor point is not key point(it will moving along moving point)
+                // such as below case
+                // [
+                //     [
+                //         341.2536906953894,
+                //         83.94690212817761
+                //     ],
+                //     [
+                //         492.8570148670465,
+                //         43.86424319286277
+                //     ],
+                //     [
+                //         492.8570148670465,
+                //         175.99593084572632
+                //     ],
+                //     [
+                //         661.8118177564218,
+                //         175.99593084572632
+                //     ]
+                // ]
+                const alignedEndPoint = neighborPoint ? alignPoints(neighborPoint, resizeState.endPoint) : resizeState.endPoint;
+                points[handleIndex] = alignedEndPoint;
                 if (hitElement) {
-                    object.connection = getHitConnection(board, resizeState.endPoint, hitElement);
+                    object.connection = getHitConnection(board, alignedEndPoint, hitElement);
                     object.boundId = hitElement.id;
                 } else {
                     object.connection = undefined;
@@ -117,25 +140,6 @@ export const withArrowLineResize = (board: PlaitBoard) => {
                     } else {
                         points[handleIndex] = resizeState.endPoint;
                     }
-                }
-            }
-
-            if (!hitElement) {
-                handleIndex = resizeRef.handle === LineResizeHandle.addHandle ? handleIndex + 1 : handleIndex;
-                const drawPoints = getArrowLinePoints(board, resizeRef.element);
-                const newPoints = [...points];
-                newPoints[0] = drawPoints[0];
-                newPoints[newPoints.length - 1] = drawPoints[drawPoints.length - 1];
-                if (
-                    resizeRef.element.shape !== ArrowLineShape.elbow ||
-                    (resizeRef.element.shape === ArrowLineShape.elbow && newPoints.length === 2)
-                ) {
-                    newPoints.forEach((point, index) => {
-                        if (index === handleIndex) return;
-                        if (points[handleIndex]) {
-                            points[handleIndex] = alignPoints(point, points[handleIndex]);
-                        }
-                    });
                 }
             }
             DrawTransforms.resizeArrowLine(board, { points, source, target }, resizeRef.path as Path);

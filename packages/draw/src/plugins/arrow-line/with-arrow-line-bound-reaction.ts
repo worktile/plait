@@ -15,6 +15,14 @@ import { isResizingByCondition } from '@plait/common';
 import { LineResizeHandle } from '../../utils/position/line';
 import { drawBoundReaction, getHitShape, getSnappingRef } from '../../utils';
 
+/*
+Purpose: Visual feedback for snapping/binding arrow-line endpoints to shapes.
+- Active when using arrow-line pointers or resizing source/target handles.
+- Detects target shape under cursor and whether edge/connector snapping applies.
+- Draws bound outline/mask and a connector marker at the snap point.
+- Applies rotation to reaction graphics for angled (rotated) shapes.
+Lifecycle: pointerMove → detect hit/snapping → render reaction → pointerUp cleanup.
+*/
 export const withArrowLineBoundReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;
 

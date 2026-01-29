@@ -27,13 +27,21 @@ import {
 } from '../../utils';
 import { PRIMARY_COLOR, PlaitCommonElementRef, getDirectionByIndex, getXDistanceBetweenPoint, moveXOfPoint } from '@plait/common';
 import { BOARD_TO_PRE_COMMIT } from './with-arrow-line-auto-complete';
-import { DrawPointerType, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../../constants';
+import { LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../../constants';
 import { ArrowLineAutoCompleteGenerator } from '../../generators';
 import { ArrowLineShape, PlaitArrowLine, PlaitDrawElement, PlaitGeometry, PlaitSwimlane, SwimlaneDrawSymbols } from '../../interfaces';
 import { getGeometryGeneratorByShape } from '../../utils/shape';
 
 const PREVIEW_ARROW_LINE_DISTANCE = 100;
 
+/*
+Purpose: Hover-driven auto-complete preview for arrow lines.
+- When hovering a selected shape’s auto-complete point, show a hint circle.
+- Offset a temporary shape and build an elbow arrow from the hit edge.
+- Rotate points by element angle; compute target connection; bind target id.
+- Store temporary arrow/shape for pre-commit; commit on click via auto-complete plugin.
+Lifecycle: pointerMove (hit/preview) → pointerLeave/globalPointerUp cleanup.
+*/
 export const withArrowLineAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerLeave, globalPointerUp } = board;
     let reactionG: SVGGElement | null = null;

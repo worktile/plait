@@ -214,8 +214,9 @@ export const handleArrowLineCreating = (
     lineShapeG: SVGGElement,
     options?: Pick<PlaitArrowLine, 'strokeColor' | 'strokeWidth'>
 ) => {
-    const hitElement = getSnappingShape(board, movingPoint);
-    const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
+    const alignedMovingPoint = alignPoints(sourcePoint, movingPoint);
+    const hitElement = getSnappingShape(board, alignedMovingPoint);
+    const targetConnection = hitElement ? getHitConnection(board, alignedMovingPoint, hitElement) : undefined;
     const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new ArrowLineShapeGenerator(board);
@@ -227,7 +228,7 @@ export const handleArrowLineCreating = (
     targetMarker && delete memorizedLatest.target;
     const temporaryLineElement = createArrowLineElement(
         lineShape,
-        [sourcePoint, movingPoint],
+        [sourcePoint, alignedMovingPoint],
         { marker: sourceMarker || ArrowLineMarkerType.none, connection: sourceConnection, boundId: sourceElement?.id },
         { marker: targetMarker || ArrowLineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
         [],
@@ -239,7 +240,7 @@ export const handleArrowLineCreating = (
     );
     const linePoints = getArrowLinePoints(board, temporaryLineElement);
     const otherPoint = linePoints[0];
-    temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
+    temporaryLineElement.points[1] = alignPoints(otherPoint, alignedMovingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementTopHost(board).append(lineShapeG);
     return temporaryLineElement;
