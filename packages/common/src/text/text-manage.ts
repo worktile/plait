@@ -6,9 +6,8 @@ import {
     RectangleClient,
     createForeignObject,
     createG,
-    isInVisibleViewport,
+    isDebug,
     isTouchDevice,
-    scrollToVisibleWhenKeyboardOpening,
     setAngleForG,
     toHostPoint,
     toViewBoxPoint,
@@ -20,8 +19,6 @@ import { PlaitTextBoard, TextPlugin } from './with-text';
 import { clearElementSizeCache, measureElement, updateElementSizeCache } from './text-measure';
 import { TextChangeData, TextComponentRef, TextProps } from './with-text';
 import { ParagraphElement } from './types';
-import scrollIntoView from 'scroll-into-view-if-needed';
-import { DOMEditor } from 'slate-dom';
 
 export interface TextManageChangeData {
     newText?: Element;
@@ -119,6 +116,9 @@ export class TextManage {
     edit(callback?: () => void, exitEdit?: (event: Event) => boolean) {
         this.isEditing = true;
         IS_TEXT_EDITABLE.set(this.board, true);
+        if (isDebug()) {
+            console.log('text-manage', 'set text editing to ', true);
+        }
         const props: Partial<TextProps> = {
             readonly: false
         };
@@ -162,6 +162,9 @@ export class TextManage {
                 document.removeEventListener('pointerdown', pointerDownHandler);
                 document.removeEventListener('keydown', keyDownHandler);
                 IS_TEXT_EDITABLE.set(this.board, false);
+                if (isDebug()) {
+                    console.log('text-manage', 'set IS_TEXT_EDITABLE to ', false);
+                }
                 MERGING.set(this.board, false);
                 callback && callback();
                 const props = {

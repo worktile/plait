@@ -1,5 +1,4 @@
 import {
-    IS_TEXT_EDITABLE,
     PlaitBoard,
     PlaitElement,
     PlaitPlugin,
@@ -35,7 +34,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let drawNodeHandles = true;
 
     board.pointerDown = (event: PointerEvent) => {
-        if (board.options.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
+        if (board.options.readonly || PlaitBoard.hasBeenTextEditing(board) || event.button === 2) {
             pointerDown(event);
             return;
         }
