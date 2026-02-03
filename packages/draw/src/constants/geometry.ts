@@ -287,11 +287,13 @@ export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] 
     [UMLSymbols.combinedFragment]: Object.keys(GeometryCommonTextKeys)
 };
 
-export const LINE_HIT_GEOMETRY_BUFFER = 10;
+export const LINE_HIT_GEOMETRY_BUFFER = 4;
 
-export const LINE_SNAPPING_BUFFER = 6;
+export const LINE_SNAPPING_BUFFER = 4;
 
-export const LINE_SNAPPING_CONNECTOR_BUFFER = 8;
+export const LINE_SNAPPING_CONNECTOR_BUFFER = 4;
+
+export const LINE_ALIGN_TOLERANCE = 4;
 
 export const GEOMETRY_WITHOUT_TEXT = [
     FlowchartSymbols.or,

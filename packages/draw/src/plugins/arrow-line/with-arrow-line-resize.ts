@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
+import { createDebugGenerator, Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedArrowLineElements } from '../../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../../utils/position/line';
@@ -15,6 +15,8 @@ import {
 import { getHitConnection, getArrowLinePoints } from '../../utils/arrow-line/arrow-line-basic';
 import { getElbowLineRouteOptions } from '../../utils/arrow-line';
 import { getSnappingShape } from '../../utils';
+
+const debugGenerator = createDebugGenerator('debug:plait:arrow-line-resize');
 
 export const withArrowLineResize = (board: PlaitBoard) => {
     let elbowLineIndex: number | null;
@@ -62,50 +64,38 @@ export const withArrowLineResize = (board: PlaitBoard) => {
                 elbowSourcePoint = pointsOnElbow[0];
                 elbowTargetPoint = pointsOnElbow[pointsOnElbow.length - 1];
                 elbowNextRenderPoints = getNextRenderPoints(board, resizeRef.element, pointsOnElbow);
-
                 const value = getIndexAndDeleteCountByKeyPoint(board, resizeRef.element, [...points], elbowNextRenderPoints, handleIndex);
                 elbowLineIndex = value.index;
                 elbowLineDeleteCount = value.deleteCount;
             }
         },
         onResize: (resizeRef: ResizeRef<PlaitArrowLine, LineResizeHandle>, resizeState: ResizeState) => {
+            const drawPoints = getArrowLinePoints(board, resizeRef.element);
             let points: Point[] = [...resizeRef.element.points];
+            points[0] = drawPoints[0];
+            points[points.length - 1] = drawPoints[drawPoints.length - 1];
             let source: ArrowLineHandle = { ...resizeRef.element.source };
             let target: ArrowLineHandle = { ...resizeRef.element.target };
             let handleIndex = resizeRef.handleIndex!;
             const hitElement = getSnappingShape(board, resizeState.endPoint);
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
-                const object = resizeRef.handle === LineResizeHandle.source ? source : target;
-                // axis alignment relative to adjacent point, even when snapping to a shape
-                const neighborPoint = handleIndex === 0 ? points[1] : points[points.length - 2];
-                // TODO: need handle the neighbor point is not key point(it will moving along moving point)
-                // such as below case
-                // [
-                //     [
-                //         341.2536906953894,
-                //         83.94690212817761
-                //     ],
-                //     [
-                //         492.8570148670465,
-                //         43.86424319286277
-                //     ],
-                //     [
-                //         492.8570148670465,
-                //         175.99593084572632
-                //     ],
-                //     [
-                //         661.8118177564218,
-                //         175.99593084572632
-                //     ]
-                // ]
-                const alignedEndPoint = neighborPoint ? alignPoints(neighborPoint, resizeState.endPoint) : resizeState.endPoint;
-                points[handleIndex] = alignedEndPoint;
+                const handleObject = resizeRef.handle === LineResizeHandle.source ? source : target;
+                if (debugGenerator.isDebug()) {
+                    debugGenerator.clear();
+                    debugGenerator.drawCircles(board, points, 3, false);
+                    debugGenerator.drawCircles(board, [resizeState.endPoint], 4, false, { fill: 'yellow' });
+                }
+                points[handleIndex] = resizeState.endPoint;
+                points[handleIndex] = alignPoints(points, points[handleIndex], handleIndex);
+                if (debugGenerator.isDebug()) {
+                    debugGenerator.drawCircles(board, [points[handleIndex]], 2, false, { fill: 'green' });
+                }
                 if (hitElement) {
-                    object.connection = getHitConnection(board, alignedEndPoint, hitElement);
-                    object.boundId = hitElement.id;
+                    handleObject.connection = getHitConnection(board, points[handleIndex], hitElement);
+                    handleObject.boundId = hitElement.id;
                 } else {
-                    object.connection = undefined;
-                    object.boundId = undefined;
+                    handleObject.connection = undefined;
+                    handleObject.boundId = undefined;
                 }
             } else {
                 if (resizeRef.element.shape === ArrowLineShape.elbow) {
@@ -140,6 +130,12 @@ export const withArrowLineResize = (board: PlaitBoard) => {
                     } else {
                         points[handleIndex] = resizeState.endPoint;
                     }
+                }
+                if (
+                    resizeRef.element.shape !== ArrowLineShape.elbow ||
+                    (resizeRef.element.shape === ArrowLineShape.elbow && points.length === 2)
+                ) {
+                    points[handleIndex] = alignPoints(points, points[handleIndex], handleIndex);
                 }
             }
             DrawTransforms.resizeArrowLine(board, { points, source, target }, resizeRef.path as Path);

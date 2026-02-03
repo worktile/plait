@@ -11,7 +11,8 @@ import {
     createRect,
     distanceBetweenPointAndPoint,
     catmullRomFitting,
-    setStrokeLinecap
+    setStrokeLinecap,
+    createDebugGenerator
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import {
@@ -37,7 +38,7 @@ import { getElementShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
 import { LINE_SNAPPING_CONNECTOR_BUFFER } from '../../constants';
 import { getLineMemorizedLatest } from '../memorize';
-import { alignPoints } from './arrow-line-resize';
+import { alignPoint } from './arrow-line-resize';
 import { getArrowLineHandleRefPair } from './arrow-line-common';
 import { getElbowPoints } from './elbow';
 import { drawArrowLineArrow } from './arrow-line-arrow';
@@ -205,6 +206,8 @@ export const Q2C = (points: Point[]) => {
     return result;
 };
 
+const debugGenerator = createDebugGenerator('debug:plait:arrow-line-resize');
+
 export const handleArrowLineCreating = (
     board: PlaitBoard,
     lineShape: ArrowLineShape,
@@ -214,7 +217,11 @@ export const handleArrowLineCreating = (
     lineShapeG: SVGGElement,
     options?: Pick<PlaitArrowLine, 'strokeColor' | 'strokeWidth'>
 ) => {
-    const alignedMovingPoint = alignPoints(sourcePoint, movingPoint);
+    if (debugGenerator.isDebug()) {
+        debugGenerator.clear();
+        debugGenerator.drawCircles(board, [sourcePoint], 3, false);
+    }
+    const alignedMovingPoint = alignPoint(sourcePoint, movingPoint);
     const hitElement = getSnappingShape(board, alignedMovingPoint);
     const targetConnection = hitElement ? getHitConnection(board, alignedMovingPoint, hitElement) : undefined;
     const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
@@ -240,7 +247,7 @@ export const handleArrowLineCreating = (
     );
     const linePoints = getArrowLinePoints(board, temporaryLineElement);
     const otherPoint = linePoints[0];
-    temporaryLineElement.points[1] = alignPoints(otherPoint, alignedMovingPoint);
+    temporaryLineElement.points[1] = alignPoint(otherPoint, alignedMovingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementTopHost(board).append(lineShapeG);
     return temporaryLineElement;

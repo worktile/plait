@@ -1,13 +1,13 @@
 import { ElbowLineRouteOptions, ResizeState, generateElbowLineRoute, removeDuplicatePoints, simplifyOrthogonalPoints } from '@plait/common';
 import { PlaitBoard, Point, RectangleClient, createDebugGenerator } from '@plait/core';
-import { LINE_ALIGN_TOLERANCE } from '../../constants/line';
 import { getElbowLineRouteOptions, getArrowLineHandleRefPair } from './arrow-line-common';
 import { PlaitArrowLine } from '../../interfaces';
+import { LINE_ALIGN_TOLERANCE } from '../../constants/geometry';
 
 const debugKey = 'debug:plait:line-mirror';
 const debugGenerator = createDebugGenerator(debugKey);
 
-export const alignPoints = (basePoint: Point, movingPoint: Point) => {
+export const alignPoint = (basePoint: Point, movingPoint: Point) => {
     const newPoint: Point = [...movingPoint];
     if (Point.isVertical(newPoint, basePoint, LINE_ALIGN_TOLERANCE)) {
         newPoint[0] = basePoint[0];
@@ -16,6 +16,17 @@ export const alignPoints = (basePoint: Point, movingPoint: Point) => {
         newPoint[1] = basePoint[1];
     }
     return newPoint;
+};
+
+export const alignPoints = (basePoints: Point[], movingPoint: Point, targetIndex?: number) => {
+    let newMovingPoint: Point = [...movingPoint];
+    basePoints.forEach((basePoint, index) => {
+        if (index === targetIndex) {
+            return;
+        }
+        newMovingPoint = alignPoint(basePoint, newMovingPoint);
+    });
+    return newMovingPoint as Point;
 };
 
 export function getResizedPreviousAndNextPoint(nextRenderPoints: Point[], sourcePoint: Point, targetPoint: Point, handleIndex: number) {
@@ -97,8 +108,8 @@ export function getIndexAndDeleteCountByKeyPoint(
         };
     }
     const midDataPoints = dataPoints.slice(1, -1);
-    const startIndex = midDataPoints.findIndex(item => Point.isEquals(item, startKeyPoint));
-    const endIndex = midDataPoints.findIndex(item => Point.isEquals(item, endKeyPoint));
+    const startIndex = midDataPoints.findIndex((item) => Point.isEquals(item, startKeyPoint));
+    const endIndex = midDataPoints.findIndex((item) => Point.isEquals(item, endKeyPoint));
 
     if (Math.max(startIndex, endIndex) > -1) {
         if (startIndex > -1 && endIndex > -1) {
@@ -167,7 +178,7 @@ export function getIndexAndDeleteCountByKeyPoint(
             const nextDataPoints = [nextRenderPoints[0], ...midDataPoints, nextRenderPoints[nextRenderPoints.length - 1]];
             const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, nextKeyPoints, params);
             for (let i = handleIndex - 1; i >= 0; i--) {
-                const previousIndex = mirrorDataPoints.slice(1, -1).findIndex(item => Point.isEquals(item, nextRenderPoints[i]));
+                const previousIndex = mirrorDataPoints.slice(1, -1).findIndex((item) => Point.isEquals(item, nextRenderPoints[i]));
                 if (previousIndex > -1) {
                     index = previousIndex + 1;
                     break;

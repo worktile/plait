@@ -14,7 +14,7 @@ import { ArrowLineShape, PlaitArrowLine, PlaitShapeElement } from '../../interfa
 import { getArrowLinePointers } from '../../constants';
 import { isDrawingMode } from '@plait/common';
 import { handleArrowLineCreating } from '../../utils/arrow-line/arrow-line-basic';
-import { getSnappingShape } from '../../utils';
+import { getSnappingRef, getSnappingShape } from '../../utils';
 
 export const withArrowLineCreateByDraw = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp, touchStart } = board;
@@ -45,6 +45,8 @@ export const withArrowLineCreateByDraw = (board: PlaitBoard) => {
             const hitElement = getSnappingShape(board, point);
             if (hitElement) {
                 sourceElement = hitElement;
+                const ref = getSnappingRef(board, hitElement, point);
+                start = ref.connectorPoint || ref.edgePoint;
             }
         }
         pointerDown(event);

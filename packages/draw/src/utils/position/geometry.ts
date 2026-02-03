@@ -1,14 +1,4 @@
-import {
-    Ancestor,
-    PlaitBoard,
-    Point,
-    RectangleClient,
-    depthFirstRecursion,
-    getIsRecursionFunc,
-    rotatePoints,
-    rotateAntiPointsByElement,
-    ResizeCursorClass
-} from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, rotatePoints, ResizeCursorClass } from '@plait/core';
 import {
     RESIZE_HANDLE_DIAMETER,
     getRectangleResizeHandleRefs,
@@ -17,12 +7,6 @@ import {
     ROTATE_HANDLE_DISTANCE_TO_ELEMENT,
     ResizeHandle
 } from '@plait/common';
-import { PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../../interfaces';
-import { isHitEdgeOfShape, isInsideOfShape } from '../hit';
-import { LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER } from '../../constants/geometry';
-import { getNearestPoint } from '../geometry';
-import { getHitConnectorPoint } from '../arrow-line/arrow-line-basic';
-import { getHitShape } from '../common';
 
 export interface ResizeHandleRef {
     rectangle: RectangleClient;
@@ -40,7 +24,7 @@ export const getHitRectangleResizeHandleRef = (
     const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER);
     if (angle) {
         const rotatedPoint = rotatePoints([point], centerPoint, -angle)[0];
-        let result = resizeHandleRefs.find(resizeHandleRef => {
+        let result = resizeHandleRefs.find((resizeHandleRef) => {
             return RectangleClient.isHit(RectangleClient.getRectangleByPoints([rotatedPoint, rotatedPoint]), resizeHandleRef.rectangle);
         });
         if (result) {
@@ -48,7 +32,7 @@ export const getHitRectangleResizeHandleRef = (
         }
         return result;
     } else {
-        return resizeHandleRefs.find(resizeHandleRef => {
+        return resizeHandleRefs.find((resizeHandleRef) => {
             return RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), resizeHandleRef.rectangle);
         });
     }

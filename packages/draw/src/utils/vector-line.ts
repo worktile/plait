@@ -2,7 +2,7 @@ import { PlaitBoard, Point, catmullRomFitting, createG, drawLinearPath, idCreato
 import { PlaitVectorLine, VectorLineShape } from '../interfaces';
 import { getLineMemorizedLatest } from './memorize';
 import { DefaultLineStyle } from '../constants/line';
-import { alignPoints } from './arrow-line';
+import { alignPoint } from './arrow-line';
 import { getStrokeWidthByElement } from './common';
 import { getFillByElement, getStrokeColorByElement, getStrokeStyleByElement } from './style';
 import { VectorLineShapeGenerator } from '../generators/vector-line-generator';
@@ -58,7 +58,7 @@ export const vectorLineCreating = (
         ...memorizedLatest
     });
     const otherPoint = points[points.length - 1];
-    temporaryLineElement.points[temporaryLineElement.points.length - 1] = alignPoints(otherPoint, movingPoint);
+    temporaryLineElement.points[temporaryLineElement.points.length - 1] = alignPoint(otherPoint, movingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementTopHost(board).append(lineShapeG);
     return temporaryLineElement;
