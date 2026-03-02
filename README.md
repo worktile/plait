@@ -42,11 +42,11 @@ Plait will also provide some basic functional plugins, which have been implement
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
 
-- 👉 [Online example (Draw)](https://plait-gamma.vercel.app?init=draw)
-- 👉 [Online example (Mind)](https://plait-gamma.vercel.app?init=mind)
-- 👉 [Online example (GraphViz)](https://plait-gamma.vercel.app/graph-viz?init=force-atlas)
-- 👉 [Online example (Flow)](https://plait-gamma.vercel.app/flow)
-- 👉 [Documentation](https://plait-docs.vercel.app)
+- 👉 [Online example (Draw)](https://https://plait.pages.dev?init=draw)
+- 👉 [Online example (Mind)](https://https://plait.pages.dev?init=mind)
+- 👉 [Online example (GraphViz)](https://https://plait.pages.dev/graph-viz?init=force-atlas)
+- 👉 [Online example (Flow)](https://https://plait.pages.dev/flow)
+- 👉 [Documentation](https://plait-docs.pages.dev)
 
 #### Features
 

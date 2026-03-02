@@ -37,11 +37,11 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
 
-- 👉 [在线示例 (流程图)](https://plait-gamma.vercel.app?init=draw)
-- 👉 [在线示例 (思维导图)](https://plait-gamma.vercel.app?init=mind)
-- 👉 [在线示例 (图形可视化)](https://plait-gamma.vercel.app/graph-viz?init=force-atlas)
-- 👉 [在线示例 (流程控制)](https://plait-gamma.vercel.app/flow)
-- 👉 [在线文档](https://plait-docs.vercel.app)
+- 👉 [在线示例 (流程图)](https://https://plait.pages.dev?init=draw)
+- 👉 [在线示例 (思维导图)](https://https://plait.pages.dev?init=mind)
+- 👉 [在线示例 (图形可视化)](https://https://plait.pages.dev/graph-viz?init=force-atlas)
+- 👉 [在线示例 (流程控制)](https://https://plait.pages.dev/flow)
+- 👉 [在线文档](https://plait-docs.pages.dev)
 
 #### 框架特性
 
