@@ -1,44 +1,35 @@
 {
-  "extends": "../../.eslintrc.json",
-  "ignorePatterns": [
-    "!**/*"
-  ],
-  "overrides": [
-    {
-      "files": [
-        "*.ts"
-      ],
-      "parserOptions": {
-        "project": [
-          "packages/angular/tsconfig.lib.json",
-          "packages/angular/tsconfig.spec.json"
-        ],
-        "createDefaultProgram": true
-      },
-      "rules": {
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "plait",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "plait",
-            "style": "kebab-case"
-          }
-        ]
-      }
-    },
-    {
-      "files": [
-        "*.html"
-      ],
-      "rules": {}
-    }
-  ]
+    "extends": "../../.eslintrc.json",
+    "ignorePatterns": ["!**/*"],
+    "overrides": [
+        {
+            "files": ["*.ts"],
+            "parserOptions": {
+                "project": ["packages/angular-board/tsconfig.lib.json", "packages/angular-board/tsconfig.spec.json"],
+                "createDefaultProgram": true
+            },
+            "rules": {
+                "@angular-eslint/directive-selector": [
+                    "error",
+                    {
+                        "type": "attribute",
+                        "prefix": "plait",
+                        "style": "camelCase"
+                    }
+                ],
+                "@angular-eslint/component-selector": [
+                    "error",
+                    {
+                        "type": "element",
+                        "prefix": "plait",
+                        "style": "kebab-case"
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["*.html"],
+            "rules": {}
+        }
+    ]
 }

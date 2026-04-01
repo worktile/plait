@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef, inject } from '@angular/core';
 import {
     PlaitBoard,
     PlaitElement,
@@ -73,6 +73,8 @@ import { OnBoardChange, PlaitIslandBaseComponent } from '@plait/angular-board';
     imports: [NgClass, FormsModule, AppColorPickerComponent]
 })
 export class AppSettingPanelComponent extends PlaitIslandBaseComponent implements OnBoardChange {
+    cdr = inject(ChangeDetectorRef);
+
     currentFillColor: string | undefined = '';
 
     currentStrokeColor: string | undefined = '';
@@ -135,10 +137,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         } else {
             return false;
         }
-    }
-
-    constructor(protected cdr: ChangeDetectorRef) {
-        super(cdr);
     }
 
     onBoardChange() {

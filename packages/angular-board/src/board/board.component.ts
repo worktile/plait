@@ -19,7 +19,8 @@ import {
     SimpleChanges,
     viewChild,
     ViewChild,
-    ViewContainerRef
+    ViewContainerRef,
+    inject
 } from '@angular/core';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -113,6 +114,12 @@ const ElementTopHostClass = 'element-top-host';
     standalone: true
 })
 export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, AfterContentInit, OnDestroy {
+    cdr = inject(ChangeDetectorRef);
+    injector = inject(Injector);
+    viewContainerRef = inject(ViewContainerRef);
+    private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+    private ngZone = inject(NgZone);
+
     hasInitialized = false;
 
     board!: PlaitBoard;
@@ -133,7 +140,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @Input() plaitTheme?: PlaitTheme;
 
-    @Output() onChange: EventEmitter<OnChangeData> = new EventEmitter();
+    @Output() plaitChange: EventEmitter<OnChangeData> = new EventEmitter();
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
@@ -190,13 +197,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     listRender!: ListRender;
 
-    constructor(
-        public cdr: ChangeDetectorRef,
-        public injector: Injector,
-        public viewContainerRef: ViewContainerRef,
-        private elementRef: ElementRef<HTMLElement>,
-        private ngZone: NgZone
-    ) {}
+    constructor() {}
 
     ngOnInit(): void {
         const elementLowerHost = this.host.querySelector(`.${ElementLowerHostClass}`) as SVGGElement;
@@ -269,7 +270,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     theme: this.board.theme
                 };
                 this.updateIslands();
-                this.onChange.emit(data);
+                this.plaitChange.emit(data);
             });
         });
         const context = new PlaitBoardContext();

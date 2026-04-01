@@ -4,12 +4,12 @@
     [plaitViewport]="viewport"
     [plaitTheme]="theme"
     [plaitOptions]="options"
-    (onChange)="onChange($event)"
+    (plaitChange)="onChange($event)"
     (plaitBoardInitialized)="afterBoardInitialized($event)"
 >
     <app-zoom-toolbar></app-zoom-toolbar>
 </plait-board>
-<div style="position: absolute;z-index: 9999;left: 0;top: 0;">
+<div style="position: absolute; z-index: 9999; left: 0; top: 0">
     <button (click)="fetchForceAtlasData(0)">数据1</button>
     <button (click)="fetchForceAtlasData(1)">数据2</button>
     <button (click)="fetchForceAtlasData(2)">数据3</button>

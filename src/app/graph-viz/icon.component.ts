@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit, inject } from '@angular/core';
 import { ForceAtlasNodeIconBaseComponent } from '@plait/graph-viz';
 
+/* eslint-disable @angular-eslint/component-selector */
 @Component({
     selector: 'force-atlas-node-icon',
     template: `
