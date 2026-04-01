@@ -1,63 +1,39 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@plait/flow": [
-        "dist/flow"
-      ],
-      "@plait/layouts": [
-        "dist/layouts"
-      ],
-      "@plait/mind": [
-        "dist/mind"
-      ],
-      "@plait/core": [
-        "dist/core"
-      ],
-      "@plait/angular-board": [
-        "dist/angular-board"
-      ],
-      "@plait/angular-text": [
-        "dist/angular-text"
-      ],
-      "@plait/draw": [
-        "dist/draw"
-      ],
-      "@plait/common": [
-        "dist/common"
-      ],
-      "@plait/text-plugins": [
-        "dist/text-plugins"
-      ],
-      "@plait/graph-viz": [
-        "dist/graph-viz"
-      ]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@plait/flow": ["dist/flow"],
+            "@plait/layouts": ["dist/layouts"],
+            "@plait/mind": ["dist/mind"],
+            "@plait/core": ["dist/core"],
+            "@plait/angular-board": ["dist/angular-board"],
+            "@plait/angular-text": ["dist/angular-text"],
+            "@plait/draw": ["dist/draw"],
+            "@plait/common": ["dist/common"],
+            "@plait/text-plugins": ["dist/text-plugins"],
+            "@plait/graph-viz": ["dist/graph-viz"]
+        },
+        "outDir": "./dist/out-tsc",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "sourceMap": true,
+        "declaration": false,
+        "experimentalDecorators": true,
+        "moduleResolution": "bundler",
+        "importHelpers": true,
+        "target": "es2017",
+        "module": "es2020",
+        "useDefineForClassFields": false
     },
-    "outDir": "./dist/out-tsc",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
-    "experimentalDecorators": true,
-    "moduleResolution": "bundler",
-    "importHelpers": true,
-    "target": "es2017",
-    "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "useDefineForClassFields": false
-  },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+    "angularCompilerOptions": {
+        "enableI18nLegacyMessageIdFormat": false,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "strictTemplates": true
+    }
 }

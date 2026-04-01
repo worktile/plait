@@ -1,5 +1,7 @@
-import { Component, ElementRef, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { PlaitBoard, toViewBoxPoint, toHostPoint } from '@plait/core';
+
+/* eslint-disable @angular-eslint/component-selector */
 @Component({
     selector: 'debug-point-display',
     template: ``,
@@ -8,15 +10,13 @@ import { PlaitBoard, toViewBoxPoint, toHostPoint } from '@plait/core';
         style: 'position: absolute;top:0;left:0;'
     }
 })
-export class DebugPointDisplayComponent implements OnInit, OnChanges {
+export class DebugPointDisplayComponent implements OnChanges {
     @Input()
     board?: PlaitBoard;
 
     elementRef: ElementRef<HTMLElement> = inject(ElementRef<HTMLElement>);
 
     constructor() {}
-
-    ngOnInit(): void {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['board'] && this.board) {

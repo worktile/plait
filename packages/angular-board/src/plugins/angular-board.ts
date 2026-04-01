@@ -17,7 +17,7 @@ export const AngularBoard = {
         const boardComponent = BOARD_TO_COMPONENT.get(board) as BoardComponentInterface;
         return boardComponent.injector;
     }
-}
+};
 
 export interface OnChangeData {
     children: PlaitElement[];

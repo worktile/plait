@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { BoardCreationMode, CommonImageItem, getElementOfFocusedImage, selectImage, setCreationMode } from '@plait/common';
 import { BoardTransforms, PlaitBoard, PlaitPointerType, getSelectedElements } from '@plait/core';
 import {
@@ -50,10 +50,6 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     BoardCreationMode = BoardCreationMode;
 
     isShowShapePopover = false;
-
-    constructor(protected cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>) {
-        super(cdr);
-    }
 
     isPointer(pointer: PointerType) {
         return PlaitBoard.isPointer<PointerType>(this.board, pointer);

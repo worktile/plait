@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { LinkElement } from '@plait/common';
 import { BaseElementComponent } from 'slate-angular';
 
+/* eslint-disable @angular-eslint/component-selector */
 @Component({
     selector: 'a[plaitLink]',
     template: `

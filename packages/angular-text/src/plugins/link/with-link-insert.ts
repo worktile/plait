@@ -4,7 +4,7 @@ import { LinkEditor, getTextFromClipboard, isUrl, withLink } from '@plait/text-p
 
 export const withPasteLink = <T extends AngularEditor>(editor: T): T => {
     const { insertData } = editor;
-    editor.insertData = data => {
+    editor.insertData = (data) => {
         const text = getTextFromClipboard(data);
         if (typeof text === 'string' && text && isUrl(text)) {
             LinkEditor.wrapLink(editor, text, text);

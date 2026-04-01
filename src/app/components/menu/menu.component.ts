@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, inject } from '@angular/core';
 import { PlaitBoard, ToImageOptions, getSelectedElements, toImage, toSvgData } from '@plait/core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { closeAction } from '../../utils/popover';
@@ -15,11 +15,9 @@ import { PlaitIslandBaseComponent } from '@plait/angular-board';
     imports: [NgClass, NgTemplateOutlet]
 })
 export class AppMenuComponent extends PlaitIslandBaseComponent {
-    isShowMenu = false;
+    cdr = inject(ChangeDetectorRef);
 
-    constructor(protected cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>) {
-        super(cdr);
-    }
+    isShowMenu = false;
 
     open(event: MouseEvent) {
         this.isShowMenu = !this.isShowMenu;

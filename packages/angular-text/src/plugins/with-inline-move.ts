@@ -53,7 +53,7 @@ export const withInlineMove = <T extends AngularEditor>(editor: T): T => {
 export const isInline = (editor: Editor, path?: Path): boolean => {
     const [inlineNode] = Editor.nodes(editor, {
         at: path ? path : editor.selection?.anchor.path,
-        match: n => Element.isElement(n) && Editor.isInline(editor, n) && !Editor.isVoid(editor, n)
+        match: (n) => Element.isElement(n) && Editor.isInline(editor, n) && !Editor.isVoid(editor, n)
     });
     return !!inlineNode;
 };

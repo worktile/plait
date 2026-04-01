@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, inject } from '@angular/core';
 import {
     PlaitBoard,
     PlaitBoardOptions,
@@ -28,6 +28,8 @@ import { getData } from './mock-force-atlas-wiki';
     imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent]
 })
 export class BasicGraphVizComponent implements OnInit {
+    private activeRoute = inject(ActivatedRoute);
+
     @HostBinding('class') hostClass = 'app-graph-viz';
 
     plugins: PlaitPlugin[] = [withCommonPlugin, withForceAtlas, withForceAtlasExtend];
@@ -50,7 +52,7 @@ export class BasicGraphVizComponent implements OnInit {
 
     currentNodeId: null | string = null;
 
-    constructor(private activeRoute: ActivatedRoute) {}
+    constructor() {}
 
     ngOnInit(): void {
         this.activeRoute.queryParams.subscribe((params: Params) => {

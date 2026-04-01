@@ -44,7 +44,7 @@ export const withAngular = (board: PlaitBoard & PlaitTextBoard) => {
     newBoard.renderText = (container: Element | DocumentFragment, props: TextProps) => {
         const { ref, componentRef } = newBoard.renderComponent(PlaitTextComponent, container, props);
         const { update } = ref;
-        ref.update = props => {
+        ref.update = (props) => {
             const beforeReadonly = componentRef.instance.readonly;
             update(props);
             if (beforeReadonly === true && props.readonly === false) {
