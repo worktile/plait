@@ -4,8 +4,8 @@
     [plaitViewport]="viewport"
     [plaitTheme]="theme"
     [plaitOptions]="options"
-    (plaitChange)="onChange($event)"
-    (plaitBoardInitialized)="afterBoardInitialized($event)"
+    (change)="onChange($event)"
+    (initialized)="afterBoardInitialized($event)"
 >
     <app-zoom-toolbar></app-zoom-toolbar>
 </plait-board>

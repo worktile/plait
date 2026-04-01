@@ -1104,7 +1104,7 @@
 
 *   [#677](https://github.com/worktile/plait/pull/677) [`af8b682e`](https://github.com/worktile/plait/commit/af8b682e309c70ffbcb0f84ee028fe4bcfc96941) Thanks [@WBbug](https://github.com/WBbug)! - change text moving style
 
--   [`07eaf04d`](https://github.com/worktile/plait/commit/07eaf04d7a74f1b9fc67e5822ba01bf5e7e8e469) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add afterChange method and move the timing of plaitChange event trigging to afterChange
+-   [`07eaf04d`](https://github.com/worktile/plait/commit/07eaf04d7a74f1b9fc67e5822ba01bf5e7e8e469) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add afterChange method and move the timing of change event trigging to afterChange
     overriding the afterChange method of board can handle some things between the component update and the component triggering the change event.
 
 *   [#682](https://github.com/worktile/plait/pull/682) [`7ff83a5f`](https://github.com/worktile/plait/commit/7ff83a5fae97f3b770aab04b7eb05bc3f7541ba6) Thanks [@WBbug](https://github.com/WBbug)! - add collect refs

@@ -98,7 +98,7 @@ export class BasicFlowComponent implements OnInit {
         localStorage.setItem(`${LOCAL_DATA_KEY}`, data);
     }
 
-    plaitBoardInitialized(value: CustomBoard) {
+    initialized(value: CustomBoard) {
         this.board = value;
         this.board.injector = this.injector;
     }

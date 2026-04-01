@@ -169,7 +169,7 @@ export class BasicEditorComponent implements OnInit {
         localStorage.setItem(`${LOCAL_STORAGE_KEY}`, data);
     }
 
-    plaitBoardInitialized(value: PlaitBoard) {
+    initialized(value: PlaitBoard) {
         this.board = value;
         (this.board as PlaitMindBoard).onAbstractResize = (state: AbstractResizeState) => {};
     }

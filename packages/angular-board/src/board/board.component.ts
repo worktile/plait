@@ -140,9 +140,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @Input() plaitTheme?: PlaitTheme;
 
-    @Output() plaitChange: EventEmitter<OnChangeData> = new EventEmitter();
+    @Output() change: EventEmitter<OnChangeData> = new EventEmitter();
 
-    @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
+    @Output() initialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
     get host(): SVGSVGElement {
         return this.svg.nativeElement;
@@ -270,7 +270,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     theme: this.board.theme
                 };
                 this.updateIslands();
-                this.plaitChange.emit(data);
+                this.change.emit(data);
             });
         });
         const context = new PlaitBoardContext();
@@ -303,7 +303,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     ngAfterViewInit(): void {
-        this.plaitBoardInitialized.emit(this.board);
+        this.initialized.emit(this.board);
         initializeViewportContainer(this.board);
         initializeViewBox(this.board);
         initializeViewportOffset(this.board);

@@ -39,7 +39,7 @@ export abstract class PlaitIslandPopoverBaseComponent implements OnInit, OnDestr
     initialize(board: PlaitBoard) {
         this.board = board;
         const boardComponent = BOARD_TO_COMPONENT.get(board) as BoardComponentInterface;
-        this.subscription = boardComponent.plaitChange.subscribe(() => {
+        this.subscription = boardComponent.change.subscribe(() => {
             if (hasOnBoardChange(this)) {
                 this.onBoardChange();
             }

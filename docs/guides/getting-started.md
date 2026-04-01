@@ -9,7 +9,7 @@ HTML 模版：
 
 ```
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value"
-    (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
+    (initialized)="initialized($event)" (change)="change($event)">
 </plait-board>
 ```
 
@@ -35,7 +35,7 @@ export class BasicBoardComponent {
     // console.log(event.children);
   }
 
-  plaitBoardInitialized(value: PlaitBoard) {
+  initialized(value: PlaitBoard) {
     this.board = value;
   }
 }

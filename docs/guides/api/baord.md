@@ -37,8 +37,8 @@
 
 #### 输出参数
 
-plaitChange
+change
 
 
 
-plaitBoardInitialized
+initialized

@@ -4,8 +4,8 @@
     [plaitViewport]="viewport"
     [plaitTheme]="theme"
     [plaitOptions]="options"
-    (plaitBoardInitialized)="plaitBoardInitialized($event)"
-    (plaitChange)="change($event)"
+    (initialized)="initialized($event)"
+    (change)="change($event)"
 >
     <div class="plait-toolbar island plait-board-attached theme-setting-toolbar">
         <select (change)="themeChange($event)">
