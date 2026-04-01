@@ -9,7 +9,8 @@ import {
     OnInit,
     Renderer2,
     SimpleChanges,
-    ViewChild
+    ViewChild,
+    inject
 } from '@angular/core';
 import { isKeyHotkey } from 'is-hotkey';
 import { Editor, Element, Text, Transforms, createEditor } from 'slate';
@@ -33,7 +34,11 @@ import { TextFlavour } from '../text-node/text.flavour';
     templateUrl: './text.component.html',
     imports: [SlateEditable, FormsModule, CommonModule]
 })
-export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
+export class PlaitTextComponent implements OnInit, AfterViewInit {
+    renderer2 = inject(Renderer2);
+    private cdr = inject(ChangeDetectorRef);
+    elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
     @HostBinding('class') hostClass = 'plait-text-container';
 
     children: Element[] = [];
@@ -68,13 +73,11 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
         return this.elementRef.nativeElement;
     }
 
-    constructor(public renderer2: Renderer2, private cdr: ChangeDetectorRef, public elementRef: ElementRef<HTMLElement>) {}
+    constructor() {}
 
     valueChange() {
         this.onChange({ newText: this.editor.children[0] as Element, operations: this.editor.operations });
     }
-
-    ngOnChanges(changes: SimpleChanges): void {}
 
     ngOnInit(): void {
         if (this.textPlugins) {

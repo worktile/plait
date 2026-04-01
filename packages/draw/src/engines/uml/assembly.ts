@@ -71,7 +71,9 @@ export const AssemblyEngine: ShapeEngine = {
             `M${startPoint[0]} ${startPoint[1]}`,
             `H${line1[1][0]}`,
             // 画完整的圆形：先画一个半圆，再画另一个半圆
-            `A${circleArcCommand.rx} ${circleArcCommand.ry} ${circleArcCommand.xAxisRotation} ${circleArcCommand.largeArcFlag} ${circleArcCommand.sweepFlag} ${line1[1][0] + circleArcCommand.rx * 2} ${circleArcCommand.endY}`,
+            `A${circleArcCommand.rx} ${circleArcCommand.ry} ${circleArcCommand.xAxisRotation} ${circleArcCommand.largeArcFlag} ${
+                circleArcCommand.sweepFlag
+            } ${line1[1][0] + circleArcCommand.rx * 2} ${circleArcCommand.endY}`,
             `A${circleArcCommand.rx} ${circleArcCommand.ry} ${circleArcCommand.xAxisRotation} ${circleArcCommand.largeArcFlag} ${circleArcCommand.sweepFlag} ${circleArcCommand.endX} ${circleArcCommand.endY}`,
             // 垂直椭圆
             `M${verticalArcCommand.endX} ${rectangle.y}`,
@@ -106,21 +108,12 @@ export const AssemblyEngine: ShapeEngine = {
 
         // 检查中间圆形
         const circleCenter = [line1[1][0] + circleArcCommand.rx, line1[1][1]] as Point;
-        const nearestPointForCircle = getNearestPointBetweenPointAndEllipse(
-            point,
-            circleCenter,
-            circleArcCommand.rx,
-            circleArcCommand.ry
-        );
+        const nearestPointForCircle = getNearestPointBetweenPointAndEllipse(point, circleCenter, circleArcCommand.rx, circleArcCommand.ry);
         const distanceForCircle = distanceBetweenPointAndPoint(...point, ...nearestPointForCircle);
 
         // 检查垂直椭圆（使用 getNearestPointBetweenPointAndArc 处理半圆弧）
         const arcStartPoint: Point = [verticalArcCommand.endX, rectangle.y];
-        const nearestPointForEllipse = getNearestPointBetweenPointAndArc(
-            point,
-            arcStartPoint,
-            verticalArcCommand
-        );
+        const nearestPointForEllipse = getNearestPointBetweenPointAndArc(point, arcStartPoint, verticalArcCommand);
         const distanceForEllipse = distanceBetweenPointAndPoint(...point, ...nearestPointForEllipse);
 
         // 返回最近的点

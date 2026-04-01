@@ -21,7 +21,7 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const highestSelectedElements = [...selectedGroups, ...selectedIsolatedElements];
     const group = createGroup();
     if (canAddGroup(board)) {
-        highestSelectedElements.forEach(item => {
+        highestSelectedElements.forEach((item) => {
             const path = PlaitBoard.findPath(board, item);
             NodeTransforms.setNode(board, { groupId: group.id }, path);
         });
@@ -51,18 +51,18 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
 export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedGroups = getHighestSelectedGroups(board, elements);
     if (canRemoveGroup(board)) {
-        selectedGroups.forEach(group => {
+        selectedGroups.forEach((group) => {
             const elementsInGroup = findElements(board, {
-                match: item => item.groupId === group.id,
+                match: (item) => item.groupId === group.id,
                 recursion: () => false
             });
-            elementsInGroup.forEach(element => {
+            elementsInGroup.forEach((element) => {
                 const path = PlaitBoard.findPath(board, element);
                 NodeTransforms.setNode(board, { groupId: group.groupId || undefined }, path);
             });
         });
         selectedGroups
-            .map(group => {
+            .map((group) => {
                 const groupPath = PlaitBoard.findPath(board, group);
                 const groupRef = board.pathRef(groupPath);
                 return () => {
@@ -70,7 +70,7 @@ export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
                     groupRef.unref();
                 };
             })
-            .forEach(action => {
+            .forEach((action) => {
                 action();
             });
     }

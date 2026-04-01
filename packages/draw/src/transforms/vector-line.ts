@@ -4,7 +4,7 @@ import { getSelectedVectorLineElements } from '../utils';
 
 export const setVectorLineShape = (board: PlaitBoard, newProperties: Partial<PlaitVectorLine>) => {
     const elements = getSelectedVectorLineElements(board);
-    elements.map(element => {
+    elements.map((element) => {
         if (element.shape === newProperties.shape) {
             return;
         }

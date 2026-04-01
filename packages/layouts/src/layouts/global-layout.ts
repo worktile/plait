@@ -49,10 +49,10 @@ export class GlobalLayout {
             leftRoot.right2left();
             rightRoot.translate(leftRoot.x - rightRoot.x, leftRoot.y - rightRoot.y);
 
-            const rightAbstractArray = rightRoot.children.filter(child => AbstractNode.isAbstract(child.origin));
-            rightRoot.children = rightRoot.children.filter(child => !AbstractNode.isAbstract(child.origin));
+            const rightAbstractArray = rightRoot.children.filter((child) => AbstractNode.isAbstract(child.origin));
+            rightRoot.children = rightRoot.children.filter((child) => !AbstractNode.isAbstract(child.origin));
 
-            leftRoot.children.forEach(leftPrimaryNode => {
+            leftRoot.children.forEach((leftPrimaryNode) => {
                 rightRoot.children.push(leftPrimaryNode);
                 leftPrimaryNode.parent = rightRoot;
             });

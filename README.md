@@ -19,43 +19,37 @@
   </h3>
 </div>
 
-
 Plait is a modern drawing framework that provides a plugin mechanism, allowing developers to extend drawing functionalities through plugins. It is particularly suitable for the development of interactive whiteboard tools.
 
-
 Plait does not rely on any frontend UI framework at its core, but it provides solutions for integrating with mainstream frontend UI frameworks to ensure a good development experience for upper-layer developers and to reuse mainstream framework components.
-
 
 [中文文档](https://github.com/worktile/plait/blob/develop/README.zh-CN.md)
 
 Plait will also provide some basic functional plugins, which have been implemented so far:
 
-- Mind plugin
+-   Mind plugin
 
-- Draw plugin
+-   Draw plugin
 
-- GraphViz plugin
+-   GraphViz plugin
 
-- Flow plugin
-
+-   Flow plugin
 
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
-
-- 👉 [Online example (Draw)](https://https://plait.pages.dev?init=draw)
-- 👉 [Online example (Mind)](https://https://plait.pages.dev?init=mind)
-- 👉 [Online example (GraphViz)](https://https://plait.pages.dev/graph-viz?init=force-atlas)
-- 👉 [Online example (Flow)](https://https://plait.pages.dev/flow)
-- 👉 [Documentation](https://plait-docs.pages.dev)
+-   👉 [Online example (Draw)](https://https://plait.pages.dev?init=draw)
+-   👉 [Online example (Mind)](https://https://plait.pages.dev?init=mind)
+-   👉 [Online example (GraphViz)](https://https://plait.pages.dev/graph-viz?init=force-atlas)
+-   👉 [Online example (Flow)](https://https://plait.pages.dev/flow)
+-   👉 [Documentation](https://plait-docs.pages.dev)
 
 #### Features
 
-- Independent of UI frameworks
-- Provides basic board capabilities, such as zooming in, zooming out, and moving
-- Plugin mechanism
-- Data model (supports collaboration)
-- Basic drawing utility functions
-
+-   Independent of UI frameworks
+-   Provides basic board capabilities, such as zooming in, zooming out, and moving
+-   Plugin mechanism
+-   Data model (supports collaboration)
+-   Basic drawing utility functions
 
 #### UI Framework Integration
 
@@ -63,31 +57,29 @@ The implementation of the framework requires components from frontend UI framewo
 
 Text rendering in the plait is based on the Slate framework, enabling rich text rendering and editing on the board. Slate is an excellent rich text editor framework, and Plait was inspired by the Slate framework in its design
 
-
 #### Packages
 
-|Package Name|Description
-|---|---|
-|@plait/core| Framework core: plugin mechanism design, providing data models, data transformation functions, zooming, scrolling, etc |
-|@plait/common|Common functionalities for interactive drawing, text rendering, and editing|
-|@plait/text-plugins| General text extension functionalities, UI framework-independent, relies on the Slate rich text editor framework |
-|@plait/mind| Mind map plugin, based on an independent automatic layout algorithm, supports: logical layout, standard layout, indent layout |
-|@plait/draw| Flowchart plugin, supports: basic shapes, flowchart shapes, connections, free images, etc |
-|@plait/flow| Process orchestration plugin, supports: standard nodes, connections, custom nodes, and connections |
-|@plait/graph-viz| graph visualization，supports: force atlas(Knowledge graph) |
-|@plait/layouts| Mind map layout algorithms |
-|@plait/angular-text| Text rendering component, relies on the Angular framework, Slate rich text editor framework, Angular view layer |
-|@plait/angular-board| Whiteboard view layer component, relies on the Angular framework |
-|@plait/react-text| Text rendering component, relies on the React framework, Slate rich text editor framework, React view layer |
-|@plait/react-board| Whiteboard view layer component, relies on the React framework |
-
+| Package Name         | Description                                                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| @plait/core          | Framework core: plugin mechanism design, providing data models, data transformation functions, zooming, scrolling, etc        |
+| @plait/common        | Common functionalities for interactive drawing, text rendering, and editing                                                   |
+| @plait/text-plugins  | General text extension functionalities, UI framework-independent, relies on the Slate rich text editor framework              |
+| @plait/mind          | Mind map plugin, based on an independent automatic layout algorithm, supports: logical layout, standard layout, indent layout |
+| @plait/draw          | Flowchart plugin, supports: basic shapes, flowchart shapes, connections, free images, etc                                     |
+| @plait/flow          | Process orchestration plugin, supports: standard nodes, connections, custom nodes, and connections                            |
+| @plait/graph-viz     | graph visualization，supports: force atlas(Knowledge graph)                                                                   |
+| @plait/layouts       | Mind map layout algorithms                                                                                                    |
+| @plait/angular-text  | Text rendering component, relies on the Angular framework, Slate rich text editor framework, Angular view layer               |
+| @plait/angular-board | Whiteboard view layer component, relies on the Angular framework                                                              |
+| @plait/react-text    | Text rendering component, relies on the React framework, Slate rich text editor framework, React view layer                   |
+| @plait/react-board   | Whiteboard view layer component, relies on the React framework                                                                |
 
 React view layer, text rendering component：[https://github.com/plait-board/drawnix](https://github.com/plait-board/drawnix)
 
 #### Who is using
 
-- 🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
-- 🔥🔥🔥 [Drawnix](https://github.com/plait-board/drawnix)
+-   🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
+-   🔥🔥🔥 [Drawnix](https://github.com/plait-board/drawnix)
 
 ### Development
 
@@ -99,7 +91,6 @@ npm run build
 npm run start
 ```
 
-
 ### Usage
 
 Basic usage (integrated @plait/mind plugin)
@@ -108,7 +99,7 @@ HTML：
 
 ```
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value"
-    (plaitBoardInitialized)="plaitBoardInitialized($event)" (onChange)="change($event)">
+    (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
 </plait-board>
 ```
 
@@ -140,28 +131,20 @@ export class BasicBoardComponent {
 }
 ```
 
-For more detailed examples refer to：  [https://github.com/pubuzhixing8/plait-basic](https://github.com/pubuzhixing8/plait-basic)  
-
-
+For more detailed examples refer to： [https://github.com/pubuzhixing8/plait-basic](https://github.com/pubuzhixing8/plait-basic)
 
 ### Thanks
 
-- [slate](https://github.com/ianstormtaylor/slate)
+-   [slate](https://github.com/ianstormtaylor/slate)
 
-- [slate-angular](https://github.com/worktile/slate-angular)
+-   [slate-angular](https://github.com/worktile/slate-angular)
 
-- [rough](https://github.com/rough-stuff/rough)
-
-
+-   [rough](https://github.com/rough-stuff/rough)
 
 ### Contributing
 
 Everyone is welcome to contribute to Plait and build a new generation of drawing framework together. Any Issue or PR is acceptable, and we hope to get your ⭐️ support.
 
-
-
 ### LICENSE
 
-  [MIT License](https://github.com/worktile/slate-angular/blob/master/LICENSE)  
-
-
+[MIT License](https://github.com/worktile/slate-angular/blob/master/LICENSE)

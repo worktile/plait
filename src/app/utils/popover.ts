@@ -4,7 +4,7 @@ export function closeAction(action: () => void) {
     setTimeout(() => {
         fromEvent(document, 'click')
             .pipe(take(1))
-            .subscribe(event => {
+            .subscribe((event) => {
                 action();
             });
     }, 201);

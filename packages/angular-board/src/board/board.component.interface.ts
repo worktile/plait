@@ -7,5 +7,5 @@ export interface BoardComponentInterface {
     nativeElement: HTMLElement;
     viewContainerRef: ViewContainerRef;
     injector: Injector;
-    onChange: EventEmitter<OnChangeData>;
+    plaitChange: EventEmitter<OnChangeData>;
 }

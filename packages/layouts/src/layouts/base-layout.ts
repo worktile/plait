@@ -25,7 +25,7 @@ export class BaseLayout {
 
         // 2、handle sub node layout
         isolatedNodes
-            .filter(v => v.origin.children.length > 0)
+            .filter((v) => v.origin.children.length > 0)
             .forEach((isolatedNode: LayoutNode) => {
                 const _mindLayoutType = isolatedNode.layout as MindLayoutType;
                 const toTop = context.toTop || (isHorizontalLayout(context.rootLayoutType) && isTopLayout(_mindLayoutType));
@@ -85,7 +85,7 @@ export class BaseLayout {
         // 5、apply isolated nodes to root
         const attachedMetaOfIsolatedNodes: { parent: LayoutNode; offsetX: number; offsetY: number }[] = []; // store the offset caused by isolated nodes to avoid multiple offset accumulation
         isolatedNodes
-            .filter(v => v.origin.children.length > 0)
+            .filter((v) => v.origin.children.length > 0)
             .forEach((isolatedNode: LayoutNode, index) => {
                 if (isolatedNode.parent) {
                     const layoutRoot = isolatedLayoutRoots[index];
@@ -105,7 +105,7 @@ export class BaseLayout {
                     const oldNode = isolatedNode.parent.children[_index];
                     isolatedNode.parent.children[_index] = Object.assign(oldNode, layoutRoot);
                     const meta = attachedMetaOfIsolatedNodes.find(
-                        m => m.parent === isolatedNode.parent && !AbstractNode.isAbstract(isolatedNode.origin)
+                        (m) => m.parent === isolatedNode.parent && !AbstractNode.isAbstract(isolatedNode.origin)
                     );
                     if (meta) {
                         if (meta.offsetX < offsetX) {
@@ -120,8 +120,8 @@ export class BaseLayout {
                 }
             });
         // 6、correct the offset of sibling nodes caused by sub-layout
-        attachedMetaOfIsolatedNodes.forEach(meta => {
-            meta.parent.children.forEach(child => child.translate(meta.offsetX, meta.offsetY));
+        attachedMetaOfIsolatedNodes.forEach((meta) => {
+            meta.parent.children.forEach((child) => child.translate(meta.offsetX, meta.offsetY));
         });
 
         return root;

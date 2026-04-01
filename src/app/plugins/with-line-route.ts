@@ -140,7 +140,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
             };
             // 2、Construct connected points
             const points = getGraphPoints(options);
-            points.forEach(p => {
+            points.forEach((p) => {
                 const controlPointG = rough.circle(p[0], p[1], 4, {
                     stroke: '#f08c02',
                     fill: '#f08c02',
@@ -164,13 +164,13 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
                     throw new Error(`can't find current`);
                 }
                 const currentPoint = current!.node.data;
-                current.node.adjacentNodes.forEach(next => {
+                current.node.adjacentNodes.forEach((next) => {
                     if (!reached.has(next)) {
                         reached.add(next);
                         frontier.enqueue({ node: next, priority: 0 });
                     }
                     if (
-                        !edges.find(line => {
+                        !edges.find((line) => {
                             return Point.isEquals(line[0], next.data) && Point.isEquals(line[1], currentPoint);
                         })
                     ) {
@@ -179,7 +179,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
                 });
             }
             // Figure edges effect diagram
-            edges.forEach(edges => {
+            edges.forEach((edges) => {
                 const connectionG = rough.line(edges[0][0], edges[0][1], edges[1][0], edges[1][1], {
                     stroke: rgbaToHEX('#007500', 0.2),
                     strokeWidth: 1.5
@@ -311,8 +311,7 @@ export const mockLineData = [
         text: {
             children: [
                 {
-                    text:
-                        'Green connection: the connection through the center line corrected based on the shortest path with the fewest turning points',
+                    text: 'Green connection: the connection through the center line corrected based on the shortest path with the fewest turning points',
                     color: '#2f9e44',
                     'font-size': 15
                 }

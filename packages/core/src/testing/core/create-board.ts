@@ -12,7 +12,7 @@ export const createTestingBoard = (
     options: PlaitBoardOptions = { readonly: false, hideScrollbar: true, disabledScrollOnNonFocus: false }
 ) => {
     let board = createBoard(children, options);
-    plugins.forEach(plugin => {
+    plugins.forEach((plugin) => {
         board = plugin(board);
     });
     KEY_TO_ELEMENT_MAP.set(board, new Map());

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, inject } from '@angular/core';
 import {
     BoardTransforms,
     PlaitBoard,
@@ -55,6 +55,8 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
     ]
 })
 export class BasicEditorComponent implements OnInit {
+    private activeRoute = inject(ActivatedRoute);
+
     plugins: PlaitPlugin[] = [withCommonPlugin, withMind, withMindExtend, withDraw, withGroup];
 
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
@@ -101,7 +103,7 @@ export class BasicEditorComponent implements OnInit {
         }
     }
 
-    constructor(private activeRoute: ActivatedRoute) {}
+    constructor() {}
 
     ngOnInit(): void {
         this.activeRoute.queryParams.subscribe((params: Params) => {

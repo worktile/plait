@@ -5,7 +5,7 @@ import { removeNode } from './node';
 
 export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
     elements
-        .map(element => {
+        .map((element) => {
             const path = PlaitBoard.findPath(board, element);
             const ref = board.pathRef(path);
             return () => {
@@ -14,7 +14,7 @@ export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
                 removeSelectedElement(board, element, true);
             };
         })
-        .forEach(action => {
+        .forEach((action) => {
             action();
         });
 };

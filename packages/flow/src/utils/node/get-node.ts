@@ -3,7 +3,7 @@ import { FlowNode } from '../../interfaces/node';
 import { FlowElement, FlowElementType } from '../../interfaces/element';
 
 export function getFlowNodeById(board: PlaitBoard, id: string): FlowNode {
-    let node = board.children.find(item => item.id === id) as FlowNode;
+    let node = board.children.find((item) => item.id === id) as FlowNode;
     return node;
 }
 
@@ -17,5 +17,5 @@ export function getFakeFlowNodeById(board: PlaitBoard, id: string, offsetX = 0, 
 }
 
 export function getFlowElementsByType(board: PlaitBoard, type: FlowElementType) {
-    return (board.children as FlowElement[]).filter(item => item.type === type);
+    return (board.children as FlowElement[]).filter((item) => item.type === type);
 }

@@ -19,38 +19,35 @@
   </h3>
 </div>
 
-
 Plait 是一款现代化的画图框架，提供插件机制，允许开发者通过插件的方式扩展画图功能，特别适用于交互式白板工具的开发。
 
 Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前端 UI 框架提供了解决方案，以保证上层开发者的开发体验、复用主流的框架组件。
 
 当前已支持功能插件：
 
-- 思维导图插件
+-   思维导图插件
 
-- 流程图插件
+-   流程图插件
 
-- 图形可视化插件
+-   图形可视化插件
 
-- 流程编排插件
+-   流程编排插件
 
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
-
-- 👉 [在线示例 (流程图)](https://https://plait.pages.dev?init=draw)
-- 👉 [在线示例 (思维导图)](https://https://plait.pages.dev?init=mind)
-- 👉 [在线示例 (图形可视化)](https://https://plait.pages.dev/graph-viz?init=force-atlas)
-- 👉 [在线示例 (流程控制)](https://https://plait.pages.dev/flow)
-- 👉 [在线文档](https://plait-docs.pages.dev)
+-   👉 [在线示例 (流程图)](https://https://plait.pages.dev?init=draw)
+-   👉 [在线示例 (思维导图)](https://https://plait.pages.dev?init=mind)
+-   👉 [在线示例 (图形可视化)](https://https://plait.pages.dev/graph-viz?init=force-atlas)
+-   👉 [在线示例 (流程控制)](https://https://plait.pages.dev/flow)
+-   👉 [在线文档](https://plait-docs.pages.dev)
 
 #### 框架特性
 
-- 不依赖 UI 框架
-- 提供基础画板能力，比如放大、缩小、移动
-- 插件机制，提供插件机制用于扩展画图功能
-- 数据模型，提供基础数据模型及数据变换函数（支持协同）
-- 基础画图工具函数
-
+-   不依赖 UI 框架
+-   提供基础画板能力，比如放大、缩小、移动
+-   插件机制，提供插件机制用于扩展画图功能
+-   数据模型，提供基础数据模型及数据变换函数（支持协同）
+-   基础画图工具函数
 
 #### UI 框架集成
 
@@ -58,33 +55,29 @@ Plait 底层不依赖任何前端 UI 框架，但是它为集成到主流的前�
 
 Plait 中的文本渲染基于 Slate 框架，实现画板中富文本的渲染和编辑，Slate 是一款优秀的富文本编辑器框架，Plait 在设计上就是一 Slate 框架为灵感。
 
-
 #### 模块
 
-|包名|说明
-|---|---|
-|@plait/core|框架核心：插件机制设计、提供数据模型、数据变换函数、放大、缩小、滚动等方案|
-|@plait/common|交互画图业务通用功能、文本渲染与编辑|
-|@plait/text-plugins|文本扩展通用功能、UI 框架无关、依赖 Slate 富文本编辑器框架 |
-|@plait/mind|思维导图插件，基于独立的自动布局算法，支持：逻辑布局、标准布局、缩进布局|
-|@plait/draw|流程图插件，支持：基础图形、流程图图形、连线、自由图片等|
-|@plait/flow|流程编排插件，支持：标准节点、连线、自定节点与连线|
-|@plait/graph-viz|数据可视化插件，支持：知识图谱|
-|@plait/layouts|思维导图布局算法|
-|@plait/angular-text|文本渲染组件，依赖 Angular 框架、富文本编辑器框架 Slate、Angular 视图层|
-|@plait/angular-board|白板视图层组件，依赖 Angular 框架|
-|@plait/react-text|文本渲染组件，依赖 React 框架、富文本编辑器框架 Slate、React 视图层|
-|@plait/react-board|白板视图层组件，依赖 React 框架|
-
+| 包名                 | 说明                                                                       |
+| -------------------- | -------------------------------------------------------------------------- |
+| @plait/core          | 框架核心：插件机制设计、提供数据模型、数据变换函数、放大、缩小、滚动等方案 |
+| @plait/common        | 交互画图业务通用功能、文本渲染与编辑                                       |
+| @plait/text-plugins  | 文本扩展通用功能、UI 框架无关、依赖 Slate 富文本编辑器框架                 |
+| @plait/mind          | 思维导图插件，基于独立的自动布局算法，支持：逻辑布局、标准布局、缩进布局   |
+| @plait/draw          | 流程图插件，支持：基础图形、流程图图形、连线、自由图片等                   |
+| @plait/flow          | 流程编排插件，支持：标准节点、连线、自定节点与连线                         |
+| @plait/graph-viz     | 数据可视化插件，支持：知识图谱                                             |
+| @plait/layouts       | 思维导图布局算法                                                           |
+| @plait/angular-text  | 文本渲染组件，依赖 Angular 框架、富文本编辑器框架 Slate、Angular 视图层    |
+| @plait/angular-board | 白板视图层组件，依赖 Angular 框架                                          |
+| @plait/react-text    | 文本渲染组件，依赖 React 框架、富文本编辑器框架 Slate、React 视图层        |
+| @plait/react-board   | 白板视图层组件，依赖 React 框架                                            |
 
 React 视图层、文本渲染组件：[https://github.com/plait-board/drawnix](https://github.com/plait-board/drawnix)
 
-
 #### 谁在使用
 
-- 🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
-- 🔥🔥🔥 [Drawnix](https://github.com/plait-board/drawnix)
-
+-   🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
+-   🔥🔥🔥 [Drawnix](https://github.com/plait-board/drawnix)
 
 ### 开发
 
@@ -96,8 +89,6 @@ npm run build
 npm run start
 ```
 
-
-
 ### 使用
 
 基本使用（集成 @plait/mind 插件）
@@ -106,7 +97,7 @@ HTML 模版：
 
 ```
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value"
-    (plaitBoardInitialized)="plaitBoardInitialized($event)" (onChange)="change($event)">
+    (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
 </plait-board>
 ```
 
@@ -138,29 +129,20 @@ export class BasicBoardComponent {
 }
 ```
 
-更详细的示例说明参考：  [https://github.com/pubuzhixing8/plait-basic](https://github.com/pubuzhixing8/plait-basic)  
-
-
+更详细的示例说明参考： [https://github.com/pubuzhixing8/plait-basic](https://github.com/pubuzhixing8/plait-basic)
 
 ### 感谢
 
-- [slate](https://github.com/ianstormtaylor/slate)
+-   [slate](https://github.com/ianstormtaylor/slate)
 
-- [slate-angular](https://github.com/worktile/slate-angular)
+-   [slate-angular](https://github.com/worktile/slate-angular)
 
-- [rough](https://github.com/rough-stuff/rough)
-
-
+-   [rough](https://github.com/rough-stuff/rough)
 
 ### 贡献
 
 欢迎大家贡献 Plait ，一起构建新一代的画图框架，任何的 Issue、PR 都是可以，也希望得到大家的 ⭐️ 支持。
 
-
-
 ### 开源协议
 
-  [MIT License](https://github.com/worktile/slate-angular/blob/master/LICENSE)  
-
-
-
+[MIT License](https://github.com/worktile/slate-angular/blob/master/LICENSE)

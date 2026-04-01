@@ -5,8 +5,10 @@ import { ForceAtlasEdgeElement } from '../interfaces';
 import { ForceAtlasEdgeGenerator } from './generators/edge.generator';
 import { getEdgeGeneratorData } from './utils/edge';
 
-export class ForceAtlasEdgeFlavour extends CommonElementFlavour<ForceAtlasEdgeElement, PlaitBoard>
-    implements OnContextChanged<ForceAtlasEdgeElement, PlaitBoard> {
+export class ForceAtlasEdgeFlavour
+    extends CommonElementFlavour<ForceAtlasEdgeElement, PlaitBoard>
+    implements OnContextChanged<ForceAtlasEdgeElement, PlaitBoard>
+{
     graph!: Graph<Node>;
     edgeGenerator!: ForceAtlasEdgeGenerator;
 

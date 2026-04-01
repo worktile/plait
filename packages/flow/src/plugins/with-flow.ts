@@ -63,14 +63,14 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         return isHit(element, point, isStrict);
     };
 
-    board.isMovable = element => {
+    board.isMovable = (element) => {
         if (FlowNode.isFlowNodeElement(element as FlowElement)) {
             return true;
         }
         return isMovable(element);
     };
 
-    board.getRectangle = element => {
+    board.getRectangle = (element) => {
         if (FlowNode.isFlowNodeElement(element as FlowElement)) {
             const { width, height, points } = element;
             return {

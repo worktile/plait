@@ -30,14 +30,17 @@ export const LinkEditor = {
                 at = { anchor: Editor.start(editor, [0]), focus: Editor.end(editor, [0]) };
             }
         }
-        Transforms.unwrapNodes<CustomElement>(editor, { at, match: n => Element.isElement(n) && (n as LinkElement).type === 'link' });
+        Transforms.unwrapNodes<CustomElement>(editor, { at, match: (n) => Element.isElement(n) && (n as LinkElement).type === 'link' });
     },
     isLinkActive(editor: Editor) {
         let at = editor.selection as BaseRange;
         if (!at && editor.children && editor.children.length > 0) {
             at = { anchor: Editor.start(editor, [0]), focus: Editor.end(editor, [0]) };
         }
-        const [link] = Editor.nodes<CustomElement>(editor, { match: n => Element.isElement(n) && (n as LinkElement).type === 'link', at });
+        const [link] = Editor.nodes<CustomElement>(editor, {
+            match: (n) => Element.isElement(n) && (n as LinkElement).type === 'link',
+            at
+        });
         return !!link;
     },
     getLinkElement(editor: Editor) {
@@ -45,7 +48,10 @@ export const LinkEditor = {
         if (!at && editor.children && editor.children.length > 0) {
             at = { anchor: Editor.start(editor, [0]), focus: Editor.end(editor, [0]) };
         }
-        const [link] = Editor.nodes<CustomElement>(editor, { match: n => Element.isElement(n) && (n as LinkElement).type === 'link', at });
+        const [link] = Editor.nodes<CustomElement>(editor, {
+            match: (n) => Element.isElement(n) && (n as LinkElement).type === 'link',
+            at
+        });
         return link;
     }
 };

@@ -5,7 +5,7 @@ import { isStandardLayout } from './layout';
 
 export const getNonAbstractChildren = <T extends { children?: T[] } = LayoutNode | LayoutTreeNode>(parentNode: T) => {
     if (parentNode.children) {
-        return parentNode.children?.filter(child => {
+        return parentNode.children?.filter((child) => {
             if (child instanceof LayoutNode) {
                 return !AbstractNode.isAbstract(child.origin);
             }
@@ -21,7 +21,7 @@ export const getNonAbstractChildren = <T extends { children?: T[] } = LayoutNode
 
 export const findAbstractByEndNode = <T extends { children: T[] } = LayoutNode | LayoutTreeNode>(parentNode: T, endNode: T) => {
     const index = parentNode.children.indexOf(endNode);
-    return parentNode.children.find(child => {
+    return parentNode.children.find((child) => {
         if (child instanceof LayoutNode) {
             return AbstractNode.isAbstract(child.origin) && child.origin.end === index;
         }
@@ -38,7 +38,7 @@ export const findAbstractByEndNode = <T extends { children: T[] } = LayoutNode |
 
 export const findAbstractByStartNode = <T extends { children: T[] } = LayoutNode | LayoutTreeNode>(parentNode: T, startNode: T) => {
     const index = parentNode.children.indexOf(startNode);
-    return parentNode.children.find(child => {
+    return parentNode.children.find((child) => {
         if (child instanceof LayoutNode) {
             return AbstractNode.isAbstract(child.origin) && child.origin.start === index;
         }

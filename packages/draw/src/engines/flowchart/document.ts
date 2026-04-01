@@ -20,13 +20,14 @@ export const DocumentEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x} ${rectangle.y + rectangle.height - rectangle.height / 9} V${rectangle.y} H${rectangle.x +
-                rectangle.width} V${rectangle.y + rectangle.height - rectangle.height / 9}
-            Q${rectangle.x + rectangle.width - rectangle.width / 4} ${rectangle.y +
-                rectangle.height -
-                (rectangle.height / 9) * 3}, ${rectangle.x + rectangle.width / 2} ${rectangle.y +
-                rectangle.height -
-                rectangle.height / 9} T${rectangle.x} ${rectangle.y + rectangle.height - rectangle.height / 9}           
+            `M${rectangle.x} ${rectangle.y + rectangle.height - rectangle.height / 9} V${rectangle.y} H${rectangle.x + rectangle.width} V${
+                rectangle.y + rectangle.height - rectangle.height / 9
+            }
+            Q${rectangle.x + rectangle.width - rectangle.width / 4} ${rectangle.y + rectangle.height - (rectangle.height / 9) * 3}, ${
+                rectangle.x + rectangle.width / 2
+            } ${rectangle.y + rectangle.height - rectangle.height / 9} T${rectangle.x} ${
+                rectangle.y + rectangle.height - rectangle.height / 9
+            }           
             `,
             { ...options, fillStyle: 'solid' }
         );

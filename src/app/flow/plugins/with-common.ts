@@ -6,7 +6,7 @@ import { CustomBoard } from '../interfaces/board';
 export const withCommon: PlaitPlugin = (board: CustomBoard) => {
     const { pointerUp, keyDown } = board;
 
-    board.pointerUp = event => {
+    board.pointerUp = (event) => {
         const newEdge = getCreateEdgeInfo(board);
         if (newEdge) {
             const sourceNode = getFlowNodeById(board, newEdge?.source?.nodeId!);
@@ -36,7 +36,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 const deleteElement = selectedElements[0] as FlowElement;
-                const path = board.children.findIndex(item => item.id === deleteElement.id);
+                const path = board.children.findIndex((item) => item.id === deleteElement.id);
                 if (FlowEdge.isFlowEdgeElement(deleteElement)) {
                     if (!deleteElement.undeletable) {
                         // 删除 edge
@@ -50,8 +50,8 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                         // 删除 node
                         Transforms.removeNode(board, [path]);
                         // 删除与 node 相关连的 edge
-                        edges.map(edge => {
-                            const edgePath = board.children.findIndex(item => item.id === edge.id);
+                        edges.map((edge) => {
+                            const edgePath = board.children.findIndex((item) => item.id === edge.id);
                             !edge.undeletable && Transforms.removeNode(board, [edgePath]);
                         });
                         return;

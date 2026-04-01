@@ -11,7 +11,7 @@
  *
  * @publicApi
  */
-export type CustomIterable<T> = Array<T>|Iterable<T>;
+export type CustomIterable<T> = Array<T> | Iterable<T>;
 
 /**
  * A strategy for tracking changes over time to an iterable. Used by {@link NgForOf} to
@@ -20,14 +20,14 @@ export type CustomIterable<T> = Array<T>|Iterable<T>;
  * @publicApi
  */
 export interface IterableDiffer<V> {
-  /**
-   * Compute a difference between the previous state and the new `object` state.
-   *
-   * @param object containing the new value.
-   * @returns an object describing the difference. The return value is only valid until the next
-   * `diff()` invocation.
-   */
-  diff(object: CustomIterable<V>|undefined|null): IterableChanges<V>|null;
+    /**
+     * Compute a difference between the previous state and the new `object` state.
+     *
+     * @param object containing the new value.
+     * @returns an object describing the difference. The return value is only valid until the next
+     * `diff()` invocation.
+     */
+    diff(object: CustomIterable<V> | undefined | null): IterableChanges<V> | null;
 }
 
 /**
@@ -37,53 +37,50 @@ export interface IterableDiffer<V> {
  * @publicApi
  */
 export interface IterableChanges<V> {
-  /**
-   * Iterate over all changes. `IterableChangeRecord` will contain information about changes
-   * to each item.
-   */
-  forEachItem(fn: (record: IterableChangeRecord<V>) => void): void;
+    /**
+     * Iterate over all changes. `IterableChangeRecord` will contain information about changes
+     * to each item.
+     */
+    forEachItem(fn: (record: IterableChangeRecord<V>) => void): void;
 
-  /**
-   * Iterate over a set of operations which when applied to the original `Iterable` will produce the
-   * new `Iterable`.
-   *
-   * NOTE: These are not necessarily the actual operations which were applied to the original
-   * `Iterable`, rather these are a set of computed operations which may not be the same as the
-   * ones applied.
-   *
-   * @param record A change which needs to be applied
-   * @param previousIndex The `IterableChangeRecord#previousIndex` of the `record` refers to the
-   *        original `Iterable` location, where as `previousIndex` refers to the transient location
-   *        of the item, after applying the operations up to this point.
-   * @param currentIndex The `IterableChangeRecord#currentIndex` of the `record` refers to the
-   *        original `Iterable` location, where as `currentIndex` refers to the transient location
-   *        of the item, after applying the operations up to this point.
-   */
-  forEachOperation(
-      fn:
-          (record: IterableChangeRecord<V>, previousIndex: number|null,
-           currentIndex: number|null) => void): void;
+    /**
+     * Iterate over a set of operations which when applied to the original `Iterable` will produce the
+     * new `Iterable`.
+     *
+     * NOTE: These are not necessarily the actual operations which were applied to the original
+     * `Iterable`, rather these are a set of computed operations which may not be the same as the
+     * ones applied.
+     *
+     * @param record A change which needs to be applied
+     * @param previousIndex The `IterableChangeRecord#previousIndex` of the `record` refers to the
+     *        original `Iterable` location, where as `previousIndex` refers to the transient location
+     *        of the item, after applying the operations up to this point.
+     * @param currentIndex The `IterableChangeRecord#currentIndex` of the `record` refers to the
+     *        original `Iterable` location, where as `currentIndex` refers to the transient location
+     *        of the item, after applying the operations up to this point.
+     */
+    forEachOperation(fn: (record: IterableChangeRecord<V>, previousIndex: number | null, currentIndex: number | null) => void): void;
 
-  /**
-   * Iterate over changes in the order of original `Iterable` showing where the original items
-   * have moved.
-   */
-  forEachPreviousItem(fn: (record: IterableChangeRecord<V>) => void): void;
+    /**
+     * Iterate over changes in the order of original `Iterable` showing where the original items
+     * have moved.
+     */
+    forEachPreviousItem(fn: (record: IterableChangeRecord<V>) => void): void;
 
-  /** Iterate over all added items. */
-  forEachAddedItem(fn: (record: IterableChangeRecord<V>) => void): void;
+    /** Iterate over all added items. */
+    forEachAddedItem(fn: (record: IterableChangeRecord<V>) => void): void;
 
-  /** Iterate over all moved items. */
-  forEachMovedItem(fn: (record: IterableChangeRecord<V>) => void): void;
+    /** Iterate over all moved items. */
+    forEachMovedItem(fn: (record: IterableChangeRecord<V>) => void): void;
 
-  /** Iterate over all removed items. */
-  forEachRemovedItem(fn: (record: IterableChangeRecord<V>) => void): void;
+    /** Iterate over all removed items. */
+    forEachRemovedItem(fn: (record: IterableChangeRecord<V>) => void): void;
 
-  /**
-   * Iterate over all items which had their identity (as computed by the `TrackByFunction`)
-   * changed.
-   */
-  forEachIdentityChange(fn: (record: IterableChangeRecord<V>) => void): void;
+    /**
+     * Iterate over all items which had their identity (as computed by the `TrackByFunction`)
+     * changed.
+     */
+    forEachIdentityChange(fn: (record: IterableChangeRecord<V>) => void): void;
 }
 
 /**
@@ -92,17 +89,17 @@ export interface IterableChanges<V> {
  * @publicApi
  */
 export interface IterableChangeRecord<V> {
-  /** Current index of the item in `Iterable` or null if removed. */
-  readonly currentIndex: number|null;
+    /** Current index of the item in `Iterable` or null if removed. */
+    readonly currentIndex: number | null;
 
-  /** Previous index of the item in `Iterable` or null if added. */
-  readonly previousIndex: number|null;
+    /** Previous index of the item in `Iterable` or null if added. */
+    readonly previousIndex: number | null;
 
-  /** The item. */
-  readonly item: V;
+    /** The item. */
+    readonly item: V;
 
-  /** Track by identity as computed by the `TrackByFunction`. */
-  readonly trackById: any;
+    /** Track by identity as computed by the `TrackByFunction`. */
+    readonly trackById: any;
 }
 
 /**
@@ -150,15 +147,15 @@ export interface IterableChangeRecord<V> {
  * @publicApi
  */
 export interface TrackByFunction<T> {
-  // Note: the type parameter `U` enables more accurate template type checking in case a trackBy
-  // function is declared using a base type of the iterated type. The `U` type gives TypeScript
-  // additional freedom to infer a narrower type for the `item` parameter type, instead of imposing
-  // the trackBy's declared item type as the inferred type for `T`.
-  // See https://github.com/angular/angular/issues/40125
+    // Note: the type parameter `U` enables more accurate template type checking in case a trackBy
+    // function is declared using a base type of the iterated type. The `U` type gives TypeScript
+    // additional freedom to infer a narrower type for the `item` parameter type, instead of imposing
+    // the trackBy's declared item type as the inferred type for `T`.
+    // See https://github.com/angular/angular/issues/40125
 
-  /**
-   * @param index The index of the item within the iterable.
-   * @param item The item in the iterable.
-   */
-  <U extends T>(index: number, item: T&U): any;
+    /**
+     * @param index The index of the item within the iterable.
+     * @param item The item in the iterable.
+     */
+    <U extends T>(index: number, item: T & U): any;
 }

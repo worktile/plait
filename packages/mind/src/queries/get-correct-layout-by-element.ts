@@ -26,7 +26,7 @@ export const getCorrectLayoutByElement = (board: PlaitBoard, element: MindElemen
     }
 
     let layout = null;
-    const elementWithLayout = ancestors.find(value => value.layout || AbstractNode.isAbstract(value));
+    const elementWithLayout = ancestors.find((value) => value.layout || AbstractNode.isAbstract(value));
     if (elementWithLayout) {
         if (AbstractNode.isAbstract(elementWithLayout)) {
             const parent = MindElement.getParent(elementWithLayout);

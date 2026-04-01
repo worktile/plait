@@ -28,7 +28,7 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
                     delete target.connection;
                 }
             }
-            points = points.map(point => [point[0] - startPoint[0], point[1] - startPoint[1]]);
+            points = points.map((point) => [point[0] - startPoint[0], point[1] - startPoint[1]]);
             return { ...element, points, source, target } as PlaitArrowLine;
         }
         return undefined;
@@ -39,13 +39,13 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
     basicInsertClipboard(board, elements, startPoint, (element: PlaitElement, idsMap: Record<string, string>) => {
         if (PlaitDrawElement.isArrowLine(element)) {
             if (element.source.boundId) {
-                const boundElement = elements.find(item => [element.source.boundId, idsMap[element.source.boundId!]].includes(item.id));
+                const boundElement = elements.find((item) => [element.source.boundId, idsMap[element.source.boundId!]].includes(item.id));
                 if (boundElement) {
                     element.source.boundId = idsMap[element.source.boundId];
                 }
             }
             if (element.target.boundId) {
-                const boundElement = elements.find(item => [element.target.boundId, idsMap[element.target.boundId!]].includes(item.id));
+                const boundElement = elements.find((item) => [element.target.boundId, idsMap[element.target.boundId!]].includes(item.id));
                 if (boundElement) {
                     element.target.boundId = idsMap[element.target.boundId];
                 }

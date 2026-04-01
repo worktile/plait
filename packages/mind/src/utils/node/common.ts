@@ -6,7 +6,7 @@ export function editTopic(element: MindElement) {
     const textManage = getFirstTextManage(element);
     textManage?.edit(
         () => {},
-        event => {
+        (event) => {
             const keyboardEvent = event as KeyboardEvent;
             return keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey;
         }
@@ -15,5 +15,5 @@ export function editTopic(element: MindElement) {
 
 export const getSelectedMindElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
-    return selectedElements.filter(value => MindElement.isMindElement(board, value)) as MindElement[];
+    return selectedElements.filter((value) => MindElement.isMindElement(board, value)) as MindElement[];
 };

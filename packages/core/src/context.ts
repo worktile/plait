@@ -4,7 +4,7 @@ export class PlaitBoardContext {
     private uploadingFiles: ImageEntry[] = [];
 
     getUploadingFile(url: string) {
-        return this.uploadingFiles.find(file => file.url === url);
+        return this.uploadingFiles.find((file) => file.url === url);
     }
 
     setUploadingFile(file: ImageEntry) {
@@ -12,6 +12,6 @@ export class PlaitBoardContext {
     }
 
     removeUploadingFile(fileEntry: ImageEntry) {
-        this.uploadingFiles = this.uploadingFiles.filter(file => file.url !== fileEntry.url);
+        this.uploadingFiles = this.uploadingFiles.filter((file) => file.url !== fileEntry.url);
     }
 }

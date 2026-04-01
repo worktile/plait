@@ -20,9 +20,9 @@ export function getHitNodeHandle(board: PlaitBoard, point: Point): HitNodeHandle
     }
     if (!nodeHandle) {
         const flowNodeElements = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
-        flowNodeElements.map(item => {
+        flowNodeElements.map((item) => {
             const handles = item.handles || getDefaultHandles();
-            handles.filter(handle => {
+            handles.filter((handle) => {
                 const { x, y } = normalizePoint(item.points![0]);
                 let { x: handleX, y: handleY } = getHandleXYPosition(
                     handle.position,
@@ -52,7 +52,7 @@ export function getHitHandleByNode(node: FlowNode, point: Point): HitNodeHandle 
     const handles = node.handles || getDefaultHandles();
     let hitHandle: HitNodeHandle | null = null;
     const { x, y } = normalizePoint(node.points![0]);
-    handles.find(handle => {
+    handles.find((handle) => {
         const position = getHandleXYPosition(
             handle.position,
             {

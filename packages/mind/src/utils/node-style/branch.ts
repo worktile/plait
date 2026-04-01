@@ -62,7 +62,7 @@ export const getDefaultBranchColorByIndex = (board: PlaitBoard, index: number) =
 
 export const getMindThemeColor = (board: PlaitBoard) => {
     const themeColors = PlaitBoard.getThemeColors(board);
-    const themeColor = themeColors.find(val => val.mode === board.theme.themeColorMode);
+    const themeColor = themeColors.find((val) => val.mode === board.theme.themeColorMode);
     if (themeColor && MindThemeColor.isMindThemeColor(themeColor)) {
         return themeColor;
     } else {

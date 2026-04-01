@@ -64,8 +64,8 @@ export const RectangleClient = {
         let xMax = -Infinity;
         let yMax = -Infinity;
         for (const point of points) {
-            const xArray = point.map(ele => ele[0]);
-            const yArray = point.map(ele => ele[1]);
+            const xArray = point.map((ele) => ele[0]);
+            const yArray = point.map((ele) => ele[1]);
             xMin = Math.min(xMin, ...xArray);
             yMin = Math.min(yMin, ...yArray);
             xMax = Math.max(xMax, ...xArray);
@@ -76,8 +76,8 @@ export const RectangleClient = {
         return rect;
     },
     getCornerPointsByPoints(points: Point[]) {
-        const xArray = points.map(ele => ele[0]);
-        const yArray = points.map(ele => ele[1]);
+        const xArray = points.map((ele) => ele[0]);
+        const yArray = points.map((ele) => ele[1]);
         const xMin = Math.min(...xArray);
         const xMax = Math.max(...xArray);
         const yMin = Math.min(...yArray);
@@ -167,7 +167,7 @@ export const RectangleClient = {
         let minY = Number.MAX_VALUE;
         let maxX = Number.NEGATIVE_INFINITY;
         let maxY = Number.NEGATIVE_INFINITY;
-        rectangles.forEach(rect => {
+        rectangles.forEach((rect) => {
             minX = Math.min(minX, rect.x);
             minY = Math.min(minY, rect.y);
             maxX = Math.max(maxX, rect.x + rect.width);
@@ -185,6 +185,6 @@ export const RectangleClient = {
 function isPointArray(data: Point[] | Point[][]): data is Point[] {
     return (
         Array.isArray(data) &&
-        data.every(item => Array.isArray(item) && item.length === 2 && typeof item[0] === 'number' && typeof item[1] === 'number')
+        data.every((item) => Array.isArray(item) && item.length === 2 && typeof item[0] === 'number' && typeof item[1] === 'number')
     );
 }

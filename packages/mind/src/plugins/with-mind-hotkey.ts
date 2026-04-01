@@ -66,8 +66,13 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
             if (isHotkey('mod+z', event)) {
                 const { history } = board;
                 const { undos } = history;
-                const previousOp =  undos.length > 0 ? undos[undos.length - 1][0] : undefined;
-                if (previousOp && previousOp.type === 'insert_node' && MindElement.isMindElement(board, previousOp.node) && getFirstTextManage(previousOp.node).isEditing) {
+                const previousOp = undos.length > 0 ? undos[undos.length - 1][0] : undefined;
+                if (
+                    previousOp &&
+                    previousOp.type === 'insert_node' &&
+                    MindElement.isMindElement(board, previousOp.node) &&
+                    getFirstTextManage(previousOp.node).isEditing
+                ) {
                     board.undo();
                 }
             }

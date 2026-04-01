@@ -28,7 +28,7 @@ export function addSelectionWithTemporaryElements(board: PlaitBoard, elements: P
     if (ref) {
         clearTimeout(ref.timeoutId);
         const currentElements = ref.elements;
-        ref.elements.push(...elements.filter(element => !currentElements.includes(element)));
+        ref.elements.push(...elements.filter((element) => !currentElements.includes(element)));
         ref.timeoutId = timeoutId;
     } else {
         BOARD_TO_TEMPORARY_ELEMENTS.set(board, { timeoutId, elements });

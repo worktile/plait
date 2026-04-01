@@ -45,7 +45,7 @@ export class ForceAtlasNodeGenerator extends Generator<ForceAtlasNodeElement, No
             board: this.board,
             element: element
         };
-        const ref = ((this.board as unknown) as ForceAtlasNodeIconBoard).renderNodeIcon(container, props);
+        const ref = (this.board as unknown as ForceAtlasNodeIconBoard).renderNodeIcon(container, props);
         return { ref, iconG };
     }
 }

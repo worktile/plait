@@ -3,9 +3,9 @@ import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
 
 export const getBranchDirectionsByLayouts = (branchLayouts: MindLayoutType[]) => {
     const branchDirections: LayoutDirection[] = [];
-    branchLayouts.forEach(l => {
+    branchLayouts.forEach((l) => {
         const directions = LayoutDirectionsMap[l];
-        directions.forEach(d => {
+        directions.forEach((d) => {
             if (!branchDirections.includes(d) && !branchDirections.includes(getLayoutReverseDirection(d))) {
                 branchDirections.push(d);
             }
@@ -29,7 +29,7 @@ export const getInCorrectLayoutDirection = (rootLayout: MindLayoutType, layout: 
     if (!subLayoutDirections) {
         throw new Error(`unexpected layout: ${layout} on correct layout`);
     }
-    return subLayoutDirections.find(d => directions.includes(getLayoutReverseDirection(d)));
+    return subLayoutDirections.find((d) => directions.includes(getLayoutReverseDirection(d)));
 };
 
 export const correctLayoutByDirection = (layout: MindLayoutType, direction: LayoutDirection) => {
@@ -80,8 +80,8 @@ export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirec
         const layout = MindLayoutType[key as keyof typeof MindLayoutType];
         const layoutDirections = LayoutDirectionsMap[layout];
         if (layoutDirections) {
-            const hasSameDirection = layoutDirections.some(d => directions.includes(d));
-            const hasReverseDirection = layoutDirections.some(r => reverseDirections.includes(r));
+            const hasSameDirection = layoutDirections.some((d) => directions.includes(d));
+            const hasReverseDirection = layoutDirections.some((r) => reverseDirections.includes(r));
             if (hasSameDirection && !hasReverseDirection) {
                 result.push(layout);
             }

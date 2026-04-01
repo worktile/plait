@@ -9,7 +9,7 @@ export interface SetOptions<T extends PlaitElement = PlaitElement> {
 
 export const setProperty = <T extends PlaitElement = PlaitElement>(board: PlaitBoard, properties: Partial<T>, options?: SetOptions<T>) => {
     const selectedElements = getSelectedElements(board) as T[];
-    selectedElements.forEach(element => {
+    selectedElements.forEach((element) => {
         if (options?.match && !options?.match(element)) return;
         const path = PlaitBoard.findPath(board, element);
         const memorizeKey = options?.getMemorizeKey ? options?.getMemorizeKey(element) : '';

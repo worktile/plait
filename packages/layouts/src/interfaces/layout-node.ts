@@ -66,7 +66,7 @@ export class LayoutNode {
             width: 0,
             height: 0
         };
-        this.eachNode(node => {
+        this.eachNode((node) => {
             bb.left = Math.min(bb.left, node.x);
             bb.top = Math.min(bb.top, node.y);
             bb.right = Math.max(bb.right, node.x + node.width);
@@ -78,7 +78,7 @@ export class LayoutNode {
     }
 
     translate(tx = 0, ty = 0) {
-        this.eachNode(node => {
+        this.eachNode((node) => {
             node.x += tx;
             node.y += ty;
         });
@@ -87,7 +87,7 @@ export class LayoutNode {
     right2left() {
         const me = this;
         const bb = me.getBoundingBox();
-        me.eachNode(node => {
+        me.eachNode((node) => {
             node.x = node.x - (node.x - bb.left) * 2 - node.width;
             node.left = true;
         });
@@ -97,7 +97,7 @@ export class LayoutNode {
     down2up() {
         const me = this;
         const bb = me.getBoundingBox();
-        me.eachNode(node => {
+        me.eachNode((node) => {
             node.y = node.y - (node.y - bb.top) * 2 - node.height;
             node.up = true;
         });
@@ -106,7 +106,7 @@ export class LayoutNode {
 }
 
 function depthFirstRecursion(node: LayoutNode, callback: (node: LayoutNode) => void) {
-    node.children?.forEach(child => {
+    node.children?.forEach((child) => {
         depthFirstRecursion(child, callback);
     });
     callback(node);

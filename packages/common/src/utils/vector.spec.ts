@@ -35,8 +35,8 @@ describe('vector', () => {
             let start = [0, 0] as Point;
             let end = [40, 30] as Point;
             const unitVector = getUnitVectorByPointAndPoint(start, end);
-            expect(unitVector[0]).toEqual(4/5);
-            expect(unitVector[1]).toEqual(3/5)
+            expect(unitVector[0]).toEqual(4 / 5);
+            expect(unitVector[1]).toEqual(3 / 5);
         });
     });
     describe('get point on vector by vector and vector component', () => {

@@ -42,7 +42,7 @@ export const setArrowLineMark = (board: PlaitBoard, handleKey: ArrowLineHandleKe
 
 export const setArrowLineShape = (board: PlaitBoard, newProperties: Partial<PlaitArrowLine>) => {
     const elements = getSelectedArrowLineElements(board);
-    elements.map(element => {
+    elements.map((element) => {
         const _properties = { ...newProperties };
         if (element.shape === newProperties.shape) {
             return;

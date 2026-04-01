@@ -18,7 +18,7 @@ export function withBoard(board: PlaitBoard) {
             afterContextChange();
         }
         afterChange();
-    }
+    };
 
     return board;
 }

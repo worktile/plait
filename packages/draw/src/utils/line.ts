@@ -38,8 +38,8 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
             result.push(pointsOnBezier[middleIndex]);
         } else {
             for (let i = 0; i < points.length - 1; i++) {
-                const startIndex = pointsOnBezier.findIndex(point => point[0] === points[i][0] && point[1] === points[i][1]);
-                const endIndex = pointsOnBezier.findIndex(point => point[0] === points[i + 1][0] && point[1] === points[i + 1][1]);
+                const startIndex = pointsOnBezier.findIndex((point) => point[0] === points[i][0] && point[1] === points[i][1]);
+                const endIndex = pointsOnBezier.findIndex((point) => point[0] === points[i + 1][0] && point[1] === points[i + 1][1]);
                 const middleIndex = Math.round((startIndex + endIndex) / 2);
                 const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
                 if (distance < hideBuffer) continue;

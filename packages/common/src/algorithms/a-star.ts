@@ -30,7 +30,7 @@ export class AStar {
             if (currentPoint[0] === end[0] && currentPoint[1] === end[1]) {
                 break;
             }
-            current.node.adjacentNodes.forEach(next => {
+            current.node.adjacentNodes.forEach((next) => {
                 let newCost = costSoFar.get(current!.node)! + this.heuristic(next.data, current!.node.data);
                 const previousNode = this.cameFrom.get(current!.node);
                 // Inflection point weight, if an inflection point occurs, cost + 1 to avoid the inflection point path

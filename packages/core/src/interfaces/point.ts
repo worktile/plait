@@ -13,13 +13,13 @@ export const Point = {
         return point && otherPoint && Point.isOverHorizontal([point, otherPoint], tolerance);
     },
     isOverHorizontal(points: Point[], tolerance: number = 0) {
-        return points.every(point => Math.abs(point[1] - points[0][1]) <= tolerance);
+        return points.every((point) => Math.abs(point[1] - points[0][1]) <= tolerance);
     },
     isVertical(point?: Point, otherPoint?: Point, tolerance = 0) {
         return point && otherPoint && Point.isOverVertical([point, otherPoint], tolerance);
     },
     isOverVertical(points: Point[], tolerance: number = 0) {
-        return points.every(point => Math.abs(point[0] - points[0][0]) <= tolerance);
+        return points.every((point) => Math.abs(point[0] - points[0][0]) <= tolerance);
     },
     isAlign(points: Point[], tolerance: number = 0) {
         return Point.isOverHorizontal(points, tolerance) || Point.isOverVertical(points, tolerance);

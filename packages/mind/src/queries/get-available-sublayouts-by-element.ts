@@ -18,8 +18,8 @@ export const getAvailableSubLayoutsByElement = (board: PlaitBoard, element: Mind
         const parentDirections = getBranchDirectionsByLayouts(parentLayout);
         const parentAvailableSubLayouts = getAvailableSubLayoutsByLayoutDirections(parentDirections);
 
-        availableSubLayouts = availableSubLayouts.filter(layout =>
-            parentAvailableSubLayouts.some(parentAvailableSubLayout => parentAvailableSubLayout === layout)
+        availableSubLayouts = availableSubLayouts.filter((layout) =>
+            parentAvailableSubLayouts.some((parentAvailableSubLayout) => parentAvailableSubLayout === layout)
         );
         return availableSubLayouts;
     }

@@ -1,12 +1,4 @@
-import {
-    PlaitBoard,
-    Point,
-    RectangleClient,
-    Transforms,
-    isSelectedElement,
-    getSelectedElements,
-    hasValidAngle,
-} from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, Transforms, isSelectedElement, getSelectedElements, hasValidAngle } from '@plait/core';
 import { PlaitBaseTable, PlaitTableBoard, PlaitTableCellWithPoints } from '../interfaces/table';
 import {
     getIndexByResizeHandle,
@@ -21,11 +13,7 @@ import {
 } from '@plait/common';
 import { getCellsWithPoints, updateColumns, updateRows } from '../utils/table';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import {
-    getResizeOriginPointAndHandlePoint,
-    getResizeZoom,
-    movePointByZoomAndOriginPoint
-} from './with-draw-resize';
+import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
 import { getSnapResizingRef, getSnapResizingRefOptions } from '../utils/snap-resizing';
 import { PlaitDrawElement } from '../interfaces';
 import { isSingleSelectTable } from '../utils';

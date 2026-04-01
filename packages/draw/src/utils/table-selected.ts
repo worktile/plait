@@ -9,7 +9,7 @@ export const isSingleSelectTable = (board: PlaitBoard) => {
 
 export const getSelectedTableElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
-    return selectedElements.filter(value => PlaitDrawElement.isElementByTable(value)) as PlaitTable[];
+    return selectedElements.filter((value) => PlaitDrawElement.isElementByTable(value)) as PlaitTable[];
 };
 
 export const SELECTED_CELLS = new WeakMap<PlaitBaseTable, PlaitTableCell[]>();

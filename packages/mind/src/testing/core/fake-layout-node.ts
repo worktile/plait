@@ -8,7 +8,7 @@ import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const fakeMindLayout = (board: PlaitMindBoard, mind: PlaitMind) => {
     const mindLayoutType = mind.layout || getDefaultLayout();
-    const root = (GlobalLayout.layout((mind as unknown) as OriginNode, getLayoutOptions(board), mindLayoutType) as unknown) as MindNode;
+    const root = GlobalLayout.layout(mind as unknown as OriginNode, getLayoutOptions(board), mindLayoutType) as unknown as MindNode;
     updateMindNodeLocation(mind, root);
     return root;
 };
@@ -17,7 +17,7 @@ export const updateMindNodeLocation = (mind: PlaitMind, root: MindNode) => {
     const { x, y, hGap, vGap } = root;
     const offsetX = x + hGap;
     const offsetY = y + vGap;
-    depthFirstRecursion<MindNode>(root, node => {
+    depthFirstRecursion<MindNode>(root, (node) => {
         node.x = node.x - offsetX + mind.points[0][0];
         node.y = node.y - offsetY + mind.points[0][1];
         MIND_ELEMENT_TO_NODE.set(node.origin, node);
@@ -25,7 +25,7 @@ export const updateMindNodeLocation = (mind: PlaitMind, root: MindNode) => {
 };
 
 export const clearLayoutNodeWeakMap = (root: MindNode) => {
-    depthFirstRecursion<MindNode>(root, node => {
+    depthFirstRecursion<MindNode>(root, (node) => {
         MIND_ELEMENT_TO_NODE.delete(node.origin);
     });
 };

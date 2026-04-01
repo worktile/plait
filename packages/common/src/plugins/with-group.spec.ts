@@ -149,14 +149,14 @@ describe('with group plugin', () => {
     it('should remove the group if there is only one element left within after deletion', () => {
         addSelectedElement(board, [board.children[0]]);
         deleteFragment(board);
-        const group = board.children.find(item => item.id === board.children[0].groupId);
+        const group = board.children.find((item) => item.id === board.children[0].groupId);
         expect(group).toBe(undefined);
     });
 
     it('should update element groupId if there is only one element left within after deletion', () => {
         addSelectedElement(board, [board.children[4]]);
         deleteFragment(board);
-        const group = board.children.find(item => item.id === board.children[4].groupId);
+        const group = board.children.find((item) => item.id === board.children[4].groupId);
         expect(group).toBe(undefined);
         expect(board.children[3].groupId).toBe(group2[group2.length - 1].id);
 

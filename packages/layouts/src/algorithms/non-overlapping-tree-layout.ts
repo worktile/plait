@@ -125,7 +125,7 @@ function firstWalk(treeNode: LayoutTreeNode) {
     firstWalk(treeNode.children[0]);
     for (let i = 1; i < treeNode.childrenCount; i++) {
         // Handle abstract effects on layout at the next node next of abstract end node
-        const abstract = treeNode.children.find(abstract => {
+        const abstract = treeNode.children.find((abstract) => {
             let correctEnd = null;
             if (AbstractNode.isAbstract(abstract.origin.origin)) {
                 let { end } = getCorrectStartEnd(abstract.origin.origin, treeNode.origin);

@@ -64,10 +64,10 @@ export const debounce = <T>(func: (args?: T) => void, wait: number, options?: { 
 export const getElementsIndices = (board: PlaitBoard, elements: PlaitElement[]): number[] => {
     sortElements(board, elements);
     return elements
-        .map(item => {
-            return board.children.map(item => item.id).indexOf(item.id);
+        .map((item) => {
+            return board.children.map((item) => item.id).indexOf(item.id);
         })
-        .filter(item => item >= 0);
+        .filter((item) => item >= 0);
 };
 
 export const getHighestIndexOfElement = (board: PlaitBoard, elements: PlaitElement[]) => {
@@ -77,7 +77,7 @@ export const getHighestIndexOfElement = (board: PlaitBoard, elements: PlaitEleme
 
 export const moveElementsToNewPath = (board: PlaitBoard, moveOptions: MoveNodeOption[]) => {
     moveOptions
-        .map(item => {
+        .map((item) => {
             const path = PlaitBoard.findPath(board, item.element);
             const ref = board.pathRef(path);
             return () => {
@@ -85,7 +85,7 @@ export const moveElementsToNewPath = (board: PlaitBoard, moveOptions: MoveNodeOp
                 ref.unref();
             };
         })
-        .forEach(action => {
+        .forEach((action) => {
             action();
         });
 };

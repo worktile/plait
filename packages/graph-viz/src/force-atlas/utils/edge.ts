@@ -7,12 +7,12 @@ import { getIsNodeActive, getNodeById } from './node';
 
 export function getEdges(forceAtlasElement: ForceAtlasElement, andCallBack?: (edge: ForceAtlasEdgeElement) => boolean) {
     return forceAtlasElement.children?.filter(
-        f => ForceAtlasElement.isForceAtlasEdgeElement(f) && (andCallBack?.(f) ?? true)
+        (f) => ForceAtlasElement.isForceAtlasEdgeElement(f) && (andCallBack?.(f) ?? true)
     ) as ForceAtlasEdgeElement[];
 }
 
 export function getEdgeById(id: string, forceAtlasElement: ForceAtlasElement) {
-    const edge = getEdges(forceAtlasElement, e => e.id === id)?.[0];
+    const edge = getEdges(forceAtlasElement, (e) => e.id === id)?.[0];
     if (!edge) {
         throw new Error('can not find edge.');
     }
@@ -20,7 +20,7 @@ export function getEdgeById(id: string, forceAtlasElement: ForceAtlasElement) {
 }
 
 export function getEdgesInSourceOrTarget(id: string, forceAtlasElement: ForceAtlasElement) {
-    const edges = getEdges(forceAtlasElement, edge => edge.source === id || edge.target === id);
+    const edges = getEdges(forceAtlasElement, (edge) => edge.source === id || edge.target === id);
     return edges;
 }
 

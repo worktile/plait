@@ -21,7 +21,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     let drawNodeHandles = true;
     let hoveredNode: FlowNode | null;
 
-    board.pointerDown = event => {
+    board.pointerDown = (event) => {
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (hoveredNode) {
             sourceFlowNodeHandle = getHitHandleByNode(hoveredNode, point);

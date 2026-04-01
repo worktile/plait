@@ -53,7 +53,7 @@ function getImageSize(file: File, defaultImageWidth: number): Promise<{ width: n
         const image = new Image();
         image.src = URL.createObjectURL(file);
 
-        image.onload = function() {
+        image.onload = function () {
             const width = defaultImageWidth;
             const height = (defaultImageWidth * image.naturalHeight) / image.naturalWidth;
             resolve(

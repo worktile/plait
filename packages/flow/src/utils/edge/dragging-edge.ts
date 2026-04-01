@@ -5,7 +5,7 @@ import { FlowEdge, FlowEdgeDragInfo } from '../../interfaces/edge';
 
 export const isEdgeDragging = (board: PlaitBoard) => {
     const edges = getFlowElementsByType(board, FlowElementType.edge) as FlowElement[];
-    return edges.some(item => FLOW_EDGE_DRAGGING_INFO.get(item));
+    return edges.some((item) => FLOW_EDGE_DRAGGING_INFO.get(item));
 };
 
 export const addEdgeDraggingInfo = (edge: FlowEdge, data: FlowEdgeDragInfo) => {

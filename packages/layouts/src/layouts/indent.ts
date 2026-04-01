@@ -5,7 +5,7 @@ import { isHorizontalLogicLayout } from '../utils/layout';
 
 export function separateXAxle(node: LayoutNode, d = 0) {
     node.x = d;
-    node.children.forEach(child => {
+    node.children.forEach((child) => {
         if (AbstractNode.isAbstract(child.origin)) {
             let width = 0;
             for (let i = child.origin.start!; i <= child.origin.end!; i++) {
@@ -25,7 +25,7 @@ export function separateYAxle(root: LayoutNode, options: LayoutOptions) {
     updateY(root);
     function updateY(node: LayoutNode) {
         node.children.forEach((child, index) => {
-            const abstract = node.children.find(child => {
+            const abstract = node.children.find((child) => {
                 return AbstractNode.isAbstract(child.origin) && child.origin.end === index - 1;
             });
             if (abstract) {
@@ -85,7 +85,7 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
     if (abstractBranchHeight > abstractIncludedHeight) {
         const distance = (abstractBranchHeight - abstractIncludedHeight) / 2;
         for (let i = abstractNode.start; i <= abstractNode.end; i++) {
-            node.children[i].eachNode(child => {
+            node.children[i].eachNode((child) => {
                 child.y += distance;
             });
         }
