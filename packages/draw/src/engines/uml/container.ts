@@ -18,9 +18,9 @@ export const ContainerEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x} ${rectangle.y} H${rectangle.x + rectangle.width} V${rectangle.y + rectangle.height} H${
-                rectangle.x
-            } Z M${rectangle.x + 40} ${rectangle.y} L${rectangle.x + 40} ${rectangle.y + rectangle.height} `,
+            `M${rectangle.x} ${rectangle.y} H${rectangle.x + rectangle.width} V${rectangle.y + rectangle.height} H${rectangle.x} Z M${
+                rectangle.x + 40
+            } ${rectangle.y} L${rectangle.x + 40} ${rectangle.y + rectangle.height} `,
             { ...options, fillStyle: 'solid' }
         );
         setStrokeLinecap(shape, 'round');

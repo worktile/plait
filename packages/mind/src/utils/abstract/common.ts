@@ -42,7 +42,7 @@ export const getCorrespondingAbstract = (element: MindElement) => {
     if (!parent) return undefined;
 
     const elementIndex = parent.children.indexOf(element);
-    return parent.children.find(child => {
+    return parent.children.find((child) => {
         return AbstractNode.isAbstract(child) && elementIndex >= child.start! && elementIndex <= child.end!;
     });
 };
@@ -51,7 +51,7 @@ export const getBehindAbstracts = (element: MindElement) => {
     const parent = MindElement.findParent(element as MindElement);
     if (!parent) return [];
     const index = parent.children.indexOf(element);
-    return parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > index);
+    return parent.children.filter((child) => AbstractNode.isAbstract(child) && child.start! > index);
 };
 
 /**
@@ -60,13 +60,15 @@ export const getBehindAbstracts = (element: MindElement) => {
 export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) => {
     const overallAbstracts: MindElement[] = [];
     elements
-        .filter(value => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
-        .forEach(value => {
+        .filter((value) => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
+        .forEach((value) => {
             const abstract = getCorrespondingAbstract(value);
             if (abstract && elements.indexOf(abstract) === -1 && overallAbstracts.indexOf(abstract) === -1) {
                 const { start, end } = abstract;
                 const parent = MindElement.getParent(value);
-                const isOverall = parent.children.slice(start!, end! + 1).every(includedElement => elements.indexOf(includedElement) > -1);
+                const isOverall = parent.children
+                    .slice(start!, end! + 1)
+                    .every((includedElement) => elements.indexOf(includedElement) > -1);
                 if (isOverall) {
                     overallAbstracts.push(abstract);
                 }
@@ -86,11 +88,11 @@ export interface AbstractRef {
 export const getValidAbstractRefs = (board: PlaitBoard, elements: MindElement[]) => {
     const validAbstractRefs: AbstractRef[] = [];
     elements
-        .filter(value => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
-        .forEach(value => {
+        .filter((value) => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
+        .forEach((value) => {
             const abstract = getCorrespondingAbstract(value);
             if (abstract && elements.indexOf(abstract) > 0) {
-                const index = validAbstractRefs.findIndex(value => value.abstract === abstract);
+                const index = validAbstractRefs.findIndex((value) => value.abstract === abstract);
                 if (index === -1) {
                     validAbstractRefs.push({
                         abstract: abstract as MindElement & AbstractNode,
@@ -123,14 +125,14 @@ export const insertElementHandleAbstract = (
     let behindAbstracts: MindElement[];
 
     if (!hasPreviousNode) {
-        behindAbstracts = parent.children.filter(child => AbstractNode.isAbstract(child));
+        behindAbstracts = parent.children.filter((child) => AbstractNode.isAbstract(child));
     } else {
         const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
         behindAbstracts = getBehindAbstracts(selectedElement);
     }
 
     if (behindAbstracts.length) {
-        behindAbstracts.forEach(abstract => {
+        behindAbstracts.forEach((abstract) => {
             let newProperties = effectedAbstracts.get(abstract);
             if (!newProperties) {
                 newProperties = { start: 0, end: 0 };
@@ -166,11 +168,11 @@ export const deleteElementHandleAbstract = (
     deletableElements: MindElement[],
     effectedAbstracts = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
-    deletableElements.forEach(node => {
+    deletableElements.forEach((node) => {
         if (!PlaitMind.isMind(node)) {
-            const behindAbstracts = getBehindAbstracts(node).filter(abstract => !deletableElements.includes(abstract));
+            const behindAbstracts = getBehindAbstracts(node).filter((abstract) => !deletableElements.includes(abstract));
             if (behindAbstracts.length) {
-                behindAbstracts.forEach(abstract => {
+                behindAbstracts.forEach((abstract) => {
                     let newProperties = effectedAbstracts.get(abstract);
                     if (!newProperties) {
                         newProperties = { start: 0, end: 0 };
@@ -198,5 +200,5 @@ export const deleteElementHandleAbstract = (
 
 export const isChildOfAbstract = (board: PlaitBoard, element: MindElement) => {
     const ancestors = MindElement.getAncestors(board, element) as MindElement[];
-    return !!ancestors.find(value => AbstractNode.isAbstract(value));
+    return !!ancestors.find((value) => AbstractNode.isAbstract(value));
 };

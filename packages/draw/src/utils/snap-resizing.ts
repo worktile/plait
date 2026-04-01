@@ -77,7 +77,7 @@ export function getSnapResizingRefOptions(
         resizeOriginPoint = resizeRef.element.points;
     }
 
-    const points = resizeOriginPoint.map(p => {
+    const points = resizeOriginPoint.map((p) => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
     const rectangle = RectangleClient.getRectangleByPoints(points);
@@ -161,7 +161,7 @@ function getActivePointAndZoom(resizeSnapDelta: SnapDelta, resizeSnapOptions: Re
         const resizeZoom = getResizeZoom(newResizePoints, originPoint!, handlePoint!, isFromCorner, isAspectRatio);
         xZoom = resizeZoom.xZoom;
         yZoom = resizeZoom.yZoom;
-        activePoints = resizeOriginPoint!.map(p => {
+        activePoints = resizeOriginPoint!.map((p) => {
             return movePointByZoomAndOriginPoint(p, originPoint!, xZoom, yZoom);
         }) as [Point, Point];
         if (angle) {
@@ -188,7 +188,7 @@ function getIsometricLineDelta(snapRectangles: RectangleClient[], resizeSnapOpti
         deltaY: 0
     };
     const { isAspectRatio, activeRectangle } = resizeSnapOptions;
-    const widthSnapRectangle = snapRectangles.find(item => Math.abs(item.width - activeRectangle.width) < SNAP_TOLERANCE);
+    const widthSnapRectangle = snapRectangles.find((item) => Math.abs(item.width - activeRectangle.width) < SNAP_TOLERANCE);
     if (widthSnapRectangle) {
         const deltaWidth = widthSnapRectangle.width - activeRectangle.width;
         isometricLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
@@ -198,7 +198,7 @@ function getIsometricLineDelta(snapRectangles: RectangleClient[], resizeSnapOpti
             return isometricLineDelta;
         }
     }
-    const heightSnapRectangle = snapRectangles.find(item => Math.abs(item.height - activeRectangle.height) < SNAP_TOLERANCE);
+    const heightSnapRectangle = snapRectangles.find((item) => Math.abs(item.height - activeRectangle.height) < SNAP_TOLERANCE);
     if (heightSnapRectangle) {
         const deltaHeight = heightSnapRectangle.height - activeRectangle.height;
         isometricLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];

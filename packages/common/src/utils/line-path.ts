@@ -53,8 +53,8 @@ export function getRatioByPoint(points: Point[], point: Point) {
 
 export const removeDuplicatePoints = (points: Point[]) => {
     const newArray: Point[] = [];
-    points.forEach(point => {
-        const index = newArray.findIndex(otherPoint => {
+    points.forEach((point) => {
+        const index = newArray.findIndex((otherPoint) => {
             return Point.isEquals(point, otherPoint);
         });
         if (index === -1) newArray.push(point);

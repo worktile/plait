@@ -45,7 +45,7 @@ export function createPolygonEngine(options: CreateOptions): ShapeEngine {
             let nearestDistance = distanceBetweenPointAndPoint(point[0], point[1], nearestPoint[0], nearestPoint[1]);
             crossingPoints
                 .filter((v, index) => index > 0)
-                .forEach(crossingPoint => {
+                .forEach((crossingPoint) => {
                     let distance = distanceBetweenPointAndPoint(point[0], point[1], crossingPoint[0], crossingPoint[1]);
                     if (distance < nearestDistance) {
                         nearestDistance = distance;

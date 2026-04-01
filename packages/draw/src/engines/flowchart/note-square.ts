@@ -18,8 +18,9 @@ export const NoteSquareEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x + rectangle.width * 0.075} ${rectangle.y + rectangle.height} H${rectangle.x} V${rectangle.y} H${rectangle.x +
-                rectangle.width * 0.075}
+            `M${rectangle.x + rectangle.width * 0.075} ${rectangle.y + rectangle.height} H${rectangle.x} V${rectangle.y} H${
+                rectangle.x + rectangle.width * 0.075
+            }
            `,
             { ...options, fillStyle: 'solid', fill: 'transparent' }
         );

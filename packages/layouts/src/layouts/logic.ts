@@ -37,14 +37,14 @@ export function separateYAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
         node.y = d;
         d += node.height;
     }
-    node.children.forEach(child => {
+    node.children.forEach((child) => {
         separateYAxle(child, isHorizontal, d);
     });
 }
 
 export const buildLayoutTree = (root: LayoutNode, isHorizontal: boolean) => {
     const children: LayoutTreeNode[] = [];
-    root.children.forEach(child => {
+    root.children.forEach((child) => {
         children.push(buildLayoutTree(child, isHorizontal));
     });
     if (isHorizontal) {

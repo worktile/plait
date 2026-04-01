@@ -4,33 +4,33 @@ import { PlaitImage } from '../interfaces/image';
 
 export const getSelectedDrawElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
-    return selectedElements.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
+    return selectedElements.filter((value) => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
 };
 
 export const getSelectedGeometryElements = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+    const selectedElements = getSelectedElements(board).filter((value) => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
     return selectedElements;
 };
 
 export const getSelectedCustomGeometryElements = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board).filter(value =>
+    const selectedElements = getSelectedElements(board).filter((value) =>
         PlaitDrawElement.isCustomGeometryElement(board, value)
     ) as PlaitCustomGeometry[];
     return selectedElements;
 };
 
 export const getSelectedArrowLineElements = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
+    const selectedElements = getSelectedElements(board).filter((value) => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
     return selectedElements;
 };
 
 export const getSelectedVectorLineElements = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isVectorLine(value)) as PlaitVectorLine[];
+    const selectedElements = getSelectedElements(board).filter((value) => PlaitDrawElement.isVectorLine(value)) as PlaitVectorLine[];
     return selectedElements;
 };
 
 export const getSelectedImageElements = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
+    const selectedElements = getSelectedElements(board).filter((value) => PlaitDrawElement.isImage(value)) as PlaitImage[];
     return selectedElements;
 };
 
@@ -46,5 +46,5 @@ export const isSingleSelectLine = (board: PlaitBoard) => {
 
 export const getSelectedSwimlane = (board: PlaitBoard): PlaitSwimlane => {
     const selectedElements = getSelectedElements(board);
-    return selectedElements.find(item => PlaitDrawElement.isSwimlane(item)) as PlaitSwimlane;
+    return selectedElements.find((item) => PlaitDrawElement.isSwimlane(item)) as PlaitSwimlane;
 };

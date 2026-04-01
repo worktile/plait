@@ -52,7 +52,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
             }
             startPoint = [event.x, event.y];
             const path = Array.isArray(resizeHitTestRef.element)
-                ? resizeHitTestRef.element.map(el => PlaitBoard.findPath(board, el))
+                ? resizeHitTestRef.element.map((el) => PlaitBoard.findPath(board, el))
                 : PlaitBoard.findPath(board, resizeHitTestRef.element);
             resizeRef = {
                 path,

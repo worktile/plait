@@ -57,8 +57,8 @@ export class NodeEmojisGenerator {
             const container = document.createElement('div');
             container.classList.add('node-emojis-container');
             foreignObject.append(container);
-            this.emojiGenerators = element.data.emojis.map(emojiItem => {
-                const drawer = new EmojiGenerator((this.board as unknown) as PlaitBoard & PlaitMindEmojiBoard);
+            this.emojiGenerators = element.data.emojis.map((emojiItem) => {
+                const drawer = new EmojiGenerator(this.board as unknown as PlaitBoard & PlaitMindEmojiBoard);
                 drawer.draw(container, emojiItem, element);
                 return drawer;
             });
@@ -71,7 +71,7 @@ export class NodeEmojisGenerator {
         if (this.g) {
             this.g.remove();
         }
-        this.emojiGenerators.forEach(drawer => drawer.destroy());
+        this.emojiGenerators.forEach((drawer) => drawer.destroy());
         this.emojiGenerators = [];
     }
 }

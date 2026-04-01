@@ -18,7 +18,7 @@ export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
         }
         let sourceHandle: FlowNodeHandle;
         if (sourceNode.handles && edge.source.handleId) {
-            sourceHandle = sourceNode.handles.find(item => item.handleId === edge.source!.handleId) as FlowNodeHandle;
+            sourceHandle = sourceNode.handles.find((item) => item.handleId === edge.source!.handleId) as FlowNodeHandle;
         } else {
             sourceHandle = {
                 position: edge.source.position
@@ -38,7 +38,7 @@ export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
         }
         let targetHandle: FlowNodeHandle;
         if (targetNode.handles && edge.target?.handleId) {
-            targetHandle = targetNode.handles.find(item => item.handleId === edge.target?.handleId) as FlowNodeHandle;
+            targetHandle = targetNode.handles.find((item) => item.handleId === edge.target?.handleId) as FlowNodeHandle;
         } else {
             targetHandle = {
                 position: edge.target.position
@@ -56,7 +56,7 @@ export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
 export function isHitEdgeHandle(board: PlaitBoard, edge: FlowEdge, point: Point): boolean {
     let isHitHandle = false;
     const handles = getEdgeHandles(board, edge);
-    handles.find(handle => {
+    handles.find((handle) => {
         const { x, y } = normalizePoint(handle.node.points![0]);
         const position = getHandleXYPosition(
             handle.position,
@@ -79,7 +79,7 @@ export function isHitEdgeHandle(board: PlaitBoard, edge: FlowEdge, point: Point)
 export function getHitHandleTypeByEdge(board: PlaitBoard, point: Point, edge: FlowEdge): FlowEdgeHandleType | null {
     let handleType = null;
     const handles = getEdgeHandles(board, edge);
-    handles.find(handle => {
+    handles.find((handle) => {
         const { x, y } = normalizePoint(handle.node.points![0]);
         const position = getHandleXYPosition(
             handle.position,

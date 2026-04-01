@@ -14,13 +14,13 @@ export const withHotkey = (board: PlaitBoard) => {
             let elements: PlaitElement[] = [];
             depthFirstRecursion<Ancestor>(
                 board,
-                node => {
+                (node) => {
                     if (PlaitBoard.isBoard(node)) {
                         return;
                     }
                     elements.push(node as PlaitElement);
                 },
-                node => {
+                (node) => {
                     if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
                         return true;
                     } else {

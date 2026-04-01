@@ -85,7 +85,7 @@ export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorO
                 element: element,
                 fontSize: EdgeLabelSpace.getLabelIconFontSize()
             };
-            const ref = ((this.board as unknown) as PlaitFlowLabelIconBoard).renderLabelIcon(container, props);
+            const ref = (this.board as unknown as PlaitFlowLabelIconBoard).renderLabelIcon(container, props);
             return { ref, labelIconG };
         }
         return null;

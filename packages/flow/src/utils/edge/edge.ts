@@ -106,10 +106,10 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
     };
     let sourceHandle, targetHandle;
     if (edge.source?.handleId) {
-        sourceHandle = sourceNode.handles?.find(item => item.handleId === edge.source?.handleId);
+        sourceHandle = sourceNode.handles?.find((item) => item.handleId === edge.source?.handleId);
     }
     if (edge.target?.handleId) {
-        targetHandle = targetNode.handles?.find(item => item.handleId === edge.target?.handleId);
+        targetHandle = targetNode.handles?.find((item) => item.handleId === edge.target?.handleId);
     }
     const sourcePosition = getHandleXYPosition(sourceDirection, sourceRectangle, sourceHandle);
     const targetPosition = getHandleXYPosition(targetDirection, targetRectangle, targetHandle);
@@ -125,7 +125,7 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetPoint
     };
     const points = getShapePoints(edge.shape, params);
-    return points.map(item => {
+    return points.map((item) => {
         return {
             x: item[0],
             y: item[1]

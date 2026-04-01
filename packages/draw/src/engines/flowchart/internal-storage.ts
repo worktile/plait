@@ -55,7 +55,10 @@ export const InternalStorageEngine: ShapeEngine = {
             height: textSize.height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + elementRectangle.width * 0.1 + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + elementRectangle.height * 0.1 + (elementRectangle.height - elementRectangle.height * 0.1 - textSize.height) / 2
+            y:
+                elementRectangle.y +
+                elementRectangle.height * 0.1 +
+                (elementRectangle.height - elementRectangle.height * 0.1 - textSize.height) / 2
         };
     }
 };

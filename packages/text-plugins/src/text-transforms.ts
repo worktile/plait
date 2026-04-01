@@ -17,9 +17,9 @@ const setTextMarks = (board: PlaitBoard, mark: MarkTypes, editors?: BaseEditor[]
                 return;
             }
             const activeMarks = PlaitMarkEditor.getMarks(firstEditor);
-            const elements = selectedElements.filter(element => {
+            const elements = selectedElements.filter((element) => {
                 const elementEditors = getTextEditorsByElement(element);
-                return elementEditors.some(editor => {
+                return elementEditors.some((editor) => {
                     const elementMarks = PlaitMarkEditor.getMarks(editor);
                     return elementMarks[mark] === activeMarks[mark];
                 });
@@ -28,7 +28,7 @@ const setTextMarks = (board: PlaitBoard, mark: MarkTypes, editors?: BaseEditor[]
         }
     }
     if (textEditors && textEditors.length) {
-        textEditors.forEach(editor => {
+        textEditors.forEach((editor) => {
             PlaitMarkEditor.toggleMark(editor, mark);
         });
     }
@@ -43,10 +43,10 @@ const setFontSize = (
     const textEditors = getHandleTextEditors(board, editors);
     if (textEditors && textEditors.length) {
         const selectedElements = getSelectedElements(board);
-        textEditors.forEach(editor => {
+        textEditors.forEach((editor) => {
             let finalDefaultFontSize;
             if (typeof defaultFontSize === 'function') {
-                const element = selectedElements.find(element => {
+                const element = selectedElements.find((element) => {
                     const textEditors = getTextEditorsByElement(element);
                     return textEditors.includes(editor);
                 });
@@ -63,7 +63,7 @@ const setFontSize = (
 const setTextColor = (board: PlaitBoard, color: string | null, textSelection?: BaseRange, editors?: BaseEditor[]) => {
     const textEditors = getHandleTextEditors(board, editors);
     if (textEditors && textEditors.length) {
-        textEditors.forEach(editor => {
+        textEditors.forEach((editor) => {
             if (textSelection) {
                 SlateTransforms.select(editor, textSelection);
             }
@@ -79,7 +79,7 @@ const setTextColor = (board: PlaitBoard, color: string | null, textSelection?: B
 const setTextAlign = (board: PlaitBoard, align: Alignment, editors?: BaseEditor[]) => {
     const textEditors = getHandleTextEditors(board, editors);
     if (textEditors && textEditors.length) {
-        textEditors.forEach(editor => AlignEditor.setAlign(editor, align));
+        textEditors.forEach((editor) => AlignEditor.setAlign(editor, align));
     }
 };
 

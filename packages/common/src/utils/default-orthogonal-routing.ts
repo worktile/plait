@@ -1,8 +1,8 @@
 // Credits to xyflow
 // https://github.com/xyflow/xyflow/blob/main/packages/system/src/utils/edges/smoothstep-edge.ts
 
-import { Direction, Point } from "@plait/core";
-import { getDirectionFactor } from "./direction";
+import { Direction, Point } from '@plait/core';
+import { getDirectionFactor } from './direction';
 
 export const getPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
     const sourceDirectionFactors = getDirectionFactor(sourcePosition);

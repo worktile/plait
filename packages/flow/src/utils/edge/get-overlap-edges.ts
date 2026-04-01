@@ -7,7 +7,7 @@ export const getOverlapEdges = (board: PlaitBoard, edge: FlowEdge): FlowEdge[] =
     const edges = getFlowElementsByType(board, FlowElementType.edge) as FlowEdge[];
     const sameEdges: FlowEdge[] = [];
     const overlapEdges: FlowEdge[] = [];
-    edges.forEach(item => {
+    edges.forEach((item) => {
         if (
             item.source?.nodeId === edge.target?.nodeId &&
             item.target.nodeId === edge.source?.nodeId &&

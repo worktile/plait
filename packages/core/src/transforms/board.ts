@@ -120,7 +120,7 @@ function updateThemeColor(board: PlaitBoard, mode: ThemeColorMode) {
     mode = mode ?? board.theme.themeColorMode;
     setTheme(board, { themeColorMode: mode });
 
-    depthFirstRecursion((board as unknown) as PlaitElement, element => {
+    depthFirstRecursion(board as unknown as PlaitElement, (element) => {
         board.applyTheme(element);
     });
 }

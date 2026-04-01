@@ -12,4 +12,4 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
     providers: [importProvidersFrom(BrowserModule, FormsModule, AppRoutingModule, SlateModule)]
-}).catch(err => console.error(err));
+}).catch((err) => console.error(err));

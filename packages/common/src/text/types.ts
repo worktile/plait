@@ -1,9 +1,9 @@
 import { BaseElement } from 'slate';
 
-export type ElementSize =  {
+export type ElementSize = {
     width: number;
     height: number;
-}
+};
 
 export enum Alignment {
     left = 'left',

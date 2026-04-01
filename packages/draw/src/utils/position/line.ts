@@ -38,7 +38,7 @@ export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine,
 };
 
 export function getHitPointIndex(points: Point[], movingPoint: Point) {
-    const rectangles = points.map(point => {
+    const rectangles = points.map((point) => {
         return {
             x: point[0] - RESIZE_HANDLE_DIAMETER / 2,
             y: point[1] - RESIZE_HANDLE_DIAMETER / 2,
@@ -46,7 +46,7 @@ export function getHitPointIndex(points: Point[], movingPoint: Point) {
             height: RESIZE_HANDLE_DIAMETER
         };
     });
-    const rectangle = rectangles.find(rectangle => {
+    const rectangle = rectangles.find((rectangle) => {
         return RectangleClient.isHit(RectangleClient.getRectangleByPoints([movingPoint, movingPoint]), rectangle);
     });
     return rectangle ? rectangles.indexOf(rectangle) : -1;

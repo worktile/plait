@@ -6,14 +6,14 @@ export const setTableFill = (board: PlaitBoard, element: PlaitBaseTable, fill: s
     const selectedCells = getSelectedCells(element);
     let newCells = element.cells;
     if (selectedCells?.length) {
-        newCells = element.cells.map(cell => {
-            if (selectedCells.map(item => item.id).includes(cell.id)) {
+        newCells = element.cells.map((cell) => {
+            if (selectedCells.map((item) => item.id).includes(cell.id)) {
                 return getNewCell(cell, fill);
             }
             return cell;
         });
     } else {
-        newCells = element.cells.map(cell => {
+        newCells = element.cells.map((cell) => {
             if (cell.text) {
                 return getNewCell(cell, fill);
             }

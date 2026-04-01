@@ -95,7 +95,7 @@ export const mockCustomNodes: FlowElement<WorkflowType>[] = [
         target: {
             nodeId: 'custom_node_02',
             position: Direction.top,
-             marker: true
+            marker: true
         },
         points: []
     },

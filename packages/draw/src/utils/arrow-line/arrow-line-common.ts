@@ -179,10 +179,10 @@ export const collectArrowLineUpdatedRefsByGeometry = (
             }
             return false;
         },
-        recursion: element => true
+        recursion: (element) => true
     }) as PlaitArrowLine[];
     if (lines.length) {
-        lines.forEach(line => {
+        lines.forEach((line) => {
             const isSourceBound = line.source.boundId === element.id;
             const handle = isSourceBound ? 'source' : 'target';
             const object = { ...line[handle] };
@@ -190,7 +190,7 @@ export const collectArrowLineUpdatedRefsByGeometry = (
             const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
             object.connection = getHitConnection(board, point, element);
             const path = PlaitBoard.findPath(board, line);
-            const index = refs.findIndex(obj => Path.equals(obj.path, path));
+            const index = refs.findIndex((obj) => Path.equals(obj.path, path));
             if (index === -1) {
                 refs.push({
                     property: {

@@ -21,7 +21,7 @@ export class SingleTextGenerator<T extends PlaitElement = PlaitGeometry> extends
         currentText: ParagraphElement | DrawTextInfo[],
         elementG: SVGElement
     ) {
-        if (!isMultipleTextGeometry((element as unknown) as PlaitCommonGeometry)) {
+        if (!isMultipleTextGeometry(element as unknown as PlaitCommonGeometry)) {
             super.update(
                 element,
                 [{ text: previousText as ParagraphElement, id: element.id }],

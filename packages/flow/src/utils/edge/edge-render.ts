@@ -7,7 +7,7 @@ import { EdgeLabelGenerator } from '../../generators/edge-label-generator';
 
 export const updateRelatedEdgeHighlight = (board: PlaitBoard, nodeId: string, highlight: boolean) => {
     const relationEdges = getEdgesByNodeId(board, nodeId);
-    (relationEdges || []).forEach(edge => {
+    (relationEdges || []).forEach((edge) => {
         const elementRef = PlaitElement.getElementRef<EdgeElementRef>(edge);
         const currentState = elementRef.getState();
         const state = highlight
@@ -44,7 +44,7 @@ export const renderEdge = (board: PlaitBoard, edge: FlowEdge, state?: EdgeState,
 
 export const renderRelatedEdges = (board: PlaitBoard, nodeId: string, state?: EdgeState) => {
     const relationEdges = getEdgesByNodeId(board, nodeId);
-    (relationEdges || []).forEach(edge => {
+    (relationEdges || []).forEach((edge) => {
         renderEdge(board, edge, state);
     });
 };

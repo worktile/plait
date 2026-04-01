@@ -11,7 +11,7 @@ export function drawNodeHandles(board: PlaitBoard, node: FlowNode) {
     const roughSVG = PlaitBoard.getRoughSVG(board);
     const handles = node.handles || getDefaultHandles();
     const { x, y } = normalizePoint(node.points![0]);
-    return handles.map(handle => {
+    return handles.map((handle) => {
         const position = getHandleXYPosition(
             handle.position,
             {
@@ -28,7 +28,7 @@ export function drawNodeHandles(board: PlaitBoard, node: FlowNode) {
 
 export function drawEdgeHandles(board: PlaitBoard, edge: FlowEdge) {
     const handles = getEdgeHandles(board, edge);
-    return handles.map(handle => {
+    return handles.map((handle) => {
         let { x, y } = normalizePoint(handle.node.points![0]);
         const position = getHandleXYPosition(
             handle.position,

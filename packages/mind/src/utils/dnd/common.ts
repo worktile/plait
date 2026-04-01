@@ -8,7 +8,7 @@ export const addActiveOnDragOrigin = (activeElement: MindElement) => {
     PlaitElement.getElementG(activeElement).classList.add('dragging-node');
 
     !activeElement.isCollapsed &&
-        activeElement.children.forEach(child => {
+        activeElement.children.forEach((child) => {
             addActiveOnDragOrigin(child);
         });
 };
@@ -16,7 +16,7 @@ export const addActiveOnDragOrigin = (activeElement: MindElement) => {
 export const removeActiveOnDragOrigin = (activeElement: MindElement) => {
     PlaitElement.getElementG(activeElement).classList.remove('dragging-node');
     !activeElement.isCollapsed &&
-        activeElement.children.forEach(child => {
+        activeElement.children.forEach((child) => {
             removeActiveOnDragOrigin(child);
         });
 };

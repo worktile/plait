@@ -1,4 +1,4 @@
-import { rgbaToHEX } from "@plait/core";
+import { rgbaToHEX } from '@plait/core';
 
 export const WithMindPluginKey = 'plait-mind-plugin-key';
 

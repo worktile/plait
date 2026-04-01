@@ -13,7 +13,7 @@ export function withRelatedFragment(board: PlaitBoard) {
         let relatedFragment = board.getRelatedFragment(originData || []);
         if (relatedFragment) {
             if (originData?.length) {
-                relatedFragment = relatedFragment.filter(item => !originData.map(element => element.id).includes(item.id));
+                relatedFragment = relatedFragment.filter((item) => !originData.map((element) => element.id).includes(item.id));
             }
             if (relatedFragment.length) {
                 const addition: WritableClipboardContext = {

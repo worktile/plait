@@ -31,11 +31,11 @@ export const getNavigatorClipboard = async (): Promise<ClipboardData> => {
     if (Array.isArray(clipboardItems) && clipboardItems[0] instanceof ClipboardItem) {
         for (const item of clipboardItems) {
             if (isFile(item)) {
-                const clipboardFiles = item.types.filter(type => type.match(/^image\//));
-                const fileBlobs = await Promise.all(clipboardFiles.map(type => item.getType(type)!));
-                const urls = (fileBlobs.filter(Boolean) as (File | Blob)[]).map(blob => URL.createObjectURL(blob));
+                const clipboardFiles = item.types.filter((type) => type.match(/^image\//));
+                const fileBlobs = await Promise.all(clipboardFiles.map((type) => item.getType(type)!));
+                const urls = (fileBlobs.filter(Boolean) as (File | Blob)[]).map((blob) => URL.createObjectURL(blob));
                 const files = await Promise.all(
-                    urls.map(async url => {
+                    urls.map(async (url) => {
                         const blob = await (await fetch(url)).blob();
                         return new File([blob], 'plait-file', { type: blob.type });
                     })
@@ -66,7 +66,7 @@ export const getNavigatorClipboard = async (): Promise<ClipboardData> => {
 };
 
 const isFile = (item: ClipboardItem) => {
-    return item.types.find(i => i.match(/^image\//));
+    return item.types.find((i) => i.match(/^image\//));
 };
 
 const blobAsString = (blob: Blob) => {

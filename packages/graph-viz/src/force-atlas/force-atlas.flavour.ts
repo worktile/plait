@@ -6,8 +6,10 @@ import forceAtlas2 from 'graphology-layout-forceatlas2';
 import { ForceAtlasElement, ForceAtlasNodeElement } from '../interfaces';
 import { DEFAULT_NODE_SIZE } from './constants';
 
-export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
-    implements OnContextChanged<ForceAtlasElement, PlaitBoard> {
+export class ForceAtlasFlavour
+    extends CommonElementFlavour<ForceAtlasElement, PlaitBoard>
+    implements OnContextChanged<ForceAtlasElement, PlaitBoard>
+{
     graph!: Graph<ForceAtlasNodeElement>;
 
     constructor() {
@@ -16,7 +18,7 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
 
     initializeGraph() {
         this.graph = new Graph<ForceAtlasNodeElement>();
-        this.element.children?.forEach(child => {
+        this.element.children?.forEach((child) => {
             if (ForceAtlasElement.isForceAtlasNodeElement(child)) {
                 if (typeof child?.size === 'undefined') {
                     child.size = DEFAULT_NODE_SIZE;
@@ -41,7 +43,7 @@ export class ForceAtlasFlavour extends CommonElementFlavour<ForceAtlasElement, P
             settings.adjustSizes = true;
         }
         const positions = forceAtlas2(this.graph, { iterations: 500, settings });
-        this.element.children?.forEach(child => {
+        this.element.children?.forEach((child) => {
             if (ForceAtlasElement.isForceAtlasNodeElement(child)) {
                 const pos = positions[child.id];
                 child.points = [[pos.x, pos.y]];

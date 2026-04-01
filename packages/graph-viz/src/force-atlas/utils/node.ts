@@ -7,12 +7,12 @@ import { DEFAULT_NODE_ICON_COLOR, NODE_ICON_FONT_SIZE } from '../constants';
 
 export function getNodes(forceAtlasElement: ForceAtlasElement, andBack?: (edge: ForceAtlasNodeElement) => boolean) {
     return forceAtlasElement.children?.filter(
-        f => ForceAtlasElement.isForceAtlasNodeElement(f) && (andBack?.(f) ?? true)
+        (f) => ForceAtlasElement.isForceAtlasNodeElement(f) && (andBack?.(f) ?? true)
     ) as ForceAtlasNodeElement[];
 }
 
 export function getNodeById(id: string, forceAtlasElement: ForceAtlasElement) {
-    const node = getNodes(forceAtlasElement, node => node.id === id)?.[0];
+    const node = getNodes(forceAtlasElement, (node) => node.id === id)?.[0];
     if (!node) {
         throw new Error('can not find node.');
     }
@@ -20,7 +20,7 @@ export function getNodeById(id: string, forceAtlasElement: ForceAtlasElement) {
 }
 
 export function getIsNodeActive(id: string, selectElements: ForceAtlasNodeElement[]) {
-    return selectElements.some(node => node.id === id);
+    return selectElements.some((node) => node.id === id);
 }
 
 export function isHitNode(node: ForceAtlasNodeElement, point: [Point, Point]) {
@@ -38,7 +38,7 @@ export function isHitNode(node: ForceAtlasNodeElement, point: [Point, Point]) {
 export function getAssociatedNodesById(id: string, forceAtlasElement: ForceAtlasElement) {
     const edges = getEdgesInSourceOrTarget(id, forceAtlasElement);
     const nodes: ForceAtlasNodeElement[] = [];
-    edges.forEach(edge => {
+    edges.forEach((edge) => {
         nodes.push(getNodeById(edge.source, forceAtlasElement));
         nodes.push(getNodeById(edge.target, forceAtlasElement));
     });
@@ -53,7 +53,7 @@ export function getNodeGenerator(node: ForceAtlasNodeElement) {
 export function isFirstDepthNode(currentNodeId: string, activeNodeId: string, forceAtlasElement: ForceAtlasElement) {
     const edges = getEdges(forceAtlasElement);
     return edges.some(
-        s => (s.source === activeNodeId && s.target === currentNodeId) || (s.target === activeNodeId && s.source === currentNodeId)
+        (s) => (s.source === activeNodeId && s.target === currentNodeId) || (s.target === activeNodeId && s.source === currentNodeId)
     );
 }
 

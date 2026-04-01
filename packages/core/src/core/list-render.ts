@@ -75,7 +75,7 @@ export class ListRender {
                     currentIndexForFirstElement = record.currentIndex;
                 }
             });
-            diffResult.forEachOperation(record => {
+            diffResult.forEachOperation((record) => {
                 // removed
                 if (record.currentIndex === null) {
                     const componentRef = this.instances[record.previousIndex as number];
@@ -168,7 +168,7 @@ const getContext = (
         board: board,
         selected: isSelected,
         index,
-        hasThemeChanged: !!board.operations?.find(op => op.type === 'set_theme')
+        hasThemeChanged: !!board.operations?.find((op) => op.type === 'set_theme')
     };
     return context;
 };

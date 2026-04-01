@@ -48,7 +48,11 @@ export const generateElbowLineRoute = (options: ElbowLineRouteOptions, board?: P
     const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
     const centerX = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
     const centerY = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
-    route = routeAdjust(route, { centerX, centerY, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle }, board);
+    route = routeAdjust(
+        route,
+        { centerX, centerY, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle },
+        board
+    );
     return route;
 };
 
@@ -61,7 +65,11 @@ export const routeAdjust = (path: Point[], options: RouteAdjustOptions, board?: 
         const optionsX = getAdjustOptions(path, centerX, true);
         const resultX =
             optionsX.pointOfHit &&
-            adjust(path, { parallelPaths: optionsX.parallelPaths, pointOfHit: optionsX.pointOfHit, sourceRectangle, targetRectangle }, board);
+            adjust(
+                path,
+                { parallelPaths: optionsX.parallelPaths, pointOfHit: optionsX.pointOfHit, sourceRectangle, targetRectangle },
+                board
+            );
         if (resultX) {
             path = resultX;
         }
@@ -70,7 +78,11 @@ export const routeAdjust = (path: Point[], options: RouteAdjustOptions, board?: 
         const optionsY = getAdjustOptions(path, centerY, false);
         const resultY =
             optionsY.pointOfHit &&
-            adjust(path, { parallelPaths: optionsY.parallelPaths, pointOfHit: optionsY.pointOfHit, sourceRectangle, targetRectangle },  board);
+            adjust(
+                path,
+                { parallelPaths: optionsY.parallelPaths, pointOfHit: optionsY.pointOfHit, sourceRectangle, targetRectangle },
+                board
+            );
         if (resultY) {
             path = resultY;
         }
@@ -81,7 +93,7 @@ export const routeAdjust = (path: Point[], options: RouteAdjustOptions, board?: 
 const adjust = (route: Point[], options: AdjustOptions, board?: PlaitBoard): null | Point[] => {
     const { parallelPaths, pointOfHit, sourceRectangle, targetRectangle } = options;
     let result = null;
-    parallelPaths.forEach(parallelPath => {
+    parallelPaths.forEach((parallelPath) => {
         // Construct a rectangle
         const tempRectPoints = [pointOfHit, parallelPath[0], parallelPath[1]];
         // directly use getCornerPoints will bring the precision issue (eg: 263.6923375175286 - 57.130859375)
@@ -94,7 +106,7 @@ const adjust = (route: Point[], options: AdjustOptions, board?: PlaitBoard): nul
             const indexRangeInPath: number[] = [];
             const indexRangeInCorner: number[] = [];
             route.forEach((point, index) => {
-                const cornerResult = tempCorners.findIndex(corner => Point.isEquals(point, corner));
+                const cornerResult = tempCorners.findIndex((corner) => Point.isEquals(point, corner));
                 if (cornerResult !== -1) {
                     indexRangeInPath.push(index);
                     indexRangeInCorner.push(cornerResult);
@@ -153,7 +165,7 @@ export const getGraphPoints = (options: ElbowLineRouteOptions) => {
     const y: number[] = [];
     let result: Point[] = [];
 
-    [sourceOuterRectangle, targetOuterRectangle].forEach(rectangle => {
+    [sourceOuterRectangle, targetOuterRectangle].forEach((rectangle) => {
         x.push(rectangle.x, rectangle.x + rectangle.width / 2, rectangle.x + rectangle.width);
         y.push(rectangle.y, rectangle.y + rectangle.height / 2, rectangle.y + rectangle.height);
     });
@@ -181,7 +193,7 @@ export const getGraphPoints = (options: ElbowLineRouteOptions) => {
             }
         }
     }
-    result = removeDuplicatePoints(result).filter(point => {
+    result = removeDuplicatePoints(result).filter((point) => {
         const isInSource = RectangleClient.isPointInRectangle(sourceOuterRectangle, point);
         const isInTarget = RectangleClient.isPointInRectangle(targetOuterRectangle, point);
         return !isInSource && !isInTarget;
@@ -193,7 +205,7 @@ export const createGraph = (points: Point[]) => {
     const graph = new PointGraph();
     const Xs: number[] = [];
     const Ys: number[] = [];
-    points.forEach(p => {
+    points.forEach((p) => {
         const x = p[0],
             y = p[1];
         if (Xs.indexOf(x) < 0) Xs.push(x);

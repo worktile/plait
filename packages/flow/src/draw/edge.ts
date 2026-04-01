@@ -9,7 +9,7 @@ export const drawEdgeRoute = (board: PlaitBoard, edge: FlowEdge, state: EdgeStat
     const pathPoints = getEdgePoints(board, edge);
     const edgeStyles = getEdgeStyle(edge, state);
     return roughSVG.linearPath(
-        pathPoints.map(item => [item.x, item.y]),
+        pathPoints.map((item) => [item.x, item.y]),
         edgeStyles
     );
 };

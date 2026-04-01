@@ -31,11 +31,11 @@ const SNAP_SPACING = 24;
 
 export function getSnapRectangles(board: PlaitBoard, activeElements: PlaitElement[]) {
     const elements = findElements(board, {
-        match: element => board.isAlign(element) && !activeElements.some(item => item.id === element.id),
+        match: (element) => board.isAlign(element) && !activeElements.some((item) => item.id === element.id),
         recursion: () => true,
         isReverse: false
     });
-    return elements.map(item => {
+    return elements.map((item) => {
         const rectangle = board.getRectangle(item)!;
         return getRectangleByAngle(rectangle, item.angle || 0);
     });
@@ -55,7 +55,7 @@ export function getBarPoint(point: Point, isHorizontal: boolean) {
 
 export function getMinPointDelta(pointRectangles: RectangleClient[], axis: number, isHorizontal: boolean) {
     let delta = SNAP_TOLERANCE;
-    pointRectangles.forEach(item => {
+    pointRectangles.forEach((item) => {
         const distance = getNearestDelta(axis, item, isHorizontal);
         if (Math.abs(distance) < Math.abs(delta)) {
             delta = distance;
@@ -66,8 +66,8 @@ export function getMinPointDelta(pointRectangles: RectangleClient[], axis: numbe
 
 export const getNearestDelta = (axis: number, rectangle: RectangleClient, isHorizontal: boolean) => {
     const pointAxis = getTripleAxis(rectangle, isHorizontal);
-    const deltas = pointAxis.map(item => item - axis);
-    const absDeltas = deltas.map(item => Math.abs(item));
+    const deltas = pointAxis.map((item) => item - axis);
+    const absDeltas = deltas.map((item) => Math.abs(item));
     const index = absDeltas.indexOf(Math.min(...absDeltas));
     return deltas[index];
 };
@@ -82,7 +82,7 @@ export function getNearestPointRectangle(snapRectangles: RectangleClient[], acti
     let minDistance = Infinity;
     let nearestRectangle = snapRectangles[0];
 
-    snapRectangles.forEach(item => {
+    snapRectangles.forEach((item) => {
         const distance = Math.sqrt(Math.pow(activeRectangle.x - item.x, 2) + Math.pow(activeRectangle.y - item.y, 2));
         if (distance < minDistance) {
             minDistance = distance;
@@ -229,7 +229,7 @@ export function drawPointSnapLines(
 
 export function drawDashedLines(board: PlaitBoard, lines: [Point, Point][]) {
     const g = createG();
-    lines.forEach(points => {
+    lines.forEach((points) => {
         if (!points.length) return;
         const line = PlaitBoard.getRoughSVG(board).line(points[0][0], points[0][1], points[1][0], points[1][1], {
             stroke: SELECTION_BORDER_COLOR,
@@ -243,7 +243,7 @@ export function drawDashedLines(board: PlaitBoard, lines: [Point, Point][]) {
 
 export function drawSolidLines(board: PlaitBoard, lines: Point[][]) {
     const g = createG();
-    lines.forEach(points => {
+    lines.forEach((points) => {
         if (!points.length) return;
         let isHorizontal = points[0][1] === points[1][1];
         const line = PlaitBoard.getRoughSVG(board).line(points[0][0], points[0][1], points[1][0], points[1][1], {
@@ -252,7 +252,7 @@ export function drawSolidLines(board: PlaitBoard, lines: Point[][]) {
         });
         g.appendChild(line);
 
-        points.forEach(point => {
+        points.forEach((point) => {
             const barPoint = getBarPoint(point, isHorizontal);
             const bar = PlaitBoard.getRoughSVG(board).line(barPoint[0][0], barPoint[0][1], barPoint[1][0], barPoint[1][1], {
                 stroke: SELECTION_BORDER_COLOR,

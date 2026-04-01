@@ -76,7 +76,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
 
     board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {
         if (clipboardData?.elements?.length) {
-            const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
+            const mindElements = clipboardData.elements?.filter((value) => MindElement.isMindElement(board, value));
             if (mindElements && mindElements.length > 0) {
                 insertClipboardData(board, mindElements, targetPoint, operationType);
             }
@@ -120,7 +120,7 @@ export const getNextSelectedElement = (board: PlaitBoard, firstLevelElements: Mi
 
     const firstElement = firstLevelElements[0];
     const firstElementParent = MindElement.findParent(firstElement);
-    const hasSameParent = firstLevelElements.every(element => {
+    const hasSameParent = firstLevelElements.every((element) => {
         return MindElement.findParent(element) === firstElementParent;
     });
     if (firstElementParent && hasSameParent && !activeElement) {

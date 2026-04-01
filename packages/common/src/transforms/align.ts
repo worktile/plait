@@ -60,7 +60,7 @@ export const alignRight = (board: PlaitBoard) => {
 function setOffset(board: PlaitBoard, getOffset: (outerRectangle: RectangleClient, rectangle: RectangleClient) => Point) {
     const elements = getHighestSelectedElements(board);
     const outerRectangle = getRectangleByElements(board, elements, false);
-    elements.forEach(element => {
+    elements.forEach((element) => {
         if (!element.points && !PlaitGroupElement.isGroup(element)) return;
         const rectangle = board.getRectangle(element)!;
         const offset = getOffset(outerRectangle, rectangle);
@@ -70,8 +70,8 @@ function setOffset(board: PlaitBoard, getOffset: (outerRectangle: RectangleClien
         } else if (element.points) {
             updateElements = [element];
         }
-        updateElements.forEach(item => {
-            const newPoints = item.points!.map(p => [p[0] + offset[0], p[1] + offset[1]]) as Point[];
+        updateElements.forEach((item) => {
+            const newPoints = item.points!.map((p) => [p[0] + offset[0], p[1] + offset[1]]) as Point[];
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(
                 board,
@@ -98,14 +98,14 @@ const distribute = (board: PlaitBoard, isHorizontal: boolean) => {
     const axis = isHorizontal ? 'x' : 'y';
     const side = isHorizontal ? 'width' : 'height';
     const highestSelectedElements = getHighestSelectedElements(board);
-    const refs = highestSelectedElements.map(element => {
+    const refs = highestSelectedElements.map((element) => {
         return { element, rectangle: board.getRectangle(element)! };
     });
     const outerRectangle = getRectangleByElements(board, highestSelectedElements, false);
     const minRectangleRef = refs.sort((a, b) => a.rectangle[axis] - b.rectangle[axis])[0];
     const maxRectangleRef = refs.sort((a, b) => b.rectangle[axis] + b.rectangle[side] - (a.rectangle[axis] + a.rectangle[side]))[0];
-    const minIndex = refs.findIndex(ref => ref === minRectangleRef);
-    const maxIndex = refs.findIndex(ref => ref === maxRectangleRef);
+    const minIndex = refs.findIndex((ref) => ref === minRectangleRef);
+    const maxIndex = refs.findIndex((ref) => ref === maxRectangleRef);
     let distributeRefs = refs.filter((element, index) => index !== minIndex && index !== maxIndex);
     const sum = distributeRefs.reduce((accumulator, current) => current.rectangle[side] + accumulator, 0);
     const offset =
@@ -118,7 +118,7 @@ const distribute = (board: PlaitBoard, isHorizontal: boolean) => {
         const moveAxis = isHorizontal ? 0 : 1;
         moveOffset[moveAxis] = position - rectangle[axis];
         const path = PlaitBoard.findPath(board, distributeRefs[i].element);
-        const newPoints = distributeRefs[i].element.points!.map(p => [p[0] + moveOffset[0], p[1] + moveOffset[1]]) as Point[];
+        const newPoints = distributeRefs[i].element.points!.map((p) => [p[0] + moveOffset[0], p[1] + moveOffset[1]]) as Point[];
         Transforms.setNode(
             board,
             {

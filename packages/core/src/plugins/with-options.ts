@@ -10,7 +10,7 @@ export const withOptions = (board: PlaitBoard) => {
     const pluginOptions = new Map<string, any>();
     const newBoard = board as PlaitOptionsBoard;
 
-    newBoard.getPluginOptions = key => {
+    newBoard.getPluginOptions = (key) => {
         return pluginOptions.get(key);
     };
 

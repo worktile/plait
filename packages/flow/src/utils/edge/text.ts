@@ -8,7 +8,7 @@ export function getEdgeTextXYPosition(board: PlaitBoard, edge: FlowEdge, width: 
     const pathPoints = getEdgePoints(board, edge);
     const overlapEdges = getOverlapEdges(board, edge);
     const labelPoints = getLabelPoints(edge.shape, [...pathPoints].reverse(), overlapEdges?.length + 1);
-    const index = overlapEdges.findIndex(value => value.id === edge.id);
+    const index = overlapEdges.findIndex((value) => value.id === edge.id);
     const x = labelPoints[index]?.x - width / 2;
     const y = labelPoints[index]?.y - height / 2;
     return {

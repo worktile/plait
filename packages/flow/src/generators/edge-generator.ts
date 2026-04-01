@@ -27,7 +27,7 @@ export class EdgeGenerator extends Generator<FlowEdge, EdgeData, GeneratorOption
         edgeG.append(...edgeMarksG);
         if (data.state === EdgeStableState.active) {
             const handles = drawEdgeHandles(this.board, element);
-            handles.forEach(item => {
+            handles.forEach((item) => {
                 item.classList.add('flow-handle');
                 item.setAttribute('stroke-linecap', 'round');
             });

@@ -107,7 +107,7 @@ function getGapLinesAndDelta(activeRectangle: RectangleClient, snapRectangles: R
     const side = isHorizontal ? 'width' : 'height';
 
     const activeRectangleCenter = activeRectangle[axis] + activeRectangle[side] / 2;
-    snapRectangles.forEach(rec => {
+    snapRectangles.forEach((rec) => {
         const isCross = isHorizontal ? isHorizontalCross(rec, activeRectangle) : isVerticalCross(rec, activeRectangle);
         if (isCross && !RectangleClient.isHit(rec, activeRectangle)) {
             rectangles.push(rec);

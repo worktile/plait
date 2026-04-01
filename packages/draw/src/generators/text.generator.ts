@@ -71,7 +71,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
     initialize() {
         const textPlugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextPluginOptions>(WithTextPluginKey) || {})
             .textPlugins;
-        this.textManages = this.texts.map(text => {
+        this.textManages = this.texts.map((text) => {
             const textManage = this.createTextManage(text, textPlugins);
             setTextManage(this.board, this.element, text, textManage);
             return textManage;
@@ -82,7 +82,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
 
     draw(elementG: SVGElement) {
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
-        this.texts.forEach(drawShapeText => {
+        this.texts.forEach((drawShapeText) => {
             const textManage = getTextManage(this.board, this.element, drawShapeText);
             if (drawShapeText.text && textManage) {
                 textManage.draw(drawShapeText.text);
@@ -98,13 +98,13 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
         const textPlugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextPluginOptions>(WithTextPluginKey) || {})
             .textPlugins;
-        const removedTexts = previousDrawShapeTexts.filter(value => {
-            return !currentDrawShapeTexts.find(item => item.id === value.id);
+        const removedTexts = previousDrawShapeTexts.filter((value) => {
+            return !currentDrawShapeTexts.find((item) => item.id === value.id);
         });
         if (removedTexts.length) {
-            removedTexts.forEach(item => {
+            removedTexts.forEach((item) => {
                 const textManage = getTextManage(this.board, element, item);
-                const index = this.textManages.findIndex(value => value === textManage);
+                const index = this.textManages.findIndex((value) => value === textManage);
                 if (index > -1 && item.text) {
                     this.textManages.splice(index, 1);
                 }
@@ -112,7 +112,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
                 deleteTextManage(this.board, item.id);
             });
         }
-        currentDrawShapeTexts.forEach(drawShapeText => {
+        currentDrawShapeTexts.forEach((drawShapeText) => {
             if (drawShapeText.text) {
                 let textManage = getTextManage(this.board, this.element, drawShapeText);
                 if (!textManage) {
@@ -165,7 +165,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(this.element);
         ref.destroyTextManage();
         this.textManages = [];
-        this.texts.forEach(item => {
+        this.texts.forEach((item) => {
             deleteTextManage(this.board, item.id);
         });
     }

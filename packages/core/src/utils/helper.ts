@@ -29,7 +29,7 @@ export function isContextmenu(event: MouseEvent) {
 export function uniqueById(elements: PlaitElement[]) {
     const uniqueMap = new Map();
 
-    elements.forEach(item => {
+    elements.forEach((item) => {
         if (!uniqueMap.has(item.id)) {
             uniqueMap.set(item.id, item);
         }

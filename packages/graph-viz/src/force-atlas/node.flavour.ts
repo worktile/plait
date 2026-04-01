@@ -14,8 +14,10 @@ import { getEdgeGenerator, getEdgeGeneratorData, getEdgesInSourceOrTarget } from
 import { getNodeGenerator, getNodes, isFirstDepthNode } from './utils/node';
 import { SECOND_DEPTH_NODE_ALPHA } from './constants';
 
-export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
-    implements OnContextChanged<ForceAtlasNodeElement, PlaitBoard> {
+export class ForceAtlasNodeFlavour
+    extends CommonElementFlavour<ForceAtlasNodeElement, PlaitBoard>
+    implements OnContextChanged<ForceAtlasNodeElement, PlaitBoard>
+{
     graph!: Graph<Node>;
     nodeGenerator!: ForceAtlasNodeGenerator;
 
@@ -52,7 +54,7 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
             }
             const selectElements = getSelectedElements(this.board);
             const nodes = getNodes(parent);
-            nodes.forEach(node => {
+            nodes.forEach((node) => {
                 const nodeGenerator = getNodeGenerator(node);
                 nodeGenerator.destroy();
                 const isFirstDepth = selectElements.length > 0 && isFirstDepthNode(node.id, selectElements[0].id, parent);
@@ -63,7 +65,7 @@ export class ForceAtlasNodeFlavour extends CommonElementFlavour<ForceAtlasNodeEl
             });
 
             const associatedEdges = getEdgesInSourceOrTarget(value.element.id, parent);
-            associatedEdges.forEach(edge => {
+            associatedEdges.forEach((edge) => {
                 const edgeGenerator = getEdgeGenerator(edge);
                 edgeGenerator.destroy();
                 edgeGenerator.processDrawing(edge, PlaitBoard.getElementLowerHost(this.board), getEdgeGeneratorData(edge, this.board));

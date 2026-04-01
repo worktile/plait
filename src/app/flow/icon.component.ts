@@ -3,9 +3,7 @@ import { FlowEdgeLabelIconBaseComponent } from '@plait/flow';
 
 @Component({
     selector: 'flow-edge-label-icon',
-    template: `
-        {{ iconItem.name }}
-    `,
+    template: ` {{ iconItem.name }} `,
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

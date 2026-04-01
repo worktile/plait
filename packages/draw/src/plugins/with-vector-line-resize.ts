@@ -16,7 +16,7 @@ export const withVectorLineResize = (board: PlaitBoard) => {
             const selectedVectorLineElements = getSelectedVectorLineElements(board);
             if (selectedVectorLineElements.length > 0) {
                 let result = null;
-                selectedVectorLineElements.forEach(value => {
+                selectedVectorLineElements.forEach((value) => {
                     const handleRef = getHitLineResizeHandleRef(board, value, point);
                     if (handleRef) {
                         result = {

@@ -2276,7 +2276,7 @@ export function getData(index: number = 0) {
     console.log('节点数：', res.pages.length);
     const activeId = res.pages[0]._id;
     const nodes = res.pages.map(
-        page =>
+        (page) =>
             ({
                 id: page._id,
                 label: page.name,

@@ -36,7 +36,7 @@ function generateComponentPath(rectangle: RectangleClient): ComponentPathData {
     const boxHeight = rectangle.height - 28 - rectangle.height * 0.35 > 1 ? 14 : rectangle.height * 0.175;
     const topBoxY = rectangle.y + rectangle.height * 0.175;
     const bottomBoxY = rectangle.y + rectangle.height - rectangle.height * 0.175 - boxHeight;
-    
+
     return {
         boxSize: {
             width: boxWidth,
@@ -59,7 +59,7 @@ export const ComponentEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const { boxSize, points } = generateComponentPath(rectangle);
-        
+
         const pathData = [
             // 主矩形轮廓
             `M${points.mainStart[0]} ${points.mainStart[1]}`,
@@ -91,7 +91,7 @@ export const ComponentEngine: ShapeEngine = {
 
     getNearestPoint(rectangle: RectangleClient, point: Point) {
         const { boxSize, points } = generateComponentPath(rectangle);
-        
+
         const segments: [Point, Point][] = [
             // 主矩形轮廓
             [points.mainStart, [points.rightTop[0], points.mainStart[1]]],
@@ -100,18 +100,36 @@ export const ComponentEngine: ShapeEngine = {
             [[points.mainEnd[0], points.rightBottom[1]], points.mainStart],
 
             // 上方小矩形
-            [points.topBoxStart, [points.topBoxStart[0] + boxSize.width/2, points.topBoxStart[1]]],
-            [[points.topBoxStart[0] + boxSize.width/2, points.topBoxStart[1]], [points.topBoxStart[0] + boxSize.width/2, points.topBoxEnd[1]]],
-            [[points.topBoxStart[0] + boxSize.width/2, points.topBoxEnd[1]], [points.topBoxStart[0] - boxSize.width/2, points.topBoxEnd[1]]],
-            [[points.topBoxStart[0] - boxSize.width/2, points.topBoxEnd[1]], [points.topBoxStart[0] - boxSize.width/2, points.topBoxStart[1]]],
-            [[points.topBoxStart[0] - boxSize.width/2, points.topBoxStart[1]], points.topBoxStart],
+            [points.topBoxStart, [points.topBoxStart[0] + boxSize.width / 2, points.topBoxStart[1]]],
+            [
+                [points.topBoxStart[0] + boxSize.width / 2, points.topBoxStart[1]],
+                [points.topBoxStart[0] + boxSize.width / 2, points.topBoxEnd[1]]
+            ],
+            [
+                [points.topBoxStart[0] + boxSize.width / 2, points.topBoxEnd[1]],
+                [points.topBoxStart[0] - boxSize.width / 2, points.topBoxEnd[1]]
+            ],
+            [
+                [points.topBoxStart[0] - boxSize.width / 2, points.topBoxEnd[1]],
+                [points.topBoxStart[0] - boxSize.width / 2, points.topBoxStart[1]]
+            ],
+            [[points.topBoxStart[0] - boxSize.width / 2, points.topBoxStart[1]], points.topBoxStart],
 
             // 下方小矩形
-            [points.bottomBoxStart, [points.bottomBoxStart[0] + boxSize.width/2, points.bottomBoxStart[1]]],
-            [[points.bottomBoxStart[0] + boxSize.width/2, points.bottomBoxStart[1]], [points.bottomBoxStart[0] + boxSize.width/2, points.bottomBoxEnd[1]]],
-            [[points.bottomBoxStart[0] + boxSize.width/2, points.bottomBoxEnd[1]], [points.bottomBoxStart[0] - boxSize.width/2, points.bottomBoxEnd[1]]],
-            [[points.bottomBoxStart[0] - boxSize.width/2, points.bottomBoxEnd[1]], [points.bottomBoxStart[0] - boxSize.width/2, points.bottomBoxStart[1]]],
-            [[points.bottomBoxStart[0] - boxSize.width/2, points.bottomBoxStart[1]], points.bottomBoxStart],
+            [points.bottomBoxStart, [points.bottomBoxStart[0] + boxSize.width / 2, points.bottomBoxStart[1]]],
+            [
+                [points.bottomBoxStart[0] + boxSize.width / 2, points.bottomBoxStart[1]],
+                [points.bottomBoxStart[0] + boxSize.width / 2, points.bottomBoxEnd[1]]
+            ],
+            [
+                [points.bottomBoxStart[0] + boxSize.width / 2, points.bottomBoxEnd[1]],
+                [points.bottomBoxStart[0] - boxSize.width / 2, points.bottomBoxEnd[1]]
+            ],
+            [
+                [points.bottomBoxStart[0] - boxSize.width / 2, points.bottomBoxEnd[1]],
+                [points.bottomBoxStart[0] - boxSize.width / 2, points.bottomBoxStart[1]]
+            ],
+            [[points.bottomBoxStart[0] - boxSize.width / 2, points.bottomBoxStart[1]], points.bottomBoxStart],
 
             // 连接线
             [points.mainStart, points.topBoxStart],

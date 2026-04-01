@@ -27,19 +27,19 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     board.getDeletedFragment = (data: PlaitElement[]) => {
         const drawElements = getSelectedDrawElements(board);
         if (drawElements.length) {
-            const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
-            const arrowLineElements = drawElements.filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
-            const vectorLineElements = drawElements.filter(value => PlaitDrawElement.isVectorLine(value)) as PlaitVectorLine[];
-            const imageElements = drawElements.filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
-            const tableElements = drawElements.filter(value => PlaitDrawElement.isTable(value)) as PlaitTable[];
-            const swimlaneElements = drawElements.filter(value => PlaitDrawElement.isSwimlane(value)) as PlaitSwimlane[];
+            const geometryElements = drawElements.filter((value) => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+            const arrowLineElements = drawElements.filter((value) => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
+            const vectorLineElements = drawElements.filter((value) => PlaitDrawElement.isVectorLine(value)) as PlaitVectorLine[];
+            const imageElements = drawElements.filter((value) => PlaitDrawElement.isImage(value)) as PlaitImage[];
+            const tableElements = drawElements.filter((value) => PlaitDrawElement.isTable(value)) as PlaitTable[];
+            const swimlaneElements = drawElements.filter((value) => PlaitDrawElement.isSwimlane(value)) as PlaitSwimlane[];
 
             const boundLineElements = [
                 ...getBoundedArrowLineElements(board, geometryElements),
                 ...getBoundedArrowLineElements(board, imageElements),
                 ...getBoundedArrowLineElements(board, tableElements),
                 ...getBoundedArrowLineElements(board, swimlaneElements)
-            ].filter(line => !arrowLineElements.includes(line));
+            ].filter((line) => !arrowLineElements.includes(line));
             data.push(
                 ...[
                     ...geometryElements,
@@ -48,7 +48,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                     ...imageElements,
                     ...tableElements,
                     ...swimlaneElements,
-                    ...boundLineElements.filter(line => !arrowLineElements.includes(line))
+                    ...boundLineElements.filter((line) => !arrowLineElements.includes(line))
                 ]
             );
         }
@@ -65,9 +65,9 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
         let boundLineElements: PlaitArrowLine[] = [];
         if (targetDrawElements.length) {
             if (operationType === WritableClipboardOperationType.cut) {
-                const geometryElements = targetDrawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
-                const lineElements = targetDrawElements.filter(value => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
-                boundLineElements = getBoundedArrowLineElements(board, geometryElements).filter(line => !lineElements.includes(line));
+                const geometryElements = targetDrawElements.filter((value) => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+                const lineElements = targetDrawElements.filter((value) => PlaitDrawElement.isArrowLine(value)) as PlaitArrowLine[];
+                boundLineElements = getBoundedArrowLineElements(board, geometryElements).filter((line) => !lineElements.includes(line));
             }
             const selectedElements = [...targetDrawElements, ...boundLineElements];
             const elements = buildClipboardData(board, selectedElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
@@ -85,12 +85,12 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {
         const selectedElements = getSelectedElements(board);
         if (clipboardData?.files?.length) {
-            const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
+            const acceptImageArray = acceptImageTypes.map((type) => 'image/' + type);
             const canInsertionImage =
                 !getElementOfFocusedImage(board) && !(selectedElements.length === 1 && board.isImageBindingAllowed(selectedElements[0]));
             if (acceptImageArray.includes(clipboardData.files[0].type) && canInsertionImage) {
                 const imageFile = clipboardData.files[0];
-                buildImage(board, imageFile, DEFAULT_IMAGE_WIDTH, imageItem => {
+                buildImage(board, imageFile, DEFAULT_IMAGE_WIDTH, (imageItem) => {
                     DrawTransforms.insertImage(board, imageItem, targetPoint);
                 });
                 return;
@@ -98,7 +98,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
         }
 
         if (clipboardData?.elements?.length) {
-            const drawElements = clipboardData.elements?.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
+            const drawElements = clipboardData.elements?.filter((value) => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
             if (clipboardData.elements && clipboardData.elements.length > 0 && drawElements.length > 0) {
                 insertClipboardData(board, drawElements, targetPoint);
             }
@@ -124,7 +124,9 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
 
 export const getBoundedArrowLineElements = (board: PlaitBoard, plaitShapes: PlaitShapeElement[]) => {
     const lines = getArrowLines(board);
-    return lines.filter(line =>
-        plaitShapes.find(shape => PlaitArrowLine.isBoundElementOfSource(line, shape) || PlaitArrowLine.isBoundElementOfTarget(line, shape))
+    return lines.filter((line) =>
+        plaitShapes.find(
+            (shape) => PlaitArrowLine.isBoundElementOfSource(line, shape) || PlaitArrowLine.isBoundElementOfTarget(line, shape)
+        )
     );
 };

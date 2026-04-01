@@ -52,19 +52,19 @@ export const getLocationScope = (
     parent: LayoutNode,
     isHorizontal: boolean
 ) => {
-    const node = (MindElement.getNode(element) as unknown) as LayoutNode;
+    const node = MindElement.getNode(element) as unknown as LayoutNode;
     const { start, end } = getCorrectStartEnd(node.origin as AbstractNode, parent);
 
     const startNode = parentChildren[start];
     const endNode = parentChildren[end];
 
     if (handlePosition === AbstractHandlePosition.start) {
-        const abstractNode = parentChildren.filter(child => AbstractNode.isAbstract(child) && child.end < element.start!);
+        const abstractNode = parentChildren.filter((child) => AbstractNode.isAbstract(child) && child.end < element.start!);
         let minNode;
 
         if (abstractNode.length) {
             const index = abstractNode
-                .map(node => {
+                .map((node) => {
                     const { end } = getCorrectStartEnd(node as AbstractNode, parent);
                     return end;
                 })
@@ -89,19 +89,19 @@ export const getLocationScope = (
             };
         }
     } else {
-        const abstractNode = parentChildren.filter(child => AbstractNode.isAbstract(child) && child.start > element.end!);
+        const abstractNode = parentChildren.filter((child) => AbstractNode.isAbstract(child) && child.start > element.end!);
         let maxNode;
 
         if (abstractNode.length) {
             const index = abstractNode
-                .map(node => {
+                .map((node) => {
                     const { start } = getCorrectStartEnd(node as AbstractNode, parent);
                     return start;
                 })
                 .sort((a, b) => a - b)[0];
             maxNode = parentChildren[index - 1];
         } else {
-            const children = parentChildren.filter(child => !AbstractNode.isAbstract(child));
+            const children = parentChildren.filter((child) => !AbstractNode.isAbstract(child));
             maxNode = parentChildren[children.length - 1];
         }
 
@@ -167,10 +167,10 @@ export const getAbstractHandleRectangle = (rectangle: RectangleClient, isHorizon
 };
 
 export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindElement[], location: number, isHorizontal: boolean) {
-    const children = parentChildren.filter(child => {
+    const children = parentChildren.filter((child) => {
         return !AbstractNode.isAbstract(child);
     });
-    const recArray = children.map(child => {
+    const recArray = children.map((child) => {
         return getRectangleByElements(board, [child], false);
     });
 
@@ -208,7 +208,7 @@ export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindEle
 
 export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: MindElement | undefined, endPoint: Point) {
     let touchedHandle;
-    const abstract = (getSelectedElements(board).filter(element => AbstractNode.isAbstract(element)) as MindElement[]).find(element => {
+    const abstract = (getSelectedElements(board).filter((element) => AbstractNode.isAbstract(element)) as MindElement[]).find((element) => {
         touchedHandle = getHitAbstractHandle(board, element as MindElement, endPoint);
         return touchedHandle;
     });

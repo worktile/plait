@@ -31,7 +31,7 @@ export class NodeActiveGenerator extends Generator<FlowNode, NodeActiveData> {
         if (hasHandle) {
             const handlesG = createG();
             const handles = drawNodeHandles(this.board, element);
-            handles.forEach(item => {
+            handles.forEach((item) => {
                 handlesG.append(item);
                 item.classList.add('flow-handle');
             });

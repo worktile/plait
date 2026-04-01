@@ -18,10 +18,11 @@ export const DelayEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
-            `M${rectangle.x} ${rectangle.y} L${rectangle.x + (rectangle.width * 3) / 4} ${rectangle.y} A  ${rectangle.width /
-                4} ${rectangle.height / 2}, 0, 0, 1,${rectangle.x + (rectangle.width * 3) / 4} ${rectangle.y + rectangle.height} L${
-                rectangle.x
-            } ${rectangle.y + rectangle.height} Z`,
+            `M${rectangle.x} ${rectangle.y} L${rectangle.x + (rectangle.width * 3) / 4} ${rectangle.y} A  ${rectangle.width / 4} ${
+                rectangle.height / 2
+            }, 0, 0, 1,${rectangle.x + (rectangle.width * 3) / 4} ${rectangle.y + rectangle.height} L${rectangle.x} ${
+                rectangle.y + rectangle.height
+            } Z`,
             { ...options, fillStyle: 'solid' }
         );
         setStrokeLinecap(shape, 'round');

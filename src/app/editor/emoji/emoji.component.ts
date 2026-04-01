@@ -8,7 +8,7 @@ import { MindEmojiBaseComponent } from '@plait/mind';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MindEmojiComponent extends MindEmojiBaseComponent implements OnInit {
-    elementRef = inject(ElementRef<HTMLElement>)
+    elementRef = inject(ElementRef<HTMLElement>);
 
     nativeElement() {
         return this.elementRef.nativeElement;

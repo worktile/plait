@@ -32,9 +32,9 @@ export const DisplayEngine: ShapeEngine = {
         const shape = rs.path(
             `M${rectangle.x + rectangle.width * 0.15} ${rectangle.y} 
             H${rectangle.x + rectangle.width - rectangle.width * 0.1} 
-            A ${rectangle.width * 0.1} ${rectangle.height / 2}, 0, 0, 1,${rectangle.x +
-                rectangle.width -
-                rectangle.width * 0.1} ${rectangle.y + rectangle.height}
+            A ${rectangle.width * 0.1} ${rectangle.height / 2}, 0, 0, 1,${rectangle.x + rectangle.width - rectangle.width * 0.1} ${
+                rectangle.y + rectangle.height
+            }
             H${rectangle.x + rectangle.width * 0.15}
             L${rectangle.x} ${rectangle.y + rectangle.height / 2}
             Z
