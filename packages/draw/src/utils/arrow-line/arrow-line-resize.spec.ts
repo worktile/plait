@@ -6,7 +6,7 @@ import { generateElbowLineRoute, removeDuplicatePoints, simplifyOrthogonalPoints
 
 describe('getIndexAndDeleteCountByKeyPoint', () => {
     let board: PlaitBoard;
-    let resizeLine: PlaitArrowLine;
+    let resizeLine: PlaitArrowLine = null as unknown as PlaitArrowLine;
     beforeEach(() => {
         board = createTestingBoard([], []);
     });
