@@ -284,7 +284,7 @@ export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) 
     const endPoint = moveXOfPoint(startPoint, NODE_MORE_LINE_DISTANCE, layoutDirection as unknown as Direction);
     const hasCollapsedIcon = element.children?.length > 0 && !isMind && !element.isCollapsed;
     const hasExpandedIcon = element.children?.length > 0 && !isMind && element.isCollapsed;
-    const hasAddIcon = !hasExpandedIcon;
+    const hasAddIcon = !hasExpandedIcon && !PlaitBoard.isReadonly(board);
     const firstIconCenter = moveXOfPoint(endPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction);
     const collapsedIconCenter = hasCollapsedIcon ? firstIconCenter : null;
     const expandedIconCenter = hasExpandedIcon ? firstIconCenter : null;
@@ -310,6 +310,16 @@ export const getNodeMoreKeyPosition = (board: PlaitBoard, element: MindElement) 
         awarenessRectangle = RectangleClient.getRectangleByPoints([
             moveYOfPoint(startPoint, -NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction),
             moveYOfPoint(expandedIconEndPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction)
+        ]);
+    } else if (hasCollapsedIcon) {
+        const collapsedIconEndPoint = moveXOfPoint(
+            collapsedIconCenter!,
+            NODE_MORE_ICON_DIAMETER / 2,
+            layoutDirection as unknown as Direction
+        );
+        awarenessRectangle = RectangleClient.getRectangleByPoints([
+            moveYOfPoint(startPoint, -NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction),
+            moveYOfPoint(collapsedIconEndPoint, NODE_MORE_ICON_DIAMETER / 2, layoutDirection as unknown as Direction)
         ]);
     }
 

@@ -1,4 +1,5 @@
 import {
+    createDebugGenerator,
     depthFirstRecursion,
     getElementById,
     getIsRecursionFunc,
@@ -26,6 +27,9 @@ import { NODE_MORE_ICON_DIAMETER } from '../constants/default';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindLayoutType } from '@plait/layouts';
 import { setRightNodeCountByRefs } from '../transforms/node';
+import { Node } from 'slate';
+
+const debugGenerator = createDebugGenerator('debug:plait:node-more');
 
 export interface NodeMoreRef {
     target: MindElement;
@@ -251,7 +255,17 @@ const getNodeMoreRef = (board: PlaitBoard, x: number, y: number) => {
                     RectangleClient.getRectangleByPoints([point, point]),
                     RectangleClient.getRectangleByCenterPoint(standardRef.addCenter, NODE_MORE_ICON_DIAMETER, NODE_MORE_ICON_DIAMETER)
                 );
-
+            if (debugGenerator.isDebug()) {
+                debugGenerator.clear();
+                if (awarenessRectangle) {
+                    debugGenerator.drawRectangle(board, awarenessRectangle);
+                }
+                const data = element.data.topic;
+                const string = Node.string(data);
+                if (string === 'xxxx') {
+                    console.log('xxxx');
+                }
+            }
             if (isHitElement || isHitAwarenessRectangleInternal || isHitStandardLeftAwarenessRectangleInternal) {
                 isHit = isHitElement;
                 target = element;
