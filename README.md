@@ -37,10 +37,10 @@ Plait will also provide some basic functional plugins, which have been implement
 
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
--   👉 [Online example (Draw)](https://https://plait.pages.dev?init=draw)
--   👉 [Online example (Mind)](https://https://plait.pages.dev?init=mind)
--   👉 [Online example (GraphViz)](https://https://plait.pages.dev/graph-viz?init=force-atlas)
--   👉 [Online example (Flow)](https://https://plait.pages.dev/flow)
+-   👉 [Online example (Draw)](https://plait.pages.dev?init=draw)
+-   👉 [Online example (Mind)](https://plait.pages.dev?init=mind)
+-   👉 [Online example (GraphViz)](https://plait.pages.dev/graph-viz?init=force-atlas)
+-   👉 [Online example (Flow)](https://plait.pages.dev/flow)
 -   👉 [Documentation](https://plait-docs.pages.dev)
 
 #### Features
