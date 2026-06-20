@@ -109,7 +109,7 @@ function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T, styl
 function batchCloneCSSStyle(sourceNode: SVGGElement, cloneNode: SVGGElement, inlineStyleClassNames?: string, styleNames?: string[]) {
     // handle text style, Hardcoded to slate editor framework
     const textSelector = '[data-slate-node="text"]';
-    const textStyle = ['font-size', 'font-family', 'line-height', 'text-decoration', 'font-weight', 'font-style', 'word-break'];
+    const textStyle = ['font-size', 'font-family', 'line-height', 'text-decoration', 'font-weight', 'font-style', 'word-break', 'color'];
     const sourceTextNodes = Array.from(sourceNode.querySelectorAll(textSelector));
     const cloneTextNodes = Array.from(cloneNode.querySelectorAll(textSelector));
     sourceTextNodes.map((node, index) => {
