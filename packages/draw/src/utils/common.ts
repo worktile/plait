@@ -61,11 +61,12 @@ export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(board: 
     const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
     const textSize = getTextSize(board, element.text, isAutoSize ? GeometryThreshold.defaultTextMaxWidth : width);
     if (isAutoSize) {
+        const anchor = element.points![0] as Point;
         return {
             height: textSize.height,
             width: textSize.width,
-            x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + (elementRectangle.height - textSize.height) / 2
+            x: anchor[0] + ShapeDefaultSpace.rectangleAndText + strokeWidth,
+            y: anchor[1]
         };
     }
     return {

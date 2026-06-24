@@ -2,8 +2,7 @@ import { PlaitBoard, Point, Transforms, hasValidAngle, RectangleClient } from '@
 import { Element } from 'slate';
 import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
 import { ShapeDefaultSpace } from '../constants';
-import { Alignment, getFirstTextEditor, resetPointsAfterResize } from '@plait/common';
-import { AlignEditor } from '@plait/text-plugins';
+import { resetPointsAfterResize } from '@plait/common';
 import { MIN_TEXT_WIDTH } from '../constants/text';
 
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, height: number) => {
@@ -13,22 +12,8 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: numbe
 
     if (autoSize) {
         const newWidth = width < MIN_TEXT_WIDTH ? MIN_TEXT_WIDTH : width;
-        const editor = getFirstTextEditor(element);
-        if (AlignEditor.isActive(editor, Alignment.right)) {
-            points = [
-                [points[1][0] - (newWidth + defaultSpace * 2), points[0][1]],
-                [points[1][0], points[0][1] + height]
-            ];
-        } else if (AlignEditor.isActive(editor, Alignment.center)) {
-            const oldWidth = Math.abs(points[0][0] - points[1][0]);
-            const offset = (newWidth - oldWidth) / 2;
-            points = [
-                [points[0][0] - offset - defaultSpace, points[0][1]],
-                [points[1][0] + offset + defaultSpace, points[0][1] + height]
-            ];
-        } else {
-            points = [points[0], [points[0][0] + newWidth + defaultSpace * 2, points[0][1] + height]];
-        }
+        const anchor: Point = [points[0][0], points[0][1]];
+        points = [anchor, [anchor[0] + newWidth + defaultSpace * 2, anchor[1] + height]];
         if (hasValidAngle(element)) {
             points = resetPointsAfterResize(
                 RectangleClient.getRectangleByPoints(element.points),
