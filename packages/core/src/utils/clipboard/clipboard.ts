@@ -13,6 +13,38 @@ import {
 import { getNavigatorClipboard, setNavigatorClipboard } from './navigator-clipboard';
 import { ClipboardData, WritableClipboardContext } from './types';
 
+const SVG_MIME_TYPE = 'image/svg+xml';
+
+const getStringFromDataTransferItem = (item: DataTransferItem) => {
+    return new Promise<string>((resolve) => {
+        item.getAsString((value) => {
+            resolve(value || '');
+        });
+    });
+};
+
+const getSvgClipboardData = async (dataTransfer: DataTransfer): Promise<ClipboardData | null> => {
+    const svgItem = Array.from(dataTransfer.items || []).find((item) => item.kind === 'string' && item.type === SVG_MIME_TYPE);
+    const svgText = svgItem ? await getStringFromDataTransferItem(svgItem) : dataTransfer.getData(SVG_MIME_TYPE);
+    if (!svgText.trim()) {
+        return null;
+    }
+    return {
+        files: [new File([svgText], 'plait-svg-image.svg', { type: SVG_MIME_TYPE })]
+    };
+};
+
+const getNavigatorClipboardSafely = async (): Promise<ClipboardData> => {
+    if (!getProbablySupportsClipboardRead()) {
+        return {};
+    }
+    try {
+        return await getNavigatorClipboard();
+    } catch {
+        return {};
+    }
+};
+
 export const cacheClipboardData = (clipboardData: ClipboardData) => {
     (window as any)['plait_fallback_clipboard_data'] = clipboardData;
 };
@@ -22,21 +54,30 @@ export const getCachedClipboardData = () => {
 };
 
 export const getClipboardData = async (dataTransfer: DataTransfer | null): Promise<ClipboardData | null> => {
-    let clipboardData = {};
+    let clipboardData: ClipboardData = {};
     if (dataTransfer) {
         if (dataTransfer.files.length) {
             return { files: Array.from(dataTransfer.files) };
         }
         clipboardData = getDataTransferClipboard(dataTransfer);
-        if (Object.keys(clipboardData).length === 0) {
-            clipboardData = getDataTransferClipboardText(dataTransfer);
+        if (Object.keys(clipboardData).length > 0) {
+            return clipboardData;
+        }
+        const svgClipboardData = await getSvgClipboardData(dataTransfer);
+        if (svgClipboardData) {
+            return svgClipboardData;
+        }
+        clipboardData = getDataTransferClipboardText(dataTransfer);
+        if (Object.keys(clipboardData).length > 0 && clipboardData.text) {
+            return clipboardData;
+        }
+        const navigatorClipboardData = await getNavigatorClipboardSafely();
+        if (Object.keys(navigatorClipboardData).length > 0) {
+            return navigatorClipboardData;
         }
         return clipboardData;
     }
-    if (getProbablySupportsClipboardRead()) {
-        return await getNavigatorClipboard();
-    }
-    return null;
+    return await getNavigatorClipboardSafely();
 };
 
 export const setClipboardData = async (dataTransfer: DataTransfer | null, clipboardContext: WritableClipboardContext | null) => {
