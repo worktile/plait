@@ -1,9 +1,10 @@
 import { PlaitElement, Point } from '@plait/core';
 import { DrawTextInfo } from '../generators/text.generator';
 import { ParagraphElement, StrokeStyle } from '@plait/common';
-import { Options } from 'roughjs/bin/core';
 
-export type FillStyle = Options['fillStyle'];
+export const FILL_STYLES = ['solid', 'hachure', 'zigzag', 'cross-hatch', 'dots', 'dashed', 'zigzag-line'] as const;
+
+export type FillStyle = (typeof FILL_STYLES)[number];
 
 export enum BasicShapes {
     rectangle = 'rectangle',

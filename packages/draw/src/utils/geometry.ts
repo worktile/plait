@@ -45,7 +45,7 @@ import { createUMLClassOrInterfaceGeometryElement } from './uml';
 import { createMultipleTextGeometryElement, isMultipleTextGeometry, isMultipleTextShape } from './multi-text-geometry';
 import { DEFAULT_FONT_SIZE } from '@plait/text-plugins';
 
-export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
+export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth' | 'fillStyle'>;
 
 export type TextProperties = Partial<CustomText> & { align?: Alignment };
 
@@ -110,7 +110,10 @@ export const createGeometryElementWithoutText = (
 };
 
 export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, roughOptions: Options) => {
-    return getEngine(shape).draw(board, outerRectangle, roughOptions);
+    return getEngine(shape).draw(board, outerRectangle, {
+        ...roughOptions,
+        fillStyle: roughOptions.fillStyle ?? 'solid'
+    });
 };
 
 export const getNearestPoint = (element: PlaitShapeElement, point: Point) => {

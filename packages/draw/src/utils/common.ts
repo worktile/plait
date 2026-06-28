@@ -199,7 +199,15 @@ export const drawShape = (
     roughOptions: Options,
     drawOptions?: DrawOptions
 ) => {
-    return getEngine(shape).draw(board, outerRectangle, roughOptions, drawOptions);
+    return getEngine(shape).draw(
+        board,
+        outerRectangle,
+        {
+            ...roughOptions,
+            fillStyle: roughOptions.fillStyle ?? 'solid'
+        },
+        drawOptions
+    );
 };
 
 export const drawBoundReaction = (

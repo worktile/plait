@@ -57,7 +57,8 @@ import {
     getSelectedTableCellsEditor,
     VectorLineShape,
     isClosedDrawElement,
-    FillStyle
+    FillStyle,
+    FILL_STYLES
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { FontSizes, LinkEditor, MarkTypes, PlaitMarkEditor, TextTransforms } from '@plait/text-plugins';
@@ -114,15 +115,18 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     branchColor = ['#A287E0', '#6E80DB', '#E0B75E', '#B1C675', '#77C386', '#E48484'];
 
-    fillStyles: { value: FillStyle; label: string }[] = [
-        { value: 'solid', label: '实心' },
-        { value: 'hachure', label: '斜线' },
-        { value: 'zigzag', label: '锯齿' },
-        { value: 'cross-hatch', label: '交叉线' },
-        { value: 'dots', label: '点状' },
-        { value: 'dashed', label: '虚线' },
-        { value: 'zigzag-line', label: '锯齿线' }
-    ];
+    fillStyles: { value: FillStyle; label: string }[] = FILL_STYLES.map((value) => {
+        const labels: Record<FillStyle, string> = {
+            solid: '实心',
+            hachure: '斜线',
+            zigzag: '锯齿',
+            'cross-hatch': '交叉线',
+            dots: '点状',
+            dashed: '虚线',
+            'zigzag-line': '锯齿线'
+        };
+        return { value, label: labels[value] };
+    });
 
     align = Alignment.center;
 
@@ -159,12 +163,13 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedArrowLineElements = getSelectedArrowLineElements(this.board);
         const selectedVectorLineElements = getSelectedVectorLineElements(this.board);
         const selectedDrawElements = getSelectedDrawElements(this.board);
+        const selectedGeometryElements = getSelectedGeometryElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedArrowLineElements.length || !!selectedVectorLineElements.length;
         this.isSelectedVectorLine = !!selectedVectorLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
         this.enableSetFillColor = selectedDrawElements.some((item) => isClosedDrawElement(item)) || this.isSelectedMind;
-        this.enableSetFillStyle = selectedDrawElements.some((item) => isClosedDrawElement(item));
+        this.enableSetFillStyle = selectedGeometryElements.some((item) => isClosedDrawElement(item));
         if (this.isSelectSwimlane) {
             this.swimlaneCount = getSwimlaneCount(getSelectedElements(this.board)[0] as PlaitSwimlane);
         }
@@ -180,8 +185,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
                 this.align = firstMindElement.data.topic.align || Alignment.left;
             }
         }
-
-        const selectedGeometryElements = getSelectedGeometryElements(this.board);
         const selectedTableElements = getSelectedTableElements(this.board);
         const selectedTableCellsEditor = getSelectedTableCellsEditor(this.board);
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
@@ -284,7 +287,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         this.currentFillStyle = fillStyle;
         PropertyTransforms.setProperty(this.board, { fillStyle } as Partial<PlaitElement>, {
             getMemorizeKey,
-            match: (element: PlaitElement) => PlaitDrawElement.isDrawElement(element) && isClosedDrawElement(element)
+            match: (element: PlaitElement) => PlaitDrawElement.isGeometry(element) && isClosedDrawElement(element)
         });
     }
 
