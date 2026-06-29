@@ -2,8 +2,10 @@ import {
     DOWN_ARROW,
     ENTER,
     LEFT_ARROW,
+    NODE_TO_CONTAINER_G,
     Path,
     PlaitBoard,
+    PlaitElement,
     PlaitNode,
     RIGHT_ARROW,
     SLASH,
@@ -15,9 +17,13 @@ import {
     createKeyboardEvent,
     createModModifierKeys,
     createTestingBoard,
+    depthFirstRecursion,
     fakeNodeWeakMap,
-    getSelectedElements
+    getSelectedElements,
+    withOptions,
+    withSelection
 } from '@plait/core';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { getTestingChildren } from '../testing/data/basic';
 import { withMindHotkey } from './with-mind-hotkey';
 import { PlaitMindBoard } from './with-mind.board';
@@ -25,12 +31,15 @@ import { createMindElement } from '../utils';
 import { MindElement, PlaitMind } from '@plait/mind';
 import { fakeMindLayout, clearLayoutNodeWeakMap } from '../testing/core/fake-layout-node';
 import { MindNode } from '../interfaces';
+import { withMind } from './with-mind';
+import { MindLayoutType } from '@plait/layouts';
 
-const createNavigationTestingChildren = (): MindElement[] => [
+const createNavigationTestingChildren = (layout?: MindLayoutType): MindElement[] => [
     {
         type: 'mind',
         id: 'A',
         rightNodeCount: 2,
+        layout,
         data: { topic: { children: [{ text: 'A' }] } },
         children: [
             {
@@ -68,7 +77,33 @@ const createNavigationTestingChildren = (): MindElement[] => [
 describe('with mind hotkey plugin', () => {
     let board: PlaitBoard;
     let layoutRoot: MindNode | undefined;
+    let mountedElements: PlaitElement[] = [];
     const targetPath = [0, 0];
+    const fakeMountedElements = (root: MindElement) => {
+        depthFirstRecursion<MindElement>(root, (node) => {
+            NODE_TO_CONTAINER_G.set(node, document.createElementNS('http://www.w3.org/2000/svg', 'g'));
+            mountedElements.push(node);
+        });
+    };
+    const createNavigationBoard = (children = createNavigationTestingChildren()) => {
+        clearSelectedElement(board);
+        clearNodeWeakMap(board);
+        board = createTestingBoard([withOptions, withSelection, withMind], children);
+        fakeNodeWeakMap(board);
+        const root = PlaitNode.get<PlaitMind>(board, [0]);
+        layoutRoot = fakeMindLayout(board as PlaitBoard & PlaitMindBoard, root);
+        fakeMountedElements(root);
+        return root;
+    };
+    const navigateFrom = (element: MindElement, keyCode: number, key: string) => {
+        clearSelectedElement(board);
+        addSelectedElement(board, element);
+        const event = createKeyboardEvent('keydown', keyCode, key, {});
+        board.keyDown(event);
+        tick(200);
+        return event;
+    };
+
     beforeEach(() => {
         const child1 = createMindElement('sub child', {});
         const children = getTestingChildren();
@@ -87,6 +122,8 @@ describe('with mind hotkey plugin', () => {
             clearLayoutNodeWeakMap(layoutRoot);
             layoutRoot = undefined;
         }
+        mountedElements.forEach((element) => NODE_TO_CONTAINER_G.delete(element));
+        mountedElements = [];
     });
 
     it('collapse/expand node', () => {
@@ -184,35 +221,68 @@ describe('with mind hotkey plugin', () => {
         });
     });
 
-    it('navigate selected mind node by arrow keys', () => {
-        const children = createNavigationTestingChildren();
-        board = createTestingBoard([withMindHotkey], children);
-        fakeNodeWeakMap(board);
-        layoutRoot = fakeMindLayout(board as PlaitBoard & PlaitMindBoard, PlaitNode.get<PlaitMind>(board, [0]));
+    it('navigate selected mind node by arrow keys', fakeAsync(() => {
+        createNavigationBoard();
 
         const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
         const nodeC = PlaitNode.get<MindElement>(board, [0, 0, 0]);
         const nodeD = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
         const nodeF = PlaitNode.get<MindElement>(board, [0, 1, 0]);
 
-        clearSelectedElement(board);
-        addSelectedElement(board, nodeC);
-        board.keyDown(createKeyboardEvent('keydown', LEFT_ARROW, 'ArrowLeft', {}));
+        navigateFrom(nodeC, LEFT_ARROW, 'ArrowLeft');
         expect(getSelectedElements(board)[0]).toBe(nodeB);
 
-        clearSelectedElement(board);
-        addSelectedElement(board, nodeC);
-        board.keyDown(createKeyboardEvent('keydown', RIGHT_ARROW, 'ArrowRight', {}));
+        navigateFrom(nodeC, RIGHT_ARROW, 'ArrowRight');
         expect(getSelectedElements(board)[0]).toBe(nodeD);
 
-        clearSelectedElement(board);
-        addSelectedElement(board, nodeC);
-        board.keyDown(createKeyboardEvent('keydown', DOWN_ARROW, 'ArrowDown', {}));
+        navigateFrom(nodeC, DOWN_ARROW, 'ArrowDown');
         expect(getSelectedElements(board)[0]).toBe(nodeF);
 
-        clearSelectedElement(board);
-        addSelectedElement(board, nodeF);
-        board.keyDown(createKeyboardEvent('keydown', UP_ARROW, 'ArrowUp', {}));
+        navigateFrom(nodeF, UP_ARROW, 'ArrowUp');
         expect(getSelectedElements(board)[0]).toBe(nodeC);
-    });
+    }));
+
+    it('does not handle arrow navigation when the root mind is selected', fakeAsync(() => {
+        const root = createNavigationBoard();
+
+        const event = navigateFrom(root, RIGHT_ARROW, 'ArrowRight');
+
+        expect(event.defaultPrevented).toBe(false);
+        expect(getSelectedElements(board)[0]).toBe(root);
+    }));
+
+    it('does not navigate into hidden descendants of a collapsed node', fakeAsync(() => {
+        const children = createNavigationTestingChildren();
+        children[0].children[0].children[0].isCollapsed = true;
+        createNavigationBoard(children);
+        const nodeC = PlaitNode.get<MindElement>(board, [0, 0, 0]);
+        const nodeD = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
+        const nodeG = PlaitNode.get<MindElement>(board, [0, 1, 0, 0]);
+
+        const event = navigateFrom(nodeC, RIGHT_ARROW, 'ArrowRight');
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(getSelectedElements(board)[0]).not.toBe(nodeD);
+        expect(getSelectedElements(board)[0]).toBe(nodeG);
+    }));
+
+    it('does not prevent default behavior when no navigation candidate exists', fakeAsync(() => {
+        createNavigationBoard();
+        const nodeD = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
+
+        const event = navigateFrom(nodeD, RIGHT_ARROW, 'ArrowRight');
+
+        expect(event.defaultPrevented).toBe(false);
+        expect(getSelectedElements(board)[0]).toBe(nodeD);
+    }));
+
+    it('navigates by visual geometry in indented layout', fakeAsync(() => {
+        createNavigationBoard(createNavigationTestingChildren(MindLayoutType.rightBottomIndented));
+        const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
+
+        navigateFrom(nodeB, DOWN_ARROW, 'ArrowDown');
+
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+    }));
 });
