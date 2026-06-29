@@ -31,7 +31,7 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, DrawTex
                             width: width - ACTIVE_STROKE_WIDTH * 2,
                             height: height - ACTIVE_STROKE_WIDTH * 2
                         },
-                        { fill: cell.fill, fillStyle: roughOptions?.fillStyle ?? 'solid', strokeWidth: 0 }
+                        { fill: cell.fill, fillStyle: cell.fillStyle ?? roughOptions?.fillStyle ?? 'solid', strokeWidth: 0 }
                     );
                     const cellRightBorder = drawLine(rs, [x + width, y], [x + width, y + height], roughOptions);
                     const cellBottomBorder = drawLine(rs, [x, y + height], [x + width, y + height], roughOptions);

@@ -12,7 +12,7 @@ import {
 import { addSwimlaneColumn, addSwimlaneRow, removeSwimlaneColumn, removeSwimlaneRow, updateSwimlaneCount } from './swimlane';
 import { setDrawTexts } from './multi-text-geometry-text';
 import { setTableText } from './table-text';
-import { setTableFill } from './table';
+import { setTableFill, setTableFillStyle } from './table';
 import { setVectorLineShape } from './vector-line';
 import { insertDrawByVector } from './common';
 
@@ -39,5 +39,6 @@ export const DrawTransforms = {
     removeSwimlaneColumn,
     updateSwimlaneCount,
     setTableFill,
+    setTableFillStyle,
     insertDrawByVector
 };
