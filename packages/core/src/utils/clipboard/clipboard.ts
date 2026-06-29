@@ -34,6 +34,10 @@ const getSvgClipboardData = async (dataTransfer: DataTransfer): Promise<Clipboar
     };
 };
 
+const hasSvgClipboardType = (dataTransfer: DataTransfer) => {
+    return Array.from(dataTransfer.items || []).some((item) => item.type === SVG_MIME_TYPE);
+};
+
 const getNavigatorClipboardSafely = async (): Promise<ClipboardData> => {
     if (!getProbablySupportsClipboardRead()) {
         return {};
@@ -59,6 +63,7 @@ export const getClipboardData = async (dataTransfer: DataTransfer | null): Promi
         if (dataTransfer.files.length) {
             return { files: Array.from(dataTransfer.files) };
         }
+        const hasSvgType = hasSvgClipboardType(dataTransfer);
         clipboardData = getDataTransferClipboard(dataTransfer);
         if (Object.keys(clipboardData).length > 0) {
             return clipboardData;
@@ -67,17 +72,19 @@ export const getClipboardData = async (dataTransfer: DataTransfer | null): Promi
         if (svgClipboardData) {
             return svgClipboardData;
         }
+        if (hasSvgType) {
+            const navigatorClipboardData = await getNavigatorClipboardSafely();
+            if (navigatorClipboardData.files?.length) {
+                return navigatorClipboardData;
+            }
+        }
         clipboardData = getDataTransferClipboardText(dataTransfer);
-        if (Object.keys(clipboardData).length > 0 && clipboardData.text) {
-            return clipboardData;
-        }
-        const navigatorClipboardData = await getNavigatorClipboardSafely();
-        if (Object.keys(navigatorClipboardData).length > 0) {
-            return navigatorClipboardData;
-        }
         return clipboardData;
     }
-    return await getNavigatorClipboardSafely();
+    if (getProbablySupportsClipboardRead()) {
+        return await getNavigatorClipboard();
+    }
+    return null;
 };
 
 export const setClipboardData = async (dataTransfer: DataTransfer | null, clipboardContext: WritableClipboardContext | null) => {
