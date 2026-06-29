@@ -242,41 +242,78 @@ describe('with mind hotkey plugin', () => {
         expect(getSelectedElements(board)[0]).toBe(nodeC);
     }));
 
-    it('does not handle arrow navigation when the root mind is selected', fakeAsync(() => {
+    it('navigates from the selected root mind by arrow keys', fakeAsync(() => {
         const root = createNavigationBoard();
+        const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
 
-        const event = navigateFrom(root, RIGHT_ARROW, 'ArrowRight');
+        const rightEvent = navigateFrom(root, RIGHT_ARROW, 'ArrowRight');
 
-        expect(event.defaultPrevented).toBe(false);
+        expect(rightEvent.defaultPrevented).toBe(true);
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        const leftEvent = navigateFrom(root, LEFT_ARROW, 'ArrowLeft');
+
+        expect(leftEvent.defaultPrevented).toBe(true);
+        expect(getSelectedElements(board)[0]).toBe(root);
+
+        const downEvent = navigateFrom(root, DOWN_ARROW, 'ArrowDown');
+
+        expect(downEvent.defaultPrevented).toBe(true);
         expect(getSelectedElements(board)[0]).toBe(root);
     }));
 
-    it('does not navigate into hidden descendants of a collapsed node', fakeAsync(() => {
+    it('prefers parent over previous sibling for horizontal structure navigation', fakeAsync(() => {
+        const root = createNavigationBoard();
+        const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
+
+        const event = navigateFrom(nodeE, LEFT_ARROW, 'ArrowLeft');
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(getSelectedElements(board)[0]).not.toBe(nodeB);
+        expect(getSelectedElements(board)[0]).toBe(root);
+    }));
+
+    it('continues navigating from a root mind selected by arrow navigation', fakeAsync(() => {
+        const root = createNavigationBoard();
+        const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
+
+        navigateFrom(nodeE, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(root);
+
+        const event = createKeyboardEvent('keydown', RIGHT_ARROW, 'ArrowRight', {});
+        board.keyDown(event);
+        tick(200);
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+    }));
+
+    it('does not navigate into hidden descendants or distant geometry candidates', fakeAsync(() => {
         const children = createNavigationTestingChildren();
         children[0].children[0].children[0].isCollapsed = true;
         createNavigationBoard(children);
         const nodeC = PlaitNode.get<MindElement>(board, [0, 0, 0]);
         const nodeD = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
-        const nodeG = PlaitNode.get<MindElement>(board, [0, 1, 0, 0]);
 
         const event = navigateFrom(nodeC, RIGHT_ARROW, 'ArrowRight');
 
         expect(event.defaultPrevented).toBe(true);
         expect(getSelectedElements(board)[0]).not.toBe(nodeD);
-        expect(getSelectedElements(board)[0]).toBe(nodeG);
+        expect(getSelectedElements(board)[0]).toBe(nodeC);
     }));
 
-    it('does not prevent default behavior when no navigation candidate exists', fakeAsync(() => {
+    it('prevents default behavior when no navigation candidate exists', fakeAsync(() => {
         createNavigationBoard();
         const nodeD = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
 
         const event = navigateFrom(nodeD, RIGHT_ARROW, 'ArrowRight');
 
-        expect(event.defaultPrevented).toBe(false);
+        expect(event.defaultPrevented).toBe(true);
         expect(getSelectedElements(board)[0]).toBe(nodeD);
     }));
 
-    it('navigates by visual geometry in indented layout', fakeAsync(() => {
+    it('navigates visible siblings in indented layout', fakeAsync(() => {
         createNavigationBoard(createNavigationTestingChildren(MindLayoutType.rightBottomIndented));
         const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
         const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);

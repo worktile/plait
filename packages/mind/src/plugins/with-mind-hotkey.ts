@@ -8,6 +8,8 @@ import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey
 import { isHotkey } from 'is-hotkey';
 import { getMindElementCenter, getNextMindElementByDirection } from '../utils/position';
 
+const NAVIGATION_SELECTED_ELEMENT = new WeakMap<PlaitBoard, { selected: MindElement; previous?: MindElement }>();
+
 const getNavigationDirection = (event: KeyboardEvent): Direction | null => {
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
         return null;
@@ -26,20 +28,31 @@ const getNavigationDirection = (event: KeyboardEvent): Direction | null => {
     }
 };
 
-const selectMindElement = (board: PlaitBoard, element: MindElement) => {
+const selectMindElement = (board: PlaitBoard, element: MindElement, previous?: MindElement) => {
+    NAVIGATION_SELECTED_ELEMENT.set(board, { selected: element, previous });
     const center = getMindElementCenter(element);
     Transforms.setSelection(board, { anchor: center, focus: center });
 };
 
 export const withMindHotkey = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { keyDown, globalKeyDown } = board;
+    const { keyDown, globalKeyDown, pointerDown } = board;
+
+    board.pointerDown = (event: PointerEvent) => {
+        NAVIGATION_SELECTED_ELEMENT.delete(board);
+        pointerDown(event);
+    };
 
     board.keyDown = (event: KeyboardEvent) => {
         const selectedElements = getSelectedElements(board);
         const isSingleSelection = selectedElements.length === 1;
         const isSingleMindElement = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
         const targetElement = selectedElements[0] as MindElement;
+        let navigationSelectedElement = NAVIGATION_SELECTED_ELEMENT.get(board);
+        if (navigationSelectedElement && navigationSelectedElement.selected !== targetElement) {
+            NAVIGATION_SELECTED_ELEMENT.delete(board);
+            navigationSelectedElement = undefined;
+        }
 
         if (isExpandHotkey(event) && isSingleMindElement && !PlaitMind.isMind(targetElement)) {
             if (targetElement.children && targetElement.children.length > 0) {
@@ -53,13 +66,24 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
         }
 
         const navigationDirection = getNavigationDirection(event);
-        if (navigationDirection && isSingleMindElement && !PlaitMind.isMind(targetElement) && !PlaitBoard.hasBeenTextEditing(board)) {
-            const nextElement = getNextMindElementByDirection(board, targetElement, navigationDirection);
+        if (
+            navigationDirection &&
+            isSingleMindElement &&
+            !PlaitBoard.hasBeenTextEditing(board)
+        ) {
+            const nextElement = getNextMindElementByDirection(
+                board,
+                targetElement,
+                navigationDirection,
+                navigationSelectedElement?.previous
+            );
             if (nextElement) {
                 event.preventDefault();
-                selectMindElement(board, nextElement);
+                selectMindElement(board, nextElement, targetElement);
                 return;
             }
+            event.preventDefault();
+            return;
         }
 
         if (!PlaitBoard.isReadonly(board)) {
