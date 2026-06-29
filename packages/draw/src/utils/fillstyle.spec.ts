@@ -2,13 +2,16 @@ import { BOARD_TO_ROUGH_SVG, createTestingBoard, PlaitBoard, RectangleClient } f
 import { withDraw } from '../plugins/with-draw';
 import { Options } from 'roughjs/bin/core';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
+import { TableGenerator } from '../generators/table.generator';
 import { drawShape } from './common';
 import { TableSymbols, PlaitTable } from '../interfaces/table';
 import { PlaitGeometry, BasicShapes, FlowchartSymbols, FILL_STYLES, UMLSymbols } from '../interfaces/geometry';
 import { drawGeometry } from './geometry';
+import { createUMLClassOrInterfaceGeometryElement } from './uml';
 
 describe('fillStyle', () => {
     let board: PlaitBoard;
+    type TableBackedGeometry = PlaitGeometry & Omit<PlaitTable, 'type'>;
 
     beforeEach(() => {
         board = createTestingBoard([withDraw], []);
@@ -61,6 +64,23 @@ describe('fillStyle', () => {
             };
 
             new GeometryShapeGenerator(board).draw(element, {});
+
+            const options = rectangleSpy.calls.mostRecent().args[4] as Options;
+            expect(options.fillStyle).toBe('hachure');
+        });
+
+        it('should pass element fillStyle to table backed UML geometry', () => {
+            const roughSVG = PlaitBoard.getRoughSVG(board);
+            const rectangleSpy = spyOn(roughSVG, 'rectangle').and.callThrough();
+            const element = createUMLClassOrInterfaceGeometryElement(board, UMLSymbols.class, [
+                [0, 0],
+                [100, 100]
+            ]) as TableBackedGeometry;
+            element.fillStyle = 'hachure';
+            element.cells[0].fill = '#FF5733';
+            (board as any).buildTable = (value: TableBackedGeometry) => value;
+
+            new TableGenerator<PlaitGeometry>(board).draw(element, {});
 
             const options = rectangleSpy.calls.mostRecent().args[4] as Options;
             expect(options.fillStyle).toBe('hachure');

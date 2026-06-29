@@ -1,4 +1,4 @@
-import { TableSymbols } from '../interfaces';
+import { PlaitCommonGeometry, TableSymbols } from '../interfaces';
 import { Generator, getStrokeLineDash } from '@plait/common';
 import { PlaitElement, RectangleClient } from '@plait/core';
 import { PlaitBaseTable } from '../interfaces/table';
@@ -24,7 +24,8 @@ export class TableGenerator<T extends PlaitElement = PlaitBaseTable> extends Gen
             {
                 strokeWidth,
                 stroke: strokeColor,
-                strokeLineDash
+                strokeLineDash,
+                fillStyle: (element as unknown as PlaitBaseTable & Pick<PlaitCommonGeometry, 'fillStyle'>).fillStyle ?? 'solid'
             },
             {
                 element: element
