@@ -55,7 +55,6 @@ import {
     PlaitDrawElement,
     getSwimlaneCount,
     getSelectedTableCellsEditor,
-    getSelectedCells,
     VectorLineShape,
     isClosedDrawElement,
     FillStyle,
@@ -170,10 +169,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         this.isSelectedVectorLine = !!selectedVectorLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
         this.enableSetFillColor = selectedDrawElements.some((item) => isClosedDrawElement(item)) || this.isSelectedMind;
-        const selectedTableElements = getSelectedTableElements(this.board);
-        this.enableSetFillStyle =
-            selectedGeometryElements.some((item) => isClosedDrawElement(item) && !PlaitDrawElement.isElementByTable(item)) ||
-            !!selectedTableElements.length;
+        this.enableSetFillStyle = selectedGeometryElements.some(
+            (item) => isClosedDrawElement(item) && !PlaitDrawElement.isElementByTable(item)
+        );
         if (this.isSelectSwimlane) {
             this.swimlaneCount = getSwimlaneCount(getSelectedElements(this.board)[0] as PlaitSwimlane);
         }
@@ -190,14 +188,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             }
         }
         const selectedTableCellsEditor = getSelectedTableCellsEditor(this.board);
+        const selectedTableElements = getSelectedTableElements(this.board);
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
-            const firstTableElement = selectedTableElements[0];
-            const firstTableCell =
-                firstTableElement && ((getSelectedCells(firstTableElement)?.[0] || firstTableElement.cells.find((cell) => cell.text)) ?? undefined);
-            if (firstTableCell) {
-                this.currentFillStyle = firstTableCell.fillStyle || 'solid';
-            }
             const firstClosedGeometry = selectedGeometryElements.find(
                 (item) => isClosedDrawElement(item) && !PlaitDrawElement.isElementByTable(item)
             );
@@ -299,13 +292,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         PropertyTransforms.setProperty(this.board, { fillStyle } as Partial<PlaitElement>, {
             getMemorizeKey,
             match: (element: PlaitElement) =>
-                (PlaitDrawElement.isGeometry(element) && isClosedDrawElement(element)) || PlaitDrawElement.isElementByTable(element),
+                PlaitDrawElement.isGeometry(element) && isClosedDrawElement(element) && !PlaitDrawElement.isElementByTable(element),
             callback: (element: PlaitElement, path: Path) => {
-                if (PlaitDrawElement.isElementByTable(element)) {
-                    DrawTransforms.setTableFillStyle(this.board, element, fillStyle, path);
-                } else {
-                    Transforms.setNode(this.board, { fillStyle }, path);
-                }
+                Transforms.setNode(this.board, { fillStyle }, path);
             }
         });
     }

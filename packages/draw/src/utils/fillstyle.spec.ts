@@ -2,16 +2,13 @@ import { BOARD_TO_ROUGH_SVG, createTestingBoard, PlaitBoard, RectangleClient } f
 import { withDraw } from '../plugins/with-draw';
 import { Options } from 'roughjs/bin/core';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
-import { TableGenerator } from '../generators/table.generator';
 import { drawShape } from './common';
 import { TableSymbols, PlaitTable } from '../interfaces/table';
 import { PlaitGeometry, BasicShapes, FlowchartSymbols, FILL_STYLES, UMLSymbols } from '../interfaces/geometry';
 import { drawGeometry } from './geometry';
-import { createUMLClassOrInterfaceGeometryElement } from './uml';
 
 describe('fillStyle', () => {
     let board: PlaitBoard;
-    type TableBackedGeometry = PlaitGeometry & Omit<PlaitTable, 'type'>;
 
     beforeEach(() => {
         board = createTestingBoard([withDraw], []);
@@ -64,23 +61,6 @@ describe('fillStyle', () => {
             };
 
             new GeometryShapeGenerator(board).draw(element, {});
-
-            const options = rectangleSpy.calls.mostRecent().args[4] as Options;
-            expect(options.fillStyle).toBe('hachure');
-        });
-
-        it('should pass element fillStyle to table backed UML geometry', () => {
-            const roughSVG = PlaitBoard.getRoughSVG(board);
-            const rectangleSpy = spyOn(roughSVG, 'rectangle').and.callThrough();
-            const element = createUMLClassOrInterfaceGeometryElement(board, UMLSymbols.class, [
-                [0, 0],
-                [100, 100]
-            ]) as TableBackedGeometry;
-            element.fillStyle = 'hachure';
-            element.cells[0].fill = '#FF5733';
-            (board as any).buildTable = (value: TableBackedGeometry) => value;
-
-            new TableGenerator<PlaitGeometry>(board).draw(element, {});
 
             const options = rectangleSpy.calls.mostRecent().args[4] as Options;
             expect(options.fillStyle).toBe('hachure');
@@ -201,7 +181,7 @@ describe('fillStyle', () => {
             expect(options.fillStyle).toBe('solid');
         });
 
-        it('should use table cell fillStyle before table rough options', () => {
+        it('should keep solid fillStyle for table cell fills even when table rough options include fillStyle', () => {
             const roughSVG = PlaitBoard.getRoughSVG(board);
             const rectangleSpy = spyOn(roughSVG, 'rectangle').and.callThrough();
             const rectangle: RectangleClient = {
@@ -211,7 +191,7 @@ describe('fillStyle', () => {
                 height: 100
             };
             const table: PlaitTable = {
-                id: 'test-table-cell-fill-style',
+                id: 'test-table-solid-fill-style',
                 type: 'table',
                 points: [
                     [0, 0],
@@ -219,7 +199,7 @@ describe('fillStyle', () => {
                 ],
                 rows: [{ id: 'row-1' }],
                 columns: [{ id: 'column-1' }],
-                cells: [{ id: 'cell-1', rowId: 'row-1', columnId: 'column-1', fill: '#FF5733', fillStyle: 'hachure' }]
+                cells: [{ id: 'cell-1', rowId: 'row-1', columnId: 'column-1', fill: '#FF5733' }]
             };
             (board as any).buildTable = (element: PlaitTable) => element;
 
@@ -236,7 +216,7 @@ describe('fillStyle', () => {
             );
 
             const options = rectangleSpy.calls.mostRecent().args[4] as Options;
-            expect(options.fillStyle).toBe('hachure');
+            expect(options.fillStyle).toBe('solid');
         });
     });
 });
