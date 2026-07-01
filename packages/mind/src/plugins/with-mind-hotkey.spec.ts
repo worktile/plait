@@ -313,13 +313,173 @@ describe('with mind hotkey plugin', () => {
         expect(getSelectedElements(board)[0]).toBe(nodeD);
     }));
 
-    it('navigates visible siblings in indented layout', fakeAsync(() => {
-        createNavigationBoard(createNavigationTestingChildren(MindLayoutType.rightBottomIndented));
+    it('navigates standard split siblings within the same side', fakeAsync(() => {
+        const children = createNavigationTestingChildren();
+        children[0].rightNodeCount = 2;
+        children[0].children.push(
+            {
+                id: 'H',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'H' }] } },
+                children: []
+            },
+            {
+                id: 'I',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'I' }] } },
+                children: []
+            }
+        );
+        createNavigationBoard(children);
         const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
         const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
+        const nodeH = PlaitNode.get<MindElement>(board, [0, 2]);
+        const nodeI = PlaitNode.get<MindElement>(board, [0, 3]);
 
         navigateFrom(nodeB, DOWN_ARROW, 'ArrowDown');
-
         expect(getSelectedElements(board)[0]).toBe(nodeE);
+
+        navigateFrom(nodeE, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+
+        navigateFrom(nodeH, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeH);
+
+        navigateFrom(nodeH, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeI);
+
+        navigateFrom(nodeI, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeH);
+
+        navigateFrom(nodeH, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeH);
+
+        navigateFrom(nodeE, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+    }));
+
+    it('navigates parent, child and siblings by upward layout direction', fakeAsync(() => {
+        const root = createNavigationBoard(createNavigationTestingChildren(MindLayoutType.upward));
+        const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
+        const nodeF = PlaitNode.get<MindElement>(board, [0, 1, 0]);
+
+        navigateFrom(nodeE, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeF);
+
+        navigateFrom(nodeE, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(root);
+
+        navigateFrom(nodeE, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+    }));
+
+    it('navigates parent, child and siblings by indented layout direction', fakeAsync(() => {
+        const root = createNavigationBoard(createNavigationTestingChildren(MindLayoutType.rightBottomIndented));
+        const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nodeC = PlaitNode.get<MindElement>(board, [0, 0, 0]);
+        const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
+
+        navigateFrom(root, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(root);
+
+        navigateFrom(root, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(nodeC);
+
+        navigateFrom(nodeC, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+
+        navigateFrom(nodeE, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+    }));
+
+    it('navigates parent, child and siblings by top indented layout direction', fakeAsync(() => {
+        const root = createNavigationBoard(createNavigationTestingChildren(MindLayoutType.rightTopIndented));
+        const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nodeC = PlaitNode.get<MindElement>(board, [0, 0, 0]);
+        const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
+        const nodeF = PlaitNode.get<MindElement>(board, [0, 1, 0]);
+
+        navigateFrom(root, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+
+        navigateFrom(nodeE, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(root);
+
+        navigateFrom(root, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeB, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(nodeC);
+
+        navigateFrom(nodeC, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
+
+        navigateFrom(nodeE, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(nodeF);
+
+        navigateFrom(nodeF, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
+    }));
+
+    it('does not navigate by geometry across indented hierarchy boundaries', fakeAsync(() => {
+        const children = createNavigationTestingChildren(MindLayoutType.rightTopIndented);
+        children[0].children[0].children.push({
+            id: 'H',
+            type: 'mind_child',
+            data: { topic: { children: [{ text: 'H' }] } },
+            children: []
+        });
+        children[0].children[0].children[0].children.push({
+            id: 'I',
+            type: 'mind_child',
+            data: { topic: { children: [{ text: 'I' }] } },
+            children: []
+        });
+        createNavigationBoard(children);
+        const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nodeC = PlaitNode.get<MindElement>(board, [0, 0, 0]);
+        const nodeD = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
+        const nodeH = PlaitNode.get<MindElement>(board, [0, 0, 1]);
+        const nodeI = PlaitNode.get<MindElement>(board, [0, 0, 0, 1]);
+
+        navigateFrom(nodeI, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeI);
+
+        navigateFrom(nodeI, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeD);
+
+        navigateFrom(nodeH, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nodeH);
+
+        navigateFrom(nodeH, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nodeC);
+
+        navigateFrom(nodeC, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(nodeB);
     }));
 });
