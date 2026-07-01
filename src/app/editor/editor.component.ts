@@ -22,7 +22,15 @@ import {
     PlaitPlugin,
     isHandMode
 } from '@plait/core';
-import { mockDrawData, mockTableData, mockMindData, mockRotateData, mockGroupData, mockSwimlaneData } from './mock-data';
+import {
+    mockDrawData,
+    mockTableData,
+    mockMindData,
+    mockRotateData,
+    mockGroupData,
+    mockSwimlaneData,
+    mockMindNavigationReviewData
+} from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 import { withMindExtend } from '../plugins/with-mind-extend';
@@ -111,6 +119,9 @@ export class BasicEditorComponent implements OnInit {
             switch (init) {
                 case 'mind':
                     this.value = [...mockMindData];
+                    break;
+                case 'mind-navigation-review':
+                    this.value = [...mockMindNavigationReviewData];
                     break;
                 case 'draw':
                     this.value = [...mockDrawData];

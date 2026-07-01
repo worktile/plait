@@ -1,5 +1,6 @@
 import { PlaitMind } from '@plait/mind';
 import { PlaitDrawElement } from '@plait/draw';
+import { MindLayoutType } from '@plait/layouts';
 
 /**
  * 数据结构说明
@@ -104,6 +105,352 @@ export const mockMindData: PlaitMind[] = [
             }
         ],
         points: [[560, 360]]
+    }
+];
+
+export const mockMindNavigationReviewData: PlaitMind[] = [
+    {
+        type: 'mind',
+        id: 'review-upward-complex',
+        layout: MindLayoutType.upward,
+        rightNodeCount: 8,
+        data: { topic: { children: [{ text: 'Central Topic' }] } },
+        children: [
+            {
+                id: 'up-discovery',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'Discovery' }] } },
+                children: [
+                    {
+                        id: 'up-discovery-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'Users' }] } },
+                        children: [
+                            {
+                                id: 'up-discovery-1-1',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'Interviews' }] } },
+                                children: []
+                            },
+                            {
+                                id: 'up-discovery-1-2',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'Support tickets' }] } },
+                                children: []
+                            }
+                        ]
+                    },
+                    {
+                        id: 'up-discovery-2',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'Market' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'up-design',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'Design' }] } },
+                children: [
+                    {
+                        id: 'up-design-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'IA' }] } },
+                        children: []
+                    },
+                    {
+                        id: 'up-design-2',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'Prototype' }] } },
+                        children: [
+                            {
+                                id: 'up-design-2-1',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'Keyboard flow' }] } },
+                                children: []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'up-build',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'Build' }] } },
+                children: [
+                    {
+                        id: 'up-build-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'Core logic' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'up-test',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'Test' }] } },
+                children: [
+                    {
+                        id: 'up-test-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'Upward layout' }] } },
+                        children: []
+                    },
+                    {
+                        id: 'up-test-2',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'Fallback geometry' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'up-release',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'Release' }] } },
+                children: []
+            }
+        ],
+        points: [[360, 760]]
+    },
+    {
+        type: 'mind',
+        id: 'review-right-top-indented-complex',
+        layout: MindLayoutType.rightTopIndented,
+        rightNodeCount: 8,
+        data: { topic: { children: [{ text: 'Central Topic' }] } },
+        children: [
+            {
+                id: 'indent-a',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'A' }] } },
+                children: [
+                    {
+                        id: 'indent-a-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'A-1' }] } },
+                        children: [
+                            {
+                                id: 'indent-a-1-1',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'A-1-a' }] } },
+                                children: []
+                            },
+                            {
+                                id: 'indent-a-1-2',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'A-1-b' }] } },
+                                children: []
+                            }
+                        ]
+                    },
+                    {
+                        id: 'indent-a-2',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'A-2' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'indent-b',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: '111' }] } },
+                children: [
+                    {
+                        id: 'indent-b-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: '111-child' }] } },
+                        children: [
+                            {
+                                id: 'indent-b-1-1',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'deep' }] } },
+                                children: [
+                                    {
+                                        id: 'indent-b-1-1-1',
+                                        type: 'mind_child',
+                                        data: { topic: { children: [{ text: 'deep-a' }] } },
+                                        children: []
+                                    }
+                                ]
+                            },
+                            {
+                                id: 'indent-b-1-2',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'deep sibling' }] } },
+                                children: []
+                            }
+                        ]
+                    },
+                    {
+                        id: 'indent-b-2',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: '111-note' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'indent-c',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'C' }] } },
+                children: [
+                    {
+                        id: 'indent-c-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'C-1' }] } },
+                        children: []
+                    },
+                    {
+                        id: 'indent-c-2',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'C-2' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'indent-d',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'D' }] } },
+                children: [
+                    {
+                        id: 'indent-d-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'D-1' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'indent-e',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'E boundary' }] } },
+                children: []
+            }
+        ],
+        points: [[900, 820]]
+    },
+    {
+        type: 'mind',
+        id: 'review-standard-summary-complex',
+        layout: MindLayoutType.standard,
+        rightNodeCount: 4,
+        data: { topic: { children: [{ text: 'Central Topic' }] } },
+        children: [
+            {
+                id: 'std-a',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'A right top' }] } },
+                children: [
+                    {
+                        id: 'std-a-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'A child' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'std-b',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'B right mid' }] } },
+                children: [
+                    {
+                        id: 'std-b-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'B child 1' }] } },
+                        children: []
+                    },
+                    {
+                        id: 'std-b-2',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'B child 2' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'std-c',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: '111 right' }] } },
+                children: [
+                    {
+                        id: 'std-c-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: '111-child' }] } },
+                        children: [
+                            {
+                                id: 'std-c-1-1',
+                                type: 'mind_child',
+                                data: { topic: { children: [{ text: 'deep' }] } },
+                                children: []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'std-d',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'D right bottom' }] } },
+                children: []
+            },
+            {
+                id: 'std-e',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'E left top' }] } },
+                children: [
+                    {
+                        id: 'std-e-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'E child' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'std-f',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'F left mid' }] } },
+                children: []
+            },
+            {
+                id: 'std-g',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'G left lower' }] } },
+                children: [
+                    {
+                        id: 'std-g-1',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: 'G child' }] } },
+                        children: []
+                    }
+                ]
+            },
+            {
+                id: 'std-h',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'H left boundary' }] } },
+                children: []
+            },
+            {
+                id: 'std-summary',
+                type: 'mind_child',
+                data: { topic: { children: [{ text: 'Summary right group' }] } },
+                children: [],
+                strokeColor: '#AAAAAA',
+                strokeWidth: 2,
+                branchColor: '#AAAAAA',
+                branchWidth: 2,
+                start: 1,
+                end: 3
+            }
+        ],
+        points: [[1520, 760]]
     }
 ];
 
