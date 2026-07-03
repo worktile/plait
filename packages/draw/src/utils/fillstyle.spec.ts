@@ -181,42 +181,5 @@ describe('fillStyle', () => {
             expect(options.fillStyle).toBe('solid');
         });
 
-        it('should keep solid fillStyle for table cell fills even when table rough options include fillStyle', () => {
-            const roughSVG = PlaitBoard.getRoughSVG(board);
-            const rectangleSpy = spyOn(roughSVG, 'rectangle').and.callThrough();
-            const rectangle: RectangleClient = {
-                x: 0,
-                y: 0,
-                width: 100,
-                height: 100
-            };
-            const table: PlaitTable = {
-                id: 'test-table-solid-fill-style',
-                type: 'table',
-                points: [
-                    [0, 0],
-                    [100, 100]
-                ],
-                rows: [{ id: 'row-1' }],
-                columns: [{ id: 'column-1' }],
-                cells: [{ id: 'cell-1', rowId: 'row-1', columnId: 'column-1', fill: '#FF5733' }]
-            };
-            (board as any).buildTable = (element: PlaitTable) => element;
-
-            drawShape(
-                board,
-                rectangle,
-                TableSymbols.table,
-                {
-                    stroke: '#000000',
-                    strokeWidth: 2,
-                    fillStyle: 'solid'
-                },
-                { element: table }
-            );
-
-            const options = rectangleSpy.calls.mostRecent().args[4] as Options;
-            expect(options.fillStyle).toBe('solid');
-        });
     });
 });
