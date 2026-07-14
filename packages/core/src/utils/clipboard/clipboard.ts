@@ -15,7 +15,7 @@ import { ClipboardData, WritableClipboardContext } from './types';
 
 const SVG_MIME_TYPE = 'image/svg+xml';
 
-const getStringFromDataTransferItem = (item: DataTransferItem) => {
+const readDataTransferItemAsString = (item: DataTransferItem): Promise<string> => {
     return new Promise<string>((resolve) => {
         item.getAsString((value) => {
             resolve(value || '');
@@ -23,30 +23,20 @@ const getStringFromDataTransferItem = (item: DataTransferItem) => {
     });
 };
 
-const getSvgClipboardData = async (dataTransfer: DataTransfer): Promise<ClipboardData | null> => {
+const readSvgText = async (dataTransfer: DataTransfer): Promise<string> => {
+    const svgText = dataTransfer.getData(SVG_MIME_TYPE);
     const svgItem = Array.from(dataTransfer.items || []).find((item) => item.kind === 'string' && item.type === SVG_MIME_TYPE);
-    const svgText = svgItem ? await getStringFromDataTransferItem(svgItem) : dataTransfer.getData(SVG_MIME_TYPE);
-    if (!svgText.trim()) {
-        return null;
+    if (svgText.trim()) {
+        return svgText;
     }
+
+    return svgItem ? await readDataTransferItemAsString(svgItem) : '';
+};
+
+const createSvgClipboardData = (svgText: string): ClipboardData => {
     return {
         files: [new File([svgText], 'plait-svg-image.svg', { type: SVG_MIME_TYPE })]
     };
-};
-
-const hasSvgClipboardType = (dataTransfer: DataTransfer) => {
-    return Array.from(dataTransfer.items || []).some((item) => item.type === SVG_MIME_TYPE);
-};
-
-const getNavigatorClipboardSafely = async (): Promise<ClipboardData> => {
-    if (!getProbablySupportsClipboardRead()) {
-        return {};
-    }
-    try {
-        return await getNavigatorClipboard();
-    } catch {
-        return {};
-    }
 };
 
 export const cacheClipboardData = (clipboardData: ClipboardData) => {
@@ -58,28 +48,22 @@ export const getCachedClipboardData = () => {
 };
 
 export const getClipboardData = async (dataTransfer: DataTransfer | null): Promise<ClipboardData | null> => {
-    let clipboardData: ClipboardData = {};
     if (dataTransfer) {
         if (dataTransfer.files.length) {
             return { files: Array.from(dataTransfer.files) };
         }
-        const hasSvgType = hasSvgClipboardType(dataTransfer);
-        clipboardData = getDataTransferClipboard(dataTransfer);
-        if (Object.keys(clipboardData).length > 0) {
-            return clipboardData;
+        const plaitClipboardData = getDataTransferClipboard(dataTransfer);
+        if (Object.keys(plaitClipboardData).length > 0) {
+            return plaitClipboardData;
         }
-        const svgClipboardData = await getSvgClipboardData(dataTransfer);
-        if (svgClipboardData) {
-            return svgClipboardData;
+        const svgTextPromise = readSvgText(dataTransfer);
+        // DataTransfer is event-scoped, so preserve the plain-text fallback before awaiting the SVG item.
+        const textClipboardData = getDataTransferClipboardText(dataTransfer);
+        const svgText = await svgTextPromise;
+        if (svgText.trim()) {
+            return createSvgClipboardData(svgText);
         }
-        if (hasSvgType) {
-            const navigatorClipboardData = await getNavigatorClipboardSafely();
-            if (navigatorClipboardData.files?.length) {
-                return navigatorClipboardData;
-            }
-        }
-        clipboardData = getDataTransferClipboardText(dataTransfer);
-        return clipboardData;
+        return textClipboardData;
     }
     if (getProbablySupportsClipboardRead()) {
         return await getNavigatorClipboard();

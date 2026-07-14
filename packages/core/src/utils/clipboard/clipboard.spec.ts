@@ -13,11 +13,16 @@ const readFileText = (file: File) => {
     });
 };
 
-const createSvgDataTransferItem = (svg: string) => {
+const createSvgDataTransferItem = (svg: string, onRead?: () => void) => {
     return {
         kind: 'string',
         type: SVG_MIME_TYPE,
-        getAsString: (callback: FunctionStringCallback | null) => callback?.(svg)
+        getAsString: (callback: FunctionStringCallback | null) => {
+            queueMicrotask(() => {
+                onRead?.();
+                callback?.(svg);
+            });
+        }
     } as DataTransferItem;
 };
 
@@ -51,20 +56,18 @@ const createDataTransfer = ({
 };
 
 describe('getClipboardData', () => {
-    let originalClipboard: Clipboard | undefined;
-    let originalClipboardItem: typeof ClipboardItem | undefined;
+    let originalClipboardDescriptor: PropertyDescriptor | undefined;
 
     beforeEach(() => {
-        originalClipboard = navigator.clipboard;
-        originalClipboardItem = window.ClipboardItem;
+        originalClipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
     });
 
     afterEach(() => {
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: originalClipboard
-        });
-        (window as any).ClipboardItem = originalClipboardItem;
+        if (originalClipboardDescriptor) {
+            Object.defineProperty(navigator, 'clipboard', originalClipboardDescriptor);
+        } else {
+            Reflect.deleteProperty(navigator, 'clipboard');
+        }
     });
 
     it('should read SVG clipboard content from string data transfer item as a file', async () => {
@@ -107,23 +110,14 @@ describe('getClipboardData', () => {
         expect(file && (await readFileText(file))).toBe(svg);
     });
 
-    it('should fall back to navigator clipboard when SVG data transfer item has no string data', async () => {
+    it('should use synchronous SVG MIME data when the SVG item string is empty', async () => {
         const svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h10v10z"/></svg>';
-        class MockClipboardItem {
-            types = [SVG_MIME_TYPE];
-
-            async getType(type: string) {
-                return new Blob([svg], { type });
-            }
-        }
-        (window as any).ClipboardItem = MockClipboardItem;
         Object.defineProperty(navigator, 'clipboard', {
             configurable: true,
-            value: {
-                read: () => Promise.resolve([new MockClipboardItem()])
-            }
+            value: {}
         });
         const dataTransfer = createDataTransfer({
+            svg,
             items: [createSvgDataTransferItem('')]
         });
 
@@ -135,37 +129,34 @@ describe('getClipboardData', () => {
         expect(file && (await readFileText(file))).toBe(svg);
     });
 
-    it('should preserve SVG type before async string reading invalidates data transfer items', async () => {
-        const svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h20v20z"/></svg>';
-        class MockClipboardItem {
-            types = [SVG_MIME_TYPE];
-
-            async getType(type: string) {
-                return new Blob([svg], { type });
-            }
-        }
-        (window as any).ClipboardItem = MockClipboardItem;
+    it('should preserve plain text before async SVG reading without using navigator clipboard', async () => {
+        const text = 'plain text clipboard data';
+        let dataTransferReadable = true;
+        const read = jasmine.createSpy('read').and.callFake(() => Promise.reject(new Error('unexpected navigator clipboard read')));
         Object.defineProperty(navigator, 'clipboard', {
             configurable: true,
             value: {
-                read: () => Promise.resolve([new MockClipboardItem()])
+                read
             }
         });
-        let itemsAccessCount = 0;
         const dataTransfer = {
             files: { length: 0 },
-            get items() {
-                itemsAccessCount++;
-                return itemsAccessCount === 1 ? [createSvgDataTransferItem('')] : [];
-            },
-            getData: () => ''
+            items: [
+                createSvgDataTransferItem('', () => {
+                    dataTransferReadable = false;
+                })
+            ],
+            getData: (type: string) => {
+                if (!dataTransferReadable) {
+                    return '';
+                }
+                return type === 'text/plain' ? text : '';
+            }
         } as unknown as DataTransfer;
 
         const clipboardData = await getClipboardData(dataTransfer);
-        const file = clipboardData?.files?.[0];
 
-        expect(file).toBeTruthy();
-        expect(file?.type).toBe(SVG_MIME_TYPE);
-        expect(file && (await readFileText(file))).toBe(svg);
+        expect(clipboardData?.text).toBe(text);
+        expect(read).not.toHaveBeenCalled();
     });
 });
