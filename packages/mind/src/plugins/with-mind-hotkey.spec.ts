@@ -30,9 +30,10 @@ import { PlaitMindBoard } from './with-mind.board';
 import { createMindElement } from '../utils';
 import { MindElement, PlaitMind } from '@plait/mind';
 import { fakeMindLayout, clearLayoutNodeWeakMap } from '../testing/core/fake-layout-node';
-import { MindNode } from '../interfaces';
+import { LayoutDirection, MindNode } from '../interfaces';
 import { withMind } from './with-mind';
 import { MindLayoutType } from '@plait/layouts';
+import { resolveLayoutRelationDirection } from '../utils/position/layout-direction';
 
 const createNavigationTestingChildren = (layout?: MindLayoutType): MindElement[] => [
     {
@@ -73,6 +74,25 @@ const createNavigationTestingChildren = (layout?: MindLayoutType): MindElement[]
         isCollapsed: false
     }
 ];
+
+const createNestedNavigationTestingChildren = (outerLayout = MindLayoutType.rightTopIndented, nestedLayout = MindLayoutType.right) => {
+    const children = createNavigationTestingChildren(outerLayout);
+    const nestedLayoutRoot = children[0].children[0];
+    nestedLayoutRoot.layout = nestedLayout;
+    nestedLayoutRoot.children.push({
+        id: 'H',
+        type: 'mind_child',
+        data: { topic: { children: [{ text: 'H' }] } },
+        children: []
+    });
+    nestedLayoutRoot.children.push({
+        id: 'I',
+        type: 'mind_child',
+        data: { topic: { children: [{ text: 'I' }] } },
+        children: []
+    });
+    return children;
+};
 
 describe('with mind hotkey plugin', () => {
     let board: PlaitBoard;
@@ -262,7 +282,7 @@ describe('with mind hotkey plugin', () => {
         expect(getSelectedElements(board)[0]).toBe(root);
     }));
 
-    it('prefers parent over previous sibling for horizontal structure navigation', fakeAsync(() => {
+    it('uses the parent relation for horizontal structure navigation', fakeAsync(() => {
         const root = createNavigationBoard();
         const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
         const nodeE = PlaitNode.get<MindElement>(board, [0, 1]);
@@ -313,7 +333,7 @@ describe('with mind hotkey plugin', () => {
         expect(getSelectedElements(board)[0]).toBe(nodeD);
     }));
 
-    it('navigates standard split siblings within the same side', fakeAsync(() => {
+    it('navigates standard siblings across the right and left branch boundary', fakeAsync(() => {
         const children = createNavigationTestingChildren();
         children[0].rightNodeCount = 2;
         children[0].children.push(
@@ -340,10 +360,10 @@ describe('with mind hotkey plugin', () => {
         expect(getSelectedElements(board)[0]).toBe(nodeE);
 
         navigateFrom(nodeE, DOWN_ARROW, 'ArrowDown');
-        expect(getSelectedElements(board)[0]).toBe(nodeE);
+        expect(getSelectedElements(board)[0]).toBe(nodeH);
 
         navigateFrom(nodeH, UP_ARROW, 'ArrowUp');
-        expect(getSelectedElements(board)[0]).toBe(nodeH);
+        expect(getSelectedElements(board)[0]).toBe(nodeE);
 
         navigateFrom(nodeH, DOWN_ARROW, 'ArrowDown');
         expect(getSelectedElements(board)[0]).toBe(nodeI);
@@ -351,14 +371,8 @@ describe('with mind hotkey plugin', () => {
         navigateFrom(nodeI, UP_ARROW, 'ArrowUp');
         expect(getSelectedElements(board)[0]).toBe(nodeH);
 
-        navigateFrom(nodeH, UP_ARROW, 'ArrowUp');
-        expect(getSelectedElements(board)[0]).toBe(nodeH);
-
         navigateFrom(nodeE, UP_ARROW, 'ArrowUp');
         expect(getSelectedElements(board)[0]).toBe(nodeB);
-
-        navigateFrom(nodeB, DOWN_ARROW, 'ArrowDown');
-        expect(getSelectedElements(board)[0]).toBe(nodeE);
     }));
 
     it('navigates parent, child and siblings by upward layout direction', fakeAsync(() => {
@@ -444,6 +458,139 @@ describe('with mind hotkey plugin', () => {
 
         navigateFrom(nodeF, LEFT_ARROW, 'ArrowLeft');
         expect(getSelectedElements(board)[0]).toBe(nodeE);
+    }));
+
+    it('uses the outer parent-child context for a nested layout root', fakeAsync(() => {
+        const root = createNavigationBoard(createNestedNavigationTestingChildren());
+        const nestedLayoutRoot = PlaitNode.get<MindElement>(board, [0, 0]);
+
+        navigateFrom(root, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nestedLayoutRoot);
+
+        navigateFrom(nestedLayoutRoot, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(root);
+    }));
+
+    it('resolves nested relationship directions from each layout owner', () => {
+        const root = createNavigationBoard(createNestedNavigationTestingChildren());
+        const nestedLayoutRoot = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nestedChild = PlaitNode.get<MindElement>(board, [0, 0, 0]);
+
+        expect(
+            resolveLayoutRelationDirection(board, {
+                type: 'parent-child',
+                parent: root,
+                child: nestedLayoutRoot
+            })
+        ).toBe(LayoutDirection.top);
+        expect(
+            resolveLayoutRelationDirection(board, {
+                type: 'sibling',
+                parent: root,
+                order: 'next'
+            })
+        ).toBe(LayoutDirection.top);
+        expect(
+            resolveLayoutRelationDirection(board, {
+                type: 'sibling',
+                parent: root,
+                order: 'previous'
+            })
+        ).toBe(LayoutDirection.bottom);
+        expect(
+            resolveLayoutRelationDirection(board, {
+                type: 'parent-child',
+                parent: nestedLayoutRoot,
+                child: nestedChild
+            })
+        ).toBe(LayoutDirection.right);
+        expect(
+            resolveLayoutRelationDirection(board, {
+                type: 'sibling',
+                parent: nestedLayoutRoot,
+                order: 'next'
+            })
+        ).toBe(LayoutDirection.top);
+        expect(
+            resolveLayoutRelationDirection(board, {
+                type: 'sibling',
+                parent: nestedLayoutRoot,
+                order: 'previous'
+            })
+        ).toBe(LayoutDirection.bottom);
+    });
+
+    it('uses the outer sibling context at a nested layout boundary', fakeAsync(() => {
+        createNavigationBoard(createNestedNavigationTestingChildren());
+        const nestedLayoutRoot = PlaitNode.get<MindElement>(board, [0, 0]);
+        const nextOuterSibling = PlaitNode.get<MindElement>(board, [0, 1]);
+
+        navigateFrom(nestedLayoutRoot, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(nextOuterSibling);
+
+        navigateFrom(nextOuterSibling, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(nestedLayoutRoot);
+    }));
+
+    it('uses the nested layout context for descendant navigation', fakeAsync(() => {
+        createNavigationBoard(createNestedNavigationTestingChildren());
+        const nestedLayoutRoot = PlaitNode.get<MindElement>(board, [0, 0]);
+        const firstChild = PlaitNode.get<MindElement>(board, [0, 0, 0]);
+        const firstGrandchild = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
+        const secondChild = PlaitNode.get<MindElement>(board, [0, 0, 1]);
+        const thirdChild = PlaitNode.get<MindElement>(board, [0, 0, 2]);
+
+        navigateFrom(nestedLayoutRoot, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(firstChild);
+
+        navigateFrom(firstChild, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(firstGrandchild);
+
+        navigateFrom(firstGrandchild, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(firstChild);
+
+        navigateFrom(firstChild, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(secondChild);
+
+        navigateFrom(secondChild, UP_ARROW, 'ArrowUp');
+        expect(getSelectedElements(board)[0]).toBe(thirdChild);
+
+        navigateFrom(thirdChild, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(secondChild);
+
+        navigateFrom(secondChild, DOWN_ARROW, 'ArrowDown');
+        expect(getSelectedElements(board)[0]).toBe(firstChild);
+
+        navigateFrom(firstChild, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(nestedLayoutRoot);
+    }));
+
+    it('uses the rendered horizontal mirror for vertical-layout siblings', fakeAsync(() => {
+        createNavigationBoard(createNestedNavigationTestingChildren(MindLayoutType.left, MindLayoutType.downward));
+        const nestedLayoutRoot = PlaitNode.get<MindElement>(board, [0, 0]);
+        const firstChild = PlaitNode.get<MindElement>(board, [0, 0, 0]);
+        const secondChild = PlaitNode.get<MindElement>(board, [0, 0, 1]);
+        const thirdChild = PlaitNode.get<MindElement>(board, [0, 0, 2]);
+
+        expect(
+            resolveLayoutRelationDirection(board, {
+                type: 'sibling',
+                parent: nestedLayoutRoot,
+                order: 'next'
+            })
+        ).toBe(LayoutDirection.left);
+
+        navigateFrom(firstChild, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(secondChild);
+
+        navigateFrom(secondChild, LEFT_ARROW, 'ArrowLeft');
+        expect(getSelectedElements(board)[0]).toBe(thirdChild);
+
+        navigateFrom(thirdChild, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(secondChild);
+
+        navigateFrom(secondChild, RIGHT_ARROW, 'ArrowRight');
+        expect(getSelectedElements(board)[0]).toBe(firstChild);
     }));
 
     it('does not navigate by geometry across indented hierarchy boundaries', fakeAsync(() => {

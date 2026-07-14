@@ -108,13 +108,21 @@ export const mockMindData: PlaitMind[] = [
     }
 ];
 
+/**
+ * Manual review route: /?init=mind-navigation-review
+ *
+ * Nested ownership: outer root Up -> A, A Down -> root, A Up -> B,
+ * B Down -> A, A Right -> A-1, A-1 Up -> A-2 -> 111,
+ * then 111 Down -> A-2 -> A-1.
+ * Standard boundary: D Down -> E, E Up -> D.
+ */
 export const mockMindNavigationReviewData: PlaitMind[] = [
     {
         type: 'mind',
         id: 'review-upward-complex',
         layout: MindLayoutType.upward,
         rightNodeCount: 8,
-        data: { topic: { children: [{ text: 'Central Topic' }] } },
+        data: { topic: { children: [{ text: 'Upward layout' }] } },
         children: [
             {
                 id: 'up-discovery',
@@ -220,17 +228,18 @@ export const mockMindNavigationReviewData: PlaitMind[] = [
         id: 'review-right-top-indented-complex',
         layout: MindLayoutType.rightTopIndented,
         rightNodeCount: 8,
-        data: { topic: { children: [{ text: 'Central Topic' }] } },
+        data: { topic: { children: [{ text: 'Outer rightTopIndented' }] } },
         children: [
             {
                 id: 'indent-a',
                 type: 'mind_child',
-                data: { topic: { children: [{ text: 'A' }] } },
+                layout: MindLayoutType.right,
+                data: { topic: { children: [{ text: 'A · nested right' }] } },
                 children: [
                     {
                         id: 'indent-a-1',
                         type: 'mind_child',
-                        data: { topic: { children: [{ text: 'A-1' }] } },
+                        data: { topic: { children: [{ text: 'A-1 · nested child' }] } },
                         children: [
                             {
                                 id: 'indent-a-1-1',
@@ -249,7 +258,13 @@ export const mockMindNavigationReviewData: PlaitMind[] = [
                     {
                         id: 'indent-a-2',
                         type: 'mind_child',
-                        data: { topic: { children: [{ text: 'A-2' }] } },
+                        data: { topic: { children: [{ text: 'A-2 · nested child' }] } },
+                        children: []
+                    },
+                    {
+                        id: 'indent-a-3',
+                        type: 'mind_child',
+                        data: { topic: { children: [{ text: '111 · nested child' }] } },
                         children: []
                     }
                 ]
@@ -257,7 +272,7 @@ export const mockMindNavigationReviewData: PlaitMind[] = [
             {
                 id: 'indent-b',
                 type: 'mind_child',
-                data: { topic: { children: [{ text: '111' }] } },
+                data: { topic: { children: [{ text: 'B · outer sibling' }] } },
                 children: [
                     {
                         id: 'indent-b-1',
@@ -339,7 +354,7 @@ export const mockMindNavigationReviewData: PlaitMind[] = [
         id: 'review-standard-summary-complex',
         layout: MindLayoutType.standard,
         rightNodeCount: 4,
-        data: { topic: { children: [{ text: 'Central Topic' }] } },
+        data: { topic: { children: [{ text: 'Standard split boundary' }] } },
         children: [
             {
                 id: 'std-a',
@@ -396,13 +411,13 @@ export const mockMindNavigationReviewData: PlaitMind[] = [
             {
                 id: 'std-d',
                 type: 'mind_child',
-                data: { topic: { children: [{ text: 'D right bottom' }] } },
+                data: { topic: { children: [{ text: 'D · last right' }] } },
                 children: []
             },
             {
                 id: 'std-e',
                 type: 'mind_child',
-                data: { topic: { children: [{ text: 'E left top' }] } },
+                data: { topic: { children: [{ text: 'E · first left' }] } },
                 children: [
                     {
                         id: 'std-e-1',

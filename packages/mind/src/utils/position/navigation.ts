@@ -1,17 +1,11 @@
 import { Direction, PlaitBoard, RectangleClient, depthFirstRecursion, getIsRecursionFunc, isHorizontalDirection } from '@plait/core';
-import { AbstractNode, MindLayoutType, isHorizontalLayout, isIndentedLayout, isRightLayout, isTopLayout } from '@plait/layouts';
-import { LayoutDirection, MindElement, PlaitMind } from '../../interfaces';
+import { AbstractNode, MindLayoutType, isHorizontalLayout, isIndentedLayout, isRightLayout } from '@plait/layouts';
+import { LayoutDirection, MindElement } from '../../interfaces';
 import { MindQueries } from '../../queries';
 import { getLayoutDirection as getNodeLayoutDirection } from '../point-placement';
 import { getLayoutReverseDirection } from '../layout';
+import { resolveLayoutRelationDirection } from './layout-direction';
 import { getRectangleByNode } from './node';
-
-const LayoutDirectionToDirection = {
-    [LayoutDirection.left]: Direction.left,
-    [LayoutDirection.right]: Direction.right,
-    [LayoutDirection.top]: Direction.top,
-    [LayoutDirection.bottom]: Direction.bottom
-};
 
 const DirectionToLayoutDirection = {
     [Direction.left]: LayoutDirection.left,
@@ -39,7 +33,7 @@ const isInNavigationDirection = (direction: Direction, source: MindElement, targ
     return targetCenter[1] > sourceCenter[1];
 };
 
-const hasCrossAxisOverlap = (direction: Direction, source: MindElement, target: MindElement) => {
+const isInSameNavigationLane = (direction: Direction, source: MindElement, target: MindElement) => {
     const sourceRectangle = getRectangleByNode(MindElement.getNode(source));
     const targetRectangle = getRectangleByNode(MindElement.getNode(target));
     if (isHorizontalDirection(direction)) {
@@ -109,93 +103,107 @@ const getCorrectLayout = (board: PlaitBoard, element: MindElement) => {
     return MindQueries.getCorrectLayoutByElement(board, element) as MindLayoutType;
 };
 
-const getIndentedHierarchyLayoutDirection = (layout: MindLayoutType) => {
-    return isRightLayout(layout) ? LayoutDirection.right : LayoutDirection.left;
-};
-
-const getIndentedBranchLayoutDirection = (layout: MindLayoutType) => {
-    return isTopLayout(layout) ? LayoutDirection.top : LayoutDirection.bottom;
-};
-
-const getParentChildLayoutDirection = (board: PlaitBoard, element: MindElement) => {
+const getGeometryLayoutDirection = (board: PlaitBoard, element: MindElement) => {
     const node = MindElement.getNode(element);
     const layout = getCorrectLayout(board, element);
     if (isIndentedLayout(layout)) {
-        return getIndentedHierarchyLayoutDirection(layout);
+        return isRightLayout(layout) ? LayoutDirection.right : LayoutDirection.left;
     }
     return getNodeLayoutDirection(node, isHorizontalLayout(layout));
 };
 
-const getChildLayoutDirection = (board: PlaitBoard, source: MindElement, child: MindElement) => {
-    const layout = getCorrectLayout(board, child);
-    if (PlaitMind.isMind(source) && isIndentedLayout(layout)) {
-        return getIndentedBranchLayoutDirection(layout);
-    }
-    return getParentChildLayoutDirection(board, child);
-};
+type LayoutNavigationRelation = 'parent' | 'child' | 'previous-sibling' | 'next-sibling';
 
-const getVisibleSiblingByDirection = (board: PlaitBoard, source: MindElement, direction: Direction) => {
+interface LayoutNavigationCandidate {
+    element: MindElement;
+    relation: LayoutNavigationRelation;
+    direction: LayoutDirection;
+}
+
+const getLayoutNavigationCandidates = (board: PlaitBoard, source: MindElement): LayoutNavigationCandidate[] => {
+    const candidates: LayoutNavigationCandidate[] = [];
     const parent = getVisibleParent(source);
-    if (!parent) {
-        return undefined;
+
+    if (parent) {
+        const incomingDirection = resolveLayoutRelationDirection(board, {
+            type: 'parent-child',
+            parent,
+            child: source
+        });
+        candidates.push({
+            element: parent,
+            relation: 'parent',
+            direction: getLayoutReverseDirection(incomingDirection)
+        });
     }
-    const layout = getCorrectLayout(board, source);
-    const parentChildDirection = getParentChildLayoutDirection(board, source);
-    const previousSiblingDirection = isIndentedLayout(layout)
-        ? getLayoutReverseDirection(getIndentedBranchLayoutDirection(layout))
-        : isHorizontalDirection(LayoutDirectionToDirection[parentChildDirection])
-        ? LayoutDirection.top
-        : LayoutDirection.left;
-    const nextSiblingDirection = isIndentedLayout(layout)
-        ? getIndentedBranchLayoutDirection(layout)
-        : isHorizontalDirection(LayoutDirectionToDirection[parentChildDirection])
-        ? LayoutDirection.bottom
-        : LayoutDirection.right;
-    if (
-        direction !== LayoutDirectionToDirection[previousSiblingDirection] &&
-        direction !== LayoutDirectionToDirection[nextSiblingDirection]
-    ) {
-        return undefined;
+
+    getVisibleChildren(board, source).forEach((child) => {
+        candidates.push({
+            element: child,
+            relation: 'child',
+            direction: resolveLayoutRelationDirection(board, {
+                type: 'parent-child',
+                parent: source,
+                child
+            })
+        });
+    });
+
+    if (parent) {
+        const siblings = getVisibleChildren(board, parent);
+        const sourceIndex = siblings.indexOf(source);
+        if (sourceIndex !== -1) {
+            const previousSibling = siblings[sourceIndex - 1];
+            const nextSibling = siblings[sourceIndex + 1];
+
+            if (previousSibling) {
+                candidates.push({
+                    element: previousSibling,
+                    relation: 'previous-sibling',
+                    direction: resolveLayoutRelationDirection(board, {
+                        type: 'sibling',
+                        parent,
+                        order: 'previous'
+                    })
+                });
+            }
+
+            if (nextSibling) {
+                candidates.push({
+                    element: nextSibling,
+                    relation: 'next-sibling',
+                    direction: resolveLayoutRelationDirection(board, {
+                        type: 'sibling',
+                        parent,
+                        order: 'next'
+                    })
+                });
+            }
+        }
     }
-    const sourceLayoutDirection = getChildLayoutDirection(board, parent, source);
-    const siblings = getVisibleChildren(board, parent).filter(
-        (sibling) => getChildLayoutDirection(board, parent, sibling) === sourceLayoutDirection
-    );
-    const sourceIndex = siblings.indexOf(source);
-    if (sourceIndex === -1) {
-        return undefined;
-    }
-    if (direction === LayoutDirectionToDirection[previousSiblingDirection]) {
-        return siblings[sourceIndex - 1];
-    }
-    if (direction === LayoutDirectionToDirection[nextSiblingDirection]) {
-        return siblings[sourceIndex + 1];
-    }
-    return undefined;
+
+    return candidates;
 };
 
-const getParentOrChildByLayoutDirection = (board: PlaitBoard, source: MindElement, direction: Direction, previousElement?: MindElement) => {
-    const layoutDirection = DirectionToLayoutDirection[direction];
-    const parent = getVisibleParent(source);
-    if (parent && getLayoutReverseDirection(getChildLayoutDirection(board, parent, source)) === layoutDirection) {
-        return parent;
+const resolveLayoutNavigationTarget = (
+    candidates: LayoutNavigationCandidate[],
+    direction: LayoutDirection,
+    previousElement?: MindElement
+) => {
+    const matches = candidates.filter((candidate) => candidate.direction === direction);
+    const sibling = matches.find((candidate) => candidate.relation === 'previous-sibling' || candidate.relation === 'next-sibling');
+    if (sibling) {
+        return sibling.element;
     }
-    const children = getVisibleChildren(board, source);
-    if (
-        previousElement &&
-        children.includes(previousElement) &&
-        getChildLayoutDirection(board, source, previousElement) === layoutDirection
-    ) {
-        return previousElement;
-    }
-    return children.find((child) => getChildLayoutDirection(board, source, child) === layoutDirection);
-};
 
-const getNextMindElementByStructure = (board: PlaitBoard, source: MindElement, direction: Direction, previousElement?: MindElement) => {
-    return (
-        getVisibleSiblingByDirection(board, source, direction) ||
-        getParentOrChildByLayoutDirection(board, source, direction, previousElement)
-    );
+    const parent = matches.find((candidate) => candidate.relation === 'parent');
+    if (parent) {
+        return parent.element;
+    }
+
+    const children = matches.filter((candidate) => candidate.relation === 'child');
+    const rememberedChild = children.find((candidate) => candidate.element === previousElement);
+    return rememberedChild?.element || children[0]?.element;
 };
 
 const getNextMindElementByGeometry = (board: PlaitBoard, source: MindElement, direction: Direction) => {
@@ -203,16 +211,16 @@ const getNextMindElementByGeometry = (board: PlaitBoard, source: MindElement, di
         return undefined;
     }
     const root = MindElement.getRoot(board, source);
-    const sourceLayoutDirection = getParentChildLayoutDirection(board, source);
+    const sourceLayoutDirection = getGeometryLayoutDirection(board, source);
     const sourceDepth = getVisibleDepth(source);
     return getVisibleMindElements(board, root)
         .filter(
             (element) =>
                 element !== source &&
                 getVisibleDepth(element) === sourceDepth &&
-                getParentChildLayoutDirection(board, element) === sourceLayoutDirection &&
+                getGeometryLayoutDirection(board, element) === sourceLayoutDirection &&
                 isInNavigationDirection(direction, source, element) &&
-                hasCrossAxisOverlap(direction, source, element)
+                isInSameNavigationLane(direction, source, element)
         )
         .sort((a, b) => {
             const primaryDistance = getPrimaryDistance(direction, source, a) - getPrimaryDistance(direction, source, b);
@@ -229,7 +237,9 @@ export const getNextMindElementByDirection = (
     direction: Direction,
     previousElement?: MindElement
 ) => {
-    return (
-        getNextMindElementByStructure(board, source, direction, previousElement) || getNextMindElementByGeometry(board, source, direction)
-    );
+    const layoutDirection = DirectionToLayoutDirection[direction];
+    const candidates = getLayoutNavigationCandidates(board, source);
+    const layoutTarget = resolveLayoutNavigationTarget(candidates, layoutDirection, previousElement);
+
+    return layoutTarget || getNextMindElementByGeometry(board, source, direction);
 };
