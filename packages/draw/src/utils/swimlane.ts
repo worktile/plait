@@ -140,6 +140,6 @@ export const adjustSwimlaneShape = (shape: SwimlaneDrawSymbols): SwimlaneSymbols
         : SwimlaneSymbols.swimlaneVertical;
 };
 
-export const isSwimlanePointers = (board: PlaitBoard, pointer: string = board.pointer) => {
+export const isSwimlanePointers = (board: PlaitBoard, pointer: string = PlaitBoard.getPointer(board)) => {
     return getSwimlanePointers().includes(pointer);
 };

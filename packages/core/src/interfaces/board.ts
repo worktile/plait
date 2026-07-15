@@ -12,6 +12,7 @@ import {
     BOARD_TO_MOVING_POINT,
     BOARD_TO_MOVING_POINT_IN_BOARD,
     BOARD_TO_ROUGH_SVG,
+    BOARD_TO_TEMPORARY_POINTER,
     IS_BOARD_ALIVE,
     IS_BOARD_CACHE,
     IS_TEXT_EDITABLE,
@@ -193,13 +194,13 @@ export const PlaitBoard = {
         return !!IS_TEXT_EDITABLE.get(board);
     },
     getPointer<T = PlaitPointerType>(board: PlaitBoard) {
-        return board.pointer as T;
+        return (BOARD_TO_TEMPORARY_POINTER.get(board) ?? board.pointer) as T;
     },
     isPointer<T = PlaitPointerType>(board: PlaitBoard, pointer: T) {
-        return board.pointer === pointer;
+        return PlaitBoard.getPointer(board) === pointer;
     },
     isInPointer<T = PlaitPointerType>(board: PlaitBoard, pointers: T[]) {
-        const point = board.pointer as T;
+        const point = PlaitBoard.getPointer<T>(board);
         return pointers.includes(point);
     },
     getMovingPointInBoard(board: PlaitBoard) {

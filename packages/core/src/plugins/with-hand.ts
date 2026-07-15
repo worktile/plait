@@ -1,10 +1,10 @@
 import { DRAG_SELECTION_PRESS_AND_MOVE_BUFFER } from '../constants';
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove, WithHandPluginOptions, PlaitPluginKey } from '../interfaces';
 import {
+    BOARD_TO_TEMPORARY_POINTER,
     distanceBetweenPointAndPoint,
     isMovingElements,
     isSelectionMoving,
-    setSelectionOptions,
     toHostPoint,
     toViewBoxPoint
 } from '../utils';
@@ -22,24 +22,29 @@ export const isHandMode = (board: PlaitBoard) => {
 };
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
-    const { pointerDown, pointerMove, globalPointerUp, keyDown, keyUp, pointerUp } = board;
+    const { pointerDown, pointerMove, pointerCancel, globalPointerUp, keyDown, keyUp, pointerUp } = board;
     let isHandMoving: boolean = false;
     let movingPoint: PlaitBoardMove | null = null;
     let pointerDownEvent: PointerEvent | null = null;
     let hasWheelPressed = false;
     let hasSecondaryPressed = false;
-    let beingPressedShortcutKey = false;
+    let isShortcutKeyPressed = false;
+    let isShortcutPointerDown = false;
+    let isMainPointerPressed = false;
 
     board.pointerDown = (event: PointerEvent) => {
+        if (isMainPointer(event)) {
+            isMainPointerPressed = true;
+        }
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
-        const canEnterHandMode =
-            options?.isHandMode(board, event) || PlaitBoard.isPointer(board, PlaitPointerType.hand) || beingPressedShortcutKey;
+        const canEnterHandMode = options?.isHandMode(board, event) || PlaitBoard.isPointer(board, PlaitPointerType.hand);
         if (canEnterHandMode && isMainPointer(event)) {
+            isShortcutPointerDown = BOARD_TO_TEMPORARY_POINTER.has(board);
             movingPoint = {
                 x: event.x,
                 y: event.y
             };
-            if (!PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
+            if (board.pointer !== PlaitPointerType.hand) {
                 PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             }
         } else if (isWheelPointer(event)) {
@@ -65,6 +70,11 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.pointerMove = (event: PointerEvent) => {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
         const triggerDistance = DRAG_SELECTION_PRESS_AND_MOVE_BUFFER + 4;
+        const canEnterHandMode =
+            options?.isHandMode(board, event) ||
+            PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
+            hasWheelPressed ||
+            hasSecondaryPressed;
 
         if (hasSecondaryPressed && movingPoint && !isHandMoving && pointerDownEvent) {
             const distance = distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y);
@@ -76,6 +86,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         if (
             movingPoint &&
             !isHandMoving &&
+            canEnterHandMode &&
             !isSelectionMoving(board) &&
             pointerDownEvent &&
             distanceBetweenPointAndPoint(pointerDownEvent.x, pointerDownEvent.y, event.x, event.y) > triggerDistance &&
@@ -83,13 +94,6 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         ) {
             enterHandMode();
         }
-
-        const canEnterHandMode =
-            options?.isHandMode(board, event) ||
-            PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
-            hasWheelPressed ||
-            hasSecondaryPressed ||
-            beingPressedShortcutKey;
 
         if (canEnterHandMode && isHandMoving && movingPoint && !isSelectionMoving(board) && !isMovingElements(board)) {
             const viewportContainer = PlaitBoard.getViewportContainer(board);
@@ -103,13 +107,15 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.pointerUp = (event: PointerEvent) => {
-        if (isHandMoving) {
+        isMainPointerPressed = false;
+        if (isHandMoving || isShortcutPointerDown) {
             return;
         }
         pointerUp(event);
     };
 
     board.globalPointerUp = (event: PointerEvent) => {
+        isMainPointerPressed = false;
         if (movingPoint) {
             movingPoint = null;
         }
@@ -117,13 +123,30 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         hasWheelPressed = false;
         hasSecondaryPressed = false;
         globalPointerUp(event);
+        isShortcutPointerDown = false;
+        if (!isShortcutKeyPressed) {
+            BOARD_TO_TEMPORARY_POINTER.delete(board);
+        }
+    };
+
+    board.pointerCancel = (event: PointerEvent) => {
+        pointerCancel(event);
+        isMainPointerPressed = false;
+        movingPoint = null;
+        exitHandMode();
+        hasWheelPressed = false;
+        hasSecondaryPressed = false;
+        isShortcutPointerDown = false;
+        if (!isShortcutKeyPressed) {
+            BOARD_TO_TEMPORARY_POINTER.delete(board);
+        }
     };
 
     board.keyDown = (event: KeyboardEvent) => {
         if (event.code === ShortcutKey) {
-            if (!board.options.readonly && !PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
-                beingPressedShortcutKey = true;
-                setSelectionOptions(board, { isDisabledSelection: true });
+            if (!board.options.readonly && !isMainPointerPressed && board.pointer !== PlaitPointerType.hand) {
+                isShortcutKeyPressed = true;
+                BOARD_TO_TEMPORARY_POINTER.set(board, PlaitPointerType.hand);
                 PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             }
             event.preventDefault();
@@ -132,10 +155,12 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.keyUp = (event: KeyboardEvent) => {
-        if (!board.options.readonly && event.code === ShortcutKey) {
-            beingPressedShortcutKey = false;
-            setSelectionOptions(board, { isDisabledSelection: false });
-            PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
+        if (event.code === ShortcutKey) {
+            isShortcutKeyPressed = false;
+            if (!isShortcutPointerDown) {
+                BOARD_TO_TEMPORARY_POINTER.delete(board);
+                PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
+            }
         }
         keyUp(event);
     };

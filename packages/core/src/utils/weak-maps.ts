@@ -55,6 +55,8 @@ export const BOARD_TO_MOVING_POINT_IN_BOARD = new WeakMap<PlaitBoard, Point>();
 
 export const BOARD_TO_MOVING_POINT = new WeakMap<PlaitBoard, Point>();
 
+export const BOARD_TO_TEMPORARY_POINTER = new WeakMap<PlaitBoard, string>();
+
 export const BOARD_TO_VIEWPORT_ORIGINATION = new WeakMap<PlaitBoard, Point>();
 
 export const BOARD_TO_IS_SELECTION_MOVING = new WeakMap<PlaitBoard, boolean>();

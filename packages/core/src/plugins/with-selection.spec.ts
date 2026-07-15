@@ -1,8 +1,8 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { PlaitBoard, PlaitElement, PlaitPointerType } from '../interfaces';
-import { clearNodeWeakMap, createTestingBoard, fakeNodeWeakMap } from '../testing';
+import { clearBoardElementHost, clearNodeWeakMap, createTestingBoard, fakeBoardElementHost, fakeNodeWeakMap } from '../testing';
 import { Transforms } from '../transforms';
-import { BOARD_TO_ELEMENT_HOST, cacheSelectedElements, getSelectedElements } from '../utils';
+import { cacheSelectedElements, createG, getSelectedElements } from '../utils';
 import { withOptions } from './with-options';
 import { withSelection } from './with-selection';
 
@@ -10,8 +10,6 @@ const children: PlaitElement[] = [
     { id: 'first', type: 'geometry' },
     { id: 'second', type: 'geometry' }
 ];
-
-const createG = () => document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
 describe('withSelection', () => {
     let board: PlaitBoard;
@@ -21,23 +19,14 @@ describe('withSelection', () => {
     beforeEach(() => {
         board = createTestingBoard([withOptions, withSelection], children);
         fakeNodeWeakMap(board);
-        activeHost = createG();
-        BOARD_TO_ELEMENT_HOST.set(board, {
-            lowerHost: createG(),
-            host: createG(),
-            upperHost: createG(),
-            topHost: createG(),
-            activeHost,
-            container: document.createElement('div'),
-            viewportContainer: document.createElement('div')
-        });
+        activeHost = fakeBoardElementHost(board).activeHost;
         drawSelectionRectangle = jasmine.createSpy('drawSelectionRectangle').and.callFake(() => createG());
         board.drawSelectionRectangle = drawSelectionRectangle;
     });
 
     afterEach(() => {
         clearNodeWeakMap(board);
-        BOARD_TO_ELEMENT_HOST.delete(board);
+        clearBoardElementHost(board);
     });
 
     it('should refresh the multi-selection rectangle after viewport changes in hand mode', fakeAsync(() => {
