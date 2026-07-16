@@ -1,8 +1,6 @@
 import { Direction, PlaitBoard, RectangleClient, depthFirstRecursion, getIsRecursionFunc, isHorizontalDirection } from '@plait/core';
-import { AbstractNode, MindLayoutType, isHorizontalLayout, isIndentedLayout, isRightLayout } from '@plait/layouts';
+import { AbstractNode } from '@plait/layouts';
 import { LayoutDirection, MindElement } from '../../interfaces';
-import { MindQueries } from '../../queries';
-import { getLayoutDirection as getNodeLayoutDirection } from '../point-placement';
 import { getLayoutReverseDirection } from '../layout';
 import { resolveLayoutRelationDirection } from './layout-direction';
 import { getRectangleByNode } from './node';
@@ -42,22 +40,13 @@ const isInSameNavigationLane = (direction: Direction, source: MindElement, targe
     return RectangleClient.isHitX(sourceRectangle, targetRectangle);
 };
 
-const getPrimaryDistance = (direction: Direction, source: MindElement, target: MindElement) => {
+const getDistanceInNavigationDirection = (direction: Direction, source: MindElement, target: MindElement) => {
     const sourceCenter = getMindElementCenter(source);
     const targetCenter = getMindElementCenter(target);
     if (isHorizontalDirection(direction)) {
         return Math.abs(targetCenter[0] - sourceCenter[0]);
     }
     return Math.abs(targetCenter[1] - sourceCenter[1]);
-};
-
-const getSecondaryDistance = (direction: Direction, source: MindElement, target: MindElement) => {
-    const sourceCenter = getMindElementCenter(source);
-    const targetCenter = getMindElementCenter(target);
-    if (isHorizontalDirection(direction)) {
-        return Math.abs(targetCenter[1] - sourceCenter[1]);
-    }
-    return Math.abs(targetCenter[0] - sourceCenter[0]);
 };
 
 const getVisibleMindElements = (board: PlaitBoard, root: MindElement) => {
@@ -87,29 +76,6 @@ const getVisibleParent = (element: MindElement) => {
         parent = MindElement.findParent(parent);
     }
     return parent;
-};
-
-const getVisibleDepth = (element: MindElement) => {
-    let depth = 0;
-    let parent = getVisibleParent(element);
-    while (parent) {
-        depth++;
-        parent = getVisibleParent(parent);
-    }
-    return depth;
-};
-
-const getCorrectLayout = (board: PlaitBoard, element: MindElement) => {
-    return MindQueries.getCorrectLayoutByElement(board, element) as MindLayoutType;
-};
-
-const getGeometryLayoutDirection = (board: PlaitBoard, element: MindElement) => {
-    const node = MindElement.getNode(element);
-    const layout = getCorrectLayout(board, element);
-    if (isIndentedLayout(layout)) {
-        return isRightLayout(layout) ? LayoutDirection.right : LayoutDirection.left;
-    }
-    return getNodeLayoutDirection(node, isHorizontalLayout(layout));
 };
 
 type LayoutNavigationRelation = 'parent' | 'child' | 'previous-sibling' | 'next-sibling';
@@ -207,28 +173,15 @@ const resolveLayoutNavigationTarget = (
 };
 
 const getNextMindElementByGeometry = (board: PlaitBoard, source: MindElement, direction: Direction) => {
-    if (isIndentedLayout(getCorrectLayout(board, source))) {
-        return undefined;
-    }
     const root = MindElement.getRoot(board, source);
-    const sourceLayoutDirection = getGeometryLayoutDirection(board, source);
-    const sourceDepth = getVisibleDepth(source);
     return getVisibleMindElements(board, root)
         .filter(
             (element) =>
                 element !== source &&
-                getVisibleDepth(element) === sourceDepth &&
-                getGeometryLayoutDirection(board, element) === sourceLayoutDirection &&
                 isInNavigationDirection(direction, source, element) &&
                 isInSameNavigationLane(direction, source, element)
         )
-        .sort((a, b) => {
-            const primaryDistance = getPrimaryDistance(direction, source, a) - getPrimaryDistance(direction, source, b);
-            if (primaryDistance !== 0) {
-                return primaryDistance;
-            }
-            return getSecondaryDistance(direction, source, a) - getSecondaryDistance(direction, source, b);
-        })[0];
+        .sort((a, b) => getDistanceInNavigationDirection(direction, source, a) - getDistanceInNavigationDirection(direction, source, b))[0];
 };
 
 export const getNextMindElementByDirection = (

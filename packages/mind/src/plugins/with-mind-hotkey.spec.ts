@@ -27,7 +27,7 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { getTestingChildren } from '../testing/data/basic';
 import { withMindHotkey } from './with-mind-hotkey';
 import { PlaitMindBoard } from './with-mind.board';
-import { createMindElement } from '../utils';
+import { createMindElement, getRectangleByNode } from '../utils';
 import { MindElement, PlaitMind } from '@plait/mind';
 import { fakeMindLayout, clearLayoutNodeWeakMap } from '../testing/core/fake-layout-node';
 import { LayoutDirection, MindNode } from '../interfaces';
@@ -309,7 +309,7 @@ describe('with mind hotkey plugin', () => {
         expect(getSelectedElements(board)[0]).toBe(nodeE);
     }));
 
-    it('does not navigate into hidden descendants or distant geometry candidates', fakeAsync(() => {
+    it('does not navigate into hidden descendants or elements outside the navigation lane', fakeAsync(() => {
         const children = createNavigationTestingChildren();
         children[0].children[0].children[0].isCollapsed = true;
         createNavigationBoard(children);
@@ -321,6 +321,30 @@ describe('with mind hotkey plugin', () => {
         expect(event.defaultPrevented).toBe(true);
         expect(getSelectedElements(board)[0]).not.toBe(nodeD);
         expect(getSelectedElements(board)[0]).toBe(nodeC);
+    }));
+
+    it('keeps visible traversal order when geometry candidates have equal movement-axis distance', fakeAsync(() => {
+        createNavigationBoard();
+        const source = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
+        const firstCandidate = PlaitNode.get<MindElement>(board, [0, 1, 0, 0]);
+        const secondCandidate = PlaitNode.get<MindElement>(board, [0, 1, 0]);
+        const sourceNode = MindElement.getNode(source);
+        const firstCandidateNode = MindElement.getNode(firstCandidate);
+        const secondCandidateNode = MindElement.getNode(secondCandidate);
+        const sourceRectangle = getRectangleByNode(sourceNode);
+        const firstCandidateRectangle = getRectangleByNode(firstCandidateNode);
+        const secondCandidateRectangle = getRectangleByNode(secondCandidateNode);
+        const targetCenterY = sourceRectangle.y + sourceRectangle.height / 2 + 100;
+
+        firstCandidateNode.x = sourceRectangle.x + sourceRectangle.width - 1 - firstCandidateNode.hGap;
+        firstCandidateNode.y = targetCenterY - firstCandidateRectangle.height / 2 - firstCandidateNode.vGap;
+        secondCandidateNode.x =
+            sourceRectangle.x + sourceRectangle.width / 2 - secondCandidateRectangle.width / 2 - secondCandidateNode.hGap;
+        secondCandidateNode.y = targetCenterY - secondCandidateRectangle.height / 2 - secondCandidateNode.vGap;
+
+        navigateFrom(source, DOWN_ARROW, 'ArrowDown');
+
+        expect(getSelectedElements(board)[0]).toBe(firstCandidate);
     }));
 
     it('prevents default behavior when no navigation candidate exists', fakeAsync(() => {
@@ -593,7 +617,7 @@ describe('with mind hotkey plugin', () => {
         expect(getSelectedElements(board)[0]).toBe(firstChild);
     }));
 
-    it('does not navigate by geometry across indented hierarchy boundaries', fakeAsync(() => {
+    it('uses geometry fallback across indented hierarchy boundaries', fakeAsync(() => {
         const children = createNavigationTestingChildren(MindLayoutType.rightTopIndented);
         children[0].children[0].children.push({
             id: 'H',
@@ -611,17 +635,19 @@ describe('with mind hotkey plugin', () => {
         const nodeB = PlaitNode.get<MindElement>(board, [0, 0]);
         const nodeC = PlaitNode.get<MindElement>(board, [0, 0, 0]);
         const nodeD = PlaitNode.get<MindElement>(board, [0, 0, 0, 0]);
+        const nodeF = PlaitNode.get<MindElement>(board, [0, 1, 0]);
+        const nodeG = PlaitNode.get<MindElement>(board, [0, 1, 0, 0]);
         const nodeH = PlaitNode.get<MindElement>(board, [0, 0, 1]);
         const nodeI = PlaitNode.get<MindElement>(board, [0, 0, 0, 1]);
 
         navigateFrom(nodeI, UP_ARROW, 'ArrowUp');
-        expect(getSelectedElements(board)[0]).toBe(nodeI);
+        expect(getSelectedElements(board)[0]).toBe(nodeG);
 
         navigateFrom(nodeI, DOWN_ARROW, 'ArrowDown');
         expect(getSelectedElements(board)[0]).toBe(nodeD);
 
         navigateFrom(nodeH, UP_ARROW, 'ArrowUp');
-        expect(getSelectedElements(board)[0]).toBe(nodeH);
+        expect(getSelectedElements(board)[0]).toBe(nodeF);
 
         navigateFrom(nodeH, DOWN_ARROW, 'ArrowDown');
         expect(getSelectedElements(board)[0]).toBe(nodeC);
