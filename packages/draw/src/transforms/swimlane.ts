@@ -1,7 +1,7 @@
 import { idCreator, Path, PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
 import { PlaitDrawElement, PlaitSwimlane } from '../interfaces';
 import { PlaitBaseTable, PlaitTableCell } from '../interfaces/table';
-import { getCellWithPoints } from '../utils/table';
+import { getCellWithPoints, normalizeTableCellsOrder } from '../utils/table';
 import { getSwimlaneCount } from '../utils/swimlane';
 import { Alignment } from '@plait/common';
 
@@ -168,7 +168,7 @@ const updateSwimlane = (
         {
             columns: newColumns,
             rows: newRows,
-            cells: newCells,
+            cells: normalizeTableCellsOrder({ rows: newRows, columns: newColumns, cells: newCells }),
             points: newPoints
         },
         path
