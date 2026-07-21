@@ -93,6 +93,33 @@ describe('withHandPointer', () => {
         expect(PlaitBoard.getPointer(board)).toBe(customPointer);
     });
 
+    it('restores the selected pointer after a Space hand gesture is cancelled', () => {
+        const customPointer = 'custom-draw';
+        const innerPointerCancel = jasmine.createSpy('innerPointerCancel').and.callFake(() => {
+            expect(PlaitBoard.getPointer(board)).toBe(PlaitPointerType.hand);
+        });
+        const withInnerPointerCancel = (board: PlaitBoard) => {
+            board.pointerCancel = innerPointerCancel;
+            return board;
+        };
+        board = createTestingBoard([withOptions, withInnerPointerCancel, withHandPointer], []);
+        fakeBoardElementHost(board);
+        board.pointer = customPointer;
+
+        board.keyDown(createSpaceEvent('keydown'));
+        board.pointerDown(createPointerEvent('pointerdown', 100, 50));
+        board.keyUp(createSpaceEvent('keyup'));
+
+        expect(PlaitBoard.getPointer(board)).toBe(PlaitPointerType.hand);
+
+        const pointerCancelEvent = createPointerEvent('pointercancel', 100, 50);
+        board.pointerCancel(pointerCancelEvent);
+
+        expect(innerPointerCancel).toHaveBeenCalledOnceWith(pointerCancelEvent);
+        expect(board.pointer).toBe(customPointer);
+        expect(PlaitBoard.getPointer(board)).toBe(customPointer);
+    });
+
     it('does not interrupt an active pointer interaction when Space is pressed', () => {
         const customPointer = 'custom-draw';
         const interactionComplete = jasmine.createSpy('interactionComplete');

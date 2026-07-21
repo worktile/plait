@@ -29,7 +29,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     let hasWheelPressed = false;
     let hasSecondaryPressed = false;
     let isShortcutKeyPressed = false;
-    let isShortcutPointerDown = false;
+    let isSpaceHandGestureActive = false;
     let isMainPointerPressed = false;
 
     board.pointerDown = (event: PointerEvent) => {
@@ -39,7 +39,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         const options = (board as unknown as PlaitOptionsBoard).getPluginOptions<WithHandPluginOptions>(PlaitPluginKey.withHand);
         const canEnterHandMode = options?.isHandMode(board, event) || PlaitBoard.isPointer(board, PlaitPointerType.hand);
         if (canEnterHandMode && isMainPointer(event)) {
-            isShortcutPointerDown = BOARD_TO_TEMPORARY_POINTER.has(board);
+            isSpaceHandGestureActive = BOARD_TO_TEMPORARY_POINTER.has(board);
             movingPoint = {
                 x: event.x,
                 y: event.y
@@ -108,38 +108,22 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.pointerUp = (event: PointerEvent) => {
         isMainPointerPressed = false;
-        if (isHandMoving || isShortcutPointerDown) {
+        if (isHandMoving || isSpaceHandGestureActive) {
             return;
         }
         pointerUp(event);
     };
 
     board.globalPointerUp = (event: PointerEvent) => {
-        isMainPointerPressed = false;
-        if (movingPoint) {
-            movingPoint = null;
-        }
-        exitHandMode();
-        hasWheelPressed = false;
-        hasSecondaryPressed = false;
+        finishHandGesture();
         globalPointerUp(event);
-        isShortcutPointerDown = false;
-        if (!isShortcutKeyPressed) {
-            BOARD_TO_TEMPORARY_POINTER.delete(board);
-        }
+        clearTemporaryHandIfIdle();
     };
 
     board.pointerCancel = (event: PointerEvent) => {
         pointerCancel(event);
-        isMainPointerPressed = false;
-        movingPoint = null;
-        exitHandMode();
-        hasWheelPressed = false;
-        hasSecondaryPressed = false;
-        isShortcutPointerDown = false;
-        if (!isShortcutKeyPressed) {
-            BOARD_TO_TEMPORARY_POINTER.delete(board);
-        }
+        finishHandGesture();
+        clearTemporaryHandIfIdle();
     };
 
     board.keyDown = (event: KeyboardEvent) => {
@@ -157,10 +141,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.keyUp = (event: KeyboardEvent) => {
         if (event.code === ShortcutKey) {
             isShortcutKeyPressed = false;
-            if (!isShortcutPointerDown) {
-                BOARD_TO_TEMPORARY_POINTER.delete(board);
-                PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
-            }
+            clearTemporaryHandIfIdle();
         }
         keyUp(event);
     };
@@ -177,6 +158,22 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         setTimeout(() => {
             IS_HAND_MODE.set(board, false);
         }, 0);
+    };
+
+    const finishHandGesture = () => {
+        isMainPointerPressed = false;
+        movingPoint = null;
+        exitHandMode();
+        hasWheelPressed = false;
+        hasSecondaryPressed = false;
+        isSpaceHandGestureActive = false;
+    };
+
+    const clearTemporaryHandIfIdle = () => {
+        if (!isShortcutKeyPressed && !isSpaceHandGestureActive) {
+            BOARD_TO_TEMPORARY_POINTER.delete(board);
+            PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
+        }
     };
 
     return board;
