@@ -1,7 +1,8 @@
 import { idCreator, Path, PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
 import { PlaitDrawElement, PlaitSwimlane } from '../interfaces';
-import { PlaitBaseTable, PlaitTableCell } from '../interfaces/table';
-import { getCellWithPoints, normalizeTableCellsOrder } from '../utils/table';
+import { PlaitTableCell } from '../interfaces/table';
+import { getCellWithPoints } from '../utils/table';
+import { normalizeTableCellsOrder } from '../utils/table-cell-order';
 import { getSwimlaneCount } from '../utils/swimlane';
 import { Alignment } from '@plait/common';
 

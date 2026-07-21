@@ -1,5 +1,5 @@
-import { PlaitBaseTable } from '../interfaces/table';
-import { normalizeTableCellsOrder } from './table';
+import type { PlaitBaseTable } from '../interfaces/table';
+import { normalizeTableCellsOrder } from './table-cell-order';
 
 describe('table utils', () => {
     describe('normalizeTableCellsOrder', () => {
