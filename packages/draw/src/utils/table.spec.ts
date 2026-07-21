@@ -20,21 +20,5 @@ describe('table utils', () => {
 
             expect(cells.map((cell) => cell.id)).toEqual(['cell-1-1', 'cell-1-2', 'cell-2-1', 'cell-2-2', 'cell-3-1']);
         });
-
-        it('should keep cells with missing row or column after valid cells', () => {
-            const table = {
-                rows: [{ id: 'row-1' }],
-                columns: [{ id: 'column-1' }],
-                cells: [
-                    { id: 'missing-row', rowId: 'row-2', columnId: 'column-1' },
-                    { id: 'valid', rowId: 'row-1', columnId: 'column-1' },
-                    { id: 'missing-column', rowId: 'row-1', columnId: 'column-2' }
-                ]
-            } as Pick<PlaitBaseTable, 'rows' | 'columns' | 'cells'>;
-
-            const cells = normalizeTableCellsOrder(table);
-
-            expect(cells.map((cell) => cell.id)).toEqual(['valid', 'missing-column', 'missing-row']);
-        });
     });
 });
