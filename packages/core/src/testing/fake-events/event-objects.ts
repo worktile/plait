@@ -125,10 +125,16 @@ export function createTouchEvent(type: string, pageX = 0, pageY = 0, clientX = 0
 }
 
 /**
- * Creates a keyboard event with the specified key and modifiers.
+ * Creates a keyboard event with the specified key, code and modifiers.
  * @docs-private
  */
-export function createKeyboardEvent(type: string, keyCode: number = 0, key: string = '', modifiers: ModifierKeys = {}) {
+export function createKeyboardEvent(
+    type: string,
+    keyCode: number = 0,
+    key: string = '',
+    modifiers: ModifierKeys = {},
+    code: string = ''
+) {
     return new KeyboardEvent(type, {
         bubbles: true,
         cancelable: true,
@@ -136,6 +142,7 @@ export function createKeyboardEvent(type: string, keyCode: number = 0, key: stri
         view: window,
         keyCode: keyCode,
         key: key,
+        code: code,
         shiftKey: modifiers.shift,
         metaKey: modifiers.meta,
         altKey: modifiers.alt,

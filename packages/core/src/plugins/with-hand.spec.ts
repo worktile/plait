@@ -1,8 +1,10 @@
 import { fakeAsync, tick } from '@angular/core/testing';
+import { SPACE } from '../constants';
 import { PlaitBoard, PlaitElement, PlaitPointerType } from '../interfaces';
 import {
     clearBoardElementHost,
     clearNodeWeakMap,
+    createKeyboardEvent,
     createPointerEvent,
     createTestingBoard,
     fakeBoardElementHost,
@@ -20,12 +22,7 @@ const children: PlaitElement[] = [
 ];
 
 const createSpaceEvent = (type: 'keydown' | 'keyup') => {
-    return new KeyboardEvent(type, {
-        code: 'Space',
-        key: ' ',
-        bubbles: true,
-        cancelable: true
-    });
+    return createKeyboardEvent(type, SPACE, ' ', {}, 'Space');
 };
 
 describe('withHandPointer', () => {
