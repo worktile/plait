@@ -1,2 +1,2 @@
-export * from './core';
-export * from './fake-events';
+export * from './fixture';
+export * from './mock-events';

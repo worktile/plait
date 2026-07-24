@@ -7,7 +7,7 @@
  */
 
 import { IS_MAC } from '../../utils/dom/environment';
-import { ModifierKeys } from '../test-element';
+import { ModifierKeys } from './test-element';
 
 /** Used to generate unique IDs for events. */
 let uniqueIds = 0;

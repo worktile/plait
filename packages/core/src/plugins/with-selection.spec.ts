@@ -1,6 +1,6 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { PlaitBoard, PlaitElement, PlaitPointerType } from '../interfaces';
-import { clearBoardElementHost, clearNodeWeakMap, createTestingBoard, fakeBoardElementHost, fakeNodeWeakMap } from '../testing';
+import { setupTestingBoard, TestingBoardFixture } from '../testing';
 import { Transforms } from '../transforms';
 import { cacheSelectedElements, createG, getSelectedElements } from '../utils';
 import { withOptions } from './with-options';
@@ -15,18 +15,18 @@ describe('withSelection', () => {
     let board: PlaitBoard;
     let activeHost: SVGGElement;
     let drawSelectionRectangle: jasmine.Spy;
+    let fixture: TestingBoardFixture;
 
     beforeEach(() => {
-        board = createTestingBoard([withOptions, withSelection], children);
-        fakeNodeWeakMap(board);
-        activeHost = fakeBoardElementHost(board).activeHost;
+        fixture = setupTestingBoard([withOptions, withSelection], children);
+        board = fixture.board;
+        activeHost = PlaitBoard.getActiveHost(board);
         drawSelectionRectangle = jasmine.createSpy('drawSelectionRectangle').and.callFake(() => createG());
         board.drawSelectionRectangle = drawSelectionRectangle;
     });
 
     afterEach(() => {
-        clearNodeWeakMap(board);
-        clearBoardElementHost(board);
+        fixture.destroy();
     });
 
     it('should refresh the multi-selection rectangle after viewport changes in hand mode', fakeAsync(() => {
