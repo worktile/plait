@@ -92,26 +92,24 @@ export function withTableResize(board: PlaitTableBoard) {
                     const sizeOffset = edge === 'start' ? -pointerOffset : pointerOffset;
                     const targetSize = Math.max(MIN_CELL_SIZE, currentSize + sizeOffset);
                     const appliedOffset = targetSize - currentSize;
-                    if (appliedOffset !== 0) {
-                        if (isRow) {
-                            const { rows, points } = updateRows(
-                                resizeRef.element,
-                                resizeRef.element.rows[targetIndex].id,
-                                targetSize,
-                                appliedOffset,
-                                edge
-                            );
-                            Transforms.setNode(board, { rows, points }, path);
-                        } else {
-                            const { columns, points } = updateColumns(
-                                resizeRef.element,
-                                resizeRef.element.columns[targetIndex].id,
-                                targetSize,
-                                appliedOffset,
-                                edge
-                            );
-                            Transforms.setNode(board, { columns, points }, path);
-                        }
+                    if (isRow) {
+                        const { rows, points } = updateRows(
+                            resizeRef.element,
+                            resizeRef.element.rows[targetIndex].id,
+                            targetSize,
+                            appliedOffset,
+                            edge
+                        );
+                        Transforms.setNode(board, { rows, points }, path);
+                    } else {
+                        const { columns, points } = updateColumns(
+                            resizeRef.element,
+                            resizeRef.element.columns[targetIndex].id,
+                            targetSize,
+                            appliedOffset,
+                            edge
+                        );
+                        Transforms.setNode(board, { columns, points }, path);
                     }
                 }
             } else if (isCornerHandle(board, resizeRef.handle)) {
