@@ -9,7 +9,6 @@ describe('swimlane transforms', () => {
 
     afterEach(() => {
         fixture?.destroy();
-        fixture = null;
     });
 
     const expectCellsInRowMajorOrder = (swimlane: PlaitSwimlane) => {
@@ -25,11 +24,8 @@ describe('swimlane transforms', () => {
             [600, 300]
         ]);
         fixture = setupTestingBoard([withDraw], [swimlane]);
-        const board = fixture.board;
-
-        addSwimlaneRow(board, swimlane, 1);
-
-        expectCellsInRowMajorOrder(board.children[0] as PlaitSwimlane);
+        addSwimlaneRow(fixture.board, swimlane, 1);
+        expectCellsInRowMajorOrder(fixture.board.children[0] as PlaitSwimlane);
     });
 
     it('should keep cells ordered after adding a column in the middle', () => {
@@ -38,10 +34,7 @@ describe('swimlane transforms', () => {
             [600, 300]
         ]);
         fixture = setupTestingBoard([withDraw], [swimlane]);
-        const board = fixture.board;
-
-        addSwimlaneColumn(board, swimlane, 1);
-
-        expectCellsInRowMajorOrder(board.children[0] as PlaitSwimlane);
+        addSwimlaneColumn(fixture.board, swimlane, 1);
+        expectCellsInRowMajorOrder(fixture.board.children[0] as PlaitSwimlane);
     });
 });

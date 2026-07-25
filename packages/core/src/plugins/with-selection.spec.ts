@@ -12,17 +12,15 @@ const children: PlaitElement[] = [
 ];
 
 describe('withSelection', () => {
-    let board: PlaitBoard;
     let activeHost: SVGGElement;
     let drawSelectionRectangle: jasmine.Spy;
     let fixture: TestingBoardFixture;
 
     beforeEach(() => {
         fixture = setupTestingBoard([withOptions, withSelection], children);
-        board = fixture.board;
-        activeHost = PlaitBoard.getActiveHost(board);
+        activeHost = PlaitBoard.getActiveHost(fixture.board);
         drawSelectionRectangle = jasmine.createSpy('drawSelectionRectangle').and.callFake(() => createG());
-        board.drawSelectionRectangle = drawSelectionRectangle;
+        fixture.board.drawSelectionRectangle = drawSelectionRectangle;
     });
 
     afterEach(() => {
@@ -30,13 +28,13 @@ describe('withSelection', () => {
     });
 
     it('should refresh the multi-selection rectangle after viewport changes in hand mode', fakeAsync(() => {
-        cacheSelectedElements(board, children);
-        board.afterChange();
+        cacheSelectedElements(fixture.board, children);
+        fixture.board.afterChange();
         const initialRectangle = activeHost.firstElementChild;
         expect(activeHost.contains(initialRectangle)).toBeTrue();
 
-        board.pointer = PlaitPointerType.hand;
-        Transforms.setViewport(board, { zoom: 1, origination: [10, 10] });
+        fixture.board.pointer = PlaitPointerType.hand;
+        Transforms.setViewport(fixture.board, { zoom: 1, origination: [10, 10] });
         tick();
 
         expect(drawSelectionRectangle).toHaveBeenCalledTimes(2);
@@ -46,15 +44,15 @@ describe('withSelection', () => {
     }));
 
     it('should not update selected elements from selection operations in hand mode', fakeAsync(() => {
-        cacheSelectedElements(board, children);
-        board.pointer = PlaitPointerType.hand;
+        cacheSelectedElements(fixture.board, children);
+        fixture.board.pointer = PlaitPointerType.hand;
 
-        Transforms.setSelection(board, {
+        Transforms.setSelection(fixture.board, {
             anchor: [100, 100],
             focus: [100, 100]
         });
         tick();
 
-        expect(getSelectedElements(board)).toEqual(children);
+        expect(getSelectedElements(fixture.board)).toEqual(children);
     }));
 });

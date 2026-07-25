@@ -1,11 +1,10 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { PlaitBoard, TestingBoardFixture, createPointerEvent } from '@plait/core';
+import { TestingBoardFixture, createPointerEvent } from '@plait/core';
 import { setupTestingBoard } from '@plait/core';
 import { PlaitTable } from '../interfaces/table';
 import { withDraw } from './with-draw';
 
 describe('withTableResize', () => {
-    let board: PlaitBoard;
     let table: PlaitTable;
     let fixture: TestingBoardFixture;
 
@@ -38,20 +37,19 @@ describe('withTableResize', () => {
     });
 
     it('should restore the original column size when the pointer returns to the resize origin', fakeAsync(() => {
-        board = fixture.board;
-        board.pointerDown(createPointerEvent('pointerdown', 100, 50));
-        board.pointerMove(createPointerEvent('pointermove', 120, 50));
+        fixture.board.pointerDown(createPointerEvent('pointerdown', 100, 50));
+        fixture.board.pointerMove(createPointerEvent('pointermove', 120, 50));
         tick(16);
-        expect((board.children[0] as PlaitTable).columns[0].width).toBe(120);
-        expect((board.children[0] as PlaitTable).points).toEqual([
+        expect((fixture.board.children[0] as PlaitTable).columns[0].width).toBe(120);
+        expect((fixture.board.children[0] as PlaitTable).points).toEqual([
             [0, 0],
             [220, 100]
         ]);
-        board.pointerMove(createPointerEvent('pointermove', 100, 50));
+        fixture.board.pointerMove(createPointerEvent('pointermove', 100, 50));
         tick(16);
-        board.globalPointerUp(createPointerEvent('pointerup', 100, 50));
-        expect((board.children[0] as PlaitTable).columns[0].width).toBe(100);
-        expect((board.children[0] as PlaitTable).points).toEqual([
+        fixture.board.globalPointerUp(createPointerEvent('pointerup', 100, 50));
+        expect((fixture.board.children[0] as PlaitTable).columns[0].width).toBe(100);
+        expect((fixture.board.children[0] as PlaitTable).points).toEqual([
             [0, 0],
             [200, 100]
         ]);
