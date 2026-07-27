@@ -59,7 +59,6 @@ describe('fillStyle', () => {
             };
 
             new GeometryShapeGenerator(fixture.board).draw(element, {});
-            new GeometryShapeGenerator(fixture.board).draw(element, {});
             const options = rectangleSpy.calls.mostRecent().args[4] as Options;
             expect(options.fillStyle).toBe('hachure');
         });

@@ -10,7 +10,7 @@ import {
     fakeBoardHost,
     fakeBoardRoughSVG
 } from './mock-host';
-import { clearNodeWeakMap, fakeNodeWeakMap } from './mock-weak-map';
+import { clearNodeWeakMap, clearNodeWeakMapByNodes, fakeNodeWeakMap } from './mock-weak-map';
 
 export interface TestingBoardFixture {
     board: PlaitBoard;
@@ -60,6 +60,7 @@ export const setupTestingBoard = (
     } = options;
 
     const board = createTestingBoard(plugins as PlaitPlugin[], children as PlaitElement[], boardOptions);
+    const initialChildren = board.children;
 
     if (withNodeWeakMap) {
         fakeNodeWeakMap(board);
@@ -82,6 +83,7 @@ export const setupTestingBoard = (
 
     const destroy = () => {
         if (withNodeWeakMap) {
+            clearNodeWeakMapByNodes(initialChildren);
             clearNodeWeakMap(board);
         }
         if (withElementHost) {

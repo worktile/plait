@@ -13,7 +13,11 @@ export const fakeNodeWeakMap = (object: PlaitNode | PlaitBoard) => {
 
 export const clearNodeWeakMap = (object: PlaitNode | PlaitBoard) => {
     const children = object.children || [];
-    children.forEach((value) => {
+    clearNodeWeakMapByNodes(children);
+};
+
+export const clearNodeWeakMapByNodes = (nodes: PlaitNode[]) => {
+    nodes.forEach((value) => {
         NODE_TO_PARENT.delete(value);
         NODE_TO_INDEX.delete(value);
         clearNodeWeakMap(value);

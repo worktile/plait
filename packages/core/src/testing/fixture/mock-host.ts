@@ -23,16 +23,7 @@ export const clearBoardElementHost = (board: PlaitBoard) => {
 
 export const fakeBoardHost = (board: PlaitBoard) => {
     const host = createSVG();
-    Object.defineProperty(host, 'viewBox', {
-        value: {
-            baseVal: {
-                x: 0,
-                y: 0,
-                width: 1000,
-                height: 1000
-            }
-        }
-    });
+    host.setAttribute('viewBox', '0 0 1000 1000');
     Object.defineProperty(host, 'getBoundingClientRect', {
         value: () =>
             ({
@@ -59,6 +50,9 @@ export const createTestingRoughSVG = () => {
         path: () => createG(),
         polygon: () => createG(),
         circle: () => createG(),
+        ellipse: () => createG(),
+        line: () => createG(),
+        curve: () => createG(),
         rectangle: () => createG(),
         linearPath: () => createG()
     };
