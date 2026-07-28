@@ -5,6 +5,51 @@ export function isNullOrUndefined(value: any) {
 }
 
 /**
+ * Compare base data recursively.
+ *
+ * Supported recursive types:
+ * - primitive values compared by `Object.is`
+ * - arrays
+ * - plain objects created by object literal or `Object.create(null)`
+ *
+ * Unsupported recursive types:
+ * - Date, Map, Set, RegExp and class instances
+ * - circular references
+ */
+export function isEqualData(value: unknown, otherValue: unknown): boolean {
+    if (Object.is(value, otherValue)) {
+        return true;
+    }
+
+    if (Array.isArray(value) && Array.isArray(otherValue)) {
+        return value.length === otherValue.length && value.every((item, index) => isEqualData(item, otherValue[index]));
+    }
+
+    if (isPlainObject(value) && isPlainObject(otherValue)) {
+        const keys = Object.keys(value);
+        const otherKeys = Object.keys(otherValue);
+        return (
+            keys.length === otherKeys.length &&
+            keys.every(
+                (key) =>
+                    Object.prototype.hasOwnProperty.call(otherValue, key) && isEqualData(value[key], otherValue[key])
+            )
+        );
+    }
+
+    return false;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+    if (value === null || typeof value !== 'object') {
+        return false;
+    }
+
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
+}
+
+/**
  * get {x,y} point
  * @param point
  * @returns point

@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient, Transforms, getSelectedElements, hasValidAngle } from '@plait/core';
+import { PlaitBoard, PlaitNode, Point, RectangleClient, Transforms, getSelectedElements, hasValidAngle, isEqualData } from '@plait/core';
 import { PlaitBaseTable, PlaitTableBoard, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import {
     getIndexByResizeHandle,
@@ -92,6 +92,7 @@ export function withTableResize(board: PlaitTableBoard) {
                     const sizeOffset = edge === 'start' ? -pointerOffset : pointerOffset;
                     const targetSize = Math.max(MIN_CELL_SIZE, currentSize + sizeOffset);
                     const appliedOffset = targetSize - currentSize;
+                    const table = PlaitNode.get(board, path) as PlaitBaseTable;
                     if (isRow) {
                         const { rows, points } = updateRows(
                             resizeRef.element,
@@ -100,7 +101,9 @@ export function withTableResize(board: PlaitTableBoard) {
                             appliedOffset,
                             edge
                         );
-                        Transforms.setNode(board, { rows, points }, path);
+                        if (!isEqualData(rows, table.rows) || !isEqualData(points, table.points)) {
+                            Transforms.setNode(board, { rows, points }, path);
+                        }
                     } else {
                         const { columns, points } = updateColumns(
                             resizeRef.element,
@@ -109,7 +112,9 @@ export function withTableResize(board: PlaitTableBoard) {
                             appliedOffset,
                             edge
                         );
-                        Transforms.setNode(board, { columns, points }, path);
+                        if (!isEqualData(columns, table.columns) || !isEqualData(points, table.points)) {
+                            Transforms.setNode(board, { columns, points }, path);
+                        }
                     }
                 }
             } else if (isCornerHandle(board, resizeRef.handle)) {
