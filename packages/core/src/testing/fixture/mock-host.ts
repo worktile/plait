@@ -46,17 +46,7 @@ export const clearBoardHost = (board: PlaitBoard) => {
 };
 
 export const createTestingRoughSVG = () => {
-    const roughSVG = {
-        path: () => createG(),
-        polygon: () => createG(),
-        circle: () => createG(),
-        ellipse: () => createG(),
-        line: () => createG(),
-        curve: () => createG(),
-        rectangle: () => createG(),
-        linearPath: () => createG()
-    };
-    return roughSVG as unknown as RoughSVG;
+    return new RoughSVG(createSVG());
 };
 
 export const fakeBoardRoughSVG = (board: PlaitBoard) => {
