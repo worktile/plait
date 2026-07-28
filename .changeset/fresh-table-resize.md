@@ -1,5 +1,6 @@
 ---
+'@plait/core': patch
 '@plait/draw': patch
 ---
 
-Adjust table cell edge resize behavior
+restore table cell resize origin and add isEqualData for base data comparisons
