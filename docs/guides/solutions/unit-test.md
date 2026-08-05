@@ -44,6 +44,29 @@ afterEach(() => {
 });
 ```
 
+#### 验证插件是否向下游传递事件
+
+当测试需要确认一个插件没有吞掉事件，而是把事件继续交给下游处理器时，可以使用 `createBoardEventObserver`：
+
+```ts
+import { createBoardEventObserver, createPointerEvent, setupTestingBoard } from '@plait/core';
+
+const observer = createBoardEventObserver(['pointerDown']);
+const fixture = setupTestingBoard([observer.plugin, pluginUnderTest], []);
+const event = createPointerEvent('pointerdown');
+
+fixture.board.pointerDown(event);
+
+expect(observer.calls.pointerDown).toEqual([event]);
+
+observer.clear();
+fixture.destroy();
+```
+
+插件顺序需要保持为 `[observer.plugin, pluginUnderTest]`。插件从左到右应用，因此待测插件会包裹观察器；只有待测插件确实调用了下游处理器，事件才会出现在 `observer.calls` 中。
+
+`createBoardEventObserver` 只负责记录指定事件并继续调用原处理器，不依赖 Jasmine、Vitest 或 Jest。`clear()` 只清空调用记录，Board 相关测试资源仍应通过 `fixture.destroy()` 清理。
+
 另外分类 3 在写测试的时候需要注意，如果一个测试用例里面包含超过一次的数据修改，那么在每一次的数据修改后都需要重新调用 fakeNodeWeakmap 构建基于最新数据引用的父子关系依赖：
 
 ```
@@ -71,6 +94,5 @@ it('should replace emoji success', () => {
 
 
 不得不说写单元测试是一件非常难的事情，而把单元测试写的有条理则更难，因为它首先需要你的代码是有条理的（模块划分是否清楚、调用关系/目录关系是否统一、函数职责是否唯一/或者存在重复），如果代码结构、调用关系、职责划分等等不清晰，你的单元测试则会很混乱（无法按照一个统一的思路把所有的分支逻辑全部覆盖），或者出现重复功能的单元测试，必然会造成时间的浪费，也会消磨维护单元测试的信心。
-
 
 
