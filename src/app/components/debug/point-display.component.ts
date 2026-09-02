@@ -1,8 +1,9 @@
-import { Component, ElementRef, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { PlaitBoard, toViewBoxPoint, toHostPoint } from '@plait/core';
 
 /* eslint-disable @angular-eslint/component-selector */
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'debug-point-display',
     template: ``,
     imports: [],

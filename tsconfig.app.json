@@ -5,16 +5,36 @@
         "outDir": "./out-tsc/app",
         "types": [],
         "paths": {
-            "@plait/flow": ["packages/flow/src/public-api"],
-            "@plait/layouts": ["packages/layouts/src/public-api"],
-            "@plait/mind": ["packages/mind/src/public-api"],
-            "@plait/core": ["packages/core/src/public-api"],
-            "@plait/angular-board": ["packages/angular-board/src/public-api"],
-            "@plait/angular-text": ["packages/angular-text/src/public-api"],
-            "@plait/text-plugins": ["packages/text-plugins/src/public-api"],
-            "@plait/draw": ["packages/draw/src/public-api"],
-            "@plait/common": ["packages/common/src/public-api"],
-            "@plait/graph-viz": ["packages/graph-viz/src/public-api"]
+            "@plait/flow": [
+                "packages/flow/src/public-api"
+            ],
+            "@plait/layouts": [
+                "packages/layouts/src/public-api"
+            ],
+            "@plait/mind": [
+                "packages/mind/src/public-api"
+            ],
+            "@plait/core": [
+                "packages/core/src/public-api"
+            ],
+            "@plait/angular-board": [
+                "packages/angular-board/src/public-api"
+            ],
+            "@plait/angular-text": [
+                "packages/angular-text/src/public-api"
+            ],
+            "@plait/text-plugins": [
+                "packages/text-plugins/src/public-api"
+            ],
+            "@plait/draw": [
+                "packages/draw/src/public-api"
+            ],
+            "@plait/common": [
+                "packages/common/src/public-api"
+            ],
+            "@plait/graph-viz": [
+                "packages/graph-viz/src/public-api"
+            ]
         },
         "forceConsistentCasingInFileNames": true,
         "strict": true,
@@ -22,12 +42,16 @@
         "noFallthroughCasesInSwitch": true,
         "sourceMap": true,
         "declaration": false,
-        "downlevelIteration": true,
         "experimentalDecorators": true,
         "moduleResolution": "bundler",
         "importHelpers": true,
         "module": "es2020"
     },
-    "files": ["src/main.ts", "src/polyfills.ts"],
-    "include": ["src/**/*.d.ts"]
+    "files": [
+        "src/main.ts",
+        "src/polyfills.ts"
+    ],
+    "include": [
+        "src/**/*.d.ts"
+    ]
 }

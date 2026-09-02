@@ -1,4 +1,4 @@
-import {
+import { ChangeDetectionStrategy,
     AfterViewInit,
     ChangeDetectorRef,
     Component,
@@ -30,6 +30,7 @@ import { ParagraphFlavour } from '../plugins/paragraph/paragraph.flavour';
 import { TextFlavour } from '../text-node/text.flavour';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'plait-text',
     templateUrl: './text.component.html',
     imports: [SlateEditable, FormsModule, CommonModule]

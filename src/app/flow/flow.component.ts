@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, HostBinding, ChangeDetectorRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Injector, HostBinding, ChangeDetectorRef, inject } from '@angular/core';
 import { BoardTransforms, PlaitBoardOptions, PlaitElement, Viewport } from '@plait/core';
 import { withFlow } from '@plait/flow';
 import { withCommon } from './plugins/with-common';
@@ -13,6 +13,7 @@ import { OnChangeData, PlaitBoardComponent } from '@plait/angular-board';
 const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'app-basic-flow',
     templateUrl: './flow.component.html',
     imports: [PlaitBoardComponent, NgClass]
