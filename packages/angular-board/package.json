@@ -2,8 +2,8 @@
     "name": "@plait/angular-board",
     "version": "0.93.4",
     "peerDependencies": {
-        "@angular/common": "^21.0.0",
-        "@angular/core": "^21.0.0"
+        "@angular/common": "^22.0.0",
+        "@angular/core": "^22.0.0"
     },
     "dependencies": {
         "tslib": "^2.3.0"

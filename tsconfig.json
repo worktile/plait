@@ -3,17 +3,38 @@
     "compileOnSave": false,
     "compilerOptions": {
         "baseUrl": "./",
+        "ignoreDeprecations": "6.0",
         "paths": {
-            "@plait/flow": ["dist/flow"],
-            "@plait/layouts": ["dist/layouts"],
-            "@plait/mind": ["dist/mind"],
-            "@plait/core": ["dist/core"],
-            "@plait/angular-board": ["dist/angular-board"],
-            "@plait/angular-text": ["dist/angular-text"],
-            "@plait/draw": ["dist/draw"],
-            "@plait/common": ["dist/common"],
-            "@plait/text-plugins": ["dist/text-plugins"],
-            "@plait/graph-viz": ["dist/graph-viz"]
+            "@plait/flow": [
+                "dist/flow"
+            ],
+            "@plait/layouts": [
+                "dist/layouts"
+            ],
+            "@plait/mind": [
+                "dist/mind"
+            ],
+            "@plait/core": [
+                "dist/core"
+            ],
+            "@plait/angular-board": [
+                "dist/angular-board"
+            ],
+            "@plait/angular-text": [
+                "dist/angular-text"
+            ],
+            "@plait/draw": [
+                "dist/draw"
+            ],
+            "@plait/common": [
+                "dist/common"
+            ],
+            "@plait/text-plugins": [
+                "dist/text-plugins"
+            ],
+            "@plait/graph-viz": [
+                "dist/graph-viz"
+            ]
         },
         "outDir": "./dist/out-tsc",
         "esModuleInterop": true,

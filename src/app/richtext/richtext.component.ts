@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Editor } from 'slate';
 import { PlaitTextComponent } from '../../../packages/angular-text/src/text/text.component';
 import { TextChangeData } from '@plait/common';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'app-basic-richtext',
     templateUrl: './richtext.component.html',
     imports: [PlaitTextComponent]

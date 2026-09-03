@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, OnInit, ViewChild, inject } from '@angular/core';
 import {
     BoardTransforms,
     PlaitBoard,
@@ -51,6 +51,7 @@ import { OnChangeData, PlaitBoardComponent } from '@plait/angular-board';
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'app-basic-editor',
     templateUrl: './editor.component.html',
     imports: [

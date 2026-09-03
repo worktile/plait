@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnInit, inject } from '@angular/core';
 import {
     PlaitBoard,
     PlaitBoardOptions,
@@ -23,6 +23,7 @@ import { withForceAtlasExtend } from './with-force-atlas-extend';
 import { getData } from './mock-force-atlas-wiki';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'app-basic-graph-viz',
     templateUrl: './graph-viz.component.html',
     imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent]
