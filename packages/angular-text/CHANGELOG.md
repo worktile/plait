@@ -1,5 +1,11 @@
 # angular-text
 
+## 0.94.0
+
+### Minor Changes
+
+-   [#1165](https://github.com/worktile/plait/pull/1165) [`f6d1c589916f91c3b24f7a99cb3c0d0124d6fbcd`](https://github.com/worktile/plait/commit/f6d1c589916f91c3b24f7a99cb3c0d0124d6fbcd) Thanks [@Xwatson](https://github.com/Xwatson)! - build: upgrade Angular to v22 #TINFR-3771- #1165
+
 ## 0.93.4
 
 ## 0.93.3

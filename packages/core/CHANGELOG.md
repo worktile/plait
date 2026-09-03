@@ -1,5 +1,11 @@
 # plait
 
+## 0.94.0
+
+### Patch Changes
+
+-   [#1163](https://github.com/worktile/plait/pull/1163) [`e3da344b3261c1fdddde703cb1e3d58e43f728e5`](https://github.com/worktile/plait/commit/e3da344b3261c1fdddde703cb1e3d58e43f728e5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add a framework-independent board event observer for plugin tests
+
 ## 0.93.4
 
 ### Patch Changes
