@@ -18,7 +18,7 @@ export const withAngular = (board: PlaitBoard & PlaitTextBoard) => {
         const componentRef = boardComponent.viewContainerRef.createComponent<K>(type);
         for (const key in props) {
             const value = props[key as keyof T];
-            (componentRef.instance as any)[key as keyof TextProps] = value as any;
+            componentRef.setInput(key, value);
         }
         container.appendChild(componentRef.instance.nativeElement());
         componentRef.changeDetectorRef.detectChanges();
@@ -27,9 +27,10 @@ export const withAngular = (board: PlaitBoard & PlaitTextBoard) => {
                 componentRef.destroy();
             },
             update: (props: Partial<TextProps>) => {
+                // Mark the component view (not just its host view) so readonly reaches the editor before focus.
                 for (const key in props) {
                     const value = props[key as keyof TextProps];
-                    (componentRef.instance as any)[key] = value;
+                    componentRef.setInput(key, value);
                 }
                 // solve image lose on move node
                 if (container.children.length === 0) {
