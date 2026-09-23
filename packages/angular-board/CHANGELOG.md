@@ -1,5 +1,11 @@
 # @plait/angular-board
 
+## 0.94.1
+
+### Patch Changes
+
+-   [#1167](https://github.com/worktile/plait/pull/1167) [`7954d4bc4d7a228724e0fc4934b4b85d025f070d`](https://github.com/worktile/plait/commit/7954d4bc4d7a228724e0fc4934b4b85d025f070d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Fix missing text editing focus in mind map and flowchart nodes by updating dynamic Angular component inputs before focusing the editor.
+
 ## 0.94.0
 
 ### Minor Changes
