@@ -7,6 +7,10 @@ export function arrowPoints(start: Point, end: Point, degree = 40) {
     const width = Math.abs(start[0] - end[0]);
     const height = Math.abs(start[1] - end[1]);
     let hypotenuse = Math.hypot(width, height); // 斜边
+    // zero-length arrows become 0/0 → NaN; fall back to the endpoint
+    if (!Number.isFinite(hypotenuse) || hypotenuse === 0) {
+        return { pointLeft: end, pointRight: end };
+    }
     const realRotateLine = hypotenuse / 2;
     const rotateWidth = (realRotateLine / hypotenuse) * width;
     const rotateHeight = (realRotateLine / hypotenuse) * height;

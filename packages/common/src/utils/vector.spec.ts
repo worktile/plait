@@ -1,5 +1,5 @@
-import { Point } from '@plait/core';
-import { getPointByVectorDirectionComponent, getUnitVectorByPointAndPoint } from './vector';
+import { Point, Vector } from '@plait/core';
+import { getPointByVectorComponent, getPointByVectorDirectionComponent, getUnitVectorByPointAndPoint } from './vector';
 
 describe('vector', () => {
     describe('get unit vector by point and point', () => {
@@ -39,6 +39,14 @@ describe('vector', () => {
             expect(unitVector[1]).toEqual(3 / 5);
         });
     });
+    describe('getPointByVectorComponent', () => {
+        it('returns the origin point for a zero vector', () => {
+            const point = [100, 200] as Point;
+            const result = getPointByVectorComponent(point, [0, 0] as Vector, 10);
+            expect(result).toEqual(point);
+        });
+    });
+
     describe('get point on vector by vector and vector component', () => {
         it('get point by horizontal component', () => {
             const start = [200, 100] as Point;
