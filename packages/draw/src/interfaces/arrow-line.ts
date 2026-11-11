@@ -106,18 +106,27 @@ export const PlaitArrowLine = {
     getPoints(board: PlaitBoard, line: PlaitArrowLine) {
         let sourcePoint;
         if (line.source.boundId) {
-            const sourceElement = getElementById<PlaitShapeElement>(board, line.source.boundId)!;
-            const sourceConnectionPoint = getConnectionPoint(sourceElement, line.source.connection!);
-            sourcePoint = rotatePointsByElement(sourceConnectionPoint, sourceElement) || sourceConnectionPoint;
+            const sourceElement = getElementById<PlaitShapeElement>(board, line.source.boundId);
+            if (sourceElement) {
+                const sourceConnectionPoint = getConnectionPoint(sourceElement, line.source.connection!);
+                sourcePoint = rotatePointsByElement(sourceConnectionPoint, sourceElement) || sourceConnectionPoint;
+            } else {
+                // boundId 指向的元素已不存在，fallback 到原始点坐标
+                sourcePoint = line.points[0];
+            }
         } else {
             sourcePoint = line.points[0];
         }
 
         let targetPoint;
         if (line.target.boundId) {
-            const targetElement = getElementById<PlaitShapeElement>(board, line.target.boundId)!;
-            const targetConnectionPoint = getConnectionPoint(targetElement, line.target.connection!);
-            targetPoint = rotatePointsByElement(targetConnectionPoint, targetElement) || targetConnectionPoint;
+            const targetElement = getElementById<PlaitShapeElement>(board, line.target.boundId);
+            if (targetElement) {
+                const targetConnectionPoint = getConnectionPoint(targetElement, line.target.connection!);
+                targetPoint = rotatePointsByElement(targetConnectionPoint, targetElement) || targetConnectionPoint;
+            } else {
+                targetPoint = line.points[line.points.length - 1];
+            }
         } else {
             targetPoint = line.points[line.points.length - 1];
         }
