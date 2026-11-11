@@ -12,17 +12,20 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
             let target = { ...element.target };
             let points = [...element.points];
             if (element.source.boundId) {
-                points[0] = getConnectionPoint(getElementById<PlaitGeometry>(board, element.source.boundId)!, element.source.connection!);
+                const sourceEl = getElementById<PlaitGeometry>(board, element.source.boundId);
+                if (sourceEl) {
+                    points[0] = getConnectionPoint(sourceEl, element.source.connection!);
+                }
                 if (!getElementById(board, element.source.boundId, elements)) {
                     delete source.boundId;
                     delete source.connection;
                 }
             }
             if (element.target.boundId) {
-                points[points.length - 1] = getConnectionPoint(
-                    getElementById<PlaitGeometry>(board, element.target.boundId)!,
-                    element.target.connection!
-                );
+                const targetEl = getElementById<PlaitGeometry>(board, element.target.boundId);
+                if (targetEl) {
+                    points[points.length - 1] = getConnectionPoint(targetEl, element.target.connection!);
+                }
                 if (!getElementById(board, element.target.boundId, elements)) {
                     delete target.boundId;
                     delete target.connection;
