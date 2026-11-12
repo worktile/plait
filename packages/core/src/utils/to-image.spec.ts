@@ -50,4 +50,49 @@ describe('toSvgData', () => {
 
         expect(exportedTextNode.style.color).toBe('rgb(255, 0, 0)');
     });
+
+    it('inlines text container styles when cloning export nodes', async () => {
+        const element = { id: 'text-container' } as PlaitElement;
+        const board = {
+            children: [element],
+            getRectangle: () => ({ x: 0, y: 0, width: 120, height: 60 })
+        } as unknown as PlaitBoard;
+        const svg = document.createElementNS(svgNamespace, 'svg');
+        const elementHost = document.createElementNS(svgNamespace, 'g');
+        const elementG = document.createElementNS(svgNamespace, 'g');
+        const foreignObject = document.createElementNS(svgNamespace, 'foreignObject');
+        const textContainer = document.createElement('div');
+
+        textContainer.classList.add('plait-text-container');
+        textContainer.style.display = 'block';
+        textContainer.style.fontSize = '18px';
+        textContainer.style.lineHeight = '25px';
+        textContainer.textContent = 'text container';
+        foreignObject.append(textContainer);
+        elementG.append(foreignObject);
+        elementHost.append(elementG);
+        svg.setAttribute('data-to-image-spec', '');
+        svg.append(elementHost);
+        document.body.append(svg);
+
+        BOARD_TO_HOST.set(board, svg);
+        BOARD_TO_ELEMENT_HOST.set(board, {
+            lowerHost: document.createElementNS(svgNamespace, 'g'),
+            host: elementHost,
+            upperHost: document.createElementNS(svgNamespace, 'g'),
+            topHost: document.createElementNS(svgNamespace, 'g'),
+            activeHost: document.createElementNS(svgNamespace, 'g'),
+            container: document.createElement('div'),
+            viewportContainer: document.createElement('div')
+        });
+        NODE_TO_G.set(element, elementG);
+
+        const svgData = await toSvgData(board, { elements: [element] });
+        const exportedSvg = new DOMParser().parseFromString(svgData, 'image/svg+xml');
+        const exportedContainer = exportedSvg.querySelector('.plait-text-container') as HTMLElement;
+
+        expect(exportedContainer.style.display).toBe('block');
+        expect(exportedContainer.style.fontSize).toBe('18px');
+        expect(exportedContainer.style.lineHeight).toBe('25px');
+    });
 });
