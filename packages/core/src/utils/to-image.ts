@@ -196,6 +196,10 @@ export async function toSvgData(board: PlaitBoard, options: ToImageOptions) {
     return svgData;
 }
 
+function isValidCanvasSize(size: number) {
+    return Number.isFinite(size) && size > 0;
+}
+
 /**
  * current board transfer pictures
  * @param board board
@@ -212,6 +216,12 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
     const { width, height } = targetRectangle;
     const ratioWidth = width * ratio;
     const ratioHeight = height * ratio;
+    // Non-finite geometry (e.g. malformed connection data) makes the canvas size invalid,
+    // in that case canvas.toDataURL returns 'data:,' instead of an actual image.
+    if (!isValidCanvasSize(ratioWidth) || !isValidCanvasSize(ratioHeight)) {
+        console.error('Invalid board size for image export:', targetRectangle);
+        return undefined;
+    }
 
     const svgData = await toSvgData(board, { ...options, fillStyle: '' });
     const { canvas, ctx } = createCanvas(ratioWidth, ratioHeight, fillStyle);

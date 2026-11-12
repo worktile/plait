@@ -137,7 +137,10 @@ export const RectangleClient = {
         ] as [Point, Point, Point, Point];
     },
     getConnectionPoint: (rectangle: RectangleClient, point: PointOfRectangle) => {
-        return [rectangle.x + rectangle.width * point[0], rectangle.y + rectangle.height * point[1]] as Point;
+        // connection must be [rx, ry]; malformed historical data may miss ry → NaN
+        const rx = Number.isFinite(point?.[0]) ? point[0] : 0.5;
+        const ry = Number.isFinite(point?.[1]) ? point[1] : 0.5;
+        return [rectangle.x + rectangle.width * rx, rectangle.y + rectangle.height * ry] as Point;
     },
     expand(rectangle: RectangleClient, left: number, top: number = left, right: number = left, bottom: number = top) {
         return {

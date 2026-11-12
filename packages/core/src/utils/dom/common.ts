@@ -16,10 +16,14 @@ export function createPath() {
 
 export function createRect(rectangle: RectangleClient, options?: Options) {
     const rect = document.createElementNS(NS, 'rect');
-    rect.setAttribute('x', `${rectangle.x}`);
-    rect.setAttribute('y', `${rectangle.y}`);
-    rect.setAttribute('width', `${rectangle.width}`);
-    rect.setAttribute('height', `${rectangle.height}`);
+    const x = Number.isFinite(rectangle?.x) ? rectangle.x : 0;
+    const y = Number.isFinite(rectangle?.y) ? rectangle.y : 0;
+    const width = Number.isFinite(rectangle?.width) ? rectangle.width : 0;
+    const height = Number.isFinite(rectangle?.height) ? rectangle.height : 0;
+    rect.setAttribute('x', `${x}`);
+    rect.setAttribute('y', `${y}`);
+    rect.setAttribute('width', `${width}`);
+    rect.setAttribute('height', `${height}`);
     for (let key in options) {
         const optionKey = key as keyof Options;
         rect.setAttribute(key, `${options[optionKey]}`);

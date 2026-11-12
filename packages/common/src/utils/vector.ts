@@ -17,6 +17,10 @@ export function getUnitVectorByPointAndPoint(point1: Point, point2: Point): Poin
 
 export function getPointByVectorComponent(point: Point, vector: Vector, component: number): Point {
     const distance = Math.hypot(vector[0], vector[1]);
+    // zero vectors become divide-by-zero → NaN; keep the origin point
+    if (!Number.isFinite(distance) || distance === 0) {
+        return point;
+    }
     return [point[0] + (vector[0] / distance) * component, point[1] + (vector[1] / distance) * component];
 }
 
