@@ -3,6 +3,29 @@ import { findElements, getRectangleByElements } from './element';
 
 const FOREIGN_OBJECT_EXPRESSION = `foreignObject[class^='foreign-object']`;
 
+// Text container styles must be inlined when serializing the SVG, otherwise the class based
+// styles are lost and the text layout in the exported image differs from the editor, which may
+// cause the last line of a multi-line text to be clipped by the foreignObject.
+const TEXT_CONTAINER_EXPRESSION = '.plait-text-container,.slate-editable-container';
+
+const TEXT_STYLE_NAMES = ['font-size', 'font-family', 'line-height', 'text-decoration', 'font-weight', 'font-style', 'word-break', 'color'];
+
+const TEXT_CONTAINER_STYLE_NAMES = [
+    'display',
+    'align-items',
+    'justify-content',
+    'width',
+    'height',
+    'min-height',
+    'padding',
+    'box-sizing',
+    'font-weight',
+    'letter-spacing',
+    'white-space',
+    'text-align',
+    ...TEXT_STYLE_NAMES
+];
+
 export interface ToImageOptions {
     elements?: PlaitElement[];
     name?: string;
@@ -100,6 +123,14 @@ function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T, styl
     });
 }
 
+function batchCloneLayoutStyle(sourceNode: SVGGElement, cloneNode: SVGGElement) {
+    const sourceNodes = Array.from(sourceNode.querySelectorAll<HTMLElement>(TEXT_CONTAINER_EXPRESSION));
+    const cloneNodes = Array.from(cloneNode.querySelectorAll<HTMLElement>(TEXT_CONTAINER_EXPRESSION));
+    sourceNodes.forEach((node, index) => {
+        cloneCSSStyle(node, cloneNodes[index], TEXT_CONTAINER_STYLE_NAMES);
+    });
+}
+
 /**
  * batch clone target styles
  * @param sourceNode
@@ -107,13 +138,14 @@ function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T, styl
  * @param inlineStyleClassNames
  */
 function batchCloneCSSStyle(sourceNode: SVGGElement, cloneNode: SVGGElement, inlineStyleClassNames?: string, styleNames?: string[]) {
+    // Keep the text container layout in sync with the editor.
+    batchCloneLayoutStyle(sourceNode, cloneNode);
     // handle text style, Hardcoded to slate editor framework
     const textSelector = '[data-slate-node="text"]';
-    const textStyle = ['font-size', 'font-family', 'line-height', 'text-decoration', 'font-weight', 'font-style', 'word-break', 'color'];
     const sourceTextNodes = Array.from(sourceNode.querySelectorAll(textSelector));
     const cloneTextNodes = Array.from(cloneNode.querySelectorAll(textSelector));
     sourceTextNodes.map((node, index) => {
-        cloneCSSStyle(node as HTMLElement, cloneTextNodes[index] as HTMLElement, textStyle);
+        cloneCSSStyle(node as HTMLElement, cloneTextNodes[index] as HTMLElement, TEXT_STYLE_NAMES);
     });
     // expand
     if (inlineStyleClassNames) {
